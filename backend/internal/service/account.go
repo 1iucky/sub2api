@@ -229,6 +229,12 @@ func (a *Account) IsOAuth() bool {
 	return a.Type == AccountTypeOAuth || a.Type == AccountTypeSetupToken
 }
 
+// IsAnthropicAccount 判断是否为 Anthropic 平台账号（包括所有类型：OAuth、SetupToken、API Key）
+// 用于风控特性（TLS 指纹、Identity 指纹、Header 伪装等）的守卫条件
+func (a *Account) IsAnthropicAccount() bool {
+	return a.Platform == PlatformAnthropic
+}
+
 // IsPrivacySet 检查账号的 privacy 是否已成功设置。
 // OpenAI: privacy_mode == "training_off"
 // Antigravity: privacy_mode == "privacy_set"
@@ -1911,11 +1917,10 @@ func (a *Account) IsAnthropicOAuthOrSetupToken() bool {
 }
 
 // IsTLSFingerprintEnabled 检查是否启用 TLS 指纹伪装
-// 仅适用于 Anthropic OAuth/SetupToken 类型账号
+// 适用于 Anthropic 平台所有类型账号（OAuth、SetupToken、API Key）
 // 启用后将模拟 Claude Code (Node.js) 客户端的 TLS 握手特征
 func (a *Account) IsTLSFingerprintEnabled() bool {
-	// 仅支持 Anthropic OAuth/SetupToken 账号
-	if !a.IsAnthropicOAuthOrSetupToken() {
+	if !a.IsAnthropicAccount() {
 		return false
 	}
 	if a.Extra == nil {
@@ -1975,11 +1980,11 @@ func (a *Account) GetUserMsgQueueMode() string {
 }
 
 // IsSessionIDMaskingEnabled 检查是否启用会话ID伪装
-// 仅适用于 Anthropic OAuth/SetupToken 类型账号
+// 适用于 Anthropic 平台所有类型账号（OAuth、SetupToken、API Key）
 // 启用后将在一段时间内（15分钟）固定 metadata.user_id 中的 session ID，
 // 使上游认为请求来自同一个会话
 func (a *Account) IsSessionIDMaskingEnabled() bool {
-	if !a.IsAnthropicOAuthOrSetupToken() {
+	if !a.IsAnthropicAccount() {
 		return false
 	}
 	if a.Extra == nil {
