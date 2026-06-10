@@ -1757,11 +1757,11 @@ func init() {
 	// subscriptionplan.DefaultSortOrder holds the default value on creation for the sort_order field.
 	subscriptionplan.DefaultSortOrder = subscriptionplanDescSortOrder.Default.(int)
 	// subscriptionplanDescCreatedAt is the schema descriptor for created_at field.
-	subscriptionplanDescCreatedAt := subscriptionplanFields[12].Descriptor()
+	subscriptionplanDescCreatedAt := subscriptionplanFields[15].Descriptor()
 	// subscriptionplan.DefaultCreatedAt holds the default value on creation for the created_at field.
 	subscriptionplan.DefaultCreatedAt = subscriptionplanDescCreatedAt.Default.(func() time.Time)
 	// subscriptionplanDescUpdatedAt is the schema descriptor for updated_at field.
-	subscriptionplanDescUpdatedAt := subscriptionplanFields[13].Descriptor()
+	subscriptionplanDescUpdatedAt := subscriptionplanFields[16].Descriptor()
 	// subscriptionplan.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	subscriptionplan.DefaultUpdatedAt = subscriptionplanDescUpdatedAt.Default.(func() time.Time)
 	// subscriptionplan.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
@@ -2340,8 +2340,20 @@ func init() {
 	usersubscriptionDescMonthlyUsageUsd := usersubscriptionFields[10].Descriptor()
 	// usersubscription.DefaultMonthlyUsageUsd holds the default value on creation for the monthly_usage_usd field.
 	usersubscription.DefaultMonthlyUsageUsd = usersubscriptionDescMonthlyUsageUsd.Default.(float64)
+	// usersubscriptionDescDailyUsageRequests is the schema descriptor for daily_usage_requests field.
+	usersubscriptionDescDailyUsageRequests := usersubscriptionFields[12].Descriptor()
+	// usersubscription.DefaultDailyUsageRequests holds the default value on creation for the daily_usage_requests field.
+	usersubscription.DefaultDailyUsageRequests = usersubscriptionDescDailyUsageRequests.Default.(int64)
+	// usersubscriptionDescWeeklyUsageRequests is the schema descriptor for weekly_usage_requests field.
+	usersubscriptionDescWeeklyUsageRequests := usersubscriptionFields[13].Descriptor()
+	// usersubscription.DefaultWeeklyUsageRequests holds the default value on creation for the weekly_usage_requests field.
+	usersubscription.DefaultWeeklyUsageRequests = usersubscriptionDescWeeklyUsageRequests.Default.(int64)
+	// usersubscriptionDescMonthlyUsageRequests is the schema descriptor for monthly_usage_requests field.
+	usersubscriptionDescMonthlyUsageRequests := usersubscriptionFields[14].Descriptor()
+	// usersubscription.DefaultMonthlyUsageRequests holds the default value on creation for the monthly_usage_requests field.
+	usersubscription.DefaultMonthlyUsageRequests = usersubscriptionDescMonthlyUsageRequests.Default.(int64)
 	// usersubscriptionDescAssignedAt is the schema descriptor for assigned_at field.
-	usersubscriptionDescAssignedAt := usersubscriptionFields[12].Descriptor()
+	usersubscriptionDescAssignedAt := usersubscriptionFields[16].Descriptor()
 	// usersubscription.DefaultAssignedAt holds the default value on creation for the assigned_at field.
 	usersubscription.DefaultAssignedAt = usersubscriptionDescAssignedAt.Default.(func() time.Time)
 }

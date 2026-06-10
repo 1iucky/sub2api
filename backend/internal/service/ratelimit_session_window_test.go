@@ -174,6 +174,7 @@ func newRateLimitServiceForTest(repo AccountRepository) *RateLimitService {
 	return &RateLimitService{accountRepo: repo}
 }
 
+
 func TestUpdateSessionWindow_UsesResetHeader(t *testing.T) {
 	// The reset header provides the real window end as a Unix timestamp.
 	// UpdateSessionWindow should use it instead of the hour-truncated prediction.

@@ -42,6 +42,7 @@ func (r *idempotencyCleanupRepoStub) DeleteExpired(_ context.Context, _ time.Tim
 	return 1, nil
 }
 
+
 func TestNewIdempotencyCleanupService_UsesConfig(t *testing.T) {
 	repo := &idempotencyCleanupRepoStub{}
 	cfg := &config.Config{

@@ -135,6 +135,9 @@ func postUsageBilling(ctx context.Context, p *postUsageBillingParams, deps *bill
 				slog.Error("increment subscription usage failed", "subscription_id", p.Subscription.ID, "error", err)
 			}
 		}
+		if err := deps.userSubRepo.IncrementRequestUsage(billingCtx, p.Subscription.ID, 1); err != nil {
+			slog.Error("increment subscription request usage failed", "subscription_id", p.Subscription.ID, "error", err)
+		}
 	} else {
 		if cost.ActualCost > 0 {
 			if err := deps.userRepo.DeductBalance(billingCtx, p.User.ID, cost.ActualCost); err != nil {
@@ -258,9 +261,12 @@ func buildUsageBillingCommand(requestID string, usageLog *UsageLog, p *postUsage
 	// user-specific) rate multiplier consumes subscription quota at the expected
 	// speed. TotalCost remains the raw (pre-multiplier) value; downstream guards
 	// on "> 0" still correctly skip free subscriptions (RateMultiplier == 0).
-	if p.IsSubscriptionBill && p.Subscription != nil && p.Cost.TotalCost > 0 {
+	if p.IsSubscriptionBill && p.Subscription != nil {
 		cmd.SubscriptionID = &p.Subscription.ID
-		cmd.SubscriptionCost = p.Cost.ActualCost
+		cmd.SubscriptionRequestCount = 1
+		if p.Cost.TotalCost > 0 {
+			cmd.SubscriptionCost = p.Cost.ActualCost
+		}
 	} else if p.Cost.ActualCost > 0 {
 		cmd.BalanceCost = p.Cost.ActualCost
 	}

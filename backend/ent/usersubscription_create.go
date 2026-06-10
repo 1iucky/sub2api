@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/Wei-Shaw/sub2api/ent/group"
+	"github.com/Wei-Shaw/sub2api/ent/subscriptionplan"
 	"github.com/Wei-Shaw/sub2api/ent/usagelog"
 	"github.com/Wei-Shaw/sub2api/ent/user"
 	"github.com/Wei-Shaw/sub2api/ent/usersubscription"
@@ -189,6 +190,62 @@ func (_c *UserSubscriptionCreate) SetNillableMonthlyUsageUsd(v *float64) *UserSu
 	return _c
 }
 
+// SetPlanID sets the "plan_id" field.
+func (_c *UserSubscriptionCreate) SetPlanID(v int64) *UserSubscriptionCreate {
+	_c.mutation.SetPlanID(v)
+	return _c
+}
+
+// SetNillablePlanID sets the "plan_id" field if the given value is not nil.
+func (_c *UserSubscriptionCreate) SetNillablePlanID(v *int64) *UserSubscriptionCreate {
+	if v != nil {
+		_c.SetPlanID(*v)
+	}
+	return _c
+}
+
+// SetDailyUsageRequests sets the "daily_usage_requests" field.
+func (_c *UserSubscriptionCreate) SetDailyUsageRequests(v int64) *UserSubscriptionCreate {
+	_c.mutation.SetDailyUsageRequests(v)
+	return _c
+}
+
+// SetNillableDailyUsageRequests sets the "daily_usage_requests" field if the given value is not nil.
+func (_c *UserSubscriptionCreate) SetNillableDailyUsageRequests(v *int64) *UserSubscriptionCreate {
+	if v != nil {
+		_c.SetDailyUsageRequests(*v)
+	}
+	return _c
+}
+
+// SetWeeklyUsageRequests sets the "weekly_usage_requests" field.
+func (_c *UserSubscriptionCreate) SetWeeklyUsageRequests(v int64) *UserSubscriptionCreate {
+	_c.mutation.SetWeeklyUsageRequests(v)
+	return _c
+}
+
+// SetNillableWeeklyUsageRequests sets the "weekly_usage_requests" field if the given value is not nil.
+func (_c *UserSubscriptionCreate) SetNillableWeeklyUsageRequests(v *int64) *UserSubscriptionCreate {
+	if v != nil {
+		_c.SetWeeklyUsageRequests(*v)
+	}
+	return _c
+}
+
+// SetMonthlyUsageRequests sets the "monthly_usage_requests" field.
+func (_c *UserSubscriptionCreate) SetMonthlyUsageRequests(v int64) *UserSubscriptionCreate {
+	_c.mutation.SetMonthlyUsageRequests(v)
+	return _c
+}
+
+// SetNillableMonthlyUsageRequests sets the "monthly_usage_requests" field if the given value is not nil.
+func (_c *UserSubscriptionCreate) SetNillableMonthlyUsageRequests(v *int64) *UserSubscriptionCreate {
+	if v != nil {
+		_c.SetMonthlyUsageRequests(*v)
+	}
+	return _c
+}
+
 // SetAssignedBy sets the "assigned_by" field.
 func (_c *UserSubscriptionCreate) SetAssignedBy(v int64) *UserSubscriptionCreate {
 	_c.mutation.SetAssignedBy(v)
@@ -275,6 +332,11 @@ func (_c *UserSubscriptionCreate) AddUsageLogs(v ...*UsageLog) *UserSubscription
 	return _c.AddUsageLogIDs(ids...)
 }
 
+// SetPlan sets the "plan" edge to the SubscriptionPlan entity.
+func (_c *UserSubscriptionCreate) SetPlan(v *SubscriptionPlan) *UserSubscriptionCreate {
+	return _c.SetPlanID(v.ID)
+}
+
 // Mutation returns the UserSubscriptionMutation object of the builder.
 func (_c *UserSubscriptionCreate) Mutation() *UserSubscriptionMutation {
 	return _c.mutation
@@ -342,6 +404,18 @@ func (_c *UserSubscriptionCreate) defaults() error {
 		v := usersubscription.DefaultMonthlyUsageUsd
 		_c.mutation.SetMonthlyUsageUsd(v)
 	}
+	if _, ok := _c.mutation.DailyUsageRequests(); !ok {
+		v := usersubscription.DefaultDailyUsageRequests
+		_c.mutation.SetDailyUsageRequests(v)
+	}
+	if _, ok := _c.mutation.WeeklyUsageRequests(); !ok {
+		v := usersubscription.DefaultWeeklyUsageRequests
+		_c.mutation.SetWeeklyUsageRequests(v)
+	}
+	if _, ok := _c.mutation.MonthlyUsageRequests(); !ok {
+		v := usersubscription.DefaultMonthlyUsageRequests
+		_c.mutation.SetMonthlyUsageRequests(v)
+	}
 	if _, ok := _c.mutation.AssignedAt(); !ok {
 		if usersubscription.DefaultAssignedAt == nil {
 			return fmt.Errorf("ent: uninitialized usersubscription.DefaultAssignedAt (forgotten import ent/runtime?)")
@@ -388,6 +462,15 @@ func (_c *UserSubscriptionCreate) check() error {
 	}
 	if _, ok := _c.mutation.MonthlyUsageUsd(); !ok {
 		return &ValidationError{Name: "monthly_usage_usd", err: errors.New(`ent: missing required field "UserSubscription.monthly_usage_usd"`)}
+	}
+	if _, ok := _c.mutation.DailyUsageRequests(); !ok {
+		return &ValidationError{Name: "daily_usage_requests", err: errors.New(`ent: missing required field "UserSubscription.daily_usage_requests"`)}
+	}
+	if _, ok := _c.mutation.WeeklyUsageRequests(); !ok {
+		return &ValidationError{Name: "weekly_usage_requests", err: errors.New(`ent: missing required field "UserSubscription.weekly_usage_requests"`)}
+	}
+	if _, ok := _c.mutation.MonthlyUsageRequests(); !ok {
+		return &ValidationError{Name: "monthly_usage_requests", err: errors.New(`ent: missing required field "UserSubscription.monthly_usage_requests"`)}
 	}
 	if _, ok := _c.mutation.AssignedAt(); !ok {
 		return &ValidationError{Name: "assigned_at", err: errors.New(`ent: missing required field "UserSubscription.assigned_at"`)}
@@ -473,6 +556,18 @@ func (_c *UserSubscriptionCreate) createSpec() (*UserSubscription, *sqlgraph.Cre
 		_spec.SetField(usersubscription.FieldMonthlyUsageUsd, field.TypeFloat64, value)
 		_node.MonthlyUsageUsd = value
 	}
+	if value, ok := _c.mutation.DailyUsageRequests(); ok {
+		_spec.SetField(usersubscription.FieldDailyUsageRequests, field.TypeInt64, value)
+		_node.DailyUsageRequests = value
+	}
+	if value, ok := _c.mutation.WeeklyUsageRequests(); ok {
+		_spec.SetField(usersubscription.FieldWeeklyUsageRequests, field.TypeInt64, value)
+		_node.WeeklyUsageRequests = value
+	}
+	if value, ok := _c.mutation.MonthlyUsageRequests(); ok {
+		_spec.SetField(usersubscription.FieldMonthlyUsageRequests, field.TypeInt64, value)
+		_node.MonthlyUsageRequests = value
+	}
 	if value, ok := _c.mutation.AssignedAt(); ok {
 		_spec.SetField(usersubscription.FieldAssignedAt, field.TypeTime, value)
 		_node.AssignedAt = value
@@ -546,6 +641,23 @@ func (_c *UserSubscriptionCreate) createSpec() (*UserSubscription, *sqlgraph.Cre
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.PlanIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   usersubscription.PlanTable,
+			Columns: []string{usersubscription.PlanColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(subscriptionplan.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.PlanID = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
@@ -795,6 +907,78 @@ func (u *UserSubscriptionUpsert) UpdateMonthlyUsageUsd() *UserSubscriptionUpsert
 // AddMonthlyUsageUsd adds v to the "monthly_usage_usd" field.
 func (u *UserSubscriptionUpsert) AddMonthlyUsageUsd(v float64) *UserSubscriptionUpsert {
 	u.Add(usersubscription.FieldMonthlyUsageUsd, v)
+	return u
+}
+
+// SetPlanID sets the "plan_id" field.
+func (u *UserSubscriptionUpsert) SetPlanID(v int64) *UserSubscriptionUpsert {
+	u.Set(usersubscription.FieldPlanID, v)
+	return u
+}
+
+// UpdatePlanID sets the "plan_id" field to the value that was provided on create.
+func (u *UserSubscriptionUpsert) UpdatePlanID() *UserSubscriptionUpsert {
+	u.SetExcluded(usersubscription.FieldPlanID)
+	return u
+}
+
+// ClearPlanID clears the value of the "plan_id" field.
+func (u *UserSubscriptionUpsert) ClearPlanID() *UserSubscriptionUpsert {
+	u.SetNull(usersubscription.FieldPlanID)
+	return u
+}
+
+// SetDailyUsageRequests sets the "daily_usage_requests" field.
+func (u *UserSubscriptionUpsert) SetDailyUsageRequests(v int64) *UserSubscriptionUpsert {
+	u.Set(usersubscription.FieldDailyUsageRequests, v)
+	return u
+}
+
+// UpdateDailyUsageRequests sets the "daily_usage_requests" field to the value that was provided on create.
+func (u *UserSubscriptionUpsert) UpdateDailyUsageRequests() *UserSubscriptionUpsert {
+	u.SetExcluded(usersubscription.FieldDailyUsageRequests)
+	return u
+}
+
+// AddDailyUsageRequests adds v to the "daily_usage_requests" field.
+func (u *UserSubscriptionUpsert) AddDailyUsageRequests(v int64) *UserSubscriptionUpsert {
+	u.Add(usersubscription.FieldDailyUsageRequests, v)
+	return u
+}
+
+// SetWeeklyUsageRequests sets the "weekly_usage_requests" field.
+func (u *UserSubscriptionUpsert) SetWeeklyUsageRequests(v int64) *UserSubscriptionUpsert {
+	u.Set(usersubscription.FieldWeeklyUsageRequests, v)
+	return u
+}
+
+// UpdateWeeklyUsageRequests sets the "weekly_usage_requests" field to the value that was provided on create.
+func (u *UserSubscriptionUpsert) UpdateWeeklyUsageRequests() *UserSubscriptionUpsert {
+	u.SetExcluded(usersubscription.FieldWeeklyUsageRequests)
+	return u
+}
+
+// AddWeeklyUsageRequests adds v to the "weekly_usage_requests" field.
+func (u *UserSubscriptionUpsert) AddWeeklyUsageRequests(v int64) *UserSubscriptionUpsert {
+	u.Add(usersubscription.FieldWeeklyUsageRequests, v)
+	return u
+}
+
+// SetMonthlyUsageRequests sets the "monthly_usage_requests" field.
+func (u *UserSubscriptionUpsert) SetMonthlyUsageRequests(v int64) *UserSubscriptionUpsert {
+	u.Set(usersubscription.FieldMonthlyUsageRequests, v)
+	return u
+}
+
+// UpdateMonthlyUsageRequests sets the "monthly_usage_requests" field to the value that was provided on create.
+func (u *UserSubscriptionUpsert) UpdateMonthlyUsageRequests() *UserSubscriptionUpsert {
+	u.SetExcluded(usersubscription.FieldMonthlyUsageRequests)
+	return u
+}
+
+// AddMonthlyUsageRequests adds v to the "monthly_usage_requests" field.
+func (u *UserSubscriptionUpsert) AddMonthlyUsageRequests(v int64) *UserSubscriptionUpsert {
+	u.Add(usersubscription.FieldMonthlyUsageRequests, v)
 	return u
 }
 
@@ -1119,6 +1303,90 @@ func (u *UserSubscriptionUpsertOne) AddMonthlyUsageUsd(v float64) *UserSubscript
 func (u *UserSubscriptionUpsertOne) UpdateMonthlyUsageUsd() *UserSubscriptionUpsertOne {
 	return u.Update(func(s *UserSubscriptionUpsert) {
 		s.UpdateMonthlyUsageUsd()
+	})
+}
+
+// SetPlanID sets the "plan_id" field.
+func (u *UserSubscriptionUpsertOne) SetPlanID(v int64) *UserSubscriptionUpsertOne {
+	return u.Update(func(s *UserSubscriptionUpsert) {
+		s.SetPlanID(v)
+	})
+}
+
+// UpdatePlanID sets the "plan_id" field to the value that was provided on create.
+func (u *UserSubscriptionUpsertOne) UpdatePlanID() *UserSubscriptionUpsertOne {
+	return u.Update(func(s *UserSubscriptionUpsert) {
+		s.UpdatePlanID()
+	})
+}
+
+// ClearPlanID clears the value of the "plan_id" field.
+func (u *UserSubscriptionUpsertOne) ClearPlanID() *UserSubscriptionUpsertOne {
+	return u.Update(func(s *UserSubscriptionUpsert) {
+		s.ClearPlanID()
+	})
+}
+
+// SetDailyUsageRequests sets the "daily_usage_requests" field.
+func (u *UserSubscriptionUpsertOne) SetDailyUsageRequests(v int64) *UserSubscriptionUpsertOne {
+	return u.Update(func(s *UserSubscriptionUpsert) {
+		s.SetDailyUsageRequests(v)
+	})
+}
+
+// AddDailyUsageRequests adds v to the "daily_usage_requests" field.
+func (u *UserSubscriptionUpsertOne) AddDailyUsageRequests(v int64) *UserSubscriptionUpsertOne {
+	return u.Update(func(s *UserSubscriptionUpsert) {
+		s.AddDailyUsageRequests(v)
+	})
+}
+
+// UpdateDailyUsageRequests sets the "daily_usage_requests" field to the value that was provided on create.
+func (u *UserSubscriptionUpsertOne) UpdateDailyUsageRequests() *UserSubscriptionUpsertOne {
+	return u.Update(func(s *UserSubscriptionUpsert) {
+		s.UpdateDailyUsageRequests()
+	})
+}
+
+// SetWeeklyUsageRequests sets the "weekly_usage_requests" field.
+func (u *UserSubscriptionUpsertOne) SetWeeklyUsageRequests(v int64) *UserSubscriptionUpsertOne {
+	return u.Update(func(s *UserSubscriptionUpsert) {
+		s.SetWeeklyUsageRequests(v)
+	})
+}
+
+// AddWeeklyUsageRequests adds v to the "weekly_usage_requests" field.
+func (u *UserSubscriptionUpsertOne) AddWeeklyUsageRequests(v int64) *UserSubscriptionUpsertOne {
+	return u.Update(func(s *UserSubscriptionUpsert) {
+		s.AddWeeklyUsageRequests(v)
+	})
+}
+
+// UpdateWeeklyUsageRequests sets the "weekly_usage_requests" field to the value that was provided on create.
+func (u *UserSubscriptionUpsertOne) UpdateWeeklyUsageRequests() *UserSubscriptionUpsertOne {
+	return u.Update(func(s *UserSubscriptionUpsert) {
+		s.UpdateWeeklyUsageRequests()
+	})
+}
+
+// SetMonthlyUsageRequests sets the "monthly_usage_requests" field.
+func (u *UserSubscriptionUpsertOne) SetMonthlyUsageRequests(v int64) *UserSubscriptionUpsertOne {
+	return u.Update(func(s *UserSubscriptionUpsert) {
+		s.SetMonthlyUsageRequests(v)
+	})
+}
+
+// AddMonthlyUsageRequests adds v to the "monthly_usage_requests" field.
+func (u *UserSubscriptionUpsertOne) AddMonthlyUsageRequests(v int64) *UserSubscriptionUpsertOne {
+	return u.Update(func(s *UserSubscriptionUpsert) {
+		s.AddMonthlyUsageRequests(v)
+	})
+}
+
+// UpdateMonthlyUsageRequests sets the "monthly_usage_requests" field to the value that was provided on create.
+func (u *UserSubscriptionUpsertOne) UpdateMonthlyUsageRequests() *UserSubscriptionUpsertOne {
+	return u.Update(func(s *UserSubscriptionUpsert) {
+		s.UpdateMonthlyUsageRequests()
 	})
 }
 
@@ -1617,6 +1885,90 @@ func (u *UserSubscriptionUpsertBulk) AddMonthlyUsageUsd(v float64) *UserSubscrip
 func (u *UserSubscriptionUpsertBulk) UpdateMonthlyUsageUsd() *UserSubscriptionUpsertBulk {
 	return u.Update(func(s *UserSubscriptionUpsert) {
 		s.UpdateMonthlyUsageUsd()
+	})
+}
+
+// SetPlanID sets the "plan_id" field.
+func (u *UserSubscriptionUpsertBulk) SetPlanID(v int64) *UserSubscriptionUpsertBulk {
+	return u.Update(func(s *UserSubscriptionUpsert) {
+		s.SetPlanID(v)
+	})
+}
+
+// UpdatePlanID sets the "plan_id" field to the value that was provided on create.
+func (u *UserSubscriptionUpsertBulk) UpdatePlanID() *UserSubscriptionUpsertBulk {
+	return u.Update(func(s *UserSubscriptionUpsert) {
+		s.UpdatePlanID()
+	})
+}
+
+// ClearPlanID clears the value of the "plan_id" field.
+func (u *UserSubscriptionUpsertBulk) ClearPlanID() *UserSubscriptionUpsertBulk {
+	return u.Update(func(s *UserSubscriptionUpsert) {
+		s.ClearPlanID()
+	})
+}
+
+// SetDailyUsageRequests sets the "daily_usage_requests" field.
+func (u *UserSubscriptionUpsertBulk) SetDailyUsageRequests(v int64) *UserSubscriptionUpsertBulk {
+	return u.Update(func(s *UserSubscriptionUpsert) {
+		s.SetDailyUsageRequests(v)
+	})
+}
+
+// AddDailyUsageRequests adds v to the "daily_usage_requests" field.
+func (u *UserSubscriptionUpsertBulk) AddDailyUsageRequests(v int64) *UserSubscriptionUpsertBulk {
+	return u.Update(func(s *UserSubscriptionUpsert) {
+		s.AddDailyUsageRequests(v)
+	})
+}
+
+// UpdateDailyUsageRequests sets the "daily_usage_requests" field to the value that was provided on create.
+func (u *UserSubscriptionUpsertBulk) UpdateDailyUsageRequests() *UserSubscriptionUpsertBulk {
+	return u.Update(func(s *UserSubscriptionUpsert) {
+		s.UpdateDailyUsageRequests()
+	})
+}
+
+// SetWeeklyUsageRequests sets the "weekly_usage_requests" field.
+func (u *UserSubscriptionUpsertBulk) SetWeeklyUsageRequests(v int64) *UserSubscriptionUpsertBulk {
+	return u.Update(func(s *UserSubscriptionUpsert) {
+		s.SetWeeklyUsageRequests(v)
+	})
+}
+
+// AddWeeklyUsageRequests adds v to the "weekly_usage_requests" field.
+func (u *UserSubscriptionUpsertBulk) AddWeeklyUsageRequests(v int64) *UserSubscriptionUpsertBulk {
+	return u.Update(func(s *UserSubscriptionUpsert) {
+		s.AddWeeklyUsageRequests(v)
+	})
+}
+
+// UpdateWeeklyUsageRequests sets the "weekly_usage_requests" field to the value that was provided on create.
+func (u *UserSubscriptionUpsertBulk) UpdateWeeklyUsageRequests() *UserSubscriptionUpsertBulk {
+	return u.Update(func(s *UserSubscriptionUpsert) {
+		s.UpdateWeeklyUsageRequests()
+	})
+}
+
+// SetMonthlyUsageRequests sets the "monthly_usage_requests" field.
+func (u *UserSubscriptionUpsertBulk) SetMonthlyUsageRequests(v int64) *UserSubscriptionUpsertBulk {
+	return u.Update(func(s *UserSubscriptionUpsert) {
+		s.SetMonthlyUsageRequests(v)
+	})
+}
+
+// AddMonthlyUsageRequests adds v to the "monthly_usage_requests" field.
+func (u *UserSubscriptionUpsertBulk) AddMonthlyUsageRequests(v int64) *UserSubscriptionUpsertBulk {
+	return u.Update(func(s *UserSubscriptionUpsert) {
+		s.AddMonthlyUsageRequests(v)
+	})
+}
+
+// UpdateMonthlyUsageRequests sets the "monthly_usage_requests" field to the value that was provided on create.
+func (u *UserSubscriptionUpsertBulk) UpdateMonthlyUsageRequests() *UserSubscriptionUpsertBulk {
+	return u.Update(func(s *UserSubscriptionUpsert) {
+		s.UpdateMonthlyUsageRequests()
 	})
 }
 

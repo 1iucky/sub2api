@@ -132,6 +132,10 @@ export interface SubscriptionPlan {
   features: string[]
   for_sale: boolean
   sort_order: number
+  // Request count limits from plan (null = unlimited, 0 = deny all, >0 = limit)
+  daily_request_limit?: number | null
+  weekly_request_limit?: number | null
+  monthly_request_limit?: number | null
 }
 
 export interface PaymentChannel {

@@ -44,6 +44,7 @@ type AssignSubscriptionRequest struct {
 	GroupID      int64  `json:"group_id" binding:"required"`
 	ValidityDays int    `json:"validity_days" binding:"omitempty,max=36500"` // max 100 years
 	Notes        string `json:"notes"`
+	PlanID       *int64 `json:"plan_id"` // Optional: link to SubscriptionPlan for live request limits
 }
 
 // BulkAssignSubscriptionRequest represents bulk assign subscription request
@@ -150,6 +151,7 @@ func (h *SubscriptionHandler) Assign(c *gin.Context) {
 		ValidityDays: req.ValidityDays,
 		AssignedBy:   adminID,
 		Notes:        req.Notes,
+		PlanID:       req.PlanID,
 	})
 	if err != nil {
 		response.ErrorFrom(c, err)

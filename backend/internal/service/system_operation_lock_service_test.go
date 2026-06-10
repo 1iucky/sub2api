@@ -205,6 +205,7 @@ func (s *systemLockRepoStub) DeleteExpired(context.Context, time.Time, int) (int
 	return 0, nil
 }
 
+
 func TestSystemOperationLockService_InputAndStoreErrorBranches(t *testing.T) {
 	var nilSvc *SystemOperationLockService
 	_, err := nilSvc.Acquire(context.Background(), "x")

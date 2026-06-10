@@ -1562,3 +1562,23 @@ func (r *stubUserSubscriptionRepo) IncrementUsage(ctx context.Context, id int64,
 func (r *stubUserSubscriptionRepo) BatchUpdateExpiredStatus(ctx context.Context) (int64, error) {
 	return 0, errors.New("not implemented")
 }
+
+func (s *stubUserSubscriptionRepo) IncrementRequestUsage(ctx context.Context, id int64, count int64) error {
+	return nil
+}
+
+func (s *stubUserSubscriptionRepo) ListActiveRefsByPlanID(ctx context.Context, planID int64) ([]service.SubscriptionRef, error) {
+	return nil, nil
+}
+
+func (s *stubUserSubscriptionRepo) CountActiveByPlanID(ctx context.Context, planID int64) (int64, error) {
+	return 0, nil
+}
+
+func (s *stubUserSubscriptionRepo) CountByPlanID(ctx context.Context, planID int64) (int64, error) {
+	return 0, nil
+}
+
+func (s stubUserSubscriptionRepo) UpdatePlanID(ctx context.Context, subscriptionID int64, planID *int64) error {
+	return nil
+}

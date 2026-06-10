@@ -110,6 +110,7 @@ func (m *mockProxyRepoForOAuth) CountExpiringSoon(ctx context.Context, now time.
 	panic("CountExpiringSoon not implemented")
 }
 
+
 // =====================
 // 测试用例
 // =====================

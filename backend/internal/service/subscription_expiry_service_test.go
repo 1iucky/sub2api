@@ -111,6 +111,24 @@ func (r *subscriptionExpiryRepoStub) BatchUpdateExpiredStatus(context.Context) (
 	return 0, nil
 }
 
+func (s *subscriptionExpiryRepoStub) IncrementRequestUsage(ctx context.Context, id int64, count int64) error {
+	return nil
+}
+func (s *subscriptionExpiryRepoStub) ListActiveRefsByPlanID(ctx context.Context, planID int64) ([]SubscriptionRef, error) {
+	return nil, nil
+}
+func (s *subscriptionExpiryRepoStub) CountActiveByPlanID(ctx context.Context, planID int64) (int64, error) {
+	return 0, nil
+}
+
+func (s *subscriptionExpiryRepoStub) CountByPlanID(ctx context.Context, planID int64) (int64, error) {
+	return 0, nil
+}
+
+func (s subscriptionExpiryRepoStub) UpdatePlanID(ctx context.Context, subscriptionID int64, planID *int64) error {
+	return nil
+}
+
 type subscriptionExpirySettingRepoStub struct {
 	values map[string]string
 	err    error

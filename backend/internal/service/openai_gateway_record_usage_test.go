@@ -29,6 +29,7 @@ func (s *openAIRecordUsageLogRepoStub) Create(ctx context.Context, log *UsageLog
 	return s.inserted, s.err
 }
 
+
 type openAIRecordUsageBillingRepoStub struct {
 	UsageBillingRepository
 
@@ -157,15 +158,22 @@ func (s *openAIRecordUsageUserRepoStub) DeductBalance(ctx context.Context, id in
 type openAIRecordUsageSubRepoStub struct {
 	UserSubscriptionRepository
 
-	incrementCalls int
-	incrementErr   error
-	lastCtxErr     error
+	incrementCalls    int
+	incrementErr      error
+	incrementReqCalls int
+	incrementReqErr   error
+	lastCtxErr        error
 }
 
 func (s *openAIRecordUsageSubRepoStub) IncrementUsage(ctx context.Context, id int64, costUSD float64) error {
 	s.incrementCalls++
 	s.lastCtxErr = ctx.Err()
 	return s.incrementErr
+}
+
+func (s *openAIRecordUsageSubRepoStub) IncrementRequestUsage(ctx context.Context, id int64, count int64) error {
+	s.incrementReqCalls++
+	return s.incrementReqErr
 }
 
 type openAIRecordUsageAPIKeyQuotaStub struct {

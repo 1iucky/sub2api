@@ -113,6 +113,7 @@ func (s *userRepoStubForGroupUpdate) RemoveGroupFromUserAllowedGroups(context.Co
 	panic("unexpected")
 }
 
+
 // apiKeyRepoStubForGroupUpdate implements APIKeyRepository for AdminUpdateAPIKeyGroupID tests.
 type apiKeyRepoStubForGroupUpdate struct {
 	key       *APIKey
@@ -201,6 +202,7 @@ func (s *apiKeyRepoStubForGroupUpdate) UpdateGroupIDByUserAndGroup(context.Conte
 	panic("unexpected")
 }
 
+
 // groupRepoStubForGroupUpdate implements GroupRepository for AdminUpdateAPIKeyGroupID tests.
 type groupRepoStubForGroupUpdate struct {
 	group          *Group
@@ -258,6 +260,7 @@ func (s *groupRepoStubForGroupUpdate) UpdateSortOrders(context.Context, []GroupS
 	panic("unexpected")
 }
 
+
 type userSubRepoStubForGroupUpdate struct {
 	userSubRepoNoop
 	getActiveSub  *UserSubscription
@@ -279,6 +282,17 @@ func (s *userSubRepoStubForGroupUpdate) GetActiveByUserIDAndGroupID(_ context.Co
 	}
 	clone := *s.getActiveSub
 	return &clone, nil
+}
+
+func (s *userSubRepoStubForGroupUpdate) CountActiveByPlanID(ctx context.Context, planID int64) (int64, error) {
+	return 0, nil
+}
+
+func (s *userSubRepoStubForGroupUpdate) IncrementRequestUsage(ctx context.Context, id int64, count int64) error {
+	return nil
+}
+func (s *userSubRepoStubForGroupUpdate) ListActiveRefsByPlanID(ctx context.Context, planID int64) ([]SubscriptionRef, error) {
+	return nil, nil
 }
 
 // ---------------------------------------------------------------------------

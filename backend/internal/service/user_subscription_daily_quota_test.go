@@ -20,6 +20,18 @@ func (r *dailyResetTrackingUserSubRepo) ResetDailyUsage(context.Context, int64, 
 	return nil
 }
 
+func (r *dailyResetTrackingUserSubRepo) CountActiveByPlanID(ctx context.Context, planID int64) (int64, error) {
+	return 0, nil
+}
+
+func (r *dailyResetTrackingUserSubRepo) IncrementRequestUsage(ctx context.Context, id int64, count int64) error {
+	return nil
+}
+
+func (r *dailyResetTrackingUserSubRepo) ListActiveRefsByPlanID(ctx context.Context, planID int64) ([]SubscriptionRef, error) {
+	return nil, nil
+}
+
 func TestAssignOrExtendSubscription_ExpiredDailyCardStartsNewOneTimeQuota(t *testing.T) {
 	groupRepo := &subscriptionGroupRepoStub{
 		group: &Group{ID: 1, SubscriptionType: SubscriptionTypeSubscription},

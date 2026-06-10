@@ -263,6 +263,7 @@ func (m *mockGroupRepoForGemini) UpdateSortOrders(ctx context.Context, updates [
 	return nil
 }
 
+
 var _ GroupRepository = (*mockGroupRepoForGemini)(nil)
 
 // mockGatewayCacheForGemini Gemini 测试用的 cache mock

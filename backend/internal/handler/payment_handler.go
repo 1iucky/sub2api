@@ -71,6 +71,9 @@ func (h *PaymentHandler) GetPlans(c *gin.Context) {
 		ProductName        string   `json:"product_name"`
 		ForSale            bool     `json:"for_sale"`
 		SortOrder          int      `json:"sort_order"`
+		DailyRequestLimit   *int64   `json:"daily_request_limit,omitempty"`
+		WeeklyRequestLimit  *int64   `json:"weekly_request_limit,omitempty"`
+		MonthlyRequestLimit *int64   `json:"monthly_request_limit,omitempty"`
 	}
 	groupInfo := h.configService.GetGroupInfoMap(c.Request.Context(), plans)
 	result := make([]planWithPlatform, 0, len(plans))
@@ -85,6 +88,8 @@ func (h *PaymentHandler) GetPlans(c *gin.Context) {
 			Currency:     p.Currency,
 			ValidityDays: p.ValidityDays, ValidityUnit: p.ValidityUnit, Features: p.Features,
 			ProductName: p.ProductName, ForSale: p.ForSale, SortOrder: p.SortOrder,
+			DailyRequestLimit: p.DailyRequestLimit, WeeklyRequestLimit: p.WeeklyRequestLimit,
+			MonthlyRequestLimit: p.MonthlyRequestLimit,
 		})
 	}
 	response.Success(c, result)
@@ -129,6 +134,8 @@ func (h *PaymentHandler) GetCheckoutInfo(c *gin.Context) {
 			Currency:     p.Currency,
 			ValidityDays: p.ValidityDays, ValidityUnit: p.ValidityUnit, Features: parseFeatures(p.Features),
 			ProductName: p.ProductName,
+			DailyRequestLimit: p.DailyRequestLimit, WeeklyRequestLimit: p.WeeklyRequestLimit,
+			MonthlyRequestLimit: p.MonthlyRequestLimit,
 		})
 	}
 
@@ -186,6 +193,9 @@ type checkoutPlan struct {
 	ValidityUnit       string   `json:"validity_unit"`
 	Features           []string `json:"features"`
 	ProductName        string   `json:"product_name"`
+	DailyRequestLimit   *int64   `json:"daily_request_limit,omitempty"`
+	WeeklyRequestLimit  *int64   `json:"weekly_request_limit,omitempty"`
+	MonthlyRequestLimit *int64   `json:"monthly_request_limit,omitempty"`
 }
 
 // parseFeatures splits a newline-separated features string into a string slice.

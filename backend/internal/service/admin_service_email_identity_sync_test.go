@@ -158,6 +158,7 @@ func (s *emailSyncRepoStub) ReplaceEmailAuthIdentity(_ context.Context, userID i
 	return s.replaceErr
 }
 
+
 func TestAdminService_CreateUser_DoesNotReturnPartialSuccessFromEmailIdentityResync(t *testing.T) {
 	repo := &emailSyncRepoStub{
 		nextID:    55,

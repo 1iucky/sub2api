@@ -39,6 +39,10 @@ type UsageBillingCommand struct {
 	APIKeyQuotaCost     float64
 	APIKeyRateLimitCost float64
 	AccountQuotaCost    float64
+
+	// SubscriptionRequestCount is the number of requests to increment
+	// in the subscription's request usage counters. Set to 1 for subscription mode.
+	SubscriptionRequestCount int64
 }
 
 func (c *UsageBillingCommand) Normalize() {
@@ -56,7 +60,7 @@ func buildUsageBillingFingerprint(c *UsageBillingCommand) string {
 		return ""
 	}
 	raw := fmt.Sprintf(
-		"%d|%d|%d|%s|%s|%s|%s|%d|%d|%d|%d|%d|%d|%s|%d|%0.10f|%0.10f|%0.10f|%0.10f|%0.10f",
+		"%d|%d|%d|%s|%s|%s|%s|%d|%d|%d|%d|%d|%d|%s|%d|%0.10f|%0.10f|%0.10f|%0.10f|%0.10f|%d",
 		c.UserID,
 		c.AccountID,
 		c.APIKeyID,
@@ -77,6 +81,7 @@ func buildUsageBillingFingerprint(c *UsageBillingCommand) string {
 		c.APIKeyQuotaCost,
 		c.APIKeyRateLimitCost,
 		c.AccountQuotaCost,
+		c.SubscriptionRequestCount,
 	)
 	if payloadHash := strings.TrimSpace(c.RequestPayloadHash); payloadHash != "" {
 		raw += "|" + payloadHash

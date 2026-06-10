@@ -170,6 +170,7 @@ func (s *defaultSubGroupReaderStub) GetByID(ctx context.Context, id int64) (*Gro
 	return nil, ErrGroupNotFound
 }
 
+
 func TestSettingService_UpdateSettings_DefaultSubscriptions_ValidGroup(t *testing.T) {
 	repo := &settingUpdateRepoStub{}
 	groupReader := &defaultSubGroupReaderStub{

@@ -1761,6 +1761,13 @@ export interface UserSubscription {
   daily_window_start: string | null
   weekly_window_start: string | null
   monthly_window_start: string | null
+  plan_id?: number | null
+  daily_usage_requests: number
+  weekly_usage_requests: number
+  monthly_usage_requests: number
+  daily_request_limit?: number | null
+  weekly_request_limit?: number | null
+  monthly_request_limit?: number | null
   created_at: string
   updated_at: string
   revoked_at?: string | null
@@ -1776,18 +1783,27 @@ export interface SubscriptionProgress {
     limit: number | null
     percentage: number
     reset_in_seconds: number | null
+    request_limit?: number | null
+    request_used?: number
+    request_remaining?: number | null
   } | null
   weekly: {
     used: number
     limit: number | null
     percentage: number
     reset_in_seconds: number | null
+    request_limit?: number | null
+    request_used?: number
+    request_remaining?: number | null
   } | null
   monthly: {
     used: number
     limit: number | null
     percentage: number
     reset_in_seconds: number | null
+    request_limit?: number | null
+    request_used?: number
+    request_remaining?: number | null
   } | null
   expires_at: string | null
   days_remaining: number | null
@@ -1797,6 +1813,8 @@ export interface AssignSubscriptionRequest {
   user_id: number
   group_id: number
   validity_days?: number
+  notes?: string
+  plan_id?: number | null
 }
 
 export interface BulkAssignSubscriptionRequest {

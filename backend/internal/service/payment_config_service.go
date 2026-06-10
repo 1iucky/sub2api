@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"math"
 	"strconv"
@@ -156,6 +157,27 @@ type UpdateProviderInstanceRequest struct {
 	RefundEnabled   *bool             `json:"refund_enabled"`
 	AllowUserRefund *bool             `json:"allow_user_refund"`
 }
+// OptionalInt64 represents a three-state nullable int64:
+// nil = not provided (no change), value with nil = clear (unlimited), value with non-nil = set limit.
+type OptionalInt64 struct {
+	Set   bool
+	Value *int64
+}
+
+func (f *OptionalInt64) UnmarshalJSON(data []byte) error {
+	f.Set = true
+	if string(data) == "null" {
+		f.Value = nil
+		return nil
+	}
+	var value int64
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	f.Value = &value
+	return nil
+}
+
 type CreatePlanRequest struct {
 	GroupID       int64    `json:"group_id"`
 	Name          string   `json:"name"`
@@ -169,6 +191,11 @@ type CreatePlanRequest struct {
 	ProductName   string   `json:"product_name"`
 	ForSale       bool     `json:"for_sale"`
 	SortOrder     int      `json:"sort_order"`
+
+	// Request count limits (nil = unlimited, 0 = deny all, >0 = specific limit)
+	DailyRequestLimit   *int64 `json:"daily_request_limit"`
+	WeeklyRequestLimit  *int64 `json:"weekly_request_limit"`
+	MonthlyRequestLimit *int64 `json:"monthly_request_limit"`
 }
 
 type UpdatePlanRequest struct {
@@ -184,6 +211,12 @@ type UpdatePlanRequest struct {
 	ProductName   *string  `json:"product_name"`
 	ForSale       *bool    `json:"for_sale"`
 	SortOrder     *int     `json:"sort_order"`
+
+	// Request count limits: three-state (not provided = no change, null = clear to unlimited, value = set limit)
+	// Uses value type (not pointer) so that JSON null triggers UnmarshalJSON (Set=true, Value=nil).
+	DailyRequestLimit   OptionalInt64 `json:"daily_request_limit"`
+	WeeklyRequestLimit  OptionalInt64 `json:"weekly_request_limit"`
+	MonthlyRequestLimit OptionalInt64 `json:"monthly_request_limit"`
 }
 
 // PaymentConfigService manages payment configuration and CRUD for
@@ -192,11 +225,32 @@ type PaymentConfigService struct {
 	entClient     *dbent.Client
 	settingRepo   SettingRepository
 	encryptionKey []byte
+
+	// Optional dependencies for plan request limits feature
+	subscriptionSvc *SubscriptionService
+	userSubRepo     UserSubscriptionRepository
 }
 
 // NewPaymentConfigService creates a new PaymentConfigService.
-func NewPaymentConfigService(entClient *dbent.Client, settingRepo SettingRepository, encryptionKey []byte) *PaymentConfigService {
-	return &PaymentConfigService{entClient: entClient, settingRepo: settingRepo, encryptionKey: encryptionKey}
+func NewPaymentConfigService(entClient *dbent.Client, settingRepo SettingRepository, encryptionKey []byte, opts ...PaymentConfigServiceOption) *PaymentConfigService {
+	svc := &PaymentConfigService{entClient: entClient, settingRepo: settingRepo, encryptionKey: encryptionKey}
+	for _, opt := range opts {
+		opt(svc)
+	}
+	return svc
+}
+
+// PaymentConfigServiceOption is a functional option for PaymentConfigService.
+type PaymentConfigServiceOption func(*PaymentConfigService)
+
+// WithSubscriptionService sets the subscription service for plan request limits.
+func WithSubscriptionService(svc *SubscriptionService) PaymentConfigServiceOption {
+	return func(s *PaymentConfigService) { s.subscriptionSvc = svc }
+}
+
+// WithUserSubscriptionRepo sets the user subscription repo for plan delete protection.
+func WithUserSubscriptionRepo(repo UserSubscriptionRepository) PaymentConfigServiceOption {
+	return func(s *PaymentConfigService) { s.userSubRepo = repo }
 }
 
 // IsPaymentEnabled returns whether the payment system is enabled.

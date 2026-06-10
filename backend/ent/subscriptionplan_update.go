@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/Wei-Shaw/sub2api/ent/predicate"
 	"github.com/Wei-Shaw/sub2api/ent/subscriptionplan"
+	"github.com/Wei-Shaw/sub2api/ent/usersubscription"
 )
 
 // SubscriptionPlanUpdate is the builder for updating SubscriptionPlan entities.
@@ -237,15 +238,132 @@ func (_u *SubscriptionPlanUpdate) AddSortOrder(v int) *SubscriptionPlanUpdate {
 	return _u
 }
 
+// SetDailyRequestLimit sets the "daily_request_limit" field.
+func (_u *SubscriptionPlanUpdate) SetDailyRequestLimit(v int64) *SubscriptionPlanUpdate {
+	_u.mutation.ResetDailyRequestLimit()
+	_u.mutation.SetDailyRequestLimit(v)
+	return _u
+}
+
+// SetNillableDailyRequestLimit sets the "daily_request_limit" field if the given value is not nil.
+func (_u *SubscriptionPlanUpdate) SetNillableDailyRequestLimit(v *int64) *SubscriptionPlanUpdate {
+	if v != nil {
+		_u.SetDailyRequestLimit(*v)
+	}
+	return _u
+}
+
+// AddDailyRequestLimit adds value to the "daily_request_limit" field.
+func (_u *SubscriptionPlanUpdate) AddDailyRequestLimit(v int64) *SubscriptionPlanUpdate {
+	_u.mutation.AddDailyRequestLimit(v)
+	return _u
+}
+
+// ClearDailyRequestLimit clears the value of the "daily_request_limit" field.
+func (_u *SubscriptionPlanUpdate) ClearDailyRequestLimit() *SubscriptionPlanUpdate {
+	_u.mutation.ClearDailyRequestLimit()
+	return _u
+}
+
+// SetWeeklyRequestLimit sets the "weekly_request_limit" field.
+func (_u *SubscriptionPlanUpdate) SetWeeklyRequestLimit(v int64) *SubscriptionPlanUpdate {
+	_u.mutation.ResetWeeklyRequestLimit()
+	_u.mutation.SetWeeklyRequestLimit(v)
+	return _u
+}
+
+// SetNillableWeeklyRequestLimit sets the "weekly_request_limit" field if the given value is not nil.
+func (_u *SubscriptionPlanUpdate) SetNillableWeeklyRequestLimit(v *int64) *SubscriptionPlanUpdate {
+	if v != nil {
+		_u.SetWeeklyRequestLimit(*v)
+	}
+	return _u
+}
+
+// AddWeeklyRequestLimit adds value to the "weekly_request_limit" field.
+func (_u *SubscriptionPlanUpdate) AddWeeklyRequestLimit(v int64) *SubscriptionPlanUpdate {
+	_u.mutation.AddWeeklyRequestLimit(v)
+	return _u
+}
+
+// ClearWeeklyRequestLimit clears the value of the "weekly_request_limit" field.
+func (_u *SubscriptionPlanUpdate) ClearWeeklyRequestLimit() *SubscriptionPlanUpdate {
+	_u.mutation.ClearWeeklyRequestLimit()
+	return _u
+}
+
+// SetMonthlyRequestLimit sets the "monthly_request_limit" field.
+func (_u *SubscriptionPlanUpdate) SetMonthlyRequestLimit(v int64) *SubscriptionPlanUpdate {
+	_u.mutation.ResetMonthlyRequestLimit()
+	_u.mutation.SetMonthlyRequestLimit(v)
+	return _u
+}
+
+// SetNillableMonthlyRequestLimit sets the "monthly_request_limit" field if the given value is not nil.
+func (_u *SubscriptionPlanUpdate) SetNillableMonthlyRequestLimit(v *int64) *SubscriptionPlanUpdate {
+	if v != nil {
+		_u.SetMonthlyRequestLimit(*v)
+	}
+	return _u
+}
+
+// AddMonthlyRequestLimit adds value to the "monthly_request_limit" field.
+func (_u *SubscriptionPlanUpdate) AddMonthlyRequestLimit(v int64) *SubscriptionPlanUpdate {
+	_u.mutation.AddMonthlyRequestLimit(v)
+	return _u
+}
+
+// ClearMonthlyRequestLimit clears the value of the "monthly_request_limit" field.
+func (_u *SubscriptionPlanUpdate) ClearMonthlyRequestLimit() *SubscriptionPlanUpdate {
+	_u.mutation.ClearMonthlyRequestLimit()
+	return _u
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (_u *SubscriptionPlanUpdate) SetUpdatedAt(v time.Time) *SubscriptionPlanUpdate {
 	_u.mutation.SetUpdatedAt(v)
 	return _u
 }
 
+// AddSubscriptionIDs adds the "subscriptions" edge to the UserSubscription entity by IDs.
+func (_u *SubscriptionPlanUpdate) AddSubscriptionIDs(ids ...int64) *SubscriptionPlanUpdate {
+	_u.mutation.AddSubscriptionIDs(ids...)
+	return _u
+}
+
+// AddSubscriptions adds the "subscriptions" edges to the UserSubscription entity.
+func (_u *SubscriptionPlanUpdate) AddSubscriptions(v ...*UserSubscription) *SubscriptionPlanUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddSubscriptionIDs(ids...)
+}
+
 // Mutation returns the SubscriptionPlanMutation object of the builder.
 func (_u *SubscriptionPlanUpdate) Mutation() *SubscriptionPlanMutation {
 	return _u.mutation
+}
+
+// ClearSubscriptions clears all "subscriptions" edges to the UserSubscription entity.
+func (_u *SubscriptionPlanUpdate) ClearSubscriptions() *SubscriptionPlanUpdate {
+	_u.mutation.ClearSubscriptions()
+	return _u
+}
+
+// RemoveSubscriptionIDs removes the "subscriptions" edge to UserSubscription entities by IDs.
+func (_u *SubscriptionPlanUpdate) RemoveSubscriptionIDs(ids ...int64) *SubscriptionPlanUpdate {
+	_u.mutation.RemoveSubscriptionIDs(ids...)
+	return _u
+}
+
+// RemoveSubscriptions removes "subscriptions" edges to UserSubscription entities.
+func (_u *SubscriptionPlanUpdate) RemoveSubscriptions(v ...*UserSubscription) *SubscriptionPlanUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveSubscriptionIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -375,8 +493,80 @@ func (_u *SubscriptionPlanUpdate) sqlSave(ctx context.Context) (_node int, err e
 	if value, ok := _u.mutation.AddedSortOrder(); ok {
 		_spec.AddField(subscriptionplan.FieldSortOrder, field.TypeInt, value)
 	}
+	if value, ok := _u.mutation.DailyRequestLimit(); ok {
+		_spec.SetField(subscriptionplan.FieldDailyRequestLimit, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedDailyRequestLimit(); ok {
+		_spec.AddField(subscriptionplan.FieldDailyRequestLimit, field.TypeInt64, value)
+	}
+	if _u.mutation.DailyRequestLimitCleared() {
+		_spec.ClearField(subscriptionplan.FieldDailyRequestLimit, field.TypeInt64)
+	}
+	if value, ok := _u.mutation.WeeklyRequestLimit(); ok {
+		_spec.SetField(subscriptionplan.FieldWeeklyRequestLimit, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedWeeklyRequestLimit(); ok {
+		_spec.AddField(subscriptionplan.FieldWeeklyRequestLimit, field.TypeInt64, value)
+	}
+	if _u.mutation.WeeklyRequestLimitCleared() {
+		_spec.ClearField(subscriptionplan.FieldWeeklyRequestLimit, field.TypeInt64)
+	}
+	if value, ok := _u.mutation.MonthlyRequestLimit(); ok {
+		_spec.SetField(subscriptionplan.FieldMonthlyRequestLimit, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedMonthlyRequestLimit(); ok {
+		_spec.AddField(subscriptionplan.FieldMonthlyRequestLimit, field.TypeInt64, value)
+	}
+	if _u.mutation.MonthlyRequestLimitCleared() {
+		_spec.ClearField(subscriptionplan.FieldMonthlyRequestLimit, field.TypeInt64)
+	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(subscriptionplan.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if _u.mutation.SubscriptionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   subscriptionplan.SubscriptionsTable,
+			Columns: []string{subscriptionplan.SubscriptionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(usersubscription.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedSubscriptionsIDs(); len(nodes) > 0 && !_u.mutation.SubscriptionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   subscriptionplan.SubscriptionsTable,
+			Columns: []string{subscriptionplan.SubscriptionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(usersubscription.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.SubscriptionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   subscriptionplan.SubscriptionsTable,
+			Columns: []string{subscriptionplan.SubscriptionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(usersubscription.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -607,15 +797,132 @@ func (_u *SubscriptionPlanUpdateOne) AddSortOrder(v int) *SubscriptionPlanUpdate
 	return _u
 }
 
+// SetDailyRequestLimit sets the "daily_request_limit" field.
+func (_u *SubscriptionPlanUpdateOne) SetDailyRequestLimit(v int64) *SubscriptionPlanUpdateOne {
+	_u.mutation.ResetDailyRequestLimit()
+	_u.mutation.SetDailyRequestLimit(v)
+	return _u
+}
+
+// SetNillableDailyRequestLimit sets the "daily_request_limit" field if the given value is not nil.
+func (_u *SubscriptionPlanUpdateOne) SetNillableDailyRequestLimit(v *int64) *SubscriptionPlanUpdateOne {
+	if v != nil {
+		_u.SetDailyRequestLimit(*v)
+	}
+	return _u
+}
+
+// AddDailyRequestLimit adds value to the "daily_request_limit" field.
+func (_u *SubscriptionPlanUpdateOne) AddDailyRequestLimit(v int64) *SubscriptionPlanUpdateOne {
+	_u.mutation.AddDailyRequestLimit(v)
+	return _u
+}
+
+// ClearDailyRequestLimit clears the value of the "daily_request_limit" field.
+func (_u *SubscriptionPlanUpdateOne) ClearDailyRequestLimit() *SubscriptionPlanUpdateOne {
+	_u.mutation.ClearDailyRequestLimit()
+	return _u
+}
+
+// SetWeeklyRequestLimit sets the "weekly_request_limit" field.
+func (_u *SubscriptionPlanUpdateOne) SetWeeklyRequestLimit(v int64) *SubscriptionPlanUpdateOne {
+	_u.mutation.ResetWeeklyRequestLimit()
+	_u.mutation.SetWeeklyRequestLimit(v)
+	return _u
+}
+
+// SetNillableWeeklyRequestLimit sets the "weekly_request_limit" field if the given value is not nil.
+func (_u *SubscriptionPlanUpdateOne) SetNillableWeeklyRequestLimit(v *int64) *SubscriptionPlanUpdateOne {
+	if v != nil {
+		_u.SetWeeklyRequestLimit(*v)
+	}
+	return _u
+}
+
+// AddWeeklyRequestLimit adds value to the "weekly_request_limit" field.
+func (_u *SubscriptionPlanUpdateOne) AddWeeklyRequestLimit(v int64) *SubscriptionPlanUpdateOne {
+	_u.mutation.AddWeeklyRequestLimit(v)
+	return _u
+}
+
+// ClearWeeklyRequestLimit clears the value of the "weekly_request_limit" field.
+func (_u *SubscriptionPlanUpdateOne) ClearWeeklyRequestLimit() *SubscriptionPlanUpdateOne {
+	_u.mutation.ClearWeeklyRequestLimit()
+	return _u
+}
+
+// SetMonthlyRequestLimit sets the "monthly_request_limit" field.
+func (_u *SubscriptionPlanUpdateOne) SetMonthlyRequestLimit(v int64) *SubscriptionPlanUpdateOne {
+	_u.mutation.ResetMonthlyRequestLimit()
+	_u.mutation.SetMonthlyRequestLimit(v)
+	return _u
+}
+
+// SetNillableMonthlyRequestLimit sets the "monthly_request_limit" field if the given value is not nil.
+func (_u *SubscriptionPlanUpdateOne) SetNillableMonthlyRequestLimit(v *int64) *SubscriptionPlanUpdateOne {
+	if v != nil {
+		_u.SetMonthlyRequestLimit(*v)
+	}
+	return _u
+}
+
+// AddMonthlyRequestLimit adds value to the "monthly_request_limit" field.
+func (_u *SubscriptionPlanUpdateOne) AddMonthlyRequestLimit(v int64) *SubscriptionPlanUpdateOne {
+	_u.mutation.AddMonthlyRequestLimit(v)
+	return _u
+}
+
+// ClearMonthlyRequestLimit clears the value of the "monthly_request_limit" field.
+func (_u *SubscriptionPlanUpdateOne) ClearMonthlyRequestLimit() *SubscriptionPlanUpdateOne {
+	_u.mutation.ClearMonthlyRequestLimit()
+	return _u
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (_u *SubscriptionPlanUpdateOne) SetUpdatedAt(v time.Time) *SubscriptionPlanUpdateOne {
 	_u.mutation.SetUpdatedAt(v)
 	return _u
 }
 
+// AddSubscriptionIDs adds the "subscriptions" edge to the UserSubscription entity by IDs.
+func (_u *SubscriptionPlanUpdateOne) AddSubscriptionIDs(ids ...int64) *SubscriptionPlanUpdateOne {
+	_u.mutation.AddSubscriptionIDs(ids...)
+	return _u
+}
+
+// AddSubscriptions adds the "subscriptions" edges to the UserSubscription entity.
+func (_u *SubscriptionPlanUpdateOne) AddSubscriptions(v ...*UserSubscription) *SubscriptionPlanUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddSubscriptionIDs(ids...)
+}
+
 // Mutation returns the SubscriptionPlanMutation object of the builder.
 func (_u *SubscriptionPlanUpdateOne) Mutation() *SubscriptionPlanMutation {
 	return _u.mutation
+}
+
+// ClearSubscriptions clears all "subscriptions" edges to the UserSubscription entity.
+func (_u *SubscriptionPlanUpdateOne) ClearSubscriptions() *SubscriptionPlanUpdateOne {
+	_u.mutation.ClearSubscriptions()
+	return _u
+}
+
+// RemoveSubscriptionIDs removes the "subscriptions" edge to UserSubscription entities by IDs.
+func (_u *SubscriptionPlanUpdateOne) RemoveSubscriptionIDs(ids ...int64) *SubscriptionPlanUpdateOne {
+	_u.mutation.RemoveSubscriptionIDs(ids...)
+	return _u
+}
+
+// RemoveSubscriptions removes "subscriptions" edges to UserSubscription entities.
+func (_u *SubscriptionPlanUpdateOne) RemoveSubscriptions(v ...*UserSubscription) *SubscriptionPlanUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveSubscriptionIDs(ids...)
 }
 
 // Where appends a list predicates to the SubscriptionPlanUpdate builder.
@@ -775,8 +1082,80 @@ func (_u *SubscriptionPlanUpdateOne) sqlSave(ctx context.Context) (_node *Subscr
 	if value, ok := _u.mutation.AddedSortOrder(); ok {
 		_spec.AddField(subscriptionplan.FieldSortOrder, field.TypeInt, value)
 	}
+	if value, ok := _u.mutation.DailyRequestLimit(); ok {
+		_spec.SetField(subscriptionplan.FieldDailyRequestLimit, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedDailyRequestLimit(); ok {
+		_spec.AddField(subscriptionplan.FieldDailyRequestLimit, field.TypeInt64, value)
+	}
+	if _u.mutation.DailyRequestLimitCleared() {
+		_spec.ClearField(subscriptionplan.FieldDailyRequestLimit, field.TypeInt64)
+	}
+	if value, ok := _u.mutation.WeeklyRequestLimit(); ok {
+		_spec.SetField(subscriptionplan.FieldWeeklyRequestLimit, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedWeeklyRequestLimit(); ok {
+		_spec.AddField(subscriptionplan.FieldWeeklyRequestLimit, field.TypeInt64, value)
+	}
+	if _u.mutation.WeeklyRequestLimitCleared() {
+		_spec.ClearField(subscriptionplan.FieldWeeklyRequestLimit, field.TypeInt64)
+	}
+	if value, ok := _u.mutation.MonthlyRequestLimit(); ok {
+		_spec.SetField(subscriptionplan.FieldMonthlyRequestLimit, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedMonthlyRequestLimit(); ok {
+		_spec.AddField(subscriptionplan.FieldMonthlyRequestLimit, field.TypeInt64, value)
+	}
+	if _u.mutation.MonthlyRequestLimitCleared() {
+		_spec.ClearField(subscriptionplan.FieldMonthlyRequestLimit, field.TypeInt64)
+	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(subscriptionplan.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if _u.mutation.SubscriptionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   subscriptionplan.SubscriptionsTable,
+			Columns: []string{subscriptionplan.SubscriptionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(usersubscription.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedSubscriptionsIDs(); len(nodes) > 0 && !_u.mutation.SubscriptionsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   subscriptionplan.SubscriptionsTable,
+			Columns: []string{subscriptionplan.SubscriptionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(usersubscription.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.SubscriptionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   subscriptionplan.SubscriptionsTable,
+			Columns: []string{subscriptionplan.SubscriptionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(usersubscription.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &SubscriptionPlan{config: _u.config}
 	_spec.Assign = _node.assignValues

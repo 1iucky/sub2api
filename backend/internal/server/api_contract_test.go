@@ -429,6 +429,9 @@ func TestAPIContracts(t *testing.T) {
 						"daily_window_start": null,
 						"weekly_window_start": null,
 						"monthly_window_start": null,
+						"daily_usage_requests": 0,
+						"weekly_usage_requests": 0,
+						"monthly_usage_requests": 0,
 						"daily_usage_usd": 1.23,
 						"weekly_usage_usd": 2.34,
 						"monthly_usage_usd": 3.45,
@@ -2175,6 +2178,24 @@ func (stubUserSubscriptionRepo) IncrementUsage(ctx context.Context, id int64, co
 }
 func (stubUserSubscriptionRepo) BatchUpdateExpiredStatus(ctx context.Context) (int64, error) {
 	return 0, errors.New("not implemented")
+}
+
+func (stubUserSubscriptionRepo) IncrementRequestUsage(ctx context.Context, id int64, count int64) error {
+	return nil
+}
+
+func (stubUserSubscriptionRepo) ListActiveRefsByPlanID(ctx context.Context, planID int64) ([]service.SubscriptionRef, error) {
+	return nil, nil
+}
+
+func (stubUserSubscriptionRepo) CountActiveByPlanID(ctx context.Context, planID int64) (int64, error) {
+	return 0, nil
+}
+func (stubUserSubscriptionRepo) UpdatePlanID(ctx context.Context, subscriptionID int64, planID *int64) error {
+	return nil
+}
+func (stubUserSubscriptionRepo) CountByPlanID(ctx context.Context, planID int64) (int64, error) {
+	return 0, nil
 }
 
 type stubApiKeyRepo struct {

@@ -79,6 +79,7 @@ func (s *openAIRecordUsageBestEffortLogRepoStub) Create(ctx context.Context, log
 	return false, s.createErr
 }
 
+
 func TestGatewayServiceRecordUsage_BillingUsesDetachedContext(t *testing.T) {
 	usageRepo := &openAIRecordUsageLogRepoStub{inserted: false, err: context.DeadlineExceeded}
 	userRepo := &openAIRecordUsageUserRepoStub{}

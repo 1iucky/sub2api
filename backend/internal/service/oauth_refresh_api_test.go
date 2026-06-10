@@ -778,6 +778,7 @@ func (r *refreshAPIAccountRepoWithRace) GetByID(_ context.Context, _ int64) (*Ac
 	return activeRefreshAPITestAccount(r.account), nil
 }
 
+
 // ========== Race recovery tests ==========
 
 func TestRefreshIfNeeded_InvalidGrantRaceRecovered(t *testing.T) {

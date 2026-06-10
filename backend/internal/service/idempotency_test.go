@@ -171,6 +171,7 @@ func (r *inMemoryIdempotencyRepo) DeleteExpired(_ context.Context, now time.Time
 	return deleted, nil
 }
 
+
 func TestIdempotencyCoordinator_RequireKey(t *testing.T) {
 	resetIdempotencyMetricsForTest()
 	repo := newInMemoryIdempotencyRepo()
@@ -662,6 +663,7 @@ func (r *conflictBranchRepo) MarkFailedRetryable(context.Context, int64, string,
 func (r *conflictBranchRepo) DeleteExpired(context.Context, time.Time, int) (int64, error) {
 	return 0, nil
 }
+
 
 func TestIdempotencyCoordinator_ConflictBranchesAndDecodeError(t *testing.T) {
 	now := time.Now()

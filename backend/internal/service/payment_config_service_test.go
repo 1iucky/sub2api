@@ -452,3 +452,142 @@ func TestUpdatePaymentConfig_PersistsVisibleMethodRouting(t *testing.T) {
 func paymentConfigStrPtr(value string) *string {
 	return &value
 }
+
+func TestUpdatePlan_NullClearsRequestLimits(t *testing.T) {
+	ctx := context.Background()
+	client := newPaymentConfigServiceTestClient(t)
+	svc := &PaymentConfigService{entClient: client}
+
+	// Create a plan with request limits set
+	limit := int64(100)
+	plan, err := svc.CreatePlan(ctx, CreatePlanRequest{
+		GroupID:             1,
+		Name:                "Test Plan",
+		Price:               9.99,
+		ValidityDays:        30,
+		ValidityUnit:        "day",
+		DailyRequestLimit:   &limit,
+		WeeklyRequestLimit:  &limit,
+		MonthlyRequestLimit: &limit,
+	})
+	if err != nil {
+		t.Fatalf("CreatePlan: %v", err)
+	}
+	if plan.DailyRequestLimit == nil || *plan.DailyRequestLimit != 100 {
+		t.Fatalf("initial DailyRequestLimit = %v, want 100", plan.DailyRequestLimit)
+	}
+
+	// Update plan: clear all request limits by sending null (Set=true, Value=nil)
+	updated, err := svc.UpdatePlan(ctx, plan.ID, UpdatePlanRequest{
+		DailyRequestLimit:   OptionalInt64{Set: true, Value: nil},
+		WeeklyRequestLimit:  OptionalInt64{Set: true, Value: nil},
+		MonthlyRequestLimit: OptionalInt64{Set: true, Value: nil},
+	})
+	if err != nil {
+		t.Fatalf("UpdatePlan: %v", err)
+	}
+
+	// Verify limits are now nil (cleared to unlimited)
+	if updated.DailyRequestLimit != nil {
+		t.Errorf("DailyRequestLimit = %v after null clear, want nil", updated.DailyRequestLimit)
+	}
+	if updated.WeeklyRequestLimit != nil {
+		t.Errorf("WeeklyRequestLimit = %v after null clear, want nil", updated.WeeklyRequestLimit)
+	}
+	if updated.MonthlyRequestLimit != nil {
+		t.Errorf("MonthlyRequestLimit = %v after null clear, want nil", updated.MonthlyRequestLimit)
+	}
+
+	// Re-read from DB to confirm persistence
+	reRead, err := svc.GetPlan(ctx, plan.ID)
+	if err != nil {
+		t.Fatalf("GetPlan: %v", err)
+	}
+	if reRead.DailyRequestLimit != nil {
+		t.Errorf("DailyRequestLimit persisted = %v, want nil", reRead.DailyRequestLimit)
+	}
+	if reRead.WeeklyRequestLimit != nil {
+		t.Errorf("WeeklyRequestLimit persisted = %v, want nil", reRead.WeeklyRequestLimit)
+	}
+	if reRead.MonthlyRequestLimit != nil {
+		t.Errorf("MonthlyRequestLimit persisted = %v, want nil", reRead.MonthlyRequestLimit)
+	}
+}
+
+func TestUpdatePlan_SetRequestLimitsToSpecificValue(t *testing.T) {
+	ctx := context.Background()
+	client := newPaymentConfigServiceTestClient(t)
+	svc := &PaymentConfigService{entClient: client}
+
+	// Create a plan without request limits
+	plan, err := svc.CreatePlan(ctx, CreatePlanRequest{
+		GroupID:      1,
+		Name:         "Test Plan 2",
+		Price:        4.99,
+		ValidityDays: 30,
+		ValidityUnit: "day",
+	})
+	if err != nil {
+		t.Fatalf("CreatePlan: %v", err)
+	}
+	if plan.DailyRequestLimit != nil {
+		t.Fatalf("initial DailyRequestLimit should be nil, got %v", plan.DailyRequestLimit)
+	}
+
+	// Update: set specific limit values
+	newLimit := int64(500)
+	updated, err := svc.UpdatePlan(ctx, plan.ID, UpdatePlanRequest{
+		DailyRequestLimit: OptionalInt64{Set: true, Value: &newLimit},
+	})
+	if err != nil {
+		t.Fatalf("UpdatePlan: %v", err)
+	}
+	if updated.DailyRequestLimit == nil || *updated.DailyRequestLimit != 500 {
+		t.Errorf("DailyRequestLimit = %v, want 500", updated.DailyRequestLimit)
+	}
+}
+
+func TestUpdatePlan_OmittedFieldsUnchanged(t *testing.T) {
+	ctx := context.Background()
+	client := newPaymentConfigServiceTestClient(t)
+	svc := &PaymentConfigService{entClient: client}
+
+	// Create with limits
+	limit := int64(200)
+	plan, err := svc.CreatePlan(ctx, CreatePlanRequest{
+		GroupID:             1,
+		Name:                "Test Plan 3",
+		Price:               14.99,
+		ValidityDays:        30,
+		ValidityUnit:        "day",
+		DailyRequestLimit:   &limit,
+		WeeklyRequestLimit:  &limit,
+		MonthlyRequestLimit: &limit,
+	})
+	if err != nil {
+		t.Fatalf("CreatePlan: %v", err)
+	}
+
+	// Update name only, omit request limits (Set=false)
+	newName := "Updated Plan"
+	updated, err := svc.UpdatePlan(ctx, plan.ID, UpdatePlanRequest{
+		Name: &newName,
+	})
+	if err != nil {
+		t.Fatalf("UpdatePlan: %v", err)
+	}
+
+	// Request limits should remain unchanged
+	if updated.DailyRequestLimit == nil || *updated.DailyRequestLimit != 200 {
+		t.Errorf("DailyRequestLimit = %v, want 200 (unchanged)", updated.DailyRequestLimit)
+	}
+	if updated.WeeklyRequestLimit == nil || *updated.WeeklyRequestLimit != 200 {
+		t.Errorf("WeeklyRequestLimit = %v, want 200 (unchanged)", updated.WeeklyRequestLimit)
+	}
+	if updated.MonthlyRequestLimit == nil || *updated.MonthlyRequestLimit != 200 {
+		t.Errorf("MonthlyRequestLimit = %v, want 200 (unchanged)", updated.MonthlyRequestLimit)
+	}
+	if updated.Name != "Updated Plan" {
+		t.Errorf("Name = %q, want 'Updated Plan'", updated.Name)
+	}
+}
