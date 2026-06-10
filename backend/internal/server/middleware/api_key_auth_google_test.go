@@ -190,6 +190,24 @@ func (f fakeGoogleSubscriptionRepo) BatchUpdateExpiredStatus(ctx context.Context
 	return 0, errors.New("not implemented")
 }
 
+func (f fakeGoogleSubscriptionRepo) IncrementRequestUsage(ctx context.Context, id int64, count int64) error {
+	return nil
+}
+func (f fakeGoogleSubscriptionRepo) ListActiveRefsByPlanID(ctx context.Context, planID int64) ([]service.SubscriptionRef, error) {
+	return nil, nil
+}
+func (f fakeGoogleSubscriptionRepo) CountActiveByPlanID(ctx context.Context, planID int64) (int64, error) {
+	return 0, nil
+}
+
+func (f fakeGoogleSubscriptionRepo) CountByPlanID(ctx context.Context, planID int64) (int64, error) {
+	return 0, nil
+}
+
+func (f fakeGoogleSubscriptionRepo) UpdatePlanID(ctx context.Context, subscriptionID int64, planID *int64) error {
+	return nil
+}
+
 type googleErrorResponse struct {
 	Error struct {
 		Code    int    `json:"code"`

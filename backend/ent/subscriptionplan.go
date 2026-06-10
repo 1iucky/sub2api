@@ -39,11 +39,38 @@ type SubscriptionPlan struct {
 	ForSale bool `json:"for_sale,omitempty"`
 	// SortOrder holds the value of the "sort_order" field.
 	SortOrder int `json:"sort_order,omitempty"`
+	// Daily request count limit (null = unlimited, 0 = deny all)
+	DailyRequestLimit *int64 `json:"daily_request_limit,omitempty"`
+	// Weekly request count limit (null = unlimited, 0 = deny all)
+	WeeklyRequestLimit *int64 `json:"weekly_request_limit,omitempty"`
+	// Monthly request count limit (null = unlimited, 0 = deny all)
+	MonthlyRequestLimit *int64 `json:"monthly_request_limit,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
-	UpdatedAt    time.Time `json:"updated_at,omitempty"`
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the SubscriptionPlanQuery when eager-loading is set.
+	Edges        SubscriptionPlanEdges `json:"edges"`
 	selectValues sql.SelectValues
+}
+
+// SubscriptionPlanEdges holds the relations/edges for other nodes in the graph.
+type SubscriptionPlanEdges struct {
+	// Subscriptions holds the value of the subscriptions edge.
+	Subscriptions []*UserSubscription `json:"subscriptions,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// SubscriptionsOrErr returns the Subscriptions value or an error if the edge
+// was not loaded in eager-loading.
+func (e SubscriptionPlanEdges) SubscriptionsOrErr() ([]*UserSubscription, error) {
+	if e.loadedTypes[0] {
+		return e.Subscriptions, nil
+	}
+	return nil, &NotLoadedError{edge: "subscriptions"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -55,7 +82,7 @@ func (*SubscriptionPlan) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullBool)
 		case subscriptionplan.FieldPrice, subscriptionplan.FieldOriginalPrice:
 			values[i] = new(sql.NullFloat64)
-		case subscriptionplan.FieldID, subscriptionplan.FieldGroupID, subscriptionplan.FieldValidityDays, subscriptionplan.FieldSortOrder:
+		case subscriptionplan.FieldID, subscriptionplan.FieldGroupID, subscriptionplan.FieldValidityDays, subscriptionplan.FieldSortOrder, subscriptionplan.FieldDailyRequestLimit, subscriptionplan.FieldWeeklyRequestLimit, subscriptionplan.FieldMonthlyRequestLimit:
 			values[i] = new(sql.NullInt64)
 		case subscriptionplan.FieldName, subscriptionplan.FieldDescription, subscriptionplan.FieldValidityUnit, subscriptionplan.FieldFeatures, subscriptionplan.FieldProductName:
 			values[i] = new(sql.NullString)
@@ -149,6 +176,27 @@ func (_m *SubscriptionPlan) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.SortOrder = int(value.Int64)
 			}
+		case subscriptionplan.FieldDailyRequestLimit:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field daily_request_limit", values[i])
+			} else if value.Valid {
+				_m.DailyRequestLimit = new(int64)
+				*_m.DailyRequestLimit = value.Int64
+			}
+		case subscriptionplan.FieldWeeklyRequestLimit:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field weekly_request_limit", values[i])
+			} else if value.Valid {
+				_m.WeeklyRequestLimit = new(int64)
+				*_m.WeeklyRequestLimit = value.Int64
+			}
+		case subscriptionplan.FieldMonthlyRequestLimit:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field monthly_request_limit", values[i])
+			} else if value.Valid {
+				_m.MonthlyRequestLimit = new(int64)
+				*_m.MonthlyRequestLimit = value.Int64
+			}
 		case subscriptionplan.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
@@ -172,6 +220,11 @@ func (_m *SubscriptionPlan) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (_m *SubscriptionPlan) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
+}
+
+// QuerySubscriptions queries the "subscriptions" edge of the SubscriptionPlan entity.
+func (_m *SubscriptionPlan) QuerySubscriptions() *UserSubscriptionQuery {
+	return NewSubscriptionPlanClient(_m.config).QuerySubscriptions(_m)
 }
 
 // Update returns a builder for updating this SubscriptionPlan.
@@ -231,6 +284,21 @@ func (_m *SubscriptionPlan) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("sort_order=")
 	builder.WriteString(fmt.Sprintf("%v", _m.SortOrder))
+	builder.WriteString(", ")
+	if v := _m.DailyRequestLimit; v != nil {
+		builder.WriteString("daily_request_limit=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
+	builder.WriteString(", ")
+	if v := _m.WeeklyRequestLimit; v != nil {
+		builder.WriteString("weekly_request_limit=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
+	builder.WriteString(", ")
+	if v := _m.MonthlyRequestLimit; v != nil {
+		builder.WriteString("monthly_request_limit=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
 	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))

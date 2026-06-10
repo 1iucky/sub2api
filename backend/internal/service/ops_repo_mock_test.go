@@ -197,4 +197,5 @@ func (m *opsRepoMock) LookupDeletedKeyAudit(ctx context.Context, key string) (*D
 	return nil, nil
 }
 
+
 var _ OpsRepository = (*opsRepoMock)(nil)

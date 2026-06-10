@@ -177,6 +177,7 @@ func (s *userRepoStub) GetByIDIncludeDeleted(ctx context.Context, id int64) (*Us
 	return s.GetByID(ctx, id)
 }
 
+
 type groupRepoStub struct {
 	affectedUserIDs []int64
 	deleteErr       error
@@ -247,6 +248,7 @@ func (s *groupRepoStub) GetAccountIDsByGroupIDs(ctx context.Context, groupIDs []
 func (s *groupRepoStub) UpdateSortOrders(ctx context.Context, updates []GroupSortOrderUpdate) error {
 	return nil
 }
+
 
 type deleteGroupAPIKeyRepoStub struct {
 	apiKeyRepoStubForGroupUpdate
@@ -338,6 +340,7 @@ func (s *proxyRepoStub) CountExpiringSoon(_ context.Context, _ time.Time) (int64
 	return 0, nil
 }
 
+
 type redeemRepoStub struct {
 	deleteErrByID map[int64]error
 	deletedIDs    []int64
@@ -415,6 +418,7 @@ func (s *redeemRepoStub) ListByUserPaginated(ctx context.Context, userID int64, 
 func (s *redeemRepoStub) SumPositiveBalanceByUser(ctx context.Context, userID int64) (float64, error) {
 	panic("unexpected SumPositiveBalanceByUser call")
 }
+
 
 type subscriptionInvalidateCall struct {
 	userID  int64
@@ -501,6 +505,10 @@ func (s *billingCacheStub) ReaddDirtyUserPlatformQuotaKeys(ctx context.Context, 
 
 func (s *billingCacheStub) BatchGetUserPlatformQuotaCache(ctx context.Context, keys []UserPlatformQuotaKey) ([]*UserPlatformQuotaCacheEntry, error) {
 	panic("unexpected BatchGetUserPlatformQuotaCache call")
+}
+
+func (s *billingCacheStub) CheckAndIncrementSubscriptionRequestUsage(ctx context.Context, userID, groupID int64, count int64) (int, error) {
+	panic("unexpected CheckAndIncrementSubscriptionRequestUsage call")
 }
 
 func waitForInvalidations(t *testing.T, ch <-chan subscriptionInvalidateCall, expected int) []subscriptionInvalidateCall {

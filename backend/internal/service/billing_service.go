@@ -67,6 +67,10 @@ type BillingCache interface {
 	UpdateSubscriptionUsage(ctx context.Context, userID, groupID int64, cost float64) error
 	InvalidateSubscriptionCache(ctx context.Context, userID, groupID int64) error
 
+	// Subscription request count pre-check (atomic Lua script).
+	// Returns: 1=allowed, -1=cache miss, 10/11/12=daily/weekly/monthly exceeded.
+	CheckAndIncrementSubscriptionRequestUsage(ctx context.Context, userID, groupID int64, count int64) (int, error)
+
 	// API Key rate limit operations
 	GetAPIKeyRateLimit(ctx context.Context, keyID int64) (*APIKeyRateLimitCacheData, error)
 	SetAPIKeyRateLimit(ctx context.Context, keyID int64, data *APIKeyRateLimitCacheData) error

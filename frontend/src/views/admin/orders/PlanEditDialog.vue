@@ -45,6 +45,11 @@
       <div class="grid grid-cols-2 gap-4">
         <div><label class="input-label">{{ t('payment.admin.sortOrder') }}</label><input v-model.number="planForm.sort_order" type="number" min="0" class="input" /></div>
       </div>
+      <div class="grid grid-cols-3 gap-4">
+        <div><label class="input-label">{{ t('payment.admin.dailyRequestLimit') }}</label><input v-model="planForm.daily_request_limit" type="text" class="input" :placeholder="t('payment.admin.requestLimitPlaceholder')" /></div>
+        <div><label class="input-label">{{ t('payment.admin.weeklyRequestLimit') }}</label><input v-model="planForm.weekly_request_limit" type="text" class="input" :placeholder="t('payment.admin.requestLimitPlaceholder')" /></div>
+        <div><label class="input-label">{{ t('payment.admin.monthlyRequestLimit') }}</label><input v-model="planForm.monthly_request_limit" type="text" class="input" :placeholder="t('payment.admin.requestLimitPlaceholder')" /></div>
+      </div>
       <div>
         <label class="input-label">{{ t('payment.admin.features') }}</label>
         <textarea v-model="planFeaturesText" rows="3" class="input" :placeholder="t('payment.admin.featuresPlaceholder')"></textarea>
@@ -105,7 +110,7 @@ const { t } = useI18n()
 const appStore = useAppStore()
 
 const saving = ref(false)
-const planForm = reactive({ name: '', group_id: null as number | null, description: '', price: 0, original_price: 0, validity_days: 30, validity_unit: 'days', sort_order: 0, for_sale: true })
+const planForm = reactive({ name: '', group_id: null as number | null, description: '', price: 0, original_price: 0, validity_days: 30, validity_unit: 'days', sort_order: 0, for_sale: true, daily_request_limit: '' as string, weekly_request_limit: '' as string, monthly_request_limit: '' as string })
 const planFeaturesText = ref('')
 
 const validityUnitOptions = computed(() => [
@@ -133,13 +138,52 @@ const selectedGroupInfo = computed(() => {
 watch(() => props.show, (visible) => {
   if (!visible) return
   if (props.plan) {
-    Object.assign(planForm, { name: props.plan.name, group_id: props.plan.group_id, description: props.plan.description, price: props.plan.price, original_price: props.plan.original_price || 0, validity_days: props.plan.validity_days, validity_unit: props.plan.validity_unit || 'days', sort_order: props.plan.sort_order || 0, for_sale: props.plan.for_sale })
+    Object.assign(planForm, { name: props.plan.name, group_id: props.plan.group_id, description: props.plan.description, price: props.plan.price, original_price: props.plan.original_price || 0, validity_days: props.plan.validity_days, validity_unit: props.plan.validity_unit || 'days', sort_order: props.plan.sort_order || 0, for_sale: props.plan.for_sale, daily_request_limit: props.plan.daily_request_limit != null ? String(props.plan.daily_request_limit) : '', weekly_request_limit: props.plan.weekly_request_limit != null ? String(props.plan.weekly_request_limit) : '', monthly_request_limit: props.plan.monthly_request_limit != null ? String(props.plan.monthly_request_limit) : '' })
     planFeaturesText.value = (props.plan.features || []).join('\n')
   } else {
-    Object.assign(planForm, { name: '', group_id: null, description: '', price: 0, original_price: 0, validity_days: 30, validity_unit: 'days', sort_order: 0, for_sale: true })
+    Object.assign(planForm, { name: '', group_id: null, description: '', price: 0, original_price: 0, validity_days: 30, validity_unit: 'days', sort_order: 0, for_sale: true, daily_request_limit: '', weekly_request_limit: '', monthly_request_limit: '' })
     planFeaturesText.value = ''
   }
 })
+
+/** Validate request limit fields: must be empty, 'null', or a non-negative safe integer. Returns error message or null. */
+function validateRequestLimits(): string | null {
+  const labels: Record<string, string> = {
+    daily_request_limit: 'Daily',
+    weekly_request_limit: 'Weekly',
+    monthly_request_limit: 'Monthly',
+  }
+  for (const [key, val] of [['daily_request_limit', planForm.daily_request_limit], ['weekly_request_limit', planForm.weekly_request_limit], ['monthly_request_limit', planForm.monthly_request_limit]] as const) {
+    const trimmed = val.trim()
+    if (trimmed === '' || trimmed.toLowerCase() === 'null') continue // unlimited is valid
+    const num = Number(trimmed)
+    if (isNaN(num) || !Number.isFinite(num)) {
+      return `${labels[key]} request limit must be a number`
+    }
+    if (num < 0 || !Number.isInteger(num)) {
+      return `${labels[key]} request limit must be a non-negative integer`
+    }
+    if (num > Number.MAX_SAFE_INTEGER) {
+      return `${labels[key]} request limit is too large`
+    }
+  }
+  return null
+}
+
+/** Normalize request limit fields: empty string = unlimited (null), number = set specific limit */
+function normalizeRequestLimits() {
+  const result: Record<string, number | null> = {}
+  for (const [key, val] of [['daily_request_limit', planForm.daily_request_limit], ['weekly_request_limit', planForm.weekly_request_limit], ['monthly_request_limit', planForm.monthly_request_limit]] as const) {
+    const trimmed = val.trim()
+    if (trimmed === '' || trimmed.toLowerCase() === 'null') {
+      result[key] = null // unlimited
+    } else {
+      const num = Number(trimmed)
+      if (!isNaN(num) && num >= 0 && Number.isInteger(num) && num <= Number.MAX_SAFE_INTEGER) result[key] = num
+    }
+  }
+  return result
+}
 
 /** Build request payload with snake_case keys matching backend JSON tags */
 function buildPlanPayload() {
@@ -155,6 +199,7 @@ function buildPlanPayload() {
     sort_order: planForm.sort_order,
     for_sale: planForm.for_sale,
     features,
+    ...normalizeRequestLimits(),
   }
 }
 
@@ -169,6 +214,11 @@ async function handleSavePlan() {
   }
   if (!planForm.validity_days || planForm.validity_days < 1) {
     appStore.showError(t('payment.admin.validityDaysRequired'))
+    return
+  }
+  const limitError = validateRequestLimits()
+  if (limitError) {
+    appStore.showError(limitError)
     return
   }
   saving.value = true

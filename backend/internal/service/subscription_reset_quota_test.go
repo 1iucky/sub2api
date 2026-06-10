@@ -53,6 +53,16 @@ func (r *resetQuotaUserSubRepoStub) ResetMonthlyUsage(_ context.Context, _ int64
 	return r.resetMonthlyErr
 }
 
+func (s *resetQuotaUserSubRepoStub) IncrementRequestUsage(ctx context.Context, id int64, count int64) error {
+	return nil
+}
+func (s *resetQuotaUserSubRepoStub) ListActiveRefsByPlanID(ctx context.Context, planID int64) ([]SubscriptionRef, error) {
+	return nil, nil
+}
+func (s *resetQuotaUserSubRepoStub) CountActiveByPlanID(ctx context.Context, planID int64) (int64, error) {
+	return 0, nil
+}
+
 func newResetQuotaSvc(stub *resetQuotaUserSubRepoStub) *SubscriptionService {
 	return NewSubscriptionService(groupRepoNoop{}, stub, nil, nil, nil)
 }

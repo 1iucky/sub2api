@@ -260,6 +260,7 @@ func (m *mockUserRepo) WithUserProfileIdentityTx(ctx context.Context, fn func(tx
 	return nil
 }
 
+
 // --- mock: APIKeyAuthCacheInvalidator ---
 
 type mockAuthCacheInvalidator struct {
@@ -345,6 +346,10 @@ func (m *mockBillingCache) ReaddDirtyUserPlatformQuotaKeys(context.Context, []Us
 
 func (m *mockBillingCache) BatchGetUserPlatformQuotaCache(context.Context, []UserPlatformQuotaKey) ([]*UserPlatformQuotaCacheEntry, error) {
 	return nil, nil
+}
+
+func (m *mockBillingCache) CheckAndIncrementSubscriptionRequestUsage(ctx context.Context, userID, groupID int64, count int64) (int, error) {
+	return -1, nil
 }
 
 // --- 测试 ---

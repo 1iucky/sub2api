@@ -30,6 +30,7 @@ func (s *announcementRepoStub) Update(_ context.Context, a *Announcement) error 
 	return nil
 }
 
+
 func (*announcementRepoStub) Delete(context.Context, int64) error {
 	return nil
 }

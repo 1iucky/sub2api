@@ -46,6 +46,16 @@ type subscriptionCacheData struct {
 	WeeklyUsage  float64
 	MonthlyUsage float64
 	Version      int64
+
+	// Plan request count fields
+	PlanID               *int64
+	DailyUsageRequests   int64
+	WeeklyUsageRequests  int64
+	MonthlyUsageRequests int64
+	DailyRequestLimit    *int64
+	WeeklyRequestLimit   *int64
+	MonthlyRequestLimit  *int64
+	PlanVersion          int64
 }
 
 // 缓存写入任务类型
@@ -89,6 +99,7 @@ type cacheWriteTask struct {
 	balance          float64
 	amount           float64
 	subscriptionData *subscriptionCacheData
+	onlyIfMissing    bool // when true, skip write if cache key already exists (prevents async overwrite)
 }
 
 // apiKeyRateLimitLoader defines the interface for loading rate limit data from DB.
@@ -216,7 +227,11 @@ func (s *BillingCacheService) cacheWriteWorker(ch <-chan cacheWriteTask) {
 		case cacheWriteSetBalance:
 			s.setBalanceCache(ctx, task.userID, task.balance)
 		case cacheWriteSetSubscription:
-			s.setSubscriptionCache(ctx, task.userID, task.groupID, task.subscriptionData)
+			if task.onlyIfMissing {
+				s.setSubscriptionCacheIfMissing(ctx, task.userID, task.groupID, task.subscriptionData)
+			} else {
+				s.setSubscriptionCache(ctx, task.userID, task.groupID, task.subscriptionData)
+			}
 		case cacheWriteUpdateSubscriptionUsage:
 			if s.cache != nil {
 				if err := s.cache.UpdateSubscriptionUsage(ctx, task.userID, task.groupID, task.amount); err != nil {
@@ -430,6 +445,7 @@ func (s *BillingCacheService) GetSubscriptionStatus(ctx context.Context, userID,
 		userID:           userID,
 		groupID:          groupID,
 		subscriptionData: data,
+		onlyIfMissing:    true, // prevent async write from overwriting sync set+pre-increment
 	})
 
 	return data, nil
@@ -437,23 +453,39 @@ func (s *BillingCacheService) GetSubscriptionStatus(ctx context.Context, userID,
 
 func (s *BillingCacheService) convertFromPortsData(data *SubscriptionCacheData) *subscriptionCacheData {
 	return &subscriptionCacheData{
-		Status:       data.Status,
-		ExpiresAt:    data.ExpiresAt,
-		DailyUsage:   data.DailyUsage,
-		WeeklyUsage:  data.WeeklyUsage,
-		MonthlyUsage: data.MonthlyUsage,
-		Version:      data.Version,
+		Status:               data.Status,
+		ExpiresAt:            data.ExpiresAt,
+		DailyUsage:           data.DailyUsage,
+		WeeklyUsage:          data.WeeklyUsage,
+		MonthlyUsage:         data.MonthlyUsage,
+		Version:              data.Version,
+		PlanID:               data.PlanID,
+		DailyUsageRequests:   data.DailyUsageRequests,
+		WeeklyUsageRequests:  data.WeeklyUsageRequests,
+		MonthlyUsageRequests: data.MonthlyUsageRequests,
+		DailyRequestLimit:    data.DailyRequestLimit,
+		WeeklyRequestLimit:   data.WeeklyRequestLimit,
+		MonthlyRequestLimit:  data.MonthlyRequestLimit,
+		PlanVersion:          data.PlanVersion,
 	}
 }
 
 func (s *BillingCacheService) convertToPortsData(data *subscriptionCacheData) *SubscriptionCacheData {
 	return &SubscriptionCacheData{
-		Status:       data.Status,
-		ExpiresAt:    data.ExpiresAt,
-		DailyUsage:   data.DailyUsage,
-		WeeklyUsage:  data.WeeklyUsage,
-		MonthlyUsage: data.MonthlyUsage,
-		Version:      data.Version,
+		Status:               data.Status,
+		ExpiresAt:            data.ExpiresAt,
+		DailyUsage:           data.DailyUsage,
+		WeeklyUsage:          data.WeeklyUsage,
+		MonthlyUsage:         data.MonthlyUsage,
+		Version:              data.Version,
+		PlanID:               data.PlanID,
+		DailyUsageRequests:   data.DailyUsageRequests,
+		WeeklyUsageRequests:  data.WeeklyUsageRequests,
+		MonthlyUsageRequests: data.MonthlyUsageRequests,
+		DailyRequestLimit:    data.DailyRequestLimit,
+		WeeklyRequestLimit:   data.WeeklyRequestLimit,
+		MonthlyRequestLimit:  data.MonthlyRequestLimit,
+		PlanVersion:          data.PlanVersion,
 	}
 }
 
@@ -464,14 +496,31 @@ func (s *BillingCacheService) getSubscriptionFromDB(ctx context.Context, userID,
 		return nil, fmt.Errorf("get subscription: %w", err)
 	}
 
-	return &subscriptionCacheData{
-		Status:       sub.Status,
-		ExpiresAt:    sub.ExpiresAt,
-		DailyUsage:   sub.DailyUsageUSD,
-		WeeklyUsage:  sub.WeeklyUsageUSD,
-		MonthlyUsage: sub.MonthlyUsageUSD,
-		Version:      sub.UpdatedAt.Unix(),
-	}, nil
+	result := &subscriptionCacheData{
+		Status:               sub.Status,
+		ExpiresAt:            sub.ExpiresAt,
+		DailyUsage:           sub.DailyUsageUSD,
+		WeeklyUsage:          sub.WeeklyUsageUSD,
+		MonthlyUsage:         sub.MonthlyUsageUSD,
+		Version:              sub.UpdatedAt.Unix(),
+		PlanID:               sub.PlanID,
+		DailyUsageRequests:   sub.DailyUsageRequests,
+		WeeklyUsageRequests:  sub.WeeklyUsageRequests,
+		MonthlyUsageRequests: sub.MonthlyUsageRequests,
+	}
+
+	// Populate plan limits from live plan reference
+	if sub.PlanID != nil {
+		if sub.Plan == nil {
+			return nil, fmt.Errorf("plan %d referenced by subscription but not loaded", *sub.PlanID)
+		}
+		result.DailyRequestLimit = sub.Plan.DailyRequestLimit
+		result.WeeklyRequestLimit = sub.Plan.WeeklyRequestLimit
+		result.MonthlyRequestLimit = sub.Plan.MonthlyRequestLimit
+		result.PlanVersion = sub.Plan.UpdatedAt.Unix()
+	}
+
+	return result, nil
 }
 
 // setSubscriptionCache 设置订阅缓存
@@ -481,6 +530,22 @@ func (s *BillingCacheService) setSubscriptionCache(ctx context.Context, userID, 
 	}
 	if err := s.cache.SetSubscriptionCache(ctx, userID, groupID, s.convertToPortsData(data)); err != nil {
 		logger.LegacyPrintf("service.billing_cache", "Warning: set subscription cache failed for user %d group %d: %v", userID, groupID, err)
+	}
+}
+
+// setSubscriptionCacheIfMissing only writes the cache if the key does not already exist.
+// This prevents async backfill from overwriting a cache that was already populated
+// (e.g., by a sync set+pre-increment during checkSubscriptionEligibility).
+func (s *BillingCacheService) setSubscriptionCacheIfMissing(ctx context.Context, userID, groupID int64, data *subscriptionCacheData) {
+	if s.cache == nil || data == nil {
+		return
+	}
+	existing, err := s.cache.GetSubscriptionCache(ctx, userID, groupID)
+	if err == nil && existing != nil {
+		return // cache already exists, skip to avoid overwriting pre-incremented counters
+	}
+	if err := s.cache.SetSubscriptionCache(ctx, userID, groupID, s.convertToPortsData(data)); err != nil {
+		logger.LegacyPrintf("service.billing_cache", "Warning: set subscription cache (if missing) failed for user %d group %d: %v", userID, groupID, err)
 	}
 }
 
@@ -890,6 +955,46 @@ func (s *BillingCacheService) checkSubscriptionEligibility(ctx context.Context, 
 
 	if group.HasMonthlyLimit() && subData.MonthlyUsage >= *group.MonthlyLimitUSD {
 		return ErrMonthlyLimitExceeded
+	}
+
+	// Check request count limits via atomic Lua pre-check (if plan has limits)
+	if subData.PlanID != nil && s.cache != nil {
+		result, err := s.cache.CheckAndIncrementSubscriptionRequestUsage(ctx, userID, group.ID, 1)
+		if err != nil {
+			logger.LegacyPrintf("service.billing_cache", "Warning: request count pre-check failed for user %d group %d: %v", userID, group.ID, err)
+			// fail-open on Redis error: let the request through, L1 cache will handle
+		} else {
+			switch result {
+			case 1:
+				// allowed
+			case -1:
+				// cache miss: sync populate cache and retry once
+				s.setSubscriptionCache(ctx, userID, group.ID, subData)
+				retryResult, retryErr := s.cache.CheckAndIncrementSubscriptionRequestUsage(ctx, userID, group.ID, 1)
+				if retryErr != nil {
+					logger.LegacyPrintf("service.billing_cache", "Warning: request count retry pre-check failed for user %d group %d: %v", userID, group.ID, retryErr)
+				} else {
+					switch retryResult {
+					case 1:
+						// allowed
+					case -1:
+						// still miss after sync write, skip pre-check gracefully
+					case 10:
+						return ErrDailyRequestLimitExceeded
+					case 11:
+						return ErrWeeklyRequestLimitExceeded
+					case 12:
+						return ErrMonthlyRequestLimitExceeded
+					}
+				}
+			case 10:
+				return ErrDailyRequestLimitExceeded
+			case 11:
+				return ErrWeeklyRequestLimitExceeded
+			case 12:
+				return ErrMonthlyRequestLimitExceeded
+			}
+		}
 	}
 
 	return nil

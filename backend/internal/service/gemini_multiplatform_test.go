@@ -191,6 +191,7 @@ func (m *mockAccountRepoForGemini) RevertProxyFallback(ctx context.Context, acco
 	return nil
 }
 
+
 // Verify interface implementation
 var _ AccountRepository = (*mockAccountRepoForGemini)(nil)
 
@@ -255,6 +256,7 @@ func (m *mockGroupRepoForGemini) GetAccountIDsByGroupIDs(ctx context.Context, gr
 func (m *mockGroupRepoForGemini) UpdateSortOrders(ctx context.Context, updates []GroupSortOrderUpdate) error {
 	return nil
 }
+
 
 var _ GroupRepository = (*mockGroupRepoForGemini)(nil)
 

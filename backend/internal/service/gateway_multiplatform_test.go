@@ -202,6 +202,7 @@ func (m *mockAccountRepoForPlatform) RevertProxyFallback(ctx context.Context, ac
 	return nil
 }
 
+
 // Verify interface implementation
 var _ AccountRepository = (*mockAccountRepoForPlatform)(nil)
 
@@ -303,6 +304,7 @@ func (m *mockGroupRepoForGateway) GetAccountIDsByGroupIDs(ctx context.Context, g
 func (m *mockGroupRepoForGateway) UpdateSortOrders(ctx context.Context, updates []GroupSortOrderUpdate) error {
 	return nil
 }
+
 
 func ptr[T any](v T) *T {
 	return &v

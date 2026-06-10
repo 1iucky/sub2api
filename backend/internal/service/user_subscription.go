@@ -2,6 +2,15 @@ package service
 
 import "time"
 
+// SubscriptionPlanLimitData 轻量 Plan 模型，仅包含热路径需要的限额字段。
+type SubscriptionPlanLimitData struct {
+	ID                  int64
+	DailyRequestLimit   *int64
+	WeeklyRequestLimit  *int64
+	MonthlyRequestLimit *int64
+	UpdatedAt           time.Time
+}
+
 type UserSubscription struct {
 	ID      int64
 	UserID  int64
@@ -18,6 +27,17 @@ type UserSubscription struct {
 	DailyUsageUSD   float64
 	WeeklyUsageUSD  float64
 	MonthlyUsageUSD float64
+
+	// Plan 实时引用
+	PlanID *int64
+
+	// 请求次数用量跟踪（与 USD 共享 window_start）
+	DailyUsageRequests   int64
+	WeeklyUsageRequests  int64
+	MonthlyUsageRequests int64
+
+	// Plan 关联（由 repository WithPlan() 加载）
+	Plan *SubscriptionPlanLimitData
 
 	AssignedBy *int64
 	AssignedAt time.Time
@@ -113,6 +133,8 @@ func (s *UserSubscription) MonthlyResetTime() *time.Time {
 	return &t
 }
 
+// USD 限额检查（limit 来自 Group）
+
 func (s *UserSubscription) CheckDailyLimit(group *Group, additionalCost float64) bool {
 	if !group.HasDailyLimit() {
 		return true
@@ -140,3 +162,48 @@ func (s *UserSubscription) CheckAllLimits(group *Group, additionalCost float64) 
 	monthly = s.CheckMonthlyLimit(group, additionalCost)
 	return
 }
+
+// 请求次数限额检查（limit 来自 Plan，三态语义：nil=不限, 0=禁止, >0=限额）
+
+func (s *UserSubscription) CheckDailyRequestLimit(limit *int64, additionalCount int64) bool {
+	if limit == nil {
+		return true
+	}
+	return s.DailyUsageRequests+additionalCount <= *limit
+}
+
+func (s *UserSubscription) CheckWeeklyRequestLimit(limit *int64, additionalCount int64) bool {
+	if limit == nil {
+		return true
+	}
+	return s.WeeklyUsageRequests+additionalCount <= *limit
+}
+
+func (s *UserSubscription) CheckMonthlyRequestLimit(limit *int64, additionalCount int64) bool {
+	if limit == nil {
+		return true
+	}
+	return s.MonthlyUsageRequests+additionalCount <= *limit
+}
+
+// limitsFromSubscriptionPlan 从 subscription 的 Plan 中提取请求次数限额。
+// 如果 PlanID 非 nil 但 Plan 未加载，返回 -1 作为哨兵值，表示计费不可用。
+// 调用方应检查返回值是否为 -1 并返回错误。
+func limitsFromSubscriptionPlan(sub *UserSubscription) (daily, weekly, monthly *int64) {
+	if sub.PlanID == nil {
+		return nil, nil, nil
+	}
+	if sub.Plan == nil {
+		// Plan not loaded: return sentinel value -1 to signal error
+		negOne := int64(-1)
+		return &negOne, &negOne, &negOne
+	}
+	return sub.Plan.DailyRequestLimit, sub.Plan.WeeklyRequestLimit, sub.Plan.MonthlyRequestLimit
+}
+
+// isPlanNotLoadedSentinel checks if limitsFromSubscriptionPlan returned the -1 sentinel
+// indicating PlanID is set but Plan was not loaded. Returns true if the caller should reject.
+func isPlanNotLoadedSentinel(limit *int64) bool {
+	return limit != nil && *limit == -1
+}
+

@@ -65,6 +65,7 @@ func (s *subscriptionGroupRepoStub) GetByID(context.Context, int64) (*Group, err
 	return s.group, nil
 }
 
+
 type userSubRepoNoop struct{}
 
 func (userSubRepoNoop) Create(context.Context, *UserSubscription) error {
@@ -124,6 +125,21 @@ func (userSubRepoNoop) IncrementUsage(context.Context, int64, float64) error {
 }
 func (userSubRepoNoop) BatchUpdateExpiredStatus(context.Context) (int64, error) {
 	panic("unexpected BatchUpdateExpiredStatus call")
+}
+func (userSubRepoNoop) IncrementRequestUsage(context.Context, int64, int64) error {
+	panic("unexpected IncrementRequestUsage call")
+}
+func (userSubRepoNoop) ListActiveRefsByPlanID(context.Context, int64) ([]SubscriptionRef, error) {
+	panic("unexpected ListActiveRefsByPlanID call")
+}
+func (userSubRepoNoop) CountActiveByPlanID(context.Context, int64) (int64, error) {
+	panic("unexpected CountActiveByPlanID call")
+}
+func (userSubRepoNoop) CountByPlanID(context.Context, int64) (int64, error) {
+	panic("unexpected CountByPlanID call")
+}
+func (userSubRepoNoop) UpdatePlanID(context.Context, int64, *int64) error {
+	panic("unexpected UpdatePlanID call")
 }
 
 type subscriptionUserSubRepoStub struct {
@@ -216,6 +232,8 @@ func (s *subscriptionUserSubRepoStub) Update(_ context.Context, sub *UserSubscri
 	s.byUserGroup[s.key(cp.UserID, cp.GroupID)] = &cp
 	return nil
 }
+
+
 
 func TestAssignSubscriptionReuseWhenSemanticsMatch(t *testing.T) {
 	start := time.Date(2026, 2, 20, 10, 0, 0, 0, time.UTC)

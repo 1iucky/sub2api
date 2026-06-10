@@ -110,6 +110,7 @@ func (r *claudeAccountRepoStub) Update(ctx context.Context, account *Account) er
 	return nil
 }
 
+
 // claudeOAuthServiceStub implements OAuthService methods for testing
 type claudeOAuthServiceStub struct {
 	tokenInfo     *TokenInfo

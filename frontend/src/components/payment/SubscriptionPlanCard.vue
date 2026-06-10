@@ -59,6 +59,18 @@
           <span class="text-gray-400 dark:text-dark-500">{{ t('payment.planCard.quota') }}</span>
           <span class="font-medium text-gray-700 dark:text-gray-300">{{ t('payment.planCard.unlimited') }}</span>
         </div>
+        <div v-if="plan.daily_request_limit != null" class="flex items-center justify-between">
+          <span class="text-gray-400 dark:text-dark-500">{{ t('payment.planCard.dailyRequests') }}</span>
+          <span class="font-medium text-gray-700 dark:text-gray-300">{{ plan.daily_request_limit }}</span>
+        </div>
+        <div v-if="plan.weekly_request_limit != null" class="flex items-center justify-between">
+          <span class="text-gray-400 dark:text-dark-500">{{ t('payment.planCard.weeklyRequests') }}</span>
+          <span class="font-medium text-gray-700 dark:text-gray-300">{{ plan.weekly_request_limit }}</span>
+        </div>
+        <div v-if="plan.monthly_request_limit != null" class="flex items-center justify-between">
+          <span class="text-gray-400 dark:text-dark-500">{{ t('payment.planCard.monthlyRequests') }}</span>
+          <span class="font-medium text-gray-700 dark:text-gray-300">{{ plan.monthly_request_limit }}</span>
+        </div>
         <div v-if="modelScopeLabels.length > 0" class="col-span-2 flex items-center justify-between">
           <span class="text-gray-400 dark:text-dark-500">{{ t('payment.planCard.models') }}</span>
           <div class="flex flex-wrap justify-end gap-1">

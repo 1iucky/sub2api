@@ -122,6 +122,7 @@ func (r *contentModerationTestRepo) snapshotLogs() []ContentModerationLog {
 	return out
 }
 
+
 func requireContentModerationLogCount(t *testing.T, repo *contentModerationTestRepo, want int) []ContentModerationLog {
 	t.Helper()
 	var logs []ContentModerationLog
@@ -282,6 +283,7 @@ func (r *contentModerationTestUserRepo) DisableTotp(ctx context.Context, userID 
 func (r *contentModerationTestUserRepo) GetByIDIncludeDeleted(ctx context.Context, id int64) (*User, error) {
 	return r.GetByID(ctx, id)
 }
+
 
 type contentModerationTestAuthCacheInvalidator struct {
 	userIDs []int64

@@ -854,6 +854,7 @@ func (s *emailBindUserRepoStub) GetByIDIncludeDeleted(ctx context.Context, id in
 	return s.GetByID(ctx, id)
 }
 
+
 func cloneEmailBindUser(user *service.User) *service.User {
 	if user == nil {
 		return nil

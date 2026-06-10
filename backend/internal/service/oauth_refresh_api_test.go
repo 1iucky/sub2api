@@ -49,6 +49,7 @@ func (r *refreshAPIAccountRepo) UpdateCredentials(_ context.Context, id int64, c
 	return nil
 }
 
+
 // refreshAPIExecutorStub implements OAuthRefreshExecutor for tests.
 type refreshAPIExecutorStub struct {
 	needsRefresh bool
@@ -404,6 +405,7 @@ func (r *refreshAPIAccountRepoWithRace) GetByID(_ context.Context, _ int64) (*Ac
 	}
 	return r.account, nil
 }
+
 
 // ========== Race recovery tests ==========
 

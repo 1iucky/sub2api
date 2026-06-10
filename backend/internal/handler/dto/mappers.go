@@ -749,6 +749,13 @@ func userSubscriptionFromServiceBase(sub *service.UserSubscription) UserSubscrip
 		DailyUsageUSD:      sub.DailyUsageUSD,
 		WeeklyUsageUSD:     sub.WeeklyUsageUSD,
 		MonthlyUsageUSD:    sub.MonthlyUsageUSD,
+		PlanID:             sub.PlanID,
+		DailyUsageRequests:   sub.DailyUsageRequests,
+		WeeklyUsageRequests:  sub.WeeklyUsageRequests,
+		MonthlyUsageRequests: sub.MonthlyUsageRequests,
+		DailyRequestLimit:    planLimitField(sub.Plan, func(p *service.SubscriptionPlanLimitData) *int64 { return p.DailyRequestLimit }),
+		WeeklyRequestLimit:   planLimitField(sub.Plan, func(p *service.SubscriptionPlanLimitData) *int64 { return p.WeeklyRequestLimit }),
+		MonthlyRequestLimit:  planLimitField(sub.Plan, func(p *service.SubscriptionPlanLimitData) *int64 { return p.MonthlyRequestLimit }),
 		CreatedAt:          sub.CreatedAt,
 		UpdatedAt:          sub.UpdatedAt,
 		User:               UserFromServiceShallow(sub.User),
@@ -809,4 +816,12 @@ func PromoCodeUsageFromService(u *service.PromoCodeUsage) *PromoCodeUsage {
 		UsedAt:      u.UsedAt,
 		User:        UserFromServiceShallow(u.User),
 	}
+}
+
+// planLimitField safely extracts a limit field from the plan, returning nil when plan is nil.
+func planLimitField(plan *service.SubscriptionPlanLimitData, extract func(*service.SubscriptionPlanLimitData) *int64) *int64 {
+	if plan == nil {
+		return nil
+	}
+	return extract(plan)
 }

@@ -44,6 +44,7 @@ func (s *balanceRedeemRepoStub) Create(ctx context.Context, code *RedeemCode) er
 	return nil
 }
 
+
 type authCacheInvalidatorStub struct {
 	userIDs  []int64
 	groupIDs []int64

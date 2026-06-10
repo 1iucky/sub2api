@@ -83,6 +83,7 @@ func (p *paymentOrderLifecycleQueryProvider) CancelPayment(_ context.Context, tr
 	return nil
 }
 
+
 func (r *paymentOrderLifecycleRedeemRepo) Create(context.Context, *RedeemCode) error {
 	panic("unexpected call")
 }
@@ -161,6 +162,7 @@ func (r *paymentOrderLifecycleRedeemRepo) ListByUserPaginated(context.Context, i
 func (r *paymentOrderLifecycleRedeemRepo) SumPositiveBalanceByUser(context.Context, int64) (float64, error) {
 	panic("unexpected call")
 }
+
 
 func TestVerifyOrderByOutTradeNoBackfillsTradeNoFromPaidQuery(t *testing.T) {
 	ctx := context.Background()

@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -35,12 +36,27 @@ const (
 	FieldForSale = "for_sale"
 	// FieldSortOrder holds the string denoting the sort_order field in the database.
 	FieldSortOrder = "sort_order"
+	// FieldDailyRequestLimit holds the string denoting the daily_request_limit field in the database.
+	FieldDailyRequestLimit = "daily_request_limit"
+	// FieldWeeklyRequestLimit holds the string denoting the weekly_request_limit field in the database.
+	FieldWeeklyRequestLimit = "weekly_request_limit"
+	// FieldMonthlyRequestLimit holds the string denoting the monthly_request_limit field in the database.
+	FieldMonthlyRequestLimit = "monthly_request_limit"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
+	// EdgeSubscriptions holds the string denoting the subscriptions edge name in mutations.
+	EdgeSubscriptions = "subscriptions"
 	// Table holds the table name of the subscriptionplan in the database.
 	Table = "subscription_plans"
+	// SubscriptionsTable is the table that holds the subscriptions relation/edge.
+	SubscriptionsTable = "user_subscriptions"
+	// SubscriptionsInverseTable is the table name for the UserSubscription entity.
+	// It exists in this package in order to avoid circular dependency with the "usersubscription" package.
+	SubscriptionsInverseTable = "user_subscriptions"
+	// SubscriptionsColumn is the table column denoting the subscriptions relation/edge.
+	SubscriptionsColumn = "plan_id"
 )
 
 // Columns holds all SQL columns for subscriptionplan fields.
@@ -57,6 +73,9 @@ var Columns = []string{
 	FieldProductName,
 	FieldForSale,
 	FieldSortOrder,
+	FieldDailyRequestLimit,
+	FieldWeeklyRequestLimit,
+	FieldMonthlyRequestLimit,
 	FieldCreatedAt,
 	FieldUpdatedAt,
 }
@@ -163,6 +182,21 @@ func BySortOrder(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldSortOrder, opts...).ToFunc()
 }
 
+// ByDailyRequestLimit orders the results by the daily_request_limit field.
+func ByDailyRequestLimit(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDailyRequestLimit, opts...).ToFunc()
+}
+
+// ByWeeklyRequestLimit orders the results by the weekly_request_limit field.
+func ByWeeklyRequestLimit(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldWeeklyRequestLimit, opts...).ToFunc()
+}
+
+// ByMonthlyRequestLimit orders the results by the monthly_request_limit field.
+func ByMonthlyRequestLimit(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldMonthlyRequestLimit, opts...).ToFunc()
+}
+
 // ByCreatedAt orders the results by the created_at field.
 func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
@@ -171,4 +205,25 @@ func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 // ByUpdatedAt orders the results by the updated_at field.
 func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
+}
+
+// BySubscriptionsCount orders the results by subscriptions count.
+func BySubscriptionsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newSubscriptionsStep(), opts...)
+	}
+}
+
+// BySubscriptions orders the results by subscriptions terms.
+func BySubscriptions(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newSubscriptionsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newSubscriptionsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(SubscriptionsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, SubscriptionsTable, SubscriptionsColumn),
+	)
 }

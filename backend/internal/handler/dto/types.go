@@ -581,6 +581,14 @@ type UserSubscription struct {
 	WeeklyUsageUSD  float64 `json:"weekly_usage_usd"`
 	MonthlyUsageUSD float64 `json:"monthly_usage_usd"`
 
+	PlanID               *int64 `json:"plan_id,omitempty"`
+	DailyUsageRequests   int64  `json:"daily_usage_requests"`
+	WeeklyUsageRequests  int64  `json:"weekly_usage_requests"`
+	MonthlyUsageRequests int64  `json:"monthly_usage_requests"`
+	DailyRequestLimit    *int64 `json:"daily_request_limit,omitempty"`
+	WeeklyRequestLimit   *int64 `json:"weekly_request_limit,omitempty"`
+	MonthlyRequestLimit  *int64 `json:"monthly_request_limit,omitempty"`
+
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 

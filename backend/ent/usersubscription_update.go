@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/Wei-Shaw/sub2api/ent/group"
 	"github.com/Wei-Shaw/sub2api/ent/predicate"
+	"github.com/Wei-Shaw/sub2api/ent/subscriptionplan"
 	"github.com/Wei-Shaw/sub2api/ent/usagelog"
 	"github.com/Wei-Shaw/sub2api/ent/user"
 	"github.com/Wei-Shaw/sub2api/ent/usersubscription"
@@ -250,6 +251,89 @@ func (_u *UserSubscriptionUpdate) AddMonthlyUsageUsd(v float64) *UserSubscriptio
 	return _u
 }
 
+// SetPlanID sets the "plan_id" field.
+func (_u *UserSubscriptionUpdate) SetPlanID(v int64) *UserSubscriptionUpdate {
+	_u.mutation.SetPlanID(v)
+	return _u
+}
+
+// SetNillablePlanID sets the "plan_id" field if the given value is not nil.
+func (_u *UserSubscriptionUpdate) SetNillablePlanID(v *int64) *UserSubscriptionUpdate {
+	if v != nil {
+		_u.SetPlanID(*v)
+	}
+	return _u
+}
+
+// ClearPlanID clears the value of the "plan_id" field.
+func (_u *UserSubscriptionUpdate) ClearPlanID() *UserSubscriptionUpdate {
+	_u.mutation.ClearPlanID()
+	return _u
+}
+
+// SetDailyUsageRequests sets the "daily_usage_requests" field.
+func (_u *UserSubscriptionUpdate) SetDailyUsageRequests(v int64) *UserSubscriptionUpdate {
+	_u.mutation.ResetDailyUsageRequests()
+	_u.mutation.SetDailyUsageRequests(v)
+	return _u
+}
+
+// SetNillableDailyUsageRequests sets the "daily_usage_requests" field if the given value is not nil.
+func (_u *UserSubscriptionUpdate) SetNillableDailyUsageRequests(v *int64) *UserSubscriptionUpdate {
+	if v != nil {
+		_u.SetDailyUsageRequests(*v)
+	}
+	return _u
+}
+
+// AddDailyUsageRequests adds value to the "daily_usage_requests" field.
+func (_u *UserSubscriptionUpdate) AddDailyUsageRequests(v int64) *UserSubscriptionUpdate {
+	_u.mutation.AddDailyUsageRequests(v)
+	return _u
+}
+
+// SetWeeklyUsageRequests sets the "weekly_usage_requests" field.
+func (_u *UserSubscriptionUpdate) SetWeeklyUsageRequests(v int64) *UserSubscriptionUpdate {
+	_u.mutation.ResetWeeklyUsageRequests()
+	_u.mutation.SetWeeklyUsageRequests(v)
+	return _u
+}
+
+// SetNillableWeeklyUsageRequests sets the "weekly_usage_requests" field if the given value is not nil.
+func (_u *UserSubscriptionUpdate) SetNillableWeeklyUsageRequests(v *int64) *UserSubscriptionUpdate {
+	if v != nil {
+		_u.SetWeeklyUsageRequests(*v)
+	}
+	return _u
+}
+
+// AddWeeklyUsageRequests adds value to the "weekly_usage_requests" field.
+func (_u *UserSubscriptionUpdate) AddWeeklyUsageRequests(v int64) *UserSubscriptionUpdate {
+	_u.mutation.AddWeeklyUsageRequests(v)
+	return _u
+}
+
+// SetMonthlyUsageRequests sets the "monthly_usage_requests" field.
+func (_u *UserSubscriptionUpdate) SetMonthlyUsageRequests(v int64) *UserSubscriptionUpdate {
+	_u.mutation.ResetMonthlyUsageRequests()
+	_u.mutation.SetMonthlyUsageRequests(v)
+	return _u
+}
+
+// SetNillableMonthlyUsageRequests sets the "monthly_usage_requests" field if the given value is not nil.
+func (_u *UserSubscriptionUpdate) SetNillableMonthlyUsageRequests(v *int64) *UserSubscriptionUpdate {
+	if v != nil {
+		_u.SetMonthlyUsageRequests(*v)
+	}
+	return _u
+}
+
+// AddMonthlyUsageRequests adds value to the "monthly_usage_requests" field.
+func (_u *UserSubscriptionUpdate) AddMonthlyUsageRequests(v int64) *UserSubscriptionUpdate {
+	_u.mutation.AddMonthlyUsageRequests(v)
+	return _u
+}
+
 // SetAssignedBy sets the "assigned_by" field.
 func (_u *UserSubscriptionUpdate) SetAssignedBy(v int64) *UserSubscriptionUpdate {
 	_u.mutation.SetAssignedBy(v)
@@ -348,6 +432,11 @@ func (_u *UserSubscriptionUpdate) AddUsageLogs(v ...*UsageLog) *UserSubscription
 	return _u.AddUsageLogIDs(ids...)
 }
 
+// SetPlan sets the "plan" edge to the SubscriptionPlan entity.
+func (_u *UserSubscriptionUpdate) SetPlan(v *SubscriptionPlan) *UserSubscriptionUpdate {
+	return _u.SetPlanID(v.ID)
+}
+
 // Mutation returns the UserSubscriptionMutation object of the builder.
 func (_u *UserSubscriptionUpdate) Mutation() *UserSubscriptionMutation {
 	return _u.mutation
@@ -390,6 +479,12 @@ func (_u *UserSubscriptionUpdate) RemoveUsageLogs(v ...*UsageLog) *UserSubscript
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveUsageLogIDs(ids...)
+}
+
+// ClearPlan clears the "plan" edge to the SubscriptionPlan entity.
+func (_u *UserSubscriptionUpdate) ClearPlan() *UserSubscriptionUpdate {
+	_u.mutation.ClearPlan()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -515,6 +610,24 @@ func (_u *UserSubscriptionUpdate) sqlSave(ctx context.Context) (_node int, err e
 	}
 	if value, ok := _u.mutation.AddedMonthlyUsageUsd(); ok {
 		_spec.AddField(usersubscription.FieldMonthlyUsageUsd, field.TypeFloat64, value)
+	}
+	if value, ok := _u.mutation.DailyUsageRequests(); ok {
+		_spec.SetField(usersubscription.FieldDailyUsageRequests, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedDailyUsageRequests(); ok {
+		_spec.AddField(usersubscription.FieldDailyUsageRequests, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.WeeklyUsageRequests(); ok {
+		_spec.SetField(usersubscription.FieldWeeklyUsageRequests, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedWeeklyUsageRequests(); ok {
+		_spec.AddField(usersubscription.FieldWeeklyUsageRequests, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.MonthlyUsageRequests(); ok {
+		_spec.SetField(usersubscription.FieldMonthlyUsageRequests, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedMonthlyUsageRequests(); ok {
+		_spec.AddField(usersubscription.FieldMonthlyUsageRequests, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AssignedAt(); ok {
 		_spec.SetField(usersubscription.FieldAssignedAt, field.TypeTime, value)
@@ -650,6 +763,35 @@ func (_u *UserSubscriptionUpdate) sqlSave(ctx context.Context) (_node int, err e
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(usagelog.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.PlanCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   usersubscription.PlanTable,
+			Columns: []string{usersubscription.PlanColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(subscriptionplan.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.PlanIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   usersubscription.PlanTable,
+			Columns: []string{usersubscription.PlanColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(subscriptionplan.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -896,6 +1038,89 @@ func (_u *UserSubscriptionUpdateOne) AddMonthlyUsageUsd(v float64) *UserSubscrip
 	return _u
 }
 
+// SetPlanID sets the "plan_id" field.
+func (_u *UserSubscriptionUpdateOne) SetPlanID(v int64) *UserSubscriptionUpdateOne {
+	_u.mutation.SetPlanID(v)
+	return _u
+}
+
+// SetNillablePlanID sets the "plan_id" field if the given value is not nil.
+func (_u *UserSubscriptionUpdateOne) SetNillablePlanID(v *int64) *UserSubscriptionUpdateOne {
+	if v != nil {
+		_u.SetPlanID(*v)
+	}
+	return _u
+}
+
+// ClearPlanID clears the value of the "plan_id" field.
+func (_u *UserSubscriptionUpdateOne) ClearPlanID() *UserSubscriptionUpdateOne {
+	_u.mutation.ClearPlanID()
+	return _u
+}
+
+// SetDailyUsageRequests sets the "daily_usage_requests" field.
+func (_u *UserSubscriptionUpdateOne) SetDailyUsageRequests(v int64) *UserSubscriptionUpdateOne {
+	_u.mutation.ResetDailyUsageRequests()
+	_u.mutation.SetDailyUsageRequests(v)
+	return _u
+}
+
+// SetNillableDailyUsageRequests sets the "daily_usage_requests" field if the given value is not nil.
+func (_u *UserSubscriptionUpdateOne) SetNillableDailyUsageRequests(v *int64) *UserSubscriptionUpdateOne {
+	if v != nil {
+		_u.SetDailyUsageRequests(*v)
+	}
+	return _u
+}
+
+// AddDailyUsageRequests adds value to the "daily_usage_requests" field.
+func (_u *UserSubscriptionUpdateOne) AddDailyUsageRequests(v int64) *UserSubscriptionUpdateOne {
+	_u.mutation.AddDailyUsageRequests(v)
+	return _u
+}
+
+// SetWeeklyUsageRequests sets the "weekly_usage_requests" field.
+func (_u *UserSubscriptionUpdateOne) SetWeeklyUsageRequests(v int64) *UserSubscriptionUpdateOne {
+	_u.mutation.ResetWeeklyUsageRequests()
+	_u.mutation.SetWeeklyUsageRequests(v)
+	return _u
+}
+
+// SetNillableWeeklyUsageRequests sets the "weekly_usage_requests" field if the given value is not nil.
+func (_u *UserSubscriptionUpdateOne) SetNillableWeeklyUsageRequests(v *int64) *UserSubscriptionUpdateOne {
+	if v != nil {
+		_u.SetWeeklyUsageRequests(*v)
+	}
+	return _u
+}
+
+// AddWeeklyUsageRequests adds value to the "weekly_usage_requests" field.
+func (_u *UserSubscriptionUpdateOne) AddWeeklyUsageRequests(v int64) *UserSubscriptionUpdateOne {
+	_u.mutation.AddWeeklyUsageRequests(v)
+	return _u
+}
+
+// SetMonthlyUsageRequests sets the "monthly_usage_requests" field.
+func (_u *UserSubscriptionUpdateOne) SetMonthlyUsageRequests(v int64) *UserSubscriptionUpdateOne {
+	_u.mutation.ResetMonthlyUsageRequests()
+	_u.mutation.SetMonthlyUsageRequests(v)
+	return _u
+}
+
+// SetNillableMonthlyUsageRequests sets the "monthly_usage_requests" field if the given value is not nil.
+func (_u *UserSubscriptionUpdateOne) SetNillableMonthlyUsageRequests(v *int64) *UserSubscriptionUpdateOne {
+	if v != nil {
+		_u.SetMonthlyUsageRequests(*v)
+	}
+	return _u
+}
+
+// AddMonthlyUsageRequests adds value to the "monthly_usage_requests" field.
+func (_u *UserSubscriptionUpdateOne) AddMonthlyUsageRequests(v int64) *UserSubscriptionUpdateOne {
+	_u.mutation.AddMonthlyUsageRequests(v)
+	return _u
+}
+
 // SetAssignedBy sets the "assigned_by" field.
 func (_u *UserSubscriptionUpdateOne) SetAssignedBy(v int64) *UserSubscriptionUpdateOne {
 	_u.mutation.SetAssignedBy(v)
@@ -994,6 +1219,11 @@ func (_u *UserSubscriptionUpdateOne) AddUsageLogs(v ...*UsageLog) *UserSubscript
 	return _u.AddUsageLogIDs(ids...)
 }
 
+// SetPlan sets the "plan" edge to the SubscriptionPlan entity.
+func (_u *UserSubscriptionUpdateOne) SetPlan(v *SubscriptionPlan) *UserSubscriptionUpdateOne {
+	return _u.SetPlanID(v.ID)
+}
+
 // Mutation returns the UserSubscriptionMutation object of the builder.
 func (_u *UserSubscriptionUpdateOne) Mutation() *UserSubscriptionMutation {
 	return _u.mutation
@@ -1036,6 +1266,12 @@ func (_u *UserSubscriptionUpdateOne) RemoveUsageLogs(v ...*UsageLog) *UserSubscr
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveUsageLogIDs(ids...)
+}
+
+// ClearPlan clears the "plan" edge to the SubscriptionPlan entity.
+func (_u *UserSubscriptionUpdateOne) ClearPlan() *UserSubscriptionUpdateOne {
+	_u.mutation.ClearPlan()
+	return _u
 }
 
 // Where appends a list predicates to the UserSubscriptionUpdate builder.
@@ -1192,6 +1428,24 @@ func (_u *UserSubscriptionUpdateOne) sqlSave(ctx context.Context) (_node *UserSu
 	if value, ok := _u.mutation.AddedMonthlyUsageUsd(); ok {
 		_spec.AddField(usersubscription.FieldMonthlyUsageUsd, field.TypeFloat64, value)
 	}
+	if value, ok := _u.mutation.DailyUsageRequests(); ok {
+		_spec.SetField(usersubscription.FieldDailyUsageRequests, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedDailyUsageRequests(); ok {
+		_spec.AddField(usersubscription.FieldDailyUsageRequests, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.WeeklyUsageRequests(); ok {
+		_spec.SetField(usersubscription.FieldWeeklyUsageRequests, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedWeeklyUsageRequests(); ok {
+		_spec.AddField(usersubscription.FieldWeeklyUsageRequests, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.MonthlyUsageRequests(); ok {
+		_spec.SetField(usersubscription.FieldMonthlyUsageRequests, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedMonthlyUsageRequests(); ok {
+		_spec.AddField(usersubscription.FieldMonthlyUsageRequests, field.TypeInt64, value)
+	}
 	if value, ok := _u.mutation.AssignedAt(); ok {
 		_spec.SetField(usersubscription.FieldAssignedAt, field.TypeTime, value)
 	}
@@ -1326,6 +1580,35 @@ func (_u *UserSubscriptionUpdateOne) sqlSave(ctx context.Context) (_node *UserSu
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(usagelog.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.PlanCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   usersubscription.PlanTable,
+			Columns: []string{usersubscription.PlanColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(subscriptionplan.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.PlanIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   usersubscription.PlanTable,
+			Columns: []string{usersubscription.PlanColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(subscriptionplan.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
