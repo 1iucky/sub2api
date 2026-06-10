@@ -354,6 +354,9 @@ func (s *GatewayService) buildOAuthMetadataUserID(parsed *ParsedRequest, account
 		uaVersion = ExtractCLIVersion(fp.UserAgent)
 	}
 	accountUUID := strings.TrimSpace(account.GetExtraString("account_uuid"))
+	if accountUUID == "" {
+		accountUUID = generateUUIDFromSeed(fmt.Sprintf("apikey-account-%d", account.ID))
+	}
 	return FormatMetadataUserID(userID, accountUUID, sessionID, uaVersion)
 }
 
@@ -384,7 +387,7 @@ func (s *GatewayService) applyClaudeCodeOAuthMimicryToBody(
 	systemRaw any,
 	model string,
 ) []byte {
-	if account == nil || !account.IsOAuth() || len(body) == 0 {
+	if account == nil || !account.IsAnthropicAccount() || len(body) == 0 {
 		return body
 	}
 
@@ -476,6 +479,9 @@ func (s *GatewayService) buildOAuthMetadataUserIDFromBody(
 		uaVersion = ExtractCLIVersion(fp.UserAgent)
 	}
 	accountUUID := strings.TrimSpace(account.GetExtraString("account_uuid"))
+	if accountUUID == "" {
+		accountUUID = generateUUIDFromSeed(fmt.Sprintf("apikey-account-%d", account.ID))
+	}
 	return FormatMetadataUserID(userID, accountUUID, sessionID, uaVersion)
 }
 

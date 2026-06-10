@@ -27,9 +27,14 @@ func TestBuildOAuthMetadataUserID_FallbackWithoutAccountUUID(t *testing.T) {
 	got := svc.buildOAuthMetadataUserID(parsed, account, fp)
 	require.NotEmpty(t, got)
 
-	// Legacy format: user_{client}_account__session_{uuid}
-	re := regexp.MustCompile(`^user_[a-zA-Z0-9]+_account__session_[a-f0-9-]{36}$`)
+	// With the accountUUID fallback (generateUUIDFromSeed), account_uuid is now always present.
+	// Legacy format: user_{client}_account_{generated-uuid}_session_{uuid}
+	re := regexp.MustCompile(`^user_[a-zA-Z0-9]+_account_[a-f0-9-]{36}_session_[a-f0-9-]{36}$`)
 	require.True(t, re.MatchString(got), "unexpected user_id format: %s", got)
+
+	// Verify the generated account UUID is deterministic for the same account ID
+	got2 := svc.buildOAuthMetadataUserID(parsed, account, fp)
+	require.Equal(t, got, got2, "should produce deterministic account UUID for same account")
 }
 
 func TestBuildOAuthMetadataUserID_UsesAccountUUIDWhenPresent(t *testing.T) {
