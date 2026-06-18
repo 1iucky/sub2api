@@ -151,6 +151,15 @@ export default {
       },
       borderRadius: {
         '4xl': '2rem'
+      },
+      // Merge with Tailwind defaults (0/10/20/30/40/50/auto). Adds 55/60/70 so the
+      // HomeView nav (z-60) and mobile-drawer overlay (z-70) stack above content (z-10).
+      // Without this, z-60/z-70 generate no CSS and the nav renders at auto (below z-10
+      // content, which intercepts clicks in the top region).
+      zIndex: {
+        '55': '55',
+        '60': '60',
+        '70': '70'
       }
     }
   },
