@@ -10,17 +10,18 @@ export default {
     docs: 'Docs',
     switchToLight: 'Switch to Light Mode',
     switchToDark: 'Switch to Dark Mode',
-    dashboard: 'Dashboard',
-    login: 'Login',
-    getStarted: 'Get Started',
-    goToDashboard: 'Go to Dashboard',
+    dashboard: 'Console',
+    login: 'Sign in',
+    getStarted: 'Request access',
+    goToDashboard: 'Open console',
+    eyebrow: 'AI API GATEWAY',
     // User-focused value proposition
-    heroSubtitle: 'One Key, All AI Models',
-    heroDescription: 'No need to manage multiple subscriptions. Access Claude, GPT, Gemini and more with a single API key',
+    heroSubtitle: 'A single endpoint for every upstream AI model.',
+    heroDescription: 'SiliconBase pools your Claude, OpenAI and Gemini subscriptions behind one API key — with authentication, usage billing and load balancing handled at the gateway.',
     tags: {
       subscriptionToApi: 'Subscription to API',
-      stickySession: 'Session Persistence',
-      realtimeBilling: 'Pay As You Go'
+      stickySession: 'Session affinity',
+      realtimeBilling: 'Metered billing'
     },
     // Pain points section
     painPoints: {
@@ -50,12 +51,12 @@ export default {
       subtitle: 'Three simple steps to stress-free AI access'
     },
     features: {
-      unifiedGateway: 'One-Click Access',
-      unifiedGatewayDesc: 'Get a single API key to call all connected AI models. No separate applications needed.',
-      multiAccount: 'Always Reliable',
-      multiAccountDesc: 'Smart routing across multiple upstream accounts with automatic failover. Say goodbye to errors.',
-      balanceQuota: 'Pay What You Use',
-      balanceQuotaDesc: 'Usage-based billing with quota limits. Full visibility into team consumption.'
+      unifiedGateway: 'Unified gateway',
+      unifiedGatewayDesc: 'One API key, one endpoint. Requests are routed to the correct upstream model — Claude, GPT, Gemini — based on key group, transparent to the client.',
+      multiAccount: 'Account pooling & failover',
+      multiAccountDesc: 'Multiple upstream accounts are balanced per group with sticky sessions, RPM and concurrency limits, and automatic failover when a session errors.',
+      balanceQuota: 'Metered billing & quotas',
+      balanceQuotaDesc: 'Per-key usage is metered in real time with configurable quotas and spend limits, so team consumption stays observable and bounded.'
     },
     // Comparison section
     comparison: {
@@ -94,10 +95,10 @@ export default {
       }
     },
     providers: {
-      title: 'Supported AI Models',
-      description: 'One API, Multiple Choices',
-      supported: 'Supported',
-      soon: 'Soon',
+      title: 'Upstream providers',
+      description: 'One endpoint, several upstreams — routed per key group.',
+      supported: 'Routed',
+      soon: 'Planned',
       claude: 'Claude',
       gemini: 'Gemini',
       antigravity: 'Antigravity',
@@ -110,7 +111,8 @@ export default {
       button: 'Sign Up Free'
     },
     footer: {
-      allRightsReserved: 'All rights reserved.'
+      allRightsReserved: 'All rights reserved.',
+      tagline: 'Operated as SiliconBase'
     }
   },
 

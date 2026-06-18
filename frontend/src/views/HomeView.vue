@@ -15,39 +15,29 @@
   <!-- Default Home Page -->
   <div
     v-else
-    class="relative flex min-h-screen flex-col overflow-hidden bg-gradient-to-br from-gray-50 via-primary-50/30 to-gray-100 dark:from-dark-950 dark:via-dark-900 dark:to-dark-950"
+    class="relative flex min-h-screen flex-col overflow-hidden bg-gray-50 dark:bg-dark-950"
   >
-    <!-- Background Decorations -->
-    <div class="pointer-events-none absolute inset-0 overflow-hidden">
-      <div
-        class="absolute -right-40 -top-40 h-96 w-96 rounded-full bg-primary-400/20 blur-3xl"
-      ></div>
-      <div
-        class="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-primary-500/15 blur-3xl"
-      ></div>
-      <div
-        class="absolute left-1/3 top-1/4 h-72 w-72 rounded-full bg-primary-300/10 blur-3xl"
-      ></div>
-      <div
-        class="absolute bottom-1/4 right-1/4 h-64 w-64 rounded-full bg-primary-400/10 blur-3xl"
-      ></div>
-      <div
-        class="absolute inset-0 bg-[linear-gradient(rgba(20,184,166,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(20,184,166,0.03)_1px,transparent_1px)] bg-[size:64px_64px]"
-      ></div>
-    </div>
+    <!-- Background: warm line-grid blueprint + faint mesh -->
+    <div class="pointer-events-none absolute inset-0 bg-blueprint"></div>
+    <div
+      class="pointer-events-none absolute inset-0 bg-[radial-gradient(at_40%_15%,rgba(239,111,46,0.08)_0px,transparent_55%),radial-gradient(at_85%_0%,rgba(209,80,16,0.05)_0px,transparent_50%)]"
+    ></div>
 
     <!-- Header -->
     <header class="relative z-20 px-6 py-4">
       <nav class="mx-auto flex max-w-6xl items-center justify-between">
-        <!-- Logo -->
-        <div class="flex items-center">
-          <div class="h-10 w-10 overflow-hidden rounded-xl shadow-md">
+        <!-- Brand wordmark -->
+        <div class="flex items-center gap-2.5">
+          <div class="h-7 w-7 overflow-hidden rounded-sm">
             <img :src="siteLogo || '/logo.svg'" alt="Logo" class="h-full w-full object-contain" />
           </div>
+          <span
+            class="font-mono text-sm uppercase tracking-[0.14em] text-gray-800 dark:text-gray-100"
+          >SiliconBase</span>
         </div>
 
         <!-- Nav Actions -->
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2">
           <!-- Language Switcher -->
           <LocaleSwitcher />
 
@@ -57,7 +47,7 @@
             :href="docUrl"
             target="_blank"
             rel="noopener noreferrer"
-            class="rounded-lg p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:text-dark-400 dark:hover:bg-dark-800 dark:hover:text-white"
+            class="rounded-sm p-2 text-gray-500 transition-colors duration-150 hover:bg-gray-100 hover:text-gray-900 dark:text-dark-400 dark:hover:bg-dark-800 dark:hover:text-white"
             :title="t('home.viewDocs')"
           >
             <Icon name="book" size="md" />
@@ -66,7 +56,7 @@
           <!-- Theme Toggle -->
           <button
             @click="toggleTheme"
-            class="rounded-lg p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:text-dark-400 dark:hover:bg-dark-800 dark:hover:text-white"
+            class="rounded-sm p-2 text-gray-500 transition-colors duration-150 hover:bg-gray-100 hover:text-gray-900 dark:text-dark-400 dark:hover:bg-dark-800 dark:hover:text-white"
             :title="isDark ? t('home.switchToLight') : t('home.switchToDark')"
           >
             <Icon v-if="isDark" name="sun" size="md" />
@@ -77,16 +67,16 @@
           <router-link
             v-if="isAuthenticated"
             :to="dashboardPath"
-            class="inline-flex items-center gap-1.5 rounded-full bg-gray-900 py-1 pl-1 pr-2.5 transition-colors hover:bg-gray-800 dark:bg-gray-800 dark:hover:bg-gray-700"
+            class="ml-1 inline-flex items-center gap-1.5 rounded-sm border border-dark-800 bg-dark-950 py-1 pl-1 pr-2.5 text-xs font-medium text-white transition-colors duration-150 hover:bg-white hover:text-dark-950 dark:border-dark-700 dark:bg-dark-900 dark:text-gray-100 dark:hover:bg-dark-700 dark:hover:text-white"
           >
             <span
-              class="flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-primary-400 to-primary-600 text-[10px] font-semibold text-white"
+              class="flex h-5 w-5 items-center justify-center rounded-sm bg-primary-500 text-[10px] font-semibold text-white"
             >
               {{ userInitial }}
             </span>
-            <span class="text-xs font-medium text-white">{{ t('home.dashboard') }}</span>
+            <span>{{ t('home.dashboard') }}</span>
             <svg
-              class="h-3 w-3 text-gray-400"
+              class="h-3 w-3 text-gray-500 transition-colors duration-150 group-hover:text-current"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -102,7 +92,7 @@
           <router-link
             v-else
             to="/login"
-            class="inline-flex items-center rounded-full bg-gray-900 px-3 py-1 text-xs font-medium text-white transition-colors hover:bg-gray-800 dark:bg-gray-800 dark:hover:bg-gray-700"
+            class="ml-1 inline-flex items-center rounded-sm border border-dark-800 bg-dark-950 px-3 py-1.5 text-xs font-medium text-white transition-colors duration-150 hover:bg-white hover:text-dark-950 dark:border-dark-700 dark:bg-dark-900 dark:text-gray-100 dark:hover:bg-dark-700 dark:hover:text-white"
           >
             {{ t('home.login') }}
           </router-link>
@@ -111,36 +101,66 @@
     </header>
 
     <!-- Main Content -->
-    <main class="relative z-10 flex-1 px-6 py-16">
+    <main class="relative z-10 flex-1 px-6 py-16 md:py-24">
       <div class="mx-auto max-w-6xl">
         <!-- Hero Section - Left/Right Layout -->
-        <div class="mb-12 flex flex-col items-center justify-between gap-12 lg:flex-row lg:gap-16">
+        <div class="mb-20 flex flex-col items-start justify-between gap-12 lg:flex-row lg:gap-16">
           <!-- Left: Text Content -->
-          <div class="flex-1 text-center lg:text-left">
+          <div class="flex-1">
+            <p class="eyebrow mb-5">{{ t('home.eyebrow') }}</p>
             <h1
-              class="mb-4 text-4xl font-bold text-gray-900 dark:text-white md:text-5xl lg:text-6xl"
+              class="mb-5 text-4xl font-normal tracking-tight text-gray-900 dark:text-white md:text-5xl lg:text-6xl"
+              style="line-height: 1.05"
             >
               {{ siteName }}
             </h1>
-            <p class="mb-8 text-lg text-gray-600 dark:text-dark-300 md:text-xl">
+            <p class="mb-3 max-w-xl text-lg font-medium text-gray-800 dark:text-gray-100">
               {{ siteSubtitle }}
+            </p>
+            <p class="mb-8 max-w-xl text-base leading-relaxed text-gray-600 dark:text-dark-300">
+              {{ siteDescription }}
             </p>
 
             <!-- CTA Button -->
-            <div>
+            <div class="flex flex-wrap items-center gap-3">
               <router-link
                 :to="isAuthenticated ? dashboardPath : '/login'"
-                class="btn btn-primary px-8 py-3 text-base shadow-lg shadow-primary-500/30"
+                class="btn btn-primary px-5 py-2.5 text-sm"
               >
                 {{ isAuthenticated ? t('home.goToDashboard') : t('home.getStarted') }}
-                <Icon name="arrowRight" size="md" class="ml-2" :stroke-width="2" />
+                <Icon name="arrowRight" size="md" class="ml-1" :stroke-width="2" />
               </router-link>
+              <span
+                class="font-mono text-xs uppercase tracking-[0.12em] text-gray-400 dark:text-dark-400"
+              >siliconbase.link</span>
             </div>
           </div>
 
           <!-- Right: Terminal Animation -->
-          <div class="flex flex-1 justify-center lg:justify-end">
+          <div class="flex w-full flex-1 justify-center lg:justify-end">
             <div class="terminal-container">
+              <!-- Authored SVG motif: gateway distribution diagram (subtle) -->
+              <svg
+                class="gateway-motif pointer-events-none absolute -left-16 -top-10 hidden h-24 w-32 text-primary-500/40 lg:block"
+                viewBox="0 0 128 96"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1"
+                aria-hidden="true"
+              >
+                <!-- source node (client) -->
+                <circle cx="10" cy="48" r="3" fill="currentColor" />
+                <!-- gateway node -->
+                <rect x="48" y="34" width="20" height="28" rx="1" />
+                <line x1="13" y1="48" x2="48" y2="48" stroke-dasharray="2 2" />
+                <!-- upstream nodes -->
+                <circle cx="110" cy="14" r="3" />
+                <circle cx="118" cy="48" r="3" />
+                <circle cx="110" cy="82" r="3" />
+                <line x1="68" y1="40" x2="107" y2="16" stroke-dasharray="2 2" />
+                <line x1="68" y1="48" x2="115" y2="48" stroke-dasharray="2 2" />
+                <line x1="68" y1="56" x2="107" y2="80" stroke-dasharray="2 2" />
+              </svg>
               <div class="terminal-window">
                 <!-- Window header -->
                 <div class="terminal-header">
@@ -149,7 +169,7 @@
                     <span class="btn-minimize"></span>
                     <span class="btn-maximize"></span>
                   </div>
-                  <span class="terminal-title">terminal</span>
+                  <span class="terminal-title">~/gateway — zsh</span>
                 </div>
                 <!-- Terminal content -->
                 <div class="terminal-body">
@@ -160,7 +180,7 @@
                     <span class="code-url">/v1/messages</span>
                   </div>
                   <div class="code-line line-2">
-                    <span class="code-comment"># Routing to upstream...</span>
+                    <span class="code-comment"># routing to upstream pool…</span>
                   </div>
                   <div class="code-line line-3">
                     <span class="code-success">200 OK</span>
@@ -176,67 +196,62 @@
           </div>
         </div>
 
-        <!-- Feature Tags - Centered -->
-        <div class="mb-12 flex flex-wrap items-center justify-center gap-4 md:gap-6">
-          <div
-            class="inline-flex items-center gap-2.5 rounded-full border border-gray-200/50 bg-white/80 px-5 py-2.5 shadow-sm backdrop-blur-sm dark:border-dark-700/50 dark:bg-dark-800/80"
-          >
-            <Icon name="swap" size="sm" class="text-primary-500" />
-            <span class="text-sm font-medium text-gray-700 dark:text-dark-200">{{
-              t('home.tags.subscriptionToApi')
-            }}</span>
-          </div>
-          <div
-            class="inline-flex items-center gap-2.5 rounded-full border border-gray-200/50 bg-white/80 px-5 py-2.5 shadow-sm backdrop-blur-sm dark:border-dark-700/50 dark:bg-dark-800/80"
-          >
-            <Icon name="shield" size="sm" class="text-primary-500" />
-            <span class="text-sm font-medium text-gray-700 dark:text-dark-200">{{
-              t('home.tags.stickySession')
-            }}</span>
-          </div>
-          <div
-            class="inline-flex items-center gap-2.5 rounded-full border border-gray-200/50 bg-white/80 px-5 py-2.5 shadow-sm backdrop-blur-sm dark:border-dark-700/50 dark:bg-dark-800/80"
-          >
-            <Icon name="chart" size="sm" class="text-primary-500" />
-            <span class="text-sm font-medium text-gray-700 dark:text-dark-200">{{
-              t('home.tags.realtimeBilling')
-            }}</span>
+        <!-- Feature Tags - Inline mono row -->
+        <div class="mb-16 flex flex-wrap items-center gap-x-6 gap-y-3 border-y border-dashed border-gray-200 py-4 dark:border-dark-700">
+          <span
+            class="font-mono text-xs uppercase tracking-[0.12em] text-gray-400 dark:text-dark-400"
+          >capabilities</span>
+          <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
+            <div class="inline-flex items-center gap-2">
+              <Icon name="swap" size="sm" class="text-primary-500" />
+              <span class="text-sm text-gray-700 dark:text-gray-200">{{ t('home.tags.subscriptionToApi') }}</span>
+            </div>
+            <div class="inline-flex items-center gap-2">
+              <Icon name="shield" size="sm" class="text-primary-500" />
+              <span class="text-sm text-gray-700 dark:text-gray-200">{{ t('home.tags.stickySession') }}</span>
+            </div>
+            <div class="inline-flex items-center gap-2">
+              <Icon name="chart" size="sm" class="text-primary-500" />
+              <span class="text-sm text-gray-700 dark:text-gray-200">{{ t('home.tags.realtimeBilling') }}</span>
+            </div>
           </div>
         </div>
 
         <!-- Features Grid -->
-        <div class="mb-12 grid gap-6 md:grid-cols-3">
+        <div class="mb-20 grid gap-px overflow-hidden rounded-md border border-gray-200 bg-gray-200 dark:border-dark-700 dark:bg-dark-700 md:grid-cols-3">
           <!-- Feature 1: Unified Gateway -->
           <div
-            class="group rounded-2xl border border-gray-200/50 bg-white/60 p-6 backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:shadow-primary-500/10 dark:border-dark-700/50 dark:bg-dark-800/60"
+            class="group bg-white p-6 transition-colors duration-150 hover:bg-gray-50 dark:bg-dark-900 dark:hover:bg-dark-800"
           >
-            <div
-              class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg shadow-blue-500/30 transition-transform group-hover:scale-110"
-            >
-              <Icon name="server" size="lg" class="text-white" />
+            <div class="mb-4 flex items-center gap-2">
+              <span class="font-mono text-[11px] uppercase tracking-[0.14em] text-primary-500">01</span>
+              <span class="h-px flex-1 bg-gray-200 dark:bg-dark-700"></span>
             </div>
-            <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
+            <div
+              class="mb-4 flex h-10 w-10 items-center justify-center rounded-sm border border-primary-500/30 bg-primary-500/10 text-primary-500"
+            >
+              <Icon name="server" size="md" />
+            </div>
+            <h3 class="mb-2 text-lg font-normal tracking-tight text-gray-900 dark:text-white">
               {{ t('home.features.unifiedGateway') }}
             </h3>
-            <p class="text-sm leading-relaxed text-gray-600 dark:text-dark-400">
+            <p class="text-sm leading-relaxed text-gray-600 dark:text-dark-300">
               {{ t('home.features.unifiedGatewayDesc') }}
             </p>
           </div>
 
           <!-- Feature 2: Account Pool -->
           <div
-            class="group rounded-2xl border border-gray-200/50 bg-white/60 p-6 backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:shadow-primary-500/10 dark:border-dark-700/50 dark:bg-dark-800/60"
+            class="group bg-white p-6 transition-colors duration-150 hover:bg-gray-50 dark:bg-dark-900 dark:hover:bg-dark-800"
           >
+            <div class="mb-4 flex items-center gap-2">
+              <span class="font-mono text-[11px] uppercase tracking-[0.14em] text-primary-500">02</span>
+              <span class="h-px flex-1 bg-gray-200 dark:bg-dark-700"></span>
+            </div>
             <div
-              class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 shadow-lg shadow-primary-500/30 transition-transform group-hover:scale-110"
+              class="mb-4 flex h-10 w-10 items-center justify-center rounded-sm border border-primary-500/30 bg-primary-500/10 text-primary-500"
             >
-              <svg
-                class="h-6 w-6 text-white"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                stroke-width="1.5"
-              >
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -244,28 +259,26 @@
                 />
               </svg>
             </div>
-            <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
+            <h3 class="mb-2 text-lg font-normal tracking-tight text-gray-900 dark:text-white">
               {{ t('home.features.multiAccount') }}
             </h3>
-            <p class="text-sm leading-relaxed text-gray-600 dark:text-dark-400">
+            <p class="text-sm leading-relaxed text-gray-600 dark:text-dark-300">
               {{ t('home.features.multiAccountDesc') }}
             </p>
           </div>
 
           <!-- Feature 3: Billing & Quota -->
           <div
-            class="group rounded-2xl border border-gray-200/50 bg-white/60 p-6 backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:shadow-primary-500/10 dark:border-dark-700/50 dark:bg-dark-800/60"
+            class="group bg-white p-6 transition-colors duration-150 hover:bg-gray-50 dark:bg-dark-900 dark:hover:bg-dark-800"
           >
+            <div class="mb-4 flex items-center gap-2">
+              <span class="font-mono text-[11px] uppercase tracking-[0.14em] text-primary-500">03</span>
+              <span class="h-px flex-1 bg-gray-200 dark:bg-dark-700"></span>
+            </div>
             <div
-              class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 shadow-lg shadow-purple-500/30 transition-transform group-hover:scale-110"
+              class="mb-4 flex h-10 w-10 items-center justify-center rounded-sm border border-primary-500/30 bg-primary-500/10 text-primary-500"
             >
-              <svg
-                class="h-6 w-6 text-white"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                stroke-width="1.5"
-              >
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -273,131 +286,107 @@
                 />
               </svg>
             </div>
-            <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
+            <h3 class="mb-2 text-lg font-normal tracking-tight text-gray-900 dark:text-white">
               {{ t('home.features.balanceQuota') }}
             </h3>
-            <p class="text-sm leading-relaxed text-gray-600 dark:text-dark-400">
+            <p class="text-sm leading-relaxed text-gray-600 dark:text-dark-300">
               {{ t('home.features.balanceQuotaDesc') }}
             </p>
           </div>
         </div>
 
         <!-- Supported Providers -->
-        <div class="mb-8 text-center">
-          <h2 class="mb-3 text-2xl font-bold text-gray-900 dark:text-white">
-            {{ t('home.providers.title') }}
-          </h2>
-          <p class="text-sm text-gray-600 dark:text-dark-400">
+        <div class="mb-6 flex flex-col gap-2 border-t border-dashed border-gray-200 pt-10 dark:border-dark-700">
+          <p class="eyebrow">{{ t('home.providers.title') }}</p>
+          <p class="max-w-xl text-sm text-gray-600 dark:text-dark-300">
             {{ t('home.providers.description') }}
           </p>
         </div>
 
-        <div class="mb-16 flex flex-wrap items-center justify-center gap-4">
+        <div class="mb-16 flex flex-wrap items-center gap-2">
           <!-- Claude - Supported -->
           <div
-            class="flex items-center gap-2 rounded-xl border border-primary-200 bg-white/60 px-5 py-3 ring-1 ring-primary-500/20 backdrop-blur-sm dark:border-primary-800 dark:bg-dark-800/60"
+            class="flex items-center gap-2 rounded-sm border border-gray-200 bg-white px-3 py-1.5 transition-colors duration-150 hover:border-gray-300 dark:border-dark-700 dark:bg-dark-900 dark:hover:border-dark-600"
           >
-            <div
-              class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-orange-400 to-orange-500"
-            >
-              <span class="text-xs font-bold text-white">C</span>
-            </div>
-            <span class="text-sm font-medium text-gray-700 dark:text-dark-200">{{ t('home.providers.claude') }}</span>
-            <span
-              class="rounded bg-primary-100 px-1.5 py-0.5 text-[10px] font-medium text-primary-600 dark:bg-primary-900/30 dark:text-primary-400"
-              >{{ t('home.providers.supported') }}</span
-            >
+            <span class="font-mono text-xs font-semibold text-primary-500">C</span>
+            <span class="text-sm text-gray-700 dark:text-gray-200">{{ t('home.providers.claude') }}</span>
+            <span class="rounded-sm bg-primary-500/10 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wide text-primary-600 dark:text-primary-400">{{ t('home.providers.supported') }}</span>
           </div>
           <!-- GPT - Supported -->
           <div
-            class="flex items-center gap-2 rounded-xl border border-primary-200 bg-white/60 px-5 py-3 ring-1 ring-primary-500/20 backdrop-blur-sm dark:border-primary-800 dark:bg-dark-800/60"
+            class="flex items-center gap-2 rounded-sm border border-gray-200 bg-white px-3 py-1.5 transition-colors duration-150 hover:border-gray-300 dark:border-dark-700 dark:bg-dark-900 dark:hover:border-dark-600"
           >
-            <div
-              class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-green-500 to-green-600"
-            >
-              <span class="text-xs font-bold text-white">G</span>
-            </div>
-            <span class="text-sm font-medium text-gray-700 dark:text-dark-200">GPT</span>
-            <span
-              class="rounded bg-primary-100 px-1.5 py-0.5 text-[10px] font-medium text-primary-600 dark:bg-primary-900/30 dark:text-primary-400"
-              >{{ t('home.providers.supported') }}</span
-            >
+            <span class="font-mono text-xs font-semibold text-primary-500">G</span>
+            <span class="text-sm text-gray-700 dark:text-gray-200">GPT</span>
+            <span class="rounded-sm bg-primary-500/10 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wide text-primary-600 dark:text-primary-400">{{ t('home.providers.supported') }}</span>
           </div>
           <!-- Gemini - Supported -->
           <div
-            class="flex items-center gap-2 rounded-xl border border-primary-200 bg-white/60 px-5 py-3 ring-1 ring-primary-500/20 backdrop-blur-sm dark:border-primary-800 dark:bg-dark-800/60"
+            class="flex items-center gap-2 rounded-sm border border-gray-200 bg-white px-3 py-1.5 transition-colors duration-150 hover:border-gray-300 dark:border-dark-700 dark:bg-dark-900 dark:hover:border-dark-600"
           >
-            <div
-              class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-blue-600"
-            >
-              <span class="text-xs font-bold text-white">G</span>
-            </div>
-            <span class="text-sm font-medium text-gray-700 dark:text-dark-200">{{ t('home.providers.gemini') }}</span>
-            <span
-              class="rounded bg-primary-100 px-1.5 py-0.5 text-[10px] font-medium text-primary-600 dark:bg-primary-900/30 dark:text-primary-400"
-              >{{ t('home.providers.supported') }}</span
-            >
+            <span class="font-mono text-xs font-semibold text-primary-500">G</span>
+            <span class="text-sm text-gray-700 dark:text-gray-200">{{ t('home.providers.gemini') }}</span>
+            <span class="rounded-sm bg-primary-500/10 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wide text-primary-600 dark:text-primary-400">{{ t('home.providers.supported') }}</span>
           </div>
           <!-- Antigravity - Supported -->
           <div
-            class="flex items-center gap-2 rounded-xl border border-primary-200 bg-white/60 px-5 py-3 ring-1 ring-primary-500/20 backdrop-blur-sm dark:border-primary-800 dark:bg-dark-800/60"
+            class="flex items-center gap-2 rounded-sm border border-gray-200 bg-white px-3 py-1.5 transition-colors duration-150 hover:border-gray-300 dark:border-dark-700 dark:bg-dark-900 dark:hover:border-dark-600"
           >
-            <div
-              class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-rose-500 to-pink-600"
-            >
-              <span class="text-xs font-bold text-white">A</span>
-            </div>
-            <span class="text-sm font-medium text-gray-700 dark:text-dark-200">{{ t('home.providers.antigravity') }}</span>
-            <span
-              class="rounded bg-primary-100 px-1.5 py-0.5 text-[10px] font-medium text-primary-600 dark:bg-primary-900/30 dark:text-primary-400"
-              >{{ t('home.providers.supported') }}</span
-            >
+            <span class="font-mono text-xs font-semibold text-primary-500">A</span>
+            <span class="text-sm text-gray-700 dark:text-gray-200">{{ t('home.providers.antigravity') }}</span>
+            <span class="rounded-sm bg-primary-500/10 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wide text-primary-600 dark:text-primary-400">{{ t('home.providers.supported') }}</span>
           </div>
           <!-- More - Coming Soon -->
           <div
-            class="flex items-center gap-2 rounded-xl border border-gray-200/50 bg-white/40 px-5 py-3 opacity-60 backdrop-blur-sm dark:border-dark-700/50 dark:bg-dark-800/40"
+            class="flex items-center gap-2 rounded-sm border border-dashed border-gray-200 bg-transparent px-3 py-1.5 opacity-70 dark:border-dark-700"
           >
-            <div
-              class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-gray-500 to-gray-600"
-            >
-              <span class="text-xs font-bold text-white">+</span>
-            </div>
-            <span class="text-sm font-medium text-gray-700 dark:text-dark-200">{{ t('home.providers.more') }}</span>
-            <span
-              class="rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium text-gray-500 dark:bg-dark-700 dark:text-dark-400"
-              >{{ t('home.providers.soon') }}</span
-            >
+            <span class="font-mono text-xs font-semibold text-gray-400 dark:text-dark-400">+</span>
+            <span class="text-sm text-gray-500 dark:text-dark-400">{{ t('home.providers.more') }}</span>
+            <span class="rounded-sm bg-gray-100 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wide text-gray-500 dark:bg-dark-800 dark:text-dark-400">{{ t('home.providers.soon') }}</span>
           </div>
         </div>
       </div>
     </main>
 
     <!-- Footer -->
-    <footer class="relative z-10 border-t border-gray-200/50 px-6 py-8 dark:border-dark-800/50">
+    <footer class="relative z-10 border-t border-gray-200 bg-gray-50 px-6 py-8 dark:border-dark-800 dark:bg-dark-950">
       <div
-        class="mx-auto flex max-w-6xl flex-col items-center justify-center gap-4 text-center sm:flex-row sm:text-left"
+        class="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 md:flex-row md:items-center"
       >
-        <p class="text-sm text-gray-500 dark:text-dark-400">
-          &copy; {{ currentYear }} {{ siteName }}. {{ t('home.footer.allRightsReserved') }}
-        </p>
-        <div class="flex items-center gap-4">
-          <a
-            v-if="docUrl"
-            :href="docUrl"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-dark-400 dark:hover:text-white"
-          >
-            {{ t('home.docs') }}
-          </a>
-          <a
-            :href="githubUrl"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-dark-400 dark:hover:text-white"
-          >
-            GitHub
-          </a>
+        <div class="flex flex-col gap-1">
+          <div class="flex items-center gap-2">
+            <div class="h-5 w-5 overflow-hidden rounded-sm">
+              <img :src="siteLogo || '/logo.svg'" alt="Logo" class="h-full w-full object-contain" />
+            </div>
+            <span class="font-mono text-xs uppercase tracking-[0.14em] text-gray-700 dark:text-gray-200">SiliconBase</span>
+          </div>
+          <p class="font-mono text-[11px] uppercase tracking-[0.12em] text-gray-400 dark:text-dark-400">
+            {{ t('home.footer.tagline') }} &middot; siliconbase.link
+          </p>
+        </div>
+        <div class="flex flex-col items-start gap-1 md:items-end">
+          <p class="text-xs text-gray-500 dark:text-dark-400">
+            &copy; {{ currentYear }} {{ siteName }}. {{ t('home.footer.allRightsReserved') }}
+          </p>
+          <div class="flex items-center gap-4">
+            <a
+              v-if="docUrl"
+              :href="docUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-xs text-gray-500 transition-colors duration-150 hover:text-primary-500 dark:text-dark-400"
+            >
+              {{ t('home.docs') }}
+            </a>
+            <a
+              :href="githubUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-xs text-gray-500 transition-colors duration-150 hover:text-primary-500 dark:text-dark-400"
+            >
+              GitHub
+            </a>
+          </div>
         </div>
       </div>
     </footer>
@@ -420,7 +409,8 @@ const appStore = useAppStore()
 // Site settings - directly from appStore (already initialized from injected config)
 const siteName = computed(() => appStore.cachedPublicSettings?.site_name || appStore.siteName || 'SiliconBase')
 const siteLogo = computed(() => sanitizeUrl(appStore.cachedPublicSettings?.site_logo || appStore.siteLogo || '', { allowRelative: true, allowDataUrl: true }))
-const siteSubtitle = computed(() => appStore.cachedPublicSettings?.site_subtitle || 'AI API Gateway Platform')
+const siteSubtitle = computed(() => appStore.cachedPublicSettings?.site_subtitle || t('home.heroSubtitle'))
+const siteDescription = computed(() => t('home.heroDescription'))
 const docUrl = computed(() => sanitizeUrl(appStore.cachedPublicSettings?.doc_url || appStore.docUrl || ''))
 const homeContent = computed(() => appStore.cachedPublicSettings?.home_content || '')
 
@@ -482,75 +472,81 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* Terminal Container */
+/* Terminal Container — warm dark IDE/terminal panel, no glow/shadow */
 .terminal-container {
   position: relative;
   display: inline-block;
 }
 
+.gateway-motif {
+  color: theme('colors.primary.500');
+  opacity: 0.35;
+}
+
 /* Terminal Window */
 .terminal-window {
   width: 420px;
-  background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
-  border-radius: 14px;
-  box-shadow:
-    0 25px 50px -12px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  max-width: calc(100vw - 3rem);
+  background: theme('colors.dark.950');
+  border: 1px solid theme('colors.dark.700');
+  border-radius: 6px;
   overflow: hidden;
-  transform: perspective(1000px) rotateX(2deg) rotateY(-2deg);
-  transition: transform 0.3s ease;
+  transition: border-color 0.15s ease-in-out;
 }
 
 .terminal-window:hover {
-  transform: perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(-4px);
+  border-color: theme('colors.dark.600');
 }
 
 /* Terminal Header */
 .terminal-header {
   display: flex;
   align-items: center;
-  padding: 12px 16px;
-  background: rgba(30, 41, 59, 0.8);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 10px 14px;
+  background: theme('colors.dark.900');
+  border-bottom: 1px solid theme('colors.dark.700');
 }
 
 .terminal-buttons {
   display: flex;
-  gap: 8px;
+  gap: 6px;
 }
 
 .terminal-buttons span {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
+  border: 1px solid theme('colors.dark.700');
 }
 
 .btn-close {
-  background: #ef4444;
+  background: theme('colors.red.500');
 }
 .btn-minimize {
-  background: #eab308;
+  background: theme('colors.amber.500');
 }
 .btn-maximize {
-  background: #22c55e;
+  background: theme('colors.emerald.500');
 }
 
 .terminal-title {
   flex: 1;
   text-align: center;
-  font-size: 12px;
-  font-family: ui-monospace, monospace;
-  color: #64748b;
-  margin-right: 52px;
+  font-size: 11px;
+  font-family: theme('fontFamily.mono');
+  color: theme('colors.dark.400');
+  margin-right: 48px;
+  text-transform: lowercase;
+  letter-spacing: 0.02em;
 }
 
 /* Terminal Body */
 .terminal-body {
-  padding: 20px 24px;
-  font-family: ui-monospace, 'Fira Code', monospace;
-  font-size: 14px;
-  line-height: 2;
+  padding: 18px 20px;
+  font-family: theme('fontFamily.mono');
+  font-size: 13px;
+  line-height: 1.9;
+  color: theme('colors.gray.300');
 }
 
 .code-line {
@@ -586,40 +582,43 @@ onMounted(() => {
   }
 }
 
+/* Vermillion prompt accent; restrained warm syntax colors. */
 .code-prompt {
-  color: #22c55e;
-  font-weight: bold;
+  color: theme('colors.primary.500');
+  font-weight: 600;
 }
 .code-cmd {
-  color: #38bdf8;
+  color: theme('colors.gray.100');
 }
 .code-flag {
-  color: #a78bfa;
+  color: theme('colors.primary.300');
 }
 .code-url {
-  color: #14b8a6;
+  color: theme('colors.gray.200');
 }
 .code-comment {
-  color: #64748b;
+  color: theme('colors.dark.400');
   font-style: italic;
 }
 .code-success {
-  color: #22c55e;
-  background: rgba(34, 197, 94, 0.15);
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-weight: 600;
+  color: theme('colors.emerald.400');
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 500;
 }
 .code-response {
-  color: #fbbf24;
+  color: theme('colors.amber.400');
 }
 
-/* Blinking Cursor */
+/* Blinking Cursor — vermillion */
 .cursor {
   display: inline-block;
   width: 8px;
-  height: 16px;
-  background: #22c55e;
+  height: 15px;
+  background: theme('colors.primary.500');
   animation: blink 1s step-end infinite;
 }
 
@@ -634,12 +633,17 @@ onMounted(() => {
   }
 }
 
-/* Dark mode adjustments */
-:deep(.dark) .terminal-window {
-  box-shadow:
-    0 25px 50px -12px rgba(0, 0, 0, 0.6),
-    0 0 0 1px rgba(20, 184, 166, 0.2),
-    0 0 40px rgba(20, 184, 166, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+/* Respect reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  .code-line {
+    opacity: 1;
+    animation: none;
+  }
+  .cursor {
+    animation: none;
+  }
+  .terminal-window {
+    transition: none;
+  }
 }
 </style>
