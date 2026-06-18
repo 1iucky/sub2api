@@ -453,7 +453,7 @@
               rel="noopener noreferrer"
               class="text-xs text-gray-500 transition-colors duration-150 hover:text-primary-500 dark:text-dark-400"
             >
-              GitHub
+              Website
             </a>
           </div>
         </div>
@@ -495,7 +495,7 @@ const isHomeContentUrl = computed(() => {
 const isDark = ref(document.documentElement.classList.contains('dark'))
 
 // GitHub URL
-const githubUrl = 'https://github.com/Wei-Shaw/sub2api'
+const githubUrl = 'https://siliconbase.link'
 
 // Auth state
 const isAuthenticated = computed(() => authStore.isAuthenticated)

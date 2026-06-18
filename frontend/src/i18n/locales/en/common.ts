@@ -188,6 +188,7 @@ export default {
     expand: 'Expand',
     logout: 'Logout',
     github: 'GitHub',
+    website: 'Website',
     mySubscriptions: 'My Subscriptions',
     buySubscription: 'Recharge / Subscription',
     docs: 'Docs',
