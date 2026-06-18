@@ -12,14 +12,15 @@ export default {
     switchToDark: '切换到深色模式',
     dashboard: '控制台',
     login: '登录',
-    getStarted: '立即开始',
+    getStarted: '申请接入',
     goToDashboard: '进入控制台',
+    eyebrow: 'AI API 网关',
     // 新增：面向用户的价值主张
-    heroSubtitle: '一个密钥，畅用多个 AI 模型',
-    heroDescription: '无需管理多个订阅账号，一站式接入 Claude、GPT、Gemini 等主流 AI 服务',
+    heroSubtitle: '一个端点，接入所有上游 AI 模型。',
+    heroDescription: '硅基链将你的 Claude、OpenAI、Gemini 订阅统一聚合在一个 API 密钥之后——鉴权、用量计费与负载均衡均在网关层完成。',
     tags: {
       subscriptionToApi: '订阅转 API',
-      stickySession: '会话保持',
+      stickySession: '会话亲和',
       realtimeBilling: '按量计费'
     },
     // 用户痛点区块
@@ -50,12 +51,12 @@ export default {
       subtitle: '简单三步，开始省心使用 AI'
     },
     features: {
-      unifiedGateway: '一键接入',
-      unifiedGatewayDesc: '获取一个 API 密钥，即可调用所有已接入的 AI 模型，无需分别申请。',
-      multiAccount: '稳定可靠',
-      multiAccountDesc: '智能调度多个上游账号，自动切换和负载均衡，告别频繁报错。',
-      balanceQuota: '用多少付多少',
-      balanceQuotaDesc: '按实际使用量计费，支持设置配额上限，团队用量一目了然。'
+      unifiedGateway: '统一网关',
+      unifiedGatewayDesc: '一个 API 密钥、一个端点。请求按密钥组路由到正确的上游模型（Claude、GPT、Gemini），对客户端完全透明。',
+      multiAccount: '账号池与故障转移',
+      multiAccountDesc: '按组将多个上游账号做负载均衡，支持会话保持、RPM 与并发上限，并在会话报错时自动切换。',
+      balanceQuota: '按量计费与配额',
+      balanceQuotaDesc: '按密钥实时计量使用量，可配置配额与消费上限，让团队用量始终可观测、可约束。'
     },
     // 优势对比
     comparison: {
@@ -94,10 +95,10 @@ export default {
       }
     },
     providers: {
-      title: '已支持的 AI 模型',
-      description: '一个 API，多种选择',
-      supported: '已支持',
-      soon: '即将推出',
+      title: '上游服务商',
+      description: '一个端点，多个上游——按密钥组路由。',
+      supported: '已接入',
+      soon: '规划中',
       claude: 'Claude',
       gemini: 'Gemini',
       antigravity: 'Antigravity',
@@ -110,7 +111,8 @@ export default {
       button: '免费注册'
     },
     footer: {
-      allRightsReserved: '保留所有权利。'
+      allRightsReserved: '保留所有权利。',
+      tagline: '由 SiliconBase 运营'
     }
   },
 
