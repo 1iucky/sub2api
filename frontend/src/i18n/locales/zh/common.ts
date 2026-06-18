@@ -177,6 +177,7 @@ export default {
     expand: '展开',
     logout: '退出登录',
     github: 'GitHub',
+    website: '官方网站',
     mySubscriptions: '我的订阅',
     buySubscription: '充值/订阅',
     docs: '文档',

@@ -823,6 +823,13 @@ export default {
     tryAgain: '请重试'
   },
 
+  // 404 / 未找到页面
+  notFound: {
+    description: '请求的路径不存在或已被移动。',
+    goBack: '返回',
+    goDashboard: '进入控制台'
+  },
+
   // Dates
   dates: {
     today: '今天',
