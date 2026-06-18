@@ -1,0 +1,19 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="SiliconBase">
+  <!--
+    SiliconBase mark — silicon lattice / interlocking chain links.
+    Single vermillion (#ef6f2e), transparent background, legible at 16x16.
+
+    Construction (all crisp orthogonal, easy to verify):
+      - Two thick rectangular RINGS (chain links), each a rotated square outline.
+      - Link A sits top-left, Link B sits bottom-right, overlapping in the middle.
+      - A central lattice NODE (filled square) sits at the overlap point —
+        evokes a silicon crystal lattice junction.
+      - The overlap reads as interlocking chain links.
+  -->
+  <!-- Link A: top-left ring (square outline), behind -->
+  <rect x="4" y="4" width="16" height="16" rx="2" stroke="#ef6f2e" stroke-width="3.5" fill="none" />
+  <!-- Link B: bottom-right ring (square outline), in front, offset to interlock -->
+  <rect x="12" y="12" width="16" height="16" rx="2" stroke="#ef6f2e" stroke-width="3.5" fill="none" />
+  <!-- Central lattice node at the geometric center of the interlock -->
+  <rect x="14" y="14" width="4" height="4" fill="#ef6f2e" />
+</svg>
