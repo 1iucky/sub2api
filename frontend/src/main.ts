@@ -6,6 +6,7 @@ import i18n, { initI18n } from './i18n'
 import { useAppStore } from '@/stores/app'
 import { updateFavicon } from '@/utils/branding'
 import { isIOSDevice } from '@/utils/device'
+import { vReveal } from '@/composables/useInView'
 import './style.css'
 import './styles/theme-override.css'
 
@@ -55,6 +56,10 @@ async function bootstrap() {
 
   app.use(router)
   app.use(i18n)
+
+  // Global reveal directive — sets `data-ready="true"` when an element enters
+  // the viewport (factory.ai attribute-toggle pattern). One-line registration.
+  app.directive('reveal', vReveal)
 
   // 等待路由器完成初始导航后再挂载，避免竞态条件导致的空白渲染
   await router.isReady()

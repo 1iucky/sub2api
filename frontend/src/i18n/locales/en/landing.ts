@@ -18,6 +18,96 @@ export default {
     // User-focused value proposition
     heroSubtitle: 'A single endpoint for every upstream AI model.',
     heroDescription: 'SiliconBase pools your Claude, OpenAI and Gemini subscriptions behind one API key — with authentication, usage billing and load balancing handled at the gateway.',
+    // v2 homepage sections (factory.ai motion rebuild)
+    nav: {
+      gateway: 'Gateway',
+      pools: 'Pools',
+      docs: 'Docs',
+      openMenu: 'Open menu',
+      closeMenu: 'Close menu'
+    },
+    hero2: {
+      eyebrow: 'AI API GATEWAY',
+      title: 'One gateway for every AI subscription.',
+      subhead:
+        'Route Claude, OpenAI, Gemini, Bedrock and Antigravity through a single API key. Pool accounts, balance load, meter usage — at the gateway.',
+      ctaPrimary: 'Get API key',
+      ctaSecondary: 'Read the docs',
+      demo: {
+        title: 'gateway — live',
+        sidebarGateway: 'Gateway',
+        sidebarPools: 'Pools',
+        sidebarKeys: 'Keys',
+        sidebarSettings: 'Settings',
+        kpiRpm: 'RPM',
+        kpiRpmValue: '1.2k',
+        kpiP95: 'P95',
+        kpiP95Value: '240ms',
+        kpiUptime: 'Uptime',
+        kpiUptimeValue: '99.9%',
+        kpiKeys: 'Keys',
+        kpiKeysValue: '348',
+        health: 'health',
+        streamTitle: 'request stream',
+        streamRoute: 'route',
+        streamUpstream: 'upstream',
+        streamStatus: '200 ok',
+        sparkClaude: 'claude',
+        sparkOpenai: 'openai',
+        sparkGemini: 'gemini'
+      }
+    },
+    marquee2: {
+      label: 'Compatible with',
+      items: 'Claude · OpenAI · Gemini · Bedrock · Antigravity'
+    },
+    bento2: {
+      eyebrow: 'WHAT THE GATEWAY DOES',
+      title: 'Defining your gateway',
+      cards: {
+        pooling: {
+          index: '01',
+          title: 'Multi-upstream pooling',
+          desc: 'Aggregate Claude, OpenAI and Gemini accounts behind one key. Sticky sessions, per-account RPM and concurrency limits, automatic failover.'
+        },
+        routing: {
+          index: '02',
+          title: 'Sticky sessions & load balancing',
+          desc: 'Pin a session to an account, distribute traffic across the pool, and keep latency flat as you scale keys and teams.'
+        },
+        billing: {
+          index: '03',
+          title: 'Quotas & metered billing',
+          desc: 'Per-key usage is metered in real time with configurable quotas and spend limits. Team consumption stays observable and bounded.'
+        }
+      }
+    },
+    cta2: {
+      eyebrow: 'SHIP WITHOUT MANAGING QUOTAS',
+      title: 'Ship AI features without managing quotas.',
+      button: 'Start free',
+      note: 'No credit card to try. Pool your first upstream in minutes.'
+    },
+    footer2: {
+      tagline: 'Operated as SiliconBase',
+      domain: 'siliconbase.link',
+      columns: {
+        product: 'Product',
+        resources: 'Resources',
+        legal: 'Legal'
+      },
+      links: {
+        gateway: 'Gateway',
+        pools: 'Pools',
+        pricing: 'Pricing',
+        docs: 'Docs',
+        status: 'Status',
+        changelog: 'Changelog',
+        privacy: 'Privacy',
+        terms: 'Terms'
+      },
+      copyright: '© 2026 SiliconBase. All rights reserved.'
+    },
     tags: {
       subscriptionToApi: 'Subscription to API',
       stickySession: 'Session affinity',
