@@ -1,0 +1,49 @@
+/**
+ * SiliconBase theme overrides (factory.ai aesthetic).
+ *
+ * Loaded AFTER `style.css` (see main.ts import order) so it can:
+ *   - wire Geist variable fonts (@font-face via fontsource),
+ *   - register factory-specific utilities (line-grid blueprint, dashed divider,
+ *     mono eyebrow label).
+ *
+ * This file is intentionally additive (Tier-1 / zero-conflict): it does not
+ * override any existing component class — it only adds new utilities and
+ * installs fonts. Token repointing happens in tailwind.config.js + style.css.
+ */
+
+/* Geist variable fonts (sans + mono). Loaded via @fontsource-variable. */
+@import '@fontsource-variable/geist';
+@import '@fontsource-variable/geist-mono';
+
+/* ============ Factory utility classes ============ */
+
+/* Faint warm line-grid blueprint background.
+   Use behind login / empty states / homepage — NOT behind data-dense tables. */
+.bg-blueprint {
+  background-image: linear-gradient(rgba(125, 114, 100, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(125, 114, 100, 0.06) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* Dashed hairline divider — blueprint motif. */
+.divider-dashed {
+  border-top: 1px dashed theme('colors.gray.200');
+}
+
+.dark .divider-dashed {
+  border-top-color: theme('colors.dark.700');
+}
+
+/* Mono uppercase eyebrow label (12px, tracking-wide). */
+.eyebrow {
+  font-family: theme('fontFamily.mono');
+  font-size: 12px;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: theme('colors.gray.500');
+}
+
+.dark .eyebrow {
+  color: theme('colors.dark.400');
+}

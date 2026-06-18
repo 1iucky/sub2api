@@ -5,82 +5,106 @@ export default {
   theme: {
     extend: {
       colors: {
-        // 主色调 - Teal/Cyan 青色系
+        // 主色调 - Vermillion / burnt-orange (Factory.ai signature). Anchor 500 ≈ #ef6f2e
         primary: {
-          50: '#f0fdfa',
-          100: '#ccfbf1',
-          200: '#99f6e4',
-          300: '#5eead4',
-          400: '#2dd4bf',
-          500: '#14b8a6',
-          600: '#0d9488',
-          700: '#0f766e',
-          800: '#115e59',
-          900: '#134e4a',
-          950: '#042f2e'
+          50: '#fdf4ef',
+          100: '#f9e1d3',
+          200: '#f3c3a6',
+          300: '#ec9e72',
+          400: '#e67f47',
+          500: '#ef6f2e',
+          600: '#d8581a',
+          700: '#b3430c',
+          800: '#8f3710',
+          900: '#743012',
+          950: '#411706'
         },
-        // 辅助色 - 深蓝灰
+        // 辅助色 - repoint to warm neutral (same scale as gray). Used in .text-gradient, sidebar, etc.
         accent: {
-          50: '#f8fafc',
-          100: '#f1f5f9',
-          200: '#e2e8f0',
-          300: '#cbd5e1',
-          400: '#94a3b8',
-          500: '#64748b',
-          600: '#475569',
-          700: '#334155',
-          800: '#1e293b',
-          900: '#0f172a',
-          950: '#020617'
+          50: '#f7f5f3',
+          100: '#ece7e1',
+          200: '#d9d1c7',
+          300: '#bfb3a5',
+          400: '#a09486',
+          500: '#7d7264',
+          600: '#5e554a',
+          700: '#4a4339',
+          800: '#2b2722',
+          900: '#1a1714',
+          950: '#0c0a08'
         },
-        // 深色模式背景
+        // OVERRIDE default cool gray → warm neutral (warms the whole UI at once)
+        gray: {
+          50: '#f7f5f3',
+          100: '#ece7e1',
+          200: '#d9d1c7',
+          300: '#bfb3a5',
+          400: '#a09486',
+          500: '#7d7264',
+          600: '#5e554a',
+          700: '#4a4339',
+          800: '#2b2722',
+          900: '#1a1714',
+          950: '#0c0a08'
+        },
+        // 深色模式背景 - warm near-black surface scale (dark-theme surfaces)
         dark: {
-          50: '#f8fafc',
-          100: '#f1f5f9',
-          200: '#e2e8f0',
-          300: '#cbd5e1',
-          400: '#94a3b8',
-          500: '#64748b',
-          600: '#475569',
-          700: '#334155',
-          800: '#1e293b',
-          900: '#0f172a',
-          950: '#020617'
+          50: '#f7f5f3',
+          100: '#e8e3dd',
+          200: '#c9c0b5',
+          300: '#9a8f80',
+          400: '#6f655b',
+          500: '#4d4947',
+          600: '#3d3a39',
+          700: '#2e2c2b',
+          800: '#1a1816',
+          900: '#0a0908',
+          950: '#020202'
         }
       },
       fontFamily: {
         sans: [
+          'Geist Variable',
+          'Geist Fallback',
+          'ui-sans-serif',
           'system-ui',
           '-apple-system',
           'BlinkMacSystemFont',
           'Segoe UI',
-          'Roboto',
-          'Helvetica Neue',
-          'Arial',
           'PingFang SC',
           'Hiragino Sans GB',
           'Microsoft YaHei',
           'sans-serif'
         ],
-        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace']
+        mono: [
+          'Geist Mono Variable',
+          'Geist Mono Fallback',
+          'ui-monospace',
+          'SFMono-Regular',
+          'Menlo',
+          'Monaco',
+          'Consolas',
+          'monospace'
+        ]
       },
+      // Keep NAMES, set to 'none' — elevation = hairline borders + tone separation
       boxShadow: {
-        glass: '0 8px 32px rgba(0, 0, 0, 0.08)',
-        'glass-sm': '0 4px 16px rgba(0, 0, 0, 0.06)',
-        glow: '0 0 20px rgba(20, 184, 166, 0.25)',
-        'glow-lg': '0 0 40px rgba(20, 184, 166, 0.35)',
-        card: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)',
-        'card-hover': '0 10px 40px rgba(0, 0, 0, 0.08)',
-        'inner-glow': 'inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+        glass: 'none',
+        'glass-sm': 'none',
+        glow: 'none',
+        'glow-lg': 'none',
+        card: 'none',
+        'card-hover': 'none',
+        'inner-glow': 'none'
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-primary': 'linear-gradient(135deg, #14b8a6 0%, #0d9488 100%)',
-        'gradient-dark': 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+        'gradient-primary': 'linear-gradient(135deg, #ef6f2e 0%, #d15010 100%)',
+        'gradient-dark': 'linear-gradient(135deg, #1a1714 0%, #020202 100%)',
         'gradient-glass':
-          'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)',
+          'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)',
         'mesh-gradient':
-          'radial-gradient(at 40% 20%, rgba(20, 184, 166, 0.12) 0px, transparent 50%), radial-gradient(at 80% 0%, rgba(6, 182, 212, 0.08) 0px, transparent 50%), radial-gradient(at 0% 50%, rgba(20, 184, 166, 0.08) 0px, transparent 50%)'
+          'radial-gradient(at 40% 20%, rgba(239,111,46,0.10) 0px, transparent 50%), radial-gradient(at 80% 0%, rgba(209,80,16,0.06) 0px, transparent 50%), radial-gradient(at 0% 50%, rgba(239,111,46,0.06) 0px, transparent 50%)'
       },
       animation: {
         'fade-in': 'fadeIn 0.3s ease-out',
@@ -118,8 +142,8 @@ export default {
           '100%': { backgroundPosition: '200% 0' }
         },
         glow: {
-          '0%': { boxShadow: '0 0 20px rgba(20, 184, 166, 0.25)' },
-          '100%': { boxShadow: '0 0 30px rgba(20, 184, 166, 0.4)' }
+          '0%': { boxShadow: '0 0 20px rgba(239, 111, 46, 0.25)' },
+          '100%': { boxShadow: '0 0 30px rgba(239, 111, 46, 0.4)' }
         }
       },
       backdropBlur: {
