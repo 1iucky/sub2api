@@ -12,381 +12,408 @@
     <div v-else v-html="homeContent"></div>
   </div>
 
-  <!-- Default Home Page -->
+  <!-- Default Home Page (v2 — factory.ai motion rebuild) -->
   <div
     v-else
-    class="relative flex min-h-screen flex-col overflow-hidden bg-gray-50 dark:bg-dark-950"
+    class="relative flex min-h-screen flex-col overflow-x-hidden bg-gray-50 dark:bg-dark-950"
   >
-    <!-- Background: warm line-grid blueprint + faint mesh -->
+    <!-- Backdrop: blueprint line-grid + faint vermillion mesh (PR1 utility kept). -->
     <div class="pointer-events-none absolute inset-0 bg-blueprint"></div>
     <div
-      class="pointer-events-none absolute inset-0 bg-[radial-gradient(at_40%_15%,rgba(239,111,46,0.08)_0px,transparent_55%),radial-gradient(at_85%_0%,rgba(209,80,16,0.05)_0px,transparent_50%)]"
+      class="pointer-events-none absolute inset-0 bg-[radial-gradient(at_40%_12%,rgba(239,111,46,0.10)_0px,transparent_55%),radial-gradient(at_85%_0%,rgba(209,80,16,0.06)_0px,transparent_50%)]"
     ></div>
 
-    <!-- Header -->
-    <header class="relative z-20 px-6 py-4">
-      <nav class="mx-auto flex max-w-6xl items-center justify-between">
+    <!-- ============================ NAV ============================ -->
+    <header
+      class="sf-nav fixed inset-x-0 top-0 z-60 border-b border-transparent transition-colors duration-200"
+      :class="navScrolled
+        ? 'border-gray-200/70 bg-white/80 backdrop-blur-md dark:border-dark-800/70 dark:bg-dark-950/80'
+        : 'border-transparent'"
+    >
+      <nav
+        class="mx-auto flex h-14 max-w-[1920px] items-center justify-between px-4 lg:px-9"
+        aria-label="Main"
+      >
         <!-- Brand wordmark -->
-        <div class="flex items-center gap-2.5">
-          <div class="h-7 w-7 overflow-hidden rounded-sm">
-            <img :src="siteLogo || '/logo.svg'" alt="Logo" class="h-full w-full object-contain" />
-          </div>
+        <router-link
+          to="/home"
+          class="group flex items-center gap-2.5"
+          :aria-label="siteName"
+        >
+          <span class="block h-6 w-6 overflow-hidden rounded-sm">
+            <img :src="siteLogo || '/logo.svg'" alt="" class="h-full w-full object-contain" />
+          </span>
           <span
-            class="font-mono text-sm uppercase tracking-[0.14em] text-gray-800 dark:text-gray-100"
+            class="font-mono text-[13px] uppercase tracking-[0.14em] text-gray-900 transition-colors duration-200 group-hover:text-primary-500 dark:text-gray-100"
           >SiliconBase</span>
-        </div>
+        </router-link>
 
-        <!-- Nav Actions -->
-        <div class="flex items-center gap-2">
-          <!-- Language Switcher -->
-          <LocaleSwitcher />
-
-          <!-- Doc Link -->
+        <!-- Desktop nav links + actions -->
+        <div class="hidden items-center gap-6 md:flex">
           <a
             v-if="docUrl"
             :href="docUrl"
             target="_blank"
             rel="noopener noreferrer"
-            class="rounded-sm p-2 text-gray-500 transition-colors duration-150 hover:bg-gray-100 hover:text-gray-900 dark:text-dark-400 dark:hover:bg-dark-800 dark:hover:text-white"
-            :title="t('home.viewDocs')"
-          >
-            <Icon name="book" size="md" />
-          </a>
-
-          <!-- Theme Toggle -->
+            class="font-mono text-[12px] uppercase tracking-[0.14em] text-gray-500 transition-colors duration-200 hover:text-primary-500 dark:text-dark-400"
+          >{{ t('home.nav.docs') }}</a>
+          <LocaleSwitcher />
           <button
             @click="toggleTheme"
-            class="rounded-sm p-2 text-gray-500 transition-colors duration-150 hover:bg-gray-100 hover:text-gray-900 dark:text-dark-400 dark:hover:bg-dark-800 dark:hover:text-white"
+            class="rounded-sm p-1.5 text-gray-500 transition-colors duration-150 hover:bg-gray-100 hover:text-gray-900 dark:text-dark-400 dark:hover:bg-dark-800 dark:hover:text-white"
             :title="isDark ? t('home.switchToLight') : t('home.switchToDark')"
+            :aria-label="isDark ? t('home.switchToLight') : t('home.switchToDark')"
           >
             <Icon v-if="isDark" name="sun" size="md" />
             <Icon v-else name="moon" size="md" />
           </button>
 
-          <!-- Login / Dashboard Button -->
           <router-link
             v-if="isAuthenticated"
             :to="dashboardPath"
-            class="ml-1 inline-flex items-center gap-1.5 rounded-sm border border-dark-800 bg-dark-950 py-1 pl-1 pr-2.5 text-xs font-medium text-white transition-colors duration-150 hover:bg-white hover:text-dark-950 dark:border-dark-700 dark:bg-dark-900 dark:text-gray-100 dark:hover:bg-dark-700 dark:hover:text-white"
+            class="sf-btn group relative inline-flex h-[31px] items-center justify-center overflow-clip rounded-sm border border-dark-800 bg-dark-950 px-3.5 font-mono text-[12px] uppercase tracking-[0.12em] text-white transition-colors duration-150 hover:border-primary-500 hover:text-primary-500 dark:border-dark-700 dark:bg-dark-900 dark:text-gray-100"
           >
             <span
-              class="flex h-5 w-5 items-center justify-center rounded-sm bg-primary-500 text-[10px] font-semibold text-white"
-            >
-              {{ userInitial }}
-            </span>
+              class="mr-1.5 flex h-4 w-4 items-center justify-center rounded-sm bg-primary-500 text-[9px] font-semibold text-white"
+            >{{ userInitial || '·' }}</span>
             <span>{{ t('home.dashboard') }}</span>
-            <svg
-              class="h-3 w-3 text-gray-500 transition-colors duration-150 group-hover:text-current"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"
-              />
-            </svg>
           </router-link>
           <router-link
             v-else
             to="/login"
-            class="ml-1 inline-flex items-center rounded-sm border border-dark-800 bg-dark-950 px-3 py-1.5 text-xs font-medium text-white transition-colors duration-150 hover:bg-white hover:text-dark-950 dark:border-dark-700 dark:bg-dark-900 dark:text-gray-100 dark:hover:bg-dark-700 dark:hover:text-white"
+            class="sf-btn group relative inline-flex h-[31px] items-center justify-center overflow-clip rounded-sm border border-dark-800 bg-dark-950 px-3.5 font-mono text-[12px] uppercase tracking-[0.12em] text-white transition-colors duration-150 hover:border-primary-500 hover:text-primary-500 dark:border-dark-700 dark:bg-dark-900 dark:text-gray-100"
+          >{{ t('home.login') }}</router-link>
+        </div>
+
+        <!-- Mobile actions -->
+        <div class="flex items-center gap-2 md:hidden">
+          <LocaleSwitcher />
+          <button
+            @click="toggleTheme"
+            class="rounded-sm p-1.5 text-gray-500 transition-colors duration-150 hover:bg-gray-100 hover:text-gray-900 dark:text-dark-400 dark:hover:bg-dark-800 dark:hover:text-white"
+            :aria-label="isDark ? t('home.switchToLight') : t('home.switchToDark')"
           >
-            {{ t('home.login') }}
-          </router-link>
+            <Icon v-if="isDark" name="sun" size="md" />
+            <Icon v-else name="moon" size="md" />
+          </button>
+          <button
+            @click="mobileOpen = true"
+            class="rounded-sm p-1.5 text-gray-700 transition-colors duration-150 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-dark-800"
+            :aria-label="t('home.nav.openMenu')"
+            :aria-expanded="mobileOpen"
+          >
+            <Icon name="menu" size="md" />
+          </button>
         </div>
       </nav>
     </header>
 
-    <!-- Main Content -->
-    <main class="relative z-10 flex-1 px-6 py-16 md:py-24">
-      <div class="mx-auto max-w-6xl">
-        <!-- Hero Section - Left/Right Layout -->
-        <div class="mb-20 flex flex-col items-start justify-between gap-12 lg:flex-row lg:gap-16">
-          <!-- Left: Text Content -->
-          <div class="flex-1">
-            <p class="eyebrow mb-5">{{ t('home.eyebrow') }}</p>
-            <h1
-              class="mb-5 text-4xl font-normal tracking-tight text-gray-900 dark:text-white md:text-5xl lg:text-6xl"
-              style="line-height: 1.05"
-            >
-              {{ siteName }}
-            </h1>
-            <p class="mb-3 max-w-xl text-lg font-medium text-gray-800 dark:text-gray-100">
-              {{ siteSubtitle }}
-            </p>
-            <p class="mb-8 max-w-xl text-base leading-relaxed text-gray-600 dark:text-dark-300">
-              {{ siteDescription }}
-            </p>
-
-            <!-- CTA Button -->
-            <div class="flex flex-wrap items-center gap-3">
-              <router-link
-                :to="isAuthenticated ? dashboardPath : '/login'"
-                class="btn btn-primary px-5 py-2.5 text-sm"
-              >
-                {{ isAuthenticated ? t('home.goToDashboard') : t('home.getStarted') }}
-                <Icon name="arrowRight" size="md" class="ml-1" :stroke-width="2" />
-              </router-link>
-              <span
-                class="font-mono text-xs uppercase tracking-[0.12em] text-gray-400 dark:text-dark-400"
-              >siliconbase.link</span>
-            </div>
-          </div>
-
-          <!-- Right: Terminal Animation -->
-          <div class="flex w-full flex-1 justify-center lg:justify-end">
-            <div class="terminal-container">
-              <!-- Authored SVG motif: gateway distribution diagram (subtle) -->
-              <svg
-                class="gateway-motif pointer-events-none absolute -left-16 -top-10 hidden h-24 w-32 text-primary-500/40 lg:block"
-                viewBox="0 0 128 96"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1"
-                aria-hidden="true"
-              >
-                <!-- source node (client) -->
-                <circle cx="10" cy="48" r="3" fill="currentColor" />
-                <!-- gateway node -->
-                <rect x="48" y="34" width="20" height="28" rx="1" />
-                <line x1="13" y1="48" x2="48" y2="48" stroke-dasharray="2 2" />
-                <!-- upstream nodes -->
-                <circle cx="110" cy="14" r="3" />
-                <circle cx="118" cy="48" r="3" />
-                <circle cx="110" cy="82" r="3" />
-                <line x1="68" y1="40" x2="107" y2="16" stroke-dasharray="2 2" />
-                <line x1="68" y1="48" x2="115" y2="48" stroke-dasharray="2 2" />
-                <line x1="68" y1="56" x2="107" y2="80" stroke-dasharray="2 2" />
-              </svg>
-              <div class="terminal-window">
-                <!-- Window header -->
-                <div class="terminal-header">
-                  <div class="terminal-buttons">
-                    <span class="btn-close"></span>
-                    <span class="btn-minimize"></span>
-                    <span class="btn-maximize"></span>
-                  </div>
-                  <span class="terminal-title">~/gateway — zsh</span>
-                </div>
-                <!-- Terminal content -->
-                <div class="terminal-body">
-                  <div class="code-line line-1">
-                    <span class="code-prompt">$</span>
-                    <span class="code-cmd">curl</span>
-                    <span class="code-flag">-X POST</span>
-                    <span class="code-url">/v1/messages</span>
-                  </div>
-                  <div class="code-line line-2">
-                    <span class="code-comment"># routing to upstream pool…</span>
-                  </div>
-                  <div class="code-line line-3">
-                    <span class="code-success">200 OK</span>
-                    <span class="code-response">{ "content": "Hello!" }</span>
-                  </div>
-                  <div class="code-line line-4">
-                    <span class="code-prompt">$</span>
-                    <span class="cursor"></span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Feature Tags - Inline mono row -->
-        <div class="mb-16 flex flex-wrap items-center gap-x-6 gap-y-3 border-y border-dashed border-gray-200 py-4 dark:border-dark-700">
-          <span
-            class="font-mono text-xs uppercase tracking-[0.12em] text-gray-400 dark:text-dark-400"
-          >capabilities</span>
-          <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
-            <div class="inline-flex items-center gap-2">
-              <Icon name="swap" size="sm" class="text-primary-500" />
-              <span class="text-sm text-gray-700 dark:text-gray-200">{{ t('home.tags.subscriptionToApi') }}</span>
-            </div>
-            <div class="inline-flex items-center gap-2">
-              <Icon name="shield" size="sm" class="text-primary-500" />
-              <span class="text-sm text-gray-700 dark:text-gray-200">{{ t('home.tags.stickySession') }}</span>
-            </div>
-            <div class="inline-flex items-center gap-2">
-              <Icon name="chart" size="sm" class="text-primary-500" />
-              <span class="text-sm text-gray-700 dark:text-gray-200">{{ t('home.tags.realtimeBilling') }}</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Features Grid -->
-        <div class="mb-20 grid gap-px overflow-hidden rounded-md border border-gray-200 bg-gray-200 dark:border-dark-700 dark:bg-dark-700 md:grid-cols-3">
-          <!-- Feature 1: Unified Gateway -->
-          <div
-            class="group bg-white p-6 transition-colors duration-150 hover:bg-gray-50 dark:bg-dark-900 dark:hover:bg-dark-800"
-          >
-            <div class="mb-4 flex items-center gap-2">
-              <span class="font-mono text-[11px] uppercase tracking-[0.14em] text-primary-500">01</span>
-              <span class="h-px flex-1 bg-gray-200 dark:bg-dark-700"></span>
-            </div>
-            <div
-              class="mb-4 flex h-10 w-10 items-center justify-center rounded-sm border border-primary-500/30 bg-primary-500/10 text-primary-500"
-            >
-              <Icon name="server" size="md" />
-            </div>
-            <h3 class="mb-2 text-lg font-normal tracking-tight text-gray-900 dark:text-white">
-              {{ t('home.features.unifiedGateway') }}
-            </h3>
-            <p class="text-sm leading-relaxed text-gray-600 dark:text-dark-300">
-              {{ t('home.features.unifiedGatewayDesc') }}
-            </p>
-          </div>
-
-          <!-- Feature 2: Account Pool -->
-          <div
-            class="group bg-white p-6 transition-colors duration-150 hover:bg-gray-50 dark:bg-dark-900 dark:hover:bg-dark-800"
-          >
-            <div class="mb-4 flex items-center gap-2">
-              <span class="font-mono text-[11px] uppercase tracking-[0.14em] text-primary-500">02</span>
-              <span class="h-px flex-1 bg-gray-200 dark:bg-dark-700"></span>
-            </div>
-            <div
-              class="mb-4 flex h-10 w-10 items-center justify-center rounded-sm border border-primary-500/30 bg-primary-500/10 text-primary-500"
-            >
-              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"
-                />
-              </svg>
-            </div>
-            <h3 class="mb-2 text-lg font-normal tracking-tight text-gray-900 dark:text-white">
-              {{ t('home.features.multiAccount') }}
-            </h3>
-            <p class="text-sm leading-relaxed text-gray-600 dark:text-dark-300">
-              {{ t('home.features.multiAccountDesc') }}
-            </p>
-          </div>
-
-          <!-- Feature 3: Billing & Quota -->
-          <div
-            class="group bg-white p-6 transition-colors duration-150 hover:bg-gray-50 dark:bg-dark-900 dark:hover:bg-dark-800"
-          >
-            <div class="mb-4 flex items-center gap-2">
-              <span class="font-mono text-[11px] uppercase tracking-[0.14em] text-primary-500">03</span>
-              <span class="h-px flex-1 bg-gray-200 dark:bg-dark-700"></span>
-            </div>
-            <div
-              class="mb-4 flex h-10 w-10 items-center justify-center rounded-sm border border-primary-500/30 bg-primary-500/10 text-primary-500"
-            >
-              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z"
-                />
-              </svg>
-            </div>
-            <h3 class="mb-2 text-lg font-normal tracking-tight text-gray-900 dark:text-white">
-              {{ t('home.features.balanceQuota') }}
-            </h3>
-            <p class="text-sm leading-relaxed text-gray-600 dark:text-dark-300">
-              {{ t('home.features.balanceQuotaDesc') }}
-            </p>
-          </div>
-        </div>
-
-        <!-- Supported Providers -->
-        <div class="mb-6 flex flex-col gap-2 border-t border-dashed border-gray-200 pt-10 dark:border-dark-700">
-          <p class="eyebrow">{{ t('home.providers.title') }}</p>
-          <p class="max-w-xl text-sm text-gray-600 dark:text-dark-300">
-            {{ t('home.providers.description') }}
-          </p>
-        </div>
-
-        <div class="mb-16 flex flex-wrap items-center gap-2">
-          <!-- Claude - Supported -->
-          <div
-            class="flex items-center gap-2 rounded-sm border border-gray-200 bg-white px-3 py-1.5 transition-colors duration-150 hover:border-gray-300 dark:border-dark-700 dark:bg-dark-900 dark:hover:border-dark-600"
-          >
-            <span class="font-mono text-xs font-semibold text-primary-500">C</span>
-            <span class="text-sm text-gray-700 dark:text-gray-200">{{ t('home.providers.claude') }}</span>
-            <span class="rounded-sm bg-primary-500/10 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wide text-primary-600 dark:text-primary-400">{{ t('home.providers.supported') }}</span>
-          </div>
-          <!-- GPT - Supported -->
-          <div
-            class="flex items-center gap-2 rounded-sm border border-gray-200 bg-white px-3 py-1.5 transition-colors duration-150 hover:border-gray-300 dark:border-dark-700 dark:bg-dark-900 dark:hover:border-dark-600"
-          >
-            <span class="font-mono text-xs font-semibold text-primary-500">G</span>
-            <span class="text-sm text-gray-700 dark:text-gray-200">GPT</span>
-            <span class="rounded-sm bg-primary-500/10 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wide text-primary-600 dark:text-primary-400">{{ t('home.providers.supported') }}</span>
-          </div>
-          <!-- Gemini - Supported -->
-          <div
-            class="flex items-center gap-2 rounded-sm border border-gray-200 bg-white px-3 py-1.5 transition-colors duration-150 hover:border-gray-300 dark:border-dark-700 dark:bg-dark-900 dark:hover:border-dark-600"
-          >
-            <span class="font-mono text-xs font-semibold text-primary-500">G</span>
-            <span class="text-sm text-gray-700 dark:text-gray-200">{{ t('home.providers.gemini') }}</span>
-            <span class="rounded-sm bg-primary-500/10 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wide text-primary-600 dark:text-primary-400">{{ t('home.providers.supported') }}</span>
-          </div>
-          <!-- Antigravity - Supported -->
-          <div
-            class="flex items-center gap-2 rounded-sm border border-gray-200 bg-white px-3 py-1.5 transition-colors duration-150 hover:border-gray-300 dark:border-dark-700 dark:bg-dark-900 dark:hover:border-dark-600"
-          >
-            <span class="font-mono text-xs font-semibold text-primary-500">A</span>
-            <span class="text-sm text-gray-700 dark:text-gray-200">{{ t('home.providers.antigravity') }}</span>
-            <span class="rounded-sm bg-primary-500/10 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wide text-primary-600 dark:text-primary-400">{{ t('home.providers.supported') }}</span>
-          </div>
-          <!-- More - Coming Soon -->
-          <div
-            class="flex items-center gap-2 rounded-sm border border-dashed border-gray-200 bg-transparent px-3 py-1.5 opacity-70 dark:border-dark-700"
-          >
-            <span class="font-mono text-xs font-semibold text-gray-400 dark:text-dark-400">+</span>
-            <span class="text-sm text-gray-500 dark:text-dark-400">{{ t('home.providers.more') }}</span>
-            <span class="rounded-sm bg-gray-100 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wide text-gray-500 dark:bg-dark-800 dark:text-dark-400">{{ t('home.providers.soon') }}</span>
-          </div>
-        </div>
-      </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="relative z-10 border-t border-gray-200 bg-gray-50 px-6 py-8 dark:border-dark-800 dark:bg-dark-950">
+    <!-- Mobile off-canvas drawer -->
+    <Transition name="sf-drawer">
       <div
-        class="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 md:flex-row md:items-center"
+        v-if="mobileOpen"
+        class="fixed inset-0 z-70 md:hidden"
+        :aria-hidden="!mobileOpen"
       >
-        <div class="flex flex-col gap-1">
-          <div class="flex items-center gap-2">
-            <div class="h-5 w-5 overflow-hidden rounded-sm">
-              <img :src="siteLogo || '/logo.svg'" alt="Logo" class="h-full w-full object-contain" />
-            </div>
-            <span class="font-mono text-xs uppercase tracking-[0.14em] text-gray-700 dark:text-gray-200">SiliconBase</span>
+        <div
+          class="absolute inset-0 bg-dark-950/60 backdrop-blur-sm"
+          @click="mobileOpen = false"
+        ></div>
+        <aside
+          class="sf-drawer-panel absolute left-0 top-0 flex h-full w-[280px] max-w-[80vw] flex-col border-r border-gray-200 bg-white pt-4 dark:border-dark-800 dark:bg-dark-950"
+        >
+          <div class="flex items-center justify-between px-5 pb-4">
+            <span
+              class="font-mono text-[13px] uppercase tracking-[0.14em] text-gray-900 dark:text-gray-100"
+            >SiliconBase</span>
+            <button
+              @click="mobileOpen = false"
+              class="rounded-sm p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-dark-400 dark:hover:bg-dark-800 dark:hover:text-white"
+              :aria-label="t('home.nav.closeMenu')"
+            >
+              <Icon name="x" size="md" />
+            </button>
           </div>
-          <p class="font-mono text-[11px] uppercase tracking-[0.12em] text-gray-400 dark:text-dark-400">
-            {{ t('home.footer.tagline') }} &middot; siliconbase.link
-          </p>
-        </div>
-        <div class="flex flex-col items-start gap-1 md:items-end">
-          <p class="text-xs text-gray-500 dark:text-dark-400">
-            &copy; {{ currentYear }} {{ siteName }}. {{ t('home.footer.allRightsReserved') }}
-          </p>
-          <div class="flex items-center gap-4">
+          <nav class="flex flex-col gap-1 px-3" aria-label="Mobile">
             <a
               v-if="docUrl"
               :href="docUrl"
               target="_blank"
               rel="noopener noreferrer"
-              class="text-xs text-gray-500 transition-colors duration-150 hover:text-primary-500 dark:text-dark-400"
+              class="rounded-sm px-3 py-2 font-mono text-[12px] uppercase tracking-[0.12em] text-gray-600 transition-colors duration-150 hover:bg-gray-100 hover:text-gray-900 dark:text-dark-300 dark:hover:bg-dark-800 dark:hover:text-white"
+            >{{ t('home.nav.docs') }}</a>
+            <router-link
+              :to="isAuthenticated ? dashboardPath : '/login'"
+              class="mt-2 inline-flex items-center justify-center rounded-sm border border-dark-800 bg-dark-950 px-3 py-2 font-mono text-[12px] uppercase tracking-[0.12em] text-white dark:border-dark-700 dark:bg-dark-900"
+            >{{ isAuthenticated ? t('home.dashboard') : t('home.login') }}</router-link>
+          </nav>
+        </aside>
+      </div>
+    </Transition>
+
+    <!-- ============================ HERO ============================ -->
+    <section
+      class="relative z-10 mx-auto w-full max-w-[1920px] px-4 pb-16 pt-28 lg:px-9 lg:pb-24 lg:pt-36"
+    >
+      <div class="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-6">
+        <!-- Text column (lg:col-span-5) -->
+        <div class="lg:col-span-5 lg:self-center">
+          <p
+            data-home-hero-intro
+            :style="{ '--sf-delay': '0ms' }"
+            class="eyebrow mb-5"
+          >{{ t('home.hero2.eyebrow') }}</p>
+          <h1
+            data-home-hero-intro
+            :style="{ '--sf-delay': '120ms' }"
+            class="mb-6 max-w-[14ch] text-[clamp(40px,7vw,72px)] font-normal leading-[100%] tracking-[-0.04em] text-gray-900 lg:tracking-[-0.06em] dark:text-white"
+          >
+            {{ t('home.hero2.title') }}
+          </h1>
+          <p
+            data-home-hero-intro
+            :style="{ '--sf-delay': '240ms' }"
+            class="mb-9 max-w-[46ch] font-mono text-[14px] leading-[150%] tracking-[-0.01em] text-gray-600 lg:text-[16px] dark:text-dark-300"
+          >
+            {{ t('home.hero2.subhead') }}
+          </p>
+
+          <div
+            data-home-hero-intro
+            :style="{ '--sf-delay': '360ms' }"
+            class="flex flex-wrap items-center gap-3"
+          >
+            <router-link
+              :to="isAuthenticated ? dashboardPath : '/register'"
+              class="sf-btn group relative inline-flex h-[40px] items-center justify-center overflow-clip rounded-sm border border-dark-800 bg-dark-950 px-5 font-mono text-[13px] uppercase tracking-[0.12em] text-white transition-colors duration-150 hover:border-primary-500 hover:text-primary-500 dark:border-dark-700 dark:bg-dark-900 dark:text-gray-100"
             >
-              {{ t('home.docs') }}
+              <span class="relative z-10 flex items-center gap-2">
+                {{ isAuthenticated ? t('home.goToDashboard') : t('home.hero2.ctaPrimary') }}
+                <Icon name="arrowRight" size="sm" :stroke-width="2" />
+              </span>
+            </router-link>
+            <a
+              v-if="docUrl"
+              :href="docUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="sf-btn group relative inline-flex h-[40px] items-center justify-center overflow-clip rounded-sm border border-gray-300 bg-transparent px-5 font-mono text-[13px] uppercase tracking-[0.12em] text-gray-700 transition-colors duration-150 hover:border-primary-500 hover:text-primary-500 dark:border-dark-700 dark:text-gray-200"
+            >
+              <span class="relative z-10 flex items-center gap-2">
+                {{ t('home.hero2.ctaSecondary') }}
+                <Icon name="arrowRight" size="sm" :stroke-width="2" />
+              </span>
             </a>
+          </div>
+        </div>
+
+        <!-- Demo column (lg:col-span-7) — bespoke inline SVG gateway dashboard -->
+        <div class="lg:col-span-7">
+          <div
+            data-hero-demo
+            class="sf-dashboard-frame relative w-full overflow-hidden rounded-[16px] border border-gray-200 bg-white shadow-[0_45px_120px_rgba(0,0,0,0.18)] lg:-mr-16 dark:border-dark-800 dark:bg-dark-900 dark:shadow-[0_45px_120px_rgba(0,0,0,0.55)]"
+          >
+            <GatewayDashboard :t="t" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ LOGO MARQUEE ============================ -->
+    <section class="relative z-10 overflow-hidden border-y border-dashed border-gray-200 py-6 dark:border-dark-800">
+      <div class="mx-auto mb-4 flex max-w-[1920px] items-center gap-3 px-4 lg:px-9">
+        <span class="eyebrow whitespace-nowrap">{{ t('home.marquee2.label') }}</span>
+        <span class="h-px flex-1 bg-gray-200 dark:bg-dark-800"></span>
+      </div>
+      <div class="sf-marquee relative overflow-hidden">
+        <div class="sf-marquee-track flex w-max items-center gap-12 pr-12">
+          <!-- duplicated track for seamless loop -->
+          <template v-for="n in 2" :key="n">
+            <span
+              v-for="(item, idx) in marqueeItems"
+              :key="`${n}-${idx}`"
+              class="group inline-flex items-center gap-2 whitespace-nowrap font-mono text-[14px] uppercase tracking-[-0.01em] text-gray-400 transition-colors duration-200 hover:text-primary-500 dark:text-dark-400"
+            >
+              <span class="inline-block h-1.5 w-1.5 rounded-full bg-primary-500/60 group-hover:bg-primary-500"></span>
+              {{ item }}
+            </span>
+          </template>
+        </div>
+        <!-- edge fades -->
+        <div class="sf-marquee-fade pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-gray-50 to-transparent dark:from-dark-950"></div>
+        <div class="sf-marquee-fade pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-gray-50 to-transparent dark:from-dark-950"></div>
+      </div>
+    </section>
+
+    <!-- ============================ BENTO ============================ -->
+    <section class="relative z-10 mx-auto w-full max-w-[1920px] px-4 py-20 lg:px-9 lg:py-28">
+      <div class="mb-10 flex flex-col gap-3">
+        <p class="eyebrow">{{ t('home.bento2.eyebrow') }}</p>
+        <h2 class="max-w-[20ch] text-[clamp(28px,4vw,44px)] font-normal leading-[110%] tracking-[-0.03em] text-gray-900 lg:tracking-[-0.04em] dark:text-white">
+          {{ t('home.bento2.title') }}
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <!-- 01 Pooling -->
+        <article
+          v-reveal
+          :style="{ '--sf-delay': '0ms' }"
+          class="group relative flex flex-col gap-5 rounded-lg border border-gray-200 bg-white p-8 transition-colors duration-150 hover:border-gray-300 dark:border-dark-800 dark:bg-dark-900 dark:hover:border-dark-700"
+        >
+          <div class="flex items-center gap-3">
+            <span class="font-mono text-[13px] text-primary-500">{{ t('home.bento2.cards.pooling.index') }}</span>
+            <span class="h-px flex-1 bg-gray-200 dark:bg-dark-800"></span>
+          </div>
+          <PoolingChart />
+          <h3 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">
+            {{ t('home.bento2.cards.pooling.title') }}
+          </h3>
+          <p class="text-sm leading-relaxed text-gray-600 dark:text-dark-300">
+            {{ t('home.bento2.cards.pooling.desc') }}
+          </p>
+        </article>
+
+        <!-- 02 Routing -->
+        <article
+          v-reveal
+          :style="{ '--sf-delay': '120ms' }"
+          class="group relative flex flex-col gap-5 rounded-lg border border-gray-200 bg-white p-8 transition-colors duration-150 hover:border-gray-300 dark:border-dark-800 dark:bg-dark-900 dark:hover:border-dark-700"
+        >
+          <div class="flex items-center gap-3">
+            <span class="font-mono text-[13px] text-primary-500">{{ t('home.bento2.cards.routing.index') }}</span>
+            <span class="h-px flex-1 bg-gray-200 dark:bg-dark-800"></span>
+          </div>
+          <RoutingDiagram />
+          <h3 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">
+            {{ t('home.bento2.cards.routing.title') }}
+          </h3>
+          <p class="text-sm leading-relaxed text-gray-600 dark:text-dark-300">
+            {{ t('home.bento2.cards.routing.desc') }}
+          </p>
+        </article>
+
+        <!-- 03 Billing -->
+        <article
+          v-reveal
+          :style="{ '--sf-delay': '240ms' }"
+          class="group relative flex flex-col gap-5 rounded-lg border border-gray-200 bg-white p-8 transition-colors duration-150 hover:border-gray-300 dark:border-dark-800 dark:bg-dark-900 dark:hover:border-dark-700"
+        >
+          <div class="flex items-center gap-3">
+            <span class="font-mono text-[13px] text-primary-500">{{ t('home.bento2.cards.billing.index') }}</span>
+            <span class="h-px flex-1 bg-gray-200 dark:bg-dark-800"></span>
+          </div>
+          <BillingSparkline />
+          <h3 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">
+            {{ t('home.bento2.cards.billing.title') }}
+          </h3>
+          <p class="text-sm leading-relaxed text-gray-600 dark:text-dark-300">
+            {{ t('home.bento2.cards.billing.desc') }}
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============================ CTA BAND ============================ -->
+    <section class="relative z-10 mx-auto w-full max-w-[1920px] px-4 py-16 lg:px-9 lg:py-24">
+      <div
+        v-reveal
+        class="flex flex-col items-start gap-5 border-t border-dashed border-gray-200 pt-12 dark:border-dark-800"
+      >
+        <p class="eyebrow">{{ t('home.cta2.eyebrow') }}</p>
+        <h2 class="max-w-[24ch] text-[clamp(28px,4vw,48px)] font-normal leading-[110%] tracking-[-0.03em] text-gray-900 lg:tracking-[-0.04em] dark:text-white">
+          {{ t('home.cta2.title') }}
+        </h2>
+        <p class="max-w-[60ch] font-mono text-[14px] leading-[150%] text-gray-600 dark:text-dark-300">
+          {{ t('home.cta2.note') }}
+        </p>
+        <router-link
+          :to="isAuthenticated ? dashboardPath : '/register'"
+          class="sf-btn group relative mt-2 inline-flex h-[44px] items-center justify-center overflow-clip rounded-sm border border-dark-800 bg-dark-950 px-6 font-mono text-[13px] uppercase tracking-[0.12em] text-white transition-colors duration-150 hover:border-primary-500 hover:text-primary-500 dark:border-dark-700 dark:bg-dark-900 dark:text-gray-100"
+        >
+          <span class="relative z-10 flex items-center gap-2">
+            {{ t('home.cta2.button') }}
+            <Icon name="arrowRight" size="sm" :stroke-width="2" />
+          </span>
+        </router-link>
+      </div>
+    </section>
+
+    <!-- ============================ FOOTER PANEL ============================ -->
+    <footer class="relative z-10 mx-auto w-full max-w-[1920px] px-4 pb-10 lg:px-9">
+      <div
+        class="rounded-lg border border-gray-200 bg-white px-6 py-10 dark:border-dark-800 dark:bg-dark-900 lg:px-10 lg:py-12"
+      >
+        <div class="grid grid-cols-2 gap-8 lg:grid-cols-12 lg:gap-6">
+          <!-- Brand block -->
+          <div class="col-span-2 flex flex-col gap-3 lg:col-span-4">
+            <div class="flex items-center gap-2.5">
+              <span class="block h-6 w-6 overflow-hidden rounded-sm">
+                <img :src="siteLogo || '/logo.svg'" alt="" class="h-full w-full object-contain" />
+              </span>
+              <span class="font-mono text-[13px] uppercase tracking-[0.14em] text-gray-900 dark:text-gray-100">SiliconBase</span>
+            </div>
+            <p class="max-w-[36ch] font-mono text-[12px] uppercase tracking-[0.12em] text-gray-500 dark:text-dark-400">
+              {{ t('home.footer2.tagline') }}
+            </p>
             <a
               :href="githubUrl"
               target="_blank"
               rel="noopener noreferrer"
-              class="text-xs text-gray-500 transition-colors duration-150 hover:text-primary-500 dark:text-dark-400"
-            >
-              Website
-            </a>
+              class="font-mono text-[12px] uppercase tracking-[0.12em] text-primary-500 transition-colors duration-200 hover:text-primary-400"
+            >{{ t('home.footer2.domain') }}</a>
           </div>
+
+          <!-- Resources column -->
+          <div class="flex flex-col gap-3 lg:col-span-3 lg:col-start-7">
+            <p class="eyebrow">{{ t('home.footer2.columns.resources') }}</p>
+            <a
+              v-if="docUrl"
+              :href="docUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="font-mono text-[13px] tracking-[-0.01em] text-gray-600 transition-colors duration-200 hover:text-primary-500 dark:text-dark-300"
+            >{{ t('home.footer2.links.docs') }}</a>
+            <a
+              :href="githubUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="font-mono text-[13px] tracking-[-0.01em] text-gray-600 transition-colors duration-200 hover:text-primary-500 dark:text-dark-300"
+            >{{ t('home.footer2.links.status') }}</a>
+            <a
+              :href="githubUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="font-mono text-[13px] tracking-[-0.01em] text-gray-600 transition-colors duration-200 hover:text-primary-500 dark:text-dark-300"
+            >{{ t('home.footer2.links.changelog') }}</a>
+          </div>
+
+          <!-- Legal column -->
+          <div class="flex flex-col gap-3 lg:col-span-3">
+            <p class="eyebrow">{{ t('home.footer2.columns.legal') }}</p>
+            <a
+              :href="githubUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="font-mono text-[13px] tracking-[-0.01em] text-gray-600 transition-colors duration-200 hover:text-primary-500 dark:text-dark-300"
+            >{{ t('home.footer2.links.privacy') }}</a>
+            <a
+              :href="githubUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="font-mono text-[13px] tracking-[-0.01em] text-gray-600 transition-colors duration-200 hover:text-primary-500 dark:text-dark-300"
+            >{{ t('home.footer2.links.terms') }}</a>
+          </div>
+        </div>
+
+        <!-- Bottom row -->
+        <div class="mt-10 flex flex-col items-start justify-between gap-3 border-t border-dashed border-gray-200 pt-6 dark:border-dark-800 md:flex-row md:items-center">
+          <p class="font-mono text-[11px] uppercase tracking-[0.12em] text-gray-500 dark:text-dark-400">
+            {{ t('home.footer2.copyright') }}
+          </p>
+          <p class="font-mono text-[11px] uppercase tracking-[0.12em] text-gray-400 dark:text-dark-400">
+            {{ t('home.footer2.domain') }}
+          </p>
         </div>
       </div>
     </footer>
@@ -394,12 +421,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore, useAppStore } from '@/stores'
 import LocaleSwitcher from '@/components/common/LocaleSwitcher.vue'
 import Icon from '@/components/icons/Icon.vue'
 import { sanitizeUrl } from '@/utils/url'
+import GatewayDashboard from '@/components/home/GatewayDashboard.vue'
+import PoolingChart from '@/components/home/PoolingChart.vue'
+import RoutingDiagram from '@/components/home/RoutingDiagram.vue'
+import BillingSparkline from '@/components/home/BillingSparkline.vue'
 
 const { t } = useI18n()
 
@@ -409,8 +440,6 @@ const appStore = useAppStore()
 // Site settings - directly from appStore (already initialized from injected config)
 const siteName = computed(() => appStore.cachedPublicSettings?.site_name || appStore.siteName || 'SiliconBase')
 const siteLogo = computed(() => sanitizeUrl(appStore.cachedPublicSettings?.site_logo || appStore.siteLogo || '', { allowRelative: true, allowDataUrl: true }))
-const siteSubtitle = computed(() => appStore.cachedPublicSettings?.site_subtitle || t('home.heroSubtitle'))
-const siteDescription = computed(() => t('home.heroDescription'))
 const docUrl = computed(() => sanitizeUrl(appStore.cachedPublicSettings?.doc_url || appStore.docUrl || ''))
 const homeContent = computed(() => appStore.cachedPublicSettings?.home_content || '')
 
@@ -423,21 +452,28 @@ const isHomeContentUrl = computed(() => {
 // Theme
 const isDark = ref(document.documentElement.classList.contains('dark'))
 
-// GitHub URL
+// Brand / marketing URL
 const githubUrl = 'https://siliconbase.link'
 
 // Auth state
 const isAuthenticated = computed(() => authStore.isAuthenticated)
 const isAdmin = computed(() => authStore.isAdmin)
-const dashboardPath = computed(() => isAdmin.value ? '/admin/dashboard' : '/dashboard')
+const dashboardPath = computed(() => (isAdmin.value ? '/admin/dashboard' : '/dashboard'))
 const userInitial = computed(() => {
   const user = authStore.user
   if (!user || !user.email) return ''
   return user.email.charAt(0).toUpperCase()
 })
 
-// Current year for footer
-const currentYear = computed(() => new Date().getFullYear())
+// Marquee items — upstream providers row
+const marqueeItems = computed(() => t('home.marquee2.items').split('·').map((s) => s.trim()))
+
+// Nav scroll state (subtle border + backdrop on scroll)
+const mobileOpen = ref(false)
+const navScrolled = ref(false)
+function handleScroll() {
+  navScrolled.value = window.scrollY > 8
+}
 
 // Toggle theme
 function toggleTheme() {
@@ -446,203 +482,51 @@ function toggleTheme() {
   localStorage.setItem('theme', isDark.value ? 'dark' : 'light')
 }
 
-// Initialize theme
-function initTheme() {
-  const savedTheme = localStorage.getItem('theme')
-  if (
-    savedTheme === 'dark' ||
-    (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)
-  ) {
-    isDark.value = true
-    document.documentElement.classList.add('dark')
-  }
-}
-
 onMounted(() => {
-  initTheme()
+  // Theme is already bootstrapped by main.ts initThemeClass(); sync local ref.
+  isDark.value = document.documentElement.classList.contains('dark')
 
-  // Check auth state
+  // Auth + settings (kept from original logic)
   authStore.checkAuth()
-
-  // Ensure public settings are loaded (will use cache if already loaded from injected config)
   if (!appStore.publicSettingsLoaded) {
     appStore.fetchPublicSettings()
   }
+
+  // Nav scroll listener
+  handleScroll()
+  window.addEventListener('scroll', handleScroll, { passive: true })
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', handleScroll)
 })
 </script>
 
 <style scoped>
-/* Terminal Container — warm dark IDE/terminal panel, no glow/shadow */
-.terminal-container {
-  position: relative;
-  display: inline-block;
+/* Mobile drawer transition */
+.sf-drawer-enter-active,
+.sf-drawer-leave-active {
+  transition: opacity 0.2s ease-in-out;
 }
-
-.gateway-motif {
-  color: theme('colors.primary.500');
-  opacity: 0.35;
-}
-
-/* Terminal Window */
-.terminal-window {
-  width: 420px;
-  max-width: calc(100vw - 3rem);
-  background: theme('colors.dark.950');
-  border: 1px solid theme('colors.dark.700');
-  border-radius: 6px;
-  overflow: hidden;
-  transition: border-color 0.15s ease-in-out;
-}
-
-.terminal-window:hover {
-  border-color: theme('colors.dark.600');
-}
-
-/* Terminal Header */
-.terminal-header {
-  display: flex;
-  align-items: center;
-  padding: 10px 14px;
-  background: theme('colors.dark.900');
-  border-bottom: 1px solid theme('colors.dark.700');
-}
-
-.terminal-buttons {
-  display: flex;
-  gap: 6px;
-}
-
-.terminal-buttons span {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  border: 1px solid theme('colors.dark.700');
-}
-
-.btn-close {
-  background: theme('colors.red.500');
-}
-.btn-minimize {
-  background: theme('colors.amber.500');
-}
-.btn-maximize {
-  background: theme('colors.emerald.500');
-}
-
-.terminal-title {
-  flex: 1;
-  text-align: center;
-  font-size: 11px;
-  font-family: theme('fontFamily.mono');
-  color: theme('colors.dark.400');
-  margin-right: 48px;
-  text-transform: lowercase;
-  letter-spacing: 0.02em;
-}
-
-/* Terminal Body */
-.terminal-body {
-  padding: 18px 20px;
-  font-family: theme('fontFamily.mono');
-  font-size: 13px;
-  line-height: 1.9;
-  color: theme('colors.gray.300');
-}
-
-.code-line {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
+.sf-drawer-enter-from,
+.sf-drawer-leave-to {
   opacity: 0;
-  animation: line-appear 0.5s ease forwards;
+}
+.sf-drawer-enter-active .sf-drawer-panel,
+.sf-drawer-leave-active .sf-drawer-panel {
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.sf-drawer-enter-from .sf-drawer-panel,
+.sf-drawer-leave-to .sf-drawer-panel {
+  transform: translateX(-100%);
 }
 
-.line-1 {
-  animation-delay: 0.3s;
-}
-.line-2 {
-  animation-delay: 1s;
-}
-.line-3 {
-  animation-delay: 1.8s;
-}
-.line-4 {
-  animation-delay: 2.5s;
-}
-
-@keyframes line-appear {
-  from {
-    opacity: 0;
-    transform: translateY(5px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Vermillion prompt accent; restrained warm syntax colors. */
-.code-prompt {
-  color: theme('colors.primary.500');
-  font-weight: 600;
-}
-.code-cmd {
-  color: theme('colors.gray.100');
-}
-.code-flag {
-  color: theme('colors.primary.300');
-}
-.code-url {
-  color: theme('colors.gray.200');
-}
-.code-comment {
-  color: theme('colors.dark.400');
-  font-style: italic;
-}
-.code-success {
-  color: theme('colors.emerald.400');
-  background: rgba(16, 185, 129, 0.12);
-  border: 1px solid rgba(16, 185, 129, 0.25);
-  padding: 1px 6px;
-  border-radius: 3px;
-  font-size: 11px;
-  font-weight: 500;
-}
-.code-response {
-  color: theme('colors.amber.400');
-}
-
-/* Blinking Cursor — vermillion */
-.cursor {
-  display: inline-block;
-  width: 8px;
-  height: 15px;
-  background: theme('colors.primary.500');
-  animation: blink 1s step-end infinite;
-}
-
-@keyframes blink {
-  0%,
-  50% {
-    opacity: 1;
-  }
-  51%,
-  100% {
-    opacity: 0;
-  }
-}
-
-/* Respect reduced motion. */
+/* Respect reduced motion for the drawer + nav transition */
 @media (prefers-reduced-motion: reduce) {
-  .code-line {
-    opacity: 1;
-    animation: none;
-  }
-  .cursor {
-    animation: none;
-  }
-  .terminal-window {
+  .sf-drawer-enter-active,
+  .sf-drawer-leave-active,
+  .sf-drawer-enter-active .sf-drawer-panel,
+  .sf-drawer-leave-active .sf-drawer-panel {
     transition: none;
   }
 }

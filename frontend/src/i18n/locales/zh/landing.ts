@@ -18,6 +18,96 @@ export default {
     // 新增：面向用户的价值主张
     heroSubtitle: '一个端点，接入所有上游 AI 模型。',
     heroDescription: '硅基链将你的 Claude、OpenAI、Gemini 订阅统一聚合在一个 API 密钥之后——鉴权、用量计费与负载均衡均在网关层完成。',
+    // v2 首页区块（factory.ai 动效重构）
+    nav: {
+      gateway: '网关',
+      pools: '账号池',
+      docs: '文档',
+      openMenu: '打开菜单',
+      closeMenu: '关闭菜单'
+    },
+    hero2: {
+      eyebrow: 'AI API 网关',
+      title: '一个网关，接入所有 AI 订阅。',
+      subhead:
+        '用一个 API 密钥路由 Claude、OpenAI、Gemini、Bedrock 与 Antigravity。账号池化、负载均衡、用量计量——都在网关层完成。',
+      ctaPrimary: '获取 API 密钥',
+      ctaSecondary: '阅读文档',
+      demo: {
+        title: 'gateway — 实时',
+        sidebarGateway: '网关',
+        sidebarPools: '账号池',
+        sidebarKeys: '密钥',
+        sidebarSettings: '设置',
+        kpiRpm: 'RPM',
+        kpiRpmValue: '1.2k',
+        kpiP95: 'P95',
+        kpiP95Value: '240ms',
+        kpiUptime: '可用率',
+        kpiUptimeValue: '99.9%',
+        kpiKeys: '密钥',
+        kpiKeysValue: '348',
+        health: '健康度',
+        streamTitle: '请求流',
+        streamRoute: '路由',
+        streamUpstream: '上游',
+        streamStatus: '200 ok',
+        sparkClaude: 'claude',
+        sparkOpenai: 'openai',
+        sparkGemini: 'gemini'
+      }
+    },
+    marquee2: {
+      label: '兼容',
+      items: 'Claude · OpenAI · Gemini · Bedrock · Antigravity'
+    },
+    bento2: {
+      eyebrow: '网关承担的工作',
+      title: '定义你的网关',
+      cards: {
+        pooling: {
+          index: '01',
+          title: '多上游账号池',
+          desc: '将 Claude、OpenAI、Gemini 账号聚合在一个密钥之后。会话保持、按账号的 RPM 与并发上限，出错自动切换。'
+        },
+        routing: {
+          index: '02',
+          title: '会话保持与负载均衡',
+          desc: '将请求绑定到指定账号，跨账号池分发流量，并在密钥与团队扩张时把延迟压平。'
+        },
+        billing: {
+          index: '03',
+          title: '配额与按量计费',
+          desc: '按密钥实时计量使用量，可配置配额与消费上限，让团队用量始终可观测、可约束。'
+        }
+      }
+    },
+    cta2: {
+      eyebrow: '无需自己管理配额即可上线',
+      title: '无需为配额分心，专注上线 AI 能力。',
+      button: '免费开始',
+      note: '试用无需信用卡，几分钟即可接入第一个上游。'
+    },
+    footer2: {
+      tagline: '由 SiliconBase 运营',
+      domain: 'siliconbase.link',
+      columns: {
+        product: '产品',
+        resources: '资源',
+        legal: '法律'
+      },
+      links: {
+        gateway: '网关',
+        pools: '账号池',
+        pricing: '价格',
+        docs: '文档',
+        status: '状态',
+        changelog: '更新日志',
+        privacy: '隐私',
+        terms: '条款'
+      },
+      copyright: '© 2026 SiliconBase. 保留所有权利。'
+    },
     tags: {
       subscriptionToApi: '订阅转 API',
       stickySession: '会话亲和',
