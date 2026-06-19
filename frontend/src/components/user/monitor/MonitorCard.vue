@@ -1,24 +1,24 @@
 <template>
   <button
     type="button"
-    class="group text-left p-5 rounded-2xl min-h-[280px] w-full bg-white/70 backdrop-blur-xl border border-gray-200/80 shadow-card dark:bg-dark-800/60 dark:border-dark-700/70 hover:-translate-y-1 hover:shadow-card-hover dark:hover:border-primary-500/30 hover:border-gray-300 transition-all duration-300 ease-out flex flex-col"
+    class="group text-left p-5 rounded-md min-h-[280px] w-full bg-white border border-gray-200 dark:bg-dark-900 dark:border-dark-700 hover:border-gray-300 dark:hover:border-primary-500/50 transition-colors duration-150 flex flex-col"
     @click="emit('click')"
   >
     <!-- Header: icon + name/model + status chip -->
     <div class="flex items-start gap-3">
       <span
-        class="w-9 h-9 rounded-xl ring-1 ring-black/5 dark:ring-white/10 grid place-items-center flex-shrink-0"
+        class="w-9 h-9 rounded-md ring-1 ring-black/5 dark:ring-white/10 grid place-items-center flex-shrink-0"
         :class="[providerGradient(item.provider), providerTintClass]"
       >
         <ProviderIcon :provider="item.provider" :size="20" />
       </span>
       <div class="flex-1 min-w-0">
-        <div class="text-base font-semibold truncate text-gray-900 dark:text-gray-100">
+        <div class="text-base font-normal tracking-tight truncate text-gray-900 dark:text-gray-100">
           {{ item.name }}
         </div>
         <div class="mt-0.5 flex items-center gap-1.5 min-w-0">
           <span
-            class="inline-flex items-center rounded-md px-1.5 py-0.5 text-[10px] font-medium flex-shrink-0"
+            class="inline-flex items-center rounded-sm px-1.5 py-0.5 text-[10px] font-mono tracking-wide flex-shrink-0"
             :class="providerBadgeClass(item.provider)"
           >
             {{ providerLabel(item.provider) }}
@@ -28,14 +28,14 @@
           </span>
           <span
             v-if="item.group_name"
-            class="inline-flex items-center rounded-md px-1.5 py-0.5 text-[10px] font-medium bg-gray-100 text-gray-600 dark:bg-dark-700 dark:text-gray-300 flex-shrink-0"
+            class="inline-flex items-center rounded-sm px-1.5 py-0.5 text-[10px] font-mono tracking-wide bg-gray-100 text-gray-600 dark:bg-dark-800 dark:text-gray-300 flex-shrink-0"
           >
             {{ item.group_name }}
           </span>
         </div>
       </div>
       <span
-        class="px-2.5 py-1 rounded-full text-xs font-semibold flex-shrink-0"
+        class="px-2.5 py-1 rounded-sm text-xs font-mono tracking-wide flex-shrink-0"
         :class="statusBadgeClass(item.primary_status)"
       >
         {{ statusLabel(item.primary_status) }}
@@ -55,7 +55,7 @@
     />
 
     <!-- Divider -->
-    <div class="mt-4 border-t border-gray-100 dark:border-dark-700/60"></div>
+    <div class="mt-4 border-t border-dashed border-gray-200 dark:border-dark-700"></div>
 
     <!-- Availability row -->
     <MonitorAvailabilityRow
