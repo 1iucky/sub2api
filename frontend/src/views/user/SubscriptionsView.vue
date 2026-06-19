@@ -11,11 +11,11 @@
       <!-- Empty State -->
       <div v-else-if="subscriptions.length === 0" class="card p-12 text-center">
         <div
-          class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-dark-700"
+          class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-md border border-gray-200 bg-gray-50 dark:border-dark-700 dark:bg-dark-800"
         >
-          <Icon name="creditCard" size="xl" class="text-gray-400" />
+          <Icon name="creditCard" size="xl" class="text-gray-400 dark:text-dark-500" />
         </div>
-        <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
+        <h3 class="mb-2 text-lg font-normal tracking-tight text-gray-900 dark:text-gray-100">
           {{ t('userSubscriptions.noActiveSubscriptions') }}
         </h3>
         <p class="text-gray-500 dark:text-dark-400">
@@ -28,21 +28,21 @@
         <div
           v-for="subscription in subscriptions"
           :key="subscription.id"
-          class="overflow-hidden rounded-2xl border bg-white dark:bg-dark-800"
+          class="overflow-hidden rounded-lg border bg-white dark:bg-dark-900"
           :class="platformBorderClass(subscription.group?.platform || '')"
         >
           <!-- Header -->
           <div
-            class="flex items-center justify-between border-b border-gray-100 p-4 dark:border-dark-700"
+            class="flex items-center justify-between border-b border-dashed border-gray-200 p-4 dark:border-dark-700"
           >
             <div class="flex items-center gap-3">
               <div :class="['h-1.5 w-1.5 shrink-0 rounded-full', platformAccentDotClass(subscription.group?.platform || '')]" />
               <div>
                 <div class="flex items-center gap-2">
-                  <h3 class="font-semibold text-gray-900 dark:text-white">
+                  <h3 class="font-normal tracking-tight text-gray-900 dark:text-gray-100">
                     {{ subscription.group?.name || `Group #${subscription.group_id}` }}
                   </h3>
-                  <span :class="['rounded-md border px-2 py-0.5 text-[11px] font-medium', platformBadgeClass(subscription.group?.platform || '')]">
+                  <span :class="['rounded-sm border px-2 py-0.5 font-mono text-[11px] uppercase tracking-wide', platformBadgeClass(subscription.group?.platform || '')]">
                     {{ platformLabel(subscription.group?.platform || '') }}
                   </span>
                 </div>
@@ -60,7 +60,7 @@
             <div class="flex items-center gap-2">
               <span
                 :class="[
-                  'rounded-full px-2 py-0.5 text-xs font-medium',
+                  'rounded-sm px-2 py-0.5 font-mono text-xs uppercase tracking-wide',
                   subscription.status === 'active'
                     ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300'
                     : subscription.status === 'expired'
@@ -72,7 +72,7 @@
               </span>
               <button
                 v-if="subscription.status === 'active'"
-                :class="['rounded-lg px-3 py-1.5 text-xs font-semibold text-white transition-colors', platformButtonClass(subscription.group?.platform || '')]"
+                :class="['rounded-sm px-3 py-1.5 text-xs font-medium text-white transition-colors', platformButtonClass(subscription.group?.platform || '')]"
                 @click="router.push({ path: '/purchase', query: { tab: 'subscription', group: String(subscription.group_id) } })"
               >
                 {{ t('payment.renewNow') }}
@@ -226,10 +226,10 @@
                 !subscription.group?.weekly_limit_usd &&
                 !subscription.group?.monthly_limit_usd
               "
-              class="flex items-center justify-center rounded-xl bg-gradient-to-r from-emerald-50 to-teal-50 py-6 dark:from-emerald-900/20 dark:to-teal-900/20"
+              class="flex items-center justify-center rounded-md border border-dashed border-emerald-300 bg-emerald-50/50 py-6 dark:border-emerald-900/40 dark:bg-emerald-900/10"
             >
               <div class="flex items-center gap-3">
-                <span class="text-4xl text-emerald-600 dark:text-emerald-400">∞</span>
+                <span class="text-4xl tabular-nums text-emerald-600 dark:text-emerald-400">∞</span>
                 <div>
                   <p class="text-sm font-medium text-emerald-700 dark:text-emerald-300">
                     {{ t('userSubscriptions.unlimited') }}

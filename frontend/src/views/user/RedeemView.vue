@@ -3,17 +3,17 @@
     <div class="mx-auto max-w-2xl space-y-6">
       <!-- Current Balance Card -->
       <div class="card overflow-hidden">
-        <div class="bg-gradient-to-br from-primary-500 to-primary-600 px-6 py-8 text-center">
+        <div class="bg-dark-950 px-6 py-8 text-center dark:bg-dark-950">
           <div
-            class="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm"
+            class="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-md border border-dark-700 bg-dark-900 text-primary-500"
           >
-            <Icon name="creditCard" size="xl" class="text-white" />
+            <Icon name="creditCard" size="xl" />
           </div>
-          <p class="text-sm font-medium text-primary-100">{{ t('redeem.currentBalance') }}</p>
-          <p class="mt-2 text-4xl font-bold text-white">
+          <p class="font-mono text-xs uppercase tracking-wide text-gray-400 dark:text-dark-400">{{ t('redeem.currentBalance') }}</p>
+          <p class="mt-2 text-4xl font-normal tabular-nums tracking-tight text-white">
             ${{ user?.balance?.toFixed(2) || '0.00' }}
           </p>
-          <p class="mt-2 text-sm text-primary-100">
+          <p class="mt-2 font-mono text-xs text-gray-400 dark:text-dark-400">
             {{ t('redeem.concurrency') }}: {{ user?.concurrency || 0 }} {{ t('redeem.requests') }}
           </p>
         </div>
@@ -87,7 +87,7 @@
           <div class="p-6">
             <div class="flex items-start gap-4">
               <div
-                class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-emerald-100 dark:bg-emerald-900/30"
+                class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-sm border border-emerald-200 bg-emerald-100 dark:border-emerald-900/50 dark:bg-emerald-900/30"
               >
                 <Icon name="checkCircle" size="md" class="text-emerald-600 dark:text-emerald-400" />
               </div>
@@ -141,7 +141,7 @@
           <div class="p-6">
             <div class="flex items-start gap-4">
               <div
-                class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-red-100 dark:bg-red-900/30"
+                class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-sm border border-red-200 bg-red-100 dark:border-red-900/50 dark:bg-red-900/30"
               >
                 <Icon
                   name="exclamationCircle"
@@ -163,22 +163,20 @@
       </transition>
 
       <!-- Information Card -->
-      <div
-        class="card border-primary-200 bg-primary-50 dark:border-primary-800/50 dark:bg-primary-900/20"
-      >
+      <div class="card">
         <div class="p-6">
           <div class="flex items-start gap-4">
             <div
-              class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-primary-100 dark:bg-primary-900/30"
+              class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-sm border border-gray-200 bg-gray-50 text-primary-600 dark:border-dark-700 dark:bg-dark-800 dark:text-primary-400"
             >
-              <Icon name="infoCircle" size="md" class="text-primary-600 dark:text-primary-400" />
+              <Icon name="infoCircle" size="md" />
             </div>
             <div class="flex-1">
-              <h3 class="text-sm font-semibold text-primary-800 dark:text-primary-300">
+              <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100">
                 {{ t('redeem.aboutCodes') }}
               </h3>
               <ul
-                class="mt-2 list-inside list-disc space-y-1 text-sm text-primary-700 dark:text-primary-400"
+                class="mt-2 list-inside list-disc space-y-1 text-sm text-gray-600 dark:text-gray-400"
               >
                 <li>{{ t('redeem.codeRule1') }}</li>
                 <li>{{ t('redeem.codeRule2') }}</li>
@@ -186,7 +184,7 @@
                   {{ t('redeem.codeRule3') }}
                   <span
                     v-if="contactInfo"
-                    class="ml-1.5 inline-flex items-center rounded-md bg-primary-200/50 px-2 py-0.5 text-xs font-medium text-primary-800 dark:bg-primary-800/40 dark:text-primary-200"
+                    class="ml-1.5 inline-flex items-center rounded-sm border border-gray-200 bg-gray-100 px-2 py-0.5 font-mono text-xs text-gray-700 dark:border-dark-700 dark:bg-dark-800 dark:text-gray-300"
                   >
                     {{ contactInfo }}
                   </span>
@@ -200,8 +198,8 @@
 
       <!-- Recent Activity -->
       <div class="card">
-        <div class="border-b border-gray-100 px-6 py-4 dark:border-dark-700">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+        <div class="border-b border-dashed border-gray-200 px-6 py-4 dark:border-dark-700">
+          <h2 class="font-mono text-xs uppercase tracking-wide text-gray-500 dark:text-dark-400">
             {{ t('redeem.recentActivity') }}
           </h2>
         </div>
@@ -230,21 +228,21 @@
             <div
               v-for="item in history"
               :key="item.id"
-              class="flex items-center justify-between rounded-xl bg-gray-50 p-4 dark:bg-dark-800"
+              class="flex items-center justify-between rounded-md border border-gray-200 bg-white p-4 dark:border-dark-700 dark:bg-dark-800"
             >
               <div class="flex items-center gap-4">
                 <div
                   :class="[
-                    'flex h-10 w-10 items-center justify-center rounded-xl',
+                    'flex h-10 w-10 items-center justify-center rounded-sm border',
                     isBalanceType(item.type)
                       ? item.value >= 0
-                        ? 'bg-emerald-100 dark:bg-emerald-900/30'
-                        : 'bg-red-100 dark:bg-red-900/30'
+                        ? 'border-emerald-200 bg-emerald-50 dark:border-emerald-900/50 dark:bg-emerald-900/30'
+                        : 'border-red-200 bg-red-50 dark:border-red-900/50 dark:bg-red-900/30'
                       : isSubscriptionType(item.type)
-                        ? 'bg-purple-100 dark:bg-purple-900/30'
+                        ? 'border-purple-200 bg-purple-50 dark:border-purple-900/50 dark:bg-purple-900/30'
                         : item.value >= 0
-                          ? 'bg-blue-100 dark:bg-blue-900/30'
-                          : 'bg-orange-100 dark:bg-orange-900/30'
+                          ? 'border-blue-200 bg-blue-50 dark:border-blue-900/50 dark:bg-blue-900/30'
+                          : 'border-orange-200 bg-orange-50 dark:border-orange-900/50 dark:bg-orange-900/30'
                   ]"
                 >
                   <!-- 余额类型图标 -->
@@ -327,7 +325,7 @@
           <!-- Empty State -->
           <div v-else class="empty-state py-8">
             <div
-              class="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-100 dark:bg-dark-800"
+              class="mb-4 flex h-16 w-16 items-center justify-center rounded-md border border-gray-200 bg-gray-50 dark:border-dark-700 dark:bg-dark-800"
             >
               <Icon name="clock" size="xl" class="text-gray-400 dark:text-dark-500" />
             </div>
