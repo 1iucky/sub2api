@@ -15,7 +15,7 @@
         @rowClick="(row) => openDetail(row.id)"
       >
         <template #cell-model="{ row }">
-          <span v-if="row.model" class="text-sm font-medium text-gray-900 dark:text-white">{{ row.model }}</span>
+          <span v-if="row.model" class="text-sm font-mono text-gray-700 dark:text-gray-300">{{ row.model }}</span>
           <span v-else class="text-sm text-gray-400 dark:text-gray-500">-</span>
         </template>
 
@@ -24,22 +24,22 @@
             <span class="text-gray-900 dark:text-white">{{ row.key_name || '-' }}</span>
             <span
               v-if="row.key_deleted"
-              class="ml-1 inline-flex items-center rounded px-1 py-px text-[10px] font-medium leading-tight bg-rose-100 text-rose-600 ring-1 ring-inset ring-rose-200 dark:bg-rose-500/20 dark:text-rose-400 dark:ring-rose-500/30"
+              class="ml-1 inline-flex items-center rounded-sm px-1 py-px text-[10px] font-medium leading-tight bg-gray-100 text-gray-500 dark:bg-dark-700 dark:text-gray-400"
             >{{ t('usage.errors.keyDeleted') }}</span>
           </div>
         </template>
 
         <template #cell-endpoint="{ row }">
           <div class="max-w-[320px] text-xs">
-            <div class="break-all text-gray-700 dark:text-gray-300">
-              <span class="font-medium text-gray-500 dark:text-gray-400">{{ t('usage.inbound') }}:</span>
+            <div class="break-all font-mono text-gray-600 dark:text-gray-400">
+              <span class="text-[11px] uppercase tracking-wide text-gray-500 dark:text-gray-500">{{ t('usage.inbound') }}:</span>
               <span class="ml-1">{{ row.inbound_endpoint?.trim() || '-' }}</span>
             </div>
           </div>
         </template>
 
         <template #cell-status="{ row }">
-          <span class="inline-flex items-center rounded px-2 py-0.5 text-xs font-medium" :class="statusClass(row.status_code)">
+          <span class="inline-flex items-center rounded-sm px-2 py-0.5 text-xs font-mono" :class="statusClass(row.status_code)">
             {{ row.status_code || '-' }}
           </span>
         </template>
@@ -51,7 +51,7 @@
         <template #cell-message="{ row }">
           <span
             v-if="row.message"
-            class="block max-w-[280px] truncate text-sm text-gray-600 dark:text-gray-400"
+            class="block max-w-[280px] truncate text-sm text-primary-600 dark:text-primary-400"
             :title="row.message"
           >{{ row.message }}</span>
           <span v-else class="text-sm text-gray-400 dark:text-gray-500">-</span>
@@ -60,7 +60,7 @@
         <template #cell-group="{ row }">
           <span
             v-if="row.group_name"
-            class="inline-flex items-center rounded px-2 py-0.5 text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200"
+            class="inline-flex items-center rounded-sm px-2 py-0.5 text-xs font-mono bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200"
           >{{ row.group_name }}</span>
           <span v-else class="text-sm text-gray-400 dark:text-gray-500">-</span>
         </template>
@@ -68,14 +68,14 @@
         <template #cell-type="{ row }">
           <span
             v-if="requestTypeBadge(row)"
-            class="inline-flex items-center rounded px-2 py-0.5 text-xs font-medium"
+            class="inline-flex items-center rounded-sm px-2 py-0.5 text-xs font-mono"
             :class="requestTypeBadge(row)!.className"
           >{{ requestTypeBadge(row)!.label }}</span>
           <span v-else class="text-sm text-gray-400 dark:text-gray-500">-</span>
         </template>
 
         <template #cell-platform="{ row }">
-          <span class="text-sm text-gray-900 dark:text-white">{{ row.platform || '-' }}</span>
+          <span class="text-sm font-mono text-gray-700 dark:text-gray-300">{{ row.platform || '-' }}</span>
         </template>
 
         <template #cell-client_ip="{ row }">
@@ -89,7 +89,7 @@
         </template>
 
         <template #cell-created_at="{ row }">
-          <span class="text-sm text-gray-600 dark:text-gray-400">{{ formatDateTime(row.created_at) }}</span>
+          <span class="text-xs font-mono text-gray-500 dark:text-gray-400">{{ formatDateTime(row.created_at) }}</span>
         </template>
 
         <template #cell-user_agent="{ row }">
