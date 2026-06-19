@@ -1,20 +1,20 @@
 <template>
   <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
-    <div class="card p-4 flex items-center gap-3">
-      <div class="rounded-lg bg-blue-100 p-2 dark:bg-blue-900/30 text-blue-600">
-        <Icon name="document" size="md" />
+    <div class="card flex items-center gap-3 p-4">
+      <div class="rounded-sm border border-gray-200 p-2 dark:border-dark-700">
+        <Icon name="document" size="md" class="text-primary-500" />
       </div>
       <div>
-        <p class="text-xs font-medium text-gray-500">{{ t('usage.totalRequests') }}</p>
-        <p class="text-xl font-bold">{{ stats?.total_requests?.toLocaleString() || '0' }}</p>
-        <p class="text-xs text-gray-400">{{ t('usage.inSelectedRange') }}</p>
+        <p class="eyebrow">{{ t('usage.totalRequests') }}</p>
+        <p class="text-xl font-normal tabular-nums tracking-tight text-gray-900 dark:text-gray-100">{{ stats?.total_requests?.toLocaleString() || '0' }}</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400">{{ t('usage.inSelectedRange') }}</p>
       </div>
     </div>
-    <div class="card p-4 flex items-center gap-3">
-      <div class="rounded-lg bg-amber-100 p-2 dark:bg-amber-900/30 text-amber-600"><svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" /></svg></div>
+    <div class="card flex items-center gap-3 p-4">
+      <div class="rounded-sm border border-gray-200 p-2 dark:border-dark-700"><svg class="h-5 w-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" /></svg></div>
       <div>
-        <p class="text-xs font-medium text-gray-500">{{ t('usage.totalTokens') }}</p>
-        <p class="text-xl font-bold">{{ formatTokens(stats?.total_tokens || 0) }}</p>
+        <p class="eyebrow">{{ t('usage.totalTokens') }}</p>
+        <p class="text-xl font-normal tabular-nums tracking-tight text-gray-900 dark:text-gray-100">{{ formatTokens(stats?.total_tokens || 0) }}</p>
         <p class="flex flex-wrap items-center gap-x-1 text-xs text-gray-500">
           <span>{{ t('usage.in') }}: {{ formatTokens(stats?.total_input_tokens || 0) }}</span>
           <span>/</span>
@@ -36,9 +36,9 @@
               />
             </svg>
             <span
-              class="pointer-events-none absolute left-1/2 top-full z-30 mt-2 w-56 -translate-x-1/2 rounded-lg border border-gray-200 bg-white p-3 text-left text-xs text-gray-700 opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100 group-focus:opacity-100 dark:border-dark-600 dark:bg-dark-800 dark:text-dark-200"
+              class="pointer-events-none absolute left-1/2 top-full z-30 mt-2 w-56 -translate-x-1/2 rounded-lg border border-dark-700 bg-dark-900 p-3 text-left font-mono text-xs text-gray-100 opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus:opacity-100 dark:border-dark-600"
             >
-              <span class="mb-2 block font-medium text-gray-900 dark:text-white">
+              <span class="eyebrow mb-2 block text-gray-300">
                 {{ cacheDetailLabel() }}
               </span>
               <span class="flex items-center justify-between gap-3">
@@ -58,16 +58,16 @@
         </p>
       </div>
     </div>
-    <div class="card p-4 flex items-center gap-3">
-      <div class="rounded-lg bg-green-100 p-2 dark:bg-green-900/30 text-green-600">
-        <Icon name="dollar" size="md" />
+    <div class="card flex items-center gap-3 p-4">
+      <div class="rounded-sm border border-primary-200 p-2 dark:border-primary-500/30">
+        <Icon name="dollar" size="md" class="text-primary-500" />
       </div>
       <div class="min-w-0 flex-1">
-        <p class="text-xs font-medium text-gray-500">{{ t('usage.totalCost') }}</p>
-        <p class="text-xl font-bold text-green-600">
+        <p class="eyebrow">{{ t('usage.totalCost') }}</p>
+        <p class="text-xl font-normal tabular-nums tracking-tight text-primary-600 dark:text-primary-400">
           ${{ (stats?.total_actual_cost || 0).toFixed(4) }}
         </p>
-        <p class="text-xs text-gray-400">
+        <p class="text-xs text-gray-500 dark:text-gray-400">
           <template v-if="showAccountCost && totalAccountCost != null">
             <span class="text-orange-500">{{ t('usage.accountCost') }} ${{ totalAccountCost.toFixed(4) }}</span>
             <span> · </span>
@@ -79,11 +79,11 @@
         </p>
       </div>
     </div>
-    <div class="card p-4 flex items-center gap-3">
-      <div class="rounded-lg bg-purple-100 p-2 dark:bg-purple-900/30 text-purple-600">
-        <Icon name="clock" size="md" />
+    <div class="card flex items-center gap-3 p-4">
+      <div class="rounded-sm border border-gray-200 p-2 dark:border-dark-700">
+        <Icon name="clock" size="md" class="text-primary-500" />
       </div>
-      <div><p class="text-xs font-medium text-gray-500">{{ t('usage.avgDuration') }}</p><p class="text-xl font-bold">{{ formatDuration(stats?.average_duration_ms || 0) }}</p></div>
+      <div><p class="eyebrow">{{ t('usage.avgDuration') }}</p><p class="text-xl font-normal tabular-nums tracking-tight text-gray-900 dark:text-gray-100">{{ formatDuration(stats?.average_duration_ms || 0) }}</p></div>
     </div>
   </div>
 </template>
