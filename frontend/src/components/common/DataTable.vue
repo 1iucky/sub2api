@@ -1,21 +1,21 @@
 <template>
   <div v-if="!isDesktopViewport" class="space-y-3">
     <template v-if="loading">
-      <div v-for="i in 5" :key="i" class="rounded-lg border border-gray-200 bg-white p-4 dark:border-dark-700 dark:bg-dark-900">
+      <div v-for="i in 5" :key="i" class="rounded-md border border-gray-200 bg-white p-4 dark:border-dark-700 dark:bg-dark-900">
         <div class="space-y-3">
           <div v-for="column in dataColumns" :key="column.key" class="flex justify-between">
-            <div class="h-4 w-20 animate-pulse rounded bg-gray-200 dark:bg-dark-700"></div>
-            <div class="h-4 w-32 animate-pulse rounded bg-gray-200 dark:bg-dark-700"></div>
+            <div class="h-4 w-20 animate-pulse rounded-sm bg-gray-200 dark:bg-dark-700"></div>
+            <div class="h-4 w-32 animate-pulse rounded-sm bg-gray-200 dark:bg-dark-700"></div>
           </div>
-          <div v-if="hasActionsColumn" class="border-t border-gray-200 pt-3 dark:border-dark-700">
-            <div class="h-8 w-full animate-pulse rounded bg-gray-200 dark:bg-dark-700"></div>
+          <div v-if="hasActionsColumn" class="border-t border-dashed border-gray-200 pt-3 dark:border-dark-700">
+            <div class="h-8 w-full animate-pulse rounded-sm bg-gray-200 dark:bg-dark-700"></div>
           </div>
         </div>
       </div>
     </template>
 
     <template v-else-if="!data || data.length === 0">
-      <div class="rounded-lg border border-gray-200 bg-white p-12 text-center dark:border-dark-700 dark:bg-dark-900">
+      <div class="rounded-md border border-gray-200 bg-white p-12 text-center dark:border-dark-700 dark:bg-dark-900">
         <slot name="empty">
           <div class="flex flex-col items-center">
             <Icon
@@ -23,7 +23,7 @@
               size="xl"
               class="mb-4 h-12 w-12 text-gray-400 dark:text-dark-500"
             />
-            <p class="text-lg font-medium text-gray-900 dark:text-gray-100">
+            <p class="text-base font-medium text-gray-900 dark:text-gray-100">
               {{ t('empty.noData') }}
             </p>
           </div>
@@ -48,7 +48,7 @@
       <div
         v-for="(row, index) in sortedData"
         :key="resolveRowKey(row, index)"
-        class="rounded-lg border border-gray-200 bg-white p-4 dark:border-dark-700 dark:bg-dark-900"
+        class="rounded-md border border-gray-200 bg-white p-4 transition-colors dark:border-dark-700 dark:bg-dark-900"
         :class="{
           'cursor-pointer': clickableRows,
           'border-primary-300 bg-primary-50/40 dark:border-primary-700 dark:bg-primary-900/10': selectable && isRowSelected(row, index)
@@ -70,9 +70,9 @@
           <div
             v-for="column in dataColumns"
             :key="column.key"
-            class="flex items-start justify-between gap-4"
+            class="flex items-start justify-between gap-4 border-b border-dashed border-gray-200 pb-3 last:border-b-0 last:pb-0 dark:border-dark-700"
           >
-            <span class="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-dark-400">
+            <span class="font-mono text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-dark-400">
               {{ column.label }}
             </span>
             <div class="text-right text-sm text-gray-900 dark:text-gray-100">
@@ -81,7 +81,7 @@
               </slot>
             </div>
           </div>
-          <div v-if="hasActionsColumn" class="border-t border-gray-200 pt-3 dark:border-dark-700">
+          <div v-if="hasActionsColumn" class="border-t border-dashed border-gray-200 pt-3 dark:border-dark-700">
             <slot name="cell-actions" :row="row" :value="row['actions']" :expanded="actionsExpanded"></slot>
           </div>
         </div>
@@ -98,8 +98,8 @@
       'is-scrollable': isScrollable
     }"
   >
-    <table class="w-full min-w-max divide-y divide-gray-200 dark:divide-dark-700">
-      <thead class="table-header bg-gray-50 dark:bg-dark-800">
+    <table class="w-full min-w-max">
+      <thead class="table-header bg-gray-50 dark:bg-dark-900">
         <tr>
           <th
             v-if="selectable"
@@ -122,9 +122,9 @@
             scope="col"
             :aria-sort="column.sortable ? getColumnAriaSort(column.key) : undefined"
             :class="[
-              'sticky-header-cell py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-dark-400',
+              'sticky-header-cell border-b border-dashed border-gray-300 py-3 text-left font-mono text-xs font-medium uppercase tracking-wide text-gray-500 dark:border-dark-600 dark:text-dark-400',
               getAdaptivePaddingClass(),
-              { 'cursor-pointer hover:bg-gray-100 dark:hover:bg-dark-700': column.sortable },
+              { 'cursor-pointer hover:bg-gray-100 dark:hover:bg-dark-800': column.sortable },
               getStickyColumnClass(column, index),
               column.class
             ]"
@@ -165,7 +165,7 @@
           </th>
         </tr>
       </thead>
-      <tbody class="table-body divide-y divide-gray-200 bg-white dark:divide-dark-700 dark:bg-dark-900">
+      <tbody class="table-body bg-white dark:bg-dark-900">
         <!-- Loading skeleton -->
         <tr v-if="loading" v-for="i in 5" :key="i">
           <td v-if="selectable" class="w-11 min-w-11 px-3 py-4">
@@ -173,7 +173,7 @@
           </td>
           <td v-for="column in columns" :key="column.key" :class="['whitespace-nowrap py-4', getAdaptivePaddingClass()]">
             <div class="animate-pulse">
-              <div class="h-4 w-3/4 rounded bg-gray-200 dark:bg-dark-700"></div>
+              <div class="h-4 w-3/4 rounded-sm bg-gray-200 dark:bg-dark-700"></div>
             </div>
           </td>
         </tr>
@@ -191,7 +191,7 @@
                   size="xl"
                   class="mb-4 h-12 w-12 text-gray-400 dark:text-dark-500"
                 />
-                <p class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                <p class="text-base font-medium text-gray-900 dark:text-gray-100">
                   {{ t('empty.noData') }}
                 </p>
               </div>
@@ -212,7 +212,7 @@
             :data-row-id="resolveRowKey(item.row, item.index)"
             :data-index="item.index"
             :ref="item.measure ? measureElement : undefined"
-            class="hover:bg-gray-50 dark:hover:bg-dark-800"
+            class="border-b border-dashed border-gray-200 transition-colors hover:bg-gray-50 dark:border-dark-700 dark:hover:bg-dark-800/50"
             :class="{
               'cursor-pointer': clickableRows,
               'bg-primary-50/40 dark:bg-primary-900/10': selectable && isRowSelected(item.row, item.index)
@@ -966,11 +966,13 @@ defineExpose({
   position: sticky;
   top: 0;
   z-index: 200;
-  background-color: rgb(249 250 251);
+  /* warm gray-50 (factory warm neutral) */
+  background-color: rgb(247 245 243);
 }
 
 .dark .table-wrapper .table-header {
-  background-color: rgb(31 41 55);
+  /* warm dark-900 (factory warm near-black surface) */
+  background-color: rgb(10 9 8);
 }
 
 /* 表体保持在表头下方 */
@@ -984,11 +986,11 @@ defineExpose({
   position: sticky;
   top: 0;
   z-index: 210; /* 必须高于所有表体内容 */
-  background-color: rgb(249 250 251);
+  background-color: rgb(247 245 243);
 }
 
 .dark .sticky-header-cell {
-  background-color: rgb(31 41 55);
+  background-color: rgb(10 9 8);
 }
 
 /* Sticky 列基础样式 */
@@ -1022,72 +1024,59 @@ defineExpose({
   z-index: 220; /* 高于普通表头单元格和表体固定列 */
 }
 
-/* 表体 sticky 列背景 */
+/* 表体 sticky 列背景 — warm surface matching tbody bg-white/dark:bg-dark-900 */
 tbody .sticky-col {
-  background-color: white;
+  background-color: rgb(255 255 255);
 }
 
 .dark tbody .sticky-col {
-  background-color: rgb(17 24 39);
+  background-color: rgb(10 9 8);
 }
 
-/* hover 状态保持 */
+/* hover 状态保持 — warm tone (matches row hover) */
 tbody tr:hover .sticky-col {
-  background-color: rgb(249 250 251);
+  background-color: rgb(247 245 243);
 }
 
 .dark tbody tr:hover .sticky-col {
-  background-color: rgb(31 41 55);
+  background-color: rgb(26 24 22);
 }
 
-/* 阴影只在可滚动时显示 */
-/* 单列固定右侧阴影 */
-.is-scrollable .sticky-col-left::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 10px;
-  transform: translateX(100%);
-  background: linear-gradient(to right, rgba(0, 0, 0, 0.08), transparent);
-  pointer-events: none;
-}
-
-/* 双列固定：只在第二列显示阴影 */
+/* 固定列分隔：以 hairline fade 替代原 shadow（factory 无阴影风格） */
+.is-scrollable .sticky-col-left::after,
 .is-scrollable .sticky-col-left-second::after {
   content: '';
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
-  width: 10px;
+  width: 1px;
   transform: translateX(100%);
-  background: linear-gradient(to right, rgba(0, 0, 0, 0.08), transparent);
+  /* warm hairline (gray-300 / dark-700) */
+  background: linear-gradient(to right, rgba(125, 114, 100, 0.25), transparent);
   pointer-events: none;
 }
 
-/* 操作列左侧阴影 */
 .is-scrollable .sticky-col-right::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   bottom: 0;
-  width: 10px;
+  width: 1px;
   transform: translateX(-100%);
-  background: linear-gradient(to left, rgba(0, 0, 0, 0.08), transparent);
+  background: linear-gradient(to left, rgba(125, 114, 100, 0.25), transparent);
   pointer-events: none;
 }
 
-/* 暗色模式阴影 */
+/* 暗色模式 hairline 加深 */
 .dark .is-scrollable .sticky-col-left::after,
 .dark .is-scrollable .sticky-col-left-second::after {
-  background: linear-gradient(to right, rgba(0, 0, 0, 0.2), transparent);
+  background: linear-gradient(to right, rgba(74, 67, 57, 0.6), transparent);
 }
 
 .dark .is-scrollable .sticky-col-right::before {
-  background: linear-gradient(to left, rgba(0, 0, 0, 0.2), transparent);
+  background: linear-gradient(to left, rgba(74, 67, 57, 0.6), transparent);
 }
 </style>
 
@@ -1121,31 +1110,31 @@ tbody tr:hover .sticky-col {
 
 /* 常驻、不透明的滑块，无视鼠标是否 hover 都在那！ */
 .table-wrapper::-webkit-scrollbar-thumb {
-  background-color: rgba(107, 114, 128, 0.75) !important; 
+  background-color: rgba(125, 114, 100, 0.75) !important;
   border-radius: 6px !important;
   border: 2px solid transparent !important;
   background-clip: padding-box !important;
   -webkit-appearance: none !important;
 }
 .table-wrapper::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(75, 85, 99, 0.9) !important;
+  background-color: rgba(94, 85, 74, 0.9) !important;
 }
 
 .dark .table-wrapper::-webkit-scrollbar-thumb {
-  background-color: rgba(156, 163, 175, 0.75) !important;
+  background-color: rgba(154, 143, 128, 0.75) !important;
 }
 .dark .table-wrapper::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(209, 213, 219, 0.9) !important;
+  background-color: rgba(201, 192, 181, 0.9) !important;
 }
 
 /* 3. 仅给真正的 Firefox 留的后路 */
 @supports (-moz-appearance:none) {
   .table-wrapper {
     scrollbar-width: thin !important;
-    scrollbar-color: rgba(156, 163, 175, 0.5) rgba(0, 0, 0, 0.03) !important;
+    scrollbar-color: rgba(154, 143, 128, 0.5) rgba(0, 0, 0, 0.03) !important;
   }
   .dark .table-wrapper {
-    scrollbar-color: rgba(75, 85, 99, 0.5) rgba(255, 255, 255, 0.05) !important;
+    scrollbar-color: rgba(94, 85, 74, 0.5) rgba(255, 255, 255, 0.05) !important;
   }
 }
 </style>
