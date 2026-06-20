@@ -84,7 +84,7 @@
 
           <div
             v-if="isOpenAIModelRestrictionDisabled"
-            class="mb-3 rounded-lg bg-amber-50 p-3 dark:bg-amber-900/20"
+            class="mb-3 rounded-md border border-amber-200 bg-amber-50 p-3 dark:border-amber-800/40 dark:bg-amber-900/20"
           >
             <p class="text-xs text-amber-700 dark:text-amber-400">
               {{ t('admin.accounts.openai.modelRestrictionDisabledByPassthrough') }}
@@ -98,10 +98,10 @@
                 type="button"
                 @click="modelRestrictionMode = 'whitelist'"
                 :class="[
-                  'flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-all',
+                  'flex-1 rounded-sm px-4 py-2 text-sm font-medium transition-colors',
                   modelRestrictionMode === 'whitelist'
-                    ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-400'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-dark-600 dark:text-gray-400 dark:hover:bg-dark-500'
+                    ? 'border border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-500/10 dark:text-primary-400'
+                    : 'border border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:border-dark-700 dark:bg-dark-900 dark:text-gray-400 dark:hover:border-dark-600 dark:hover:text-gray-200'
                 ]"
               >
                 <svg
@@ -123,10 +123,10 @@
                 type="button"
                 @click="modelRestrictionMode = 'mapping'"
                 :class="[
-                  'flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-all',
+                  'flex-1 rounded-sm px-4 py-2 text-sm font-medium transition-colors',
                   modelRestrictionMode === 'mapping'
-                    ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-dark-600 dark:text-gray-400 dark:hover:bg-dark-500'
+                    ? 'border border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
+                    : 'border border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:border-dark-700 dark:bg-dark-900 dark:text-gray-400 dark:hover:border-dark-600 dark:hover:text-gray-200'
                 ]"
               >
                 <svg
@@ -159,7 +159,7 @@
 
             <!-- Mapping Mode -->
             <div v-else>
-              <div class="mb-3 rounded-lg bg-purple-50 p-3 dark:bg-purple-900/20">
+              <div class="mb-3 rounded-md border border-purple-200 bg-purple-50 p-3 dark:border-purple-800/40 dark:bg-purple-900/20">
                 <p class="text-xs text-purple-700 dark:text-purple-400">
                   <svg
                     class="mr-1 inline h-4 w-4"
@@ -213,7 +213,7 @@
                 <button
                   type="button"
                   @click="removeModelMapping(index)"
-                  class="rounded-lg p-2 text-red-500 transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20"
+                  class="rounded-sm p-2 text-red-500 transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20"
                 >
                   <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path
@@ -230,7 +230,7 @@
             <button
               type="button"
               @click="addModelMapping"
-              class="mb-3 w-full rounded-lg border-2 border-dashed border-gray-300 px-4 py-2 text-gray-600 transition-colors hover:border-gray-400 hover:text-gray-700 dark:border-dark-500 dark:text-gray-400 dark:hover:border-dark-400 dark:hover:text-gray-300"
+              class="mb-3 w-full rounded-sm border border-dashed border-gray-300 px-4 py-2 text-gray-600 transition-colors hover:border-gray-400 hover:text-gray-700 dark:border-dark-600 dark:text-gray-400 dark:hover:border-dark-500 dark:hover:text-gray-300"
             >
               <svg
                 class="mr-1 inline h-4 w-4"
@@ -255,7 +255,7 @@
                   :key="preset.label"
                   type="button"
                   @click="addPresetMapping(preset.from, preset.to)"
-                  :class="['rounded-lg px-3 py-1 text-xs transition-colors', preset.color]"
+                  :class="['rounded-sm px-2.5 py-1 font-mono text-xs transition-colors', preset.color]"
                 >
                   + {{ preset.label }}
                 </button>
@@ -277,19 +277,19 @@
               type="button"
               @click="poolModeEnabled = !poolModeEnabled"
               :class="[
-                'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
-                poolModeEnabled ? 'bg-primary-600' : 'bg-gray-200 dark:bg-dark-600'
+                'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-150 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500',
+                poolModeEnabled ? 'bg-primary-500' : 'bg-gray-300 dark:bg-dark-700'
               ]"
             >
               <span
                 :class="[
-                  'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                  'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white transition-transform duration-150 ease-in-out dark:bg-gray-100',
                   poolModeEnabled ? 'translate-x-5' : 'translate-x-0'
                 ]"
               />
             </button>
           </div>
-          <div v-if="poolModeEnabled" class="rounded-lg bg-blue-50 p-3 dark:bg-blue-900/20">
+          <div v-if="poolModeEnabled" class="rounded-md border border-blue-200 bg-blue-50 p-3 dark:border-blue-800/40 dark:bg-blue-900/20">
             <p class="text-xs text-blue-700 dark:text-blue-400">
               <Icon name="exclamationCircle" size="sm" class="mr-1 inline" :stroke-width="2" />
               {{ t('admin.accounts.poolModeInfo') }}
@@ -341,13 +341,13 @@
               type="button"
               @click="customErrorCodesEnabled = !customErrorCodesEnabled"
               :class="[
-                'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
-                customErrorCodesEnabled ? 'bg-primary-600' : 'bg-gray-200 dark:bg-dark-600'
+                'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-150 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500',
+                customErrorCodesEnabled ? 'bg-primary-500' : 'bg-gray-300 dark:bg-dark-700'
               ]"
             >
               <span
                 :class="[
-                  'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                  'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white transition-transform duration-150 ease-in-out dark:bg-gray-100',
                   customErrorCodesEnabled ? 'translate-x-5' : 'translate-x-0'
                 ]"
               />
@@ -355,7 +355,7 @@
           </div>
 
           <div v-if="customErrorCodesEnabled" class="space-y-3">
-            <div class="rounded-lg bg-amber-50 p-3 dark:bg-amber-900/20">
+            <div class="rounded-md border border-amber-200 bg-amber-50 p-3 dark:border-amber-800/40 dark:bg-amber-900/20">
               <p class="text-xs text-amber-700 dark:text-amber-400">
                 <Icon name="exclamationTriangle" size="sm" class="mr-1 inline" :stroke-width="2" />
                 {{ t('admin.accounts.customErrorCodesWarning') }}
@@ -370,10 +370,10 @@
                 type="button"
                 @click="toggleErrorCode(code.value)"
                 :class="[
-                  'rounded-lg px-3 py-1.5 text-sm font-medium transition-colors',
+                  'rounded-sm px-3 py-1.5 text-sm font-medium transition-colors',
                   selectedErrorCodes.includes(code.value)
-                    ? 'bg-red-100 text-red-700 ring-1 ring-red-500 dark:bg-red-900/30 dark:text-red-400'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-dark-600 dark:text-gray-400 dark:hover:bg-dark-500'
+                    ? 'border border-red-500 bg-red-50 text-red-700 dark:border-red-800/40 dark:bg-red-900/20 dark:text-red-400'
+                    : 'border border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:border-dark-700 dark:bg-dark-900 dark:text-gray-400 dark:hover:border-dark-600 dark:hover:text-gray-200'
                 ]"
               >
                 {{ code.value }} {{ code.label }}
@@ -408,7 +408,7 @@
               <span
                 v-for="code in selectedErrorCodes.sort((a, b) => a - b)"
                 :key="code"
-                class="inline-flex items-center gap-1 rounded-full bg-red-100 px-2.5 py-0.5 text-sm font-medium text-red-700 dark:bg-red-900/30 dark:text-red-400"
+                class="inline-flex items-center gap-1 rounded-sm border border-red-200 bg-red-50 px-2 py-0.5 font-mono text-xs font-medium text-red-700 dark:border-red-800/40 dark:bg-red-900/20 dark:text-red-400"
               >
                 {{ code }}
                 <button
@@ -539,7 +539,7 @@
 
         <div
           v-if="isOpenAIModelRestrictionDisabled"
-          class="mb-3 rounded-lg bg-amber-50 p-3 dark:bg-amber-900/20"
+          class="mb-3 rounded-md border border-amber-200 bg-amber-50 p-3 dark:border-amber-800/40 dark:bg-amber-900/20"
         >
           <p class="text-xs text-amber-700 dark:text-amber-400">
             {{ t('admin.accounts.openai.modelRestrictionDisabledByPassthrough') }}
@@ -553,10 +553,10 @@
               type="button"
               @click="modelRestrictionMode = 'whitelist'"
               :class="[
-                'flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-all',
+                'flex-1 rounded-sm px-4 py-2 text-sm font-medium transition-colors',
                 modelRestrictionMode === 'whitelist'
-                  ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-400'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-dark-600 dark:text-gray-400 dark:hover:bg-dark-500'
+                  ? 'border border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-500/10 dark:text-primary-400'
+                  : 'border border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:border-dark-700 dark:bg-dark-900 dark:text-gray-400 dark:hover:border-dark-600 dark:hover:text-gray-200'
               ]"
             >
               {{ t('admin.accounts.modelWhitelist') }}
@@ -565,10 +565,10 @@
               type="button"
               @click="modelRestrictionMode = 'mapping'"
               :class="[
-                'flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-all',
+                'flex-1 rounded-sm px-4 py-2 text-sm font-medium transition-colors',
                 modelRestrictionMode === 'mapping'
-                  ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-dark-600 dark:text-gray-400 dark:hover:bg-dark-500'
+                  ? 'border border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
+                  : 'border border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:border-dark-700 dark:bg-dark-900 dark:text-gray-400 dark:hover:border-dark-600 dark:hover:text-gray-200'
               ]"
             >
               {{ t('admin.accounts.modelMapping') }}
@@ -588,7 +588,7 @@
 
           <!-- Mapping Mode -->
           <div v-else>
-            <div class="mb-3 rounded-lg bg-purple-50 p-3 dark:bg-purple-900/20">
+            <div class="mb-3 rounded-md border border-purple-200 bg-purple-50 p-3 dark:border-purple-800/40 dark:bg-purple-900/20">
               <p class="text-xs text-purple-700 dark:text-purple-400">
                 {{ t('admin.accounts.mapRequestModels') }}
               </p>
@@ -628,7 +628,7 @@
                 <button
                   type="button"
                   @click="removeModelMapping(index)"
-                  class="rounded-lg p-2 text-red-500 transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20"
+                  class="rounded-sm p-2 text-red-500 transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20"
                 >
                   <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path
@@ -645,7 +645,7 @@
             <button
               type="button"
               @click="addModelMapping"
-              class="mb-3 w-full rounded-lg border-2 border-dashed border-gray-300 px-4 py-2 text-gray-600 transition-colors hover:border-gray-400 hover:text-gray-700 dark:border-dark-500 dark:text-gray-400 dark:hover:border-dark-400 dark:hover:text-gray-300"
+              class="mb-3 w-full rounded-sm border border-dashed border-gray-300 px-4 py-2 text-gray-600 transition-colors hover:border-gray-400 hover:text-gray-700 dark:border-dark-600 dark:text-gray-400 dark:hover:border-dark-500 dark:hover:text-gray-300"
             >
               + {{ t('admin.accounts.addMapping') }}
             </button>
@@ -657,7 +657,7 @@
                 :key="'oauth-' + preset.label"
                 type="button"
                 @click="addPresetMapping(preset.from, preset.to)"
-                :class="['rounded-lg px-3 py-1 text-xs transition-colors', preset.color]"
+                :class="['rounded-sm px-2.5 py-1 font-mono text-xs transition-colors', preset.color]"
               >
                 + {{ preset.label }}
               </button>
@@ -739,10 +739,10 @@
               type="button"
               @click="modelRestrictionMode = 'whitelist'"
               :class="[
-                'flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-all',
+                'flex-1 rounded-sm px-4 py-2 text-sm font-medium transition-colors',
                 modelRestrictionMode === 'whitelist'
-                  ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-400'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-dark-600 dark:text-gray-400 dark:hover:bg-dark-500'
+                  ? 'border border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-500/10 dark:text-primary-400'
+                  : 'border border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:border-dark-700 dark:bg-dark-900 dark:text-gray-400 dark:hover:border-dark-600 dark:hover:text-gray-200'
               ]"
             >
               <svg
@@ -764,10 +764,10 @@
               type="button"
               @click="modelRestrictionMode = 'mapping'"
               :class="[
-                'flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-all',
+                'flex-1 rounded-sm px-4 py-2 text-sm font-medium transition-colors',
                 modelRestrictionMode === 'mapping'
-                  ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-dark-600 dark:text-gray-400 dark:hover:bg-dark-500'
+                  ? 'border border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
+                  : 'border border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:border-dark-700 dark:bg-dark-900 dark:text-gray-400 dark:hover:border-dark-600 dark:hover:text-gray-200'
               ]"
             >
               <svg
@@ -800,7 +800,7 @@
 
           <!-- Mapping Mode -->
           <div v-else>
-            <div class="mb-3 rounded-lg bg-purple-50 p-3 dark:bg-purple-900/20">
+            <div class="mb-3 rounded-md border border-purple-200 bg-purple-50 p-3 dark:border-purple-800/40 dark:bg-purple-900/20">
               <p class="text-xs text-purple-700 dark:text-purple-400">
                 <svg
                   class="mr-1 inline h-4 w-4"
@@ -854,7 +854,7 @@
                 <button
                   type="button"
                   @click="removeModelMapping(index)"
-                  class="rounded-lg p-2 text-red-500 transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20"
+                  class="rounded-sm p-2 text-red-500 transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20"
                 >
                   <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path
@@ -871,7 +871,7 @@
             <button
               type="button"
               @click="addModelMapping"
-              class="mb-3 w-full rounded-lg border-2 border-dashed border-gray-300 px-4 py-2 text-gray-600 transition-colors hover:border-gray-400 hover:text-gray-700 dark:border-dark-500 dark:text-gray-400 dark:hover:border-dark-400 dark:hover:text-gray-300"
+              class="mb-3 w-full rounded-sm border border-dashed border-gray-300 px-4 py-2 text-gray-600 transition-colors hover:border-gray-400 hover:text-gray-700 dark:border-dark-600 dark:text-gray-400 dark:hover:border-dark-500 dark:hover:text-gray-300"
             >
               <svg
                 class="mr-1 inline h-4 w-4"
@@ -896,7 +896,7 @@
                 :key="preset.label"
                 type="button"
                 @click="addPresetMapping(preset.from, preset.to)"
-                :class="['rounded-lg px-3 py-1 text-xs transition-colors', preset.color]"
+                :class="['rounded-sm px-2.5 py-1 font-mono text-xs transition-colors', preset.color]"
               >
                 + {{ preset.label }}
               </button>
@@ -970,7 +970,7 @@
             <input
               v-model="editBedrockForceGlobal"
               type="checkbox"
-              class="rounded border-gray-300 text-primary-600 focus:ring-primary-500 dark:border-dark-500"
+              class="rounded-sm border-gray-300 text-primary-600 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:border-dark-600"
             />
             <span class="text-sm text-gray-700 dark:text-gray-300">{{ t('admin.accounts.bedrockForceGlobal') }}</span>
           </label>
@@ -987,10 +987,10 @@
               type="button"
               @click="modelRestrictionMode = 'whitelist'"
               :class="[
-                'flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-all',
+                'flex-1 rounded-sm px-4 py-2 text-sm font-medium transition-colors',
                 modelRestrictionMode === 'whitelist'
-                  ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-400'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-dark-600 dark:text-gray-400 dark:hover:bg-dark-500'
+                  ? 'border border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-500/10 dark:text-primary-400'
+                  : 'border border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:border-dark-700 dark:bg-dark-900 dark:text-gray-400 dark:hover:border-dark-600 dark:hover:text-gray-200'
               ]"
             >
               {{ t('admin.accounts.modelWhitelist') }}
@@ -999,10 +999,10 @@
               type="button"
               @click="modelRestrictionMode = 'mapping'"
               :class="[
-                'flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-all',
+                'flex-1 rounded-sm px-4 py-2 text-sm font-medium transition-colors',
                 modelRestrictionMode === 'mapping'
-                  ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-dark-600 dark:text-gray-400 dark:hover:bg-dark-500'
+                  ? 'border border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
+                  : 'border border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:border-dark-700 dark:bg-dark-900 dark:text-gray-400 dark:hover:border-dark-600 dark:hover:text-gray-200'
               ]"
             >
               {{ t('admin.accounts.modelMapping') }}
@@ -1038,7 +1038,7 @@
                 :key="preset.from"
                 type="button"
                 @click="modelMappings.push({ from: preset.from, to: preset.to })"
-                :class="['rounded-lg px-3 py-1 text-xs transition-colors', preset.color]"
+                :class="['rounded-sm px-2.5 py-1 font-mono text-xs transition-colors', preset.color]"
               >
                 + {{ preset.label }}
               </button>
@@ -1059,19 +1059,19 @@
               type="button"
               @click="poolModeEnabled = !poolModeEnabled"
               :class="[
-                'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
-                poolModeEnabled ? 'bg-primary-600' : 'bg-gray-200 dark:bg-dark-600'
+                'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-150 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500',
+                poolModeEnabled ? 'bg-primary-500' : 'bg-gray-300 dark:bg-dark-700'
               ]"
             >
               <span
                 :class="[
-                  'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                  'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white transition-transform duration-150 ease-in-out dark:bg-gray-100',
                   poolModeEnabled ? 'translate-x-5' : 'translate-x-0'
                 ]"
               />
             </button>
           </div>
-          <div v-if="poolModeEnabled" class="rounded-lg bg-blue-50 p-3 dark:bg-blue-900/20">
+          <div v-if="poolModeEnabled" class="rounded-md border border-blue-200 bg-blue-50 p-3 dark:border-blue-800/40 dark:bg-blue-900/20">
             <p class="text-xs text-blue-700 dark:text-blue-400">
               <Icon name="exclamationCircle" size="sm" class="mr-1 inline" :stroke-width="2" />
               {{ t('admin.accounts.poolModeInfo') }}
@@ -1133,7 +1133,7 @@
 
         <!-- Mapping Mode Only (no toggle for Antigravity) -->
         <div>
-          <div class="mb-3 rounded-lg bg-purple-50 p-3 dark:bg-purple-900/20">
+          <div class="mb-3 rounded-md border border-purple-200 bg-purple-50 p-3 dark:border-purple-800/40 dark:bg-purple-900/20">
             <p class="text-xs text-purple-700 dark:text-purple-400">{{ t('admin.accounts.mapRequestModels') }}</p>
           </div>
 
@@ -1142,7 +1142,7 @@
               type="button"
               @click="syncAntigravityUpstreamModels"
               :disabled="isSyncingAntigravityUpstream || !account?.id"
-              class="rounded-lg border border-emerald-200 px-3 py-1.5 text-sm text-emerald-600 hover:bg-emerald-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-emerald-800 dark:text-emerald-400 dark:hover:bg-emerald-900/30"
+              class="rounded-sm border border-emerald-200 px-3 py-1.5 text-sm text-emerald-600 hover:bg-emerald-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-emerald-800/40 dark:text-emerald-400 dark:hover:bg-emerald-900/20"
             >
               {{ isSyncingAntigravityUpstream ? t('admin.accounts.syncUpstreamModelsLoading') : t('admin.accounts.syncUpstreamModels') }}
             </button>
@@ -1180,7 +1180,7 @@
                 <button
                   type="button"
                   @click="removeAntigravityModelMapping(index)"
-                  class="rounded-lg p-2 text-red-500 transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20"
+                  class="rounded-sm p-2 text-red-500 transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20"
                 >
                   <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path
@@ -1205,7 +1205,7 @@
           <button
             type="button"
             @click="addAntigravityModelMapping"
-            class="mb-3 w-full rounded-lg border-2 border-dashed border-gray-300 px-4 py-2 text-gray-600 transition-colors hover:border-gray-400 hover:text-gray-700 dark:border-dark-500 dark:text-gray-400 dark:hover:border-dark-400 dark:hover:text-gray-300"
+            class="mb-3 w-full rounded-sm border border-dashed border-gray-300 px-4 py-2 text-gray-600 transition-colors hover:border-gray-400 hover:text-gray-700 dark:border-dark-600 dark:text-gray-400 dark:hover:border-dark-500 dark:hover:text-gray-300"
           >
             <svg class="mr-1 inline h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -1219,7 +1219,7 @@
               :key="preset.label"
               type="button"
               @click="addAntigravityPresetMapping(preset.from, preset.to)"
-              :class="['rounded-lg px-3 py-1 text-xs transition-colors', preset.color]"
+              :class="['rounded-sm px-2.5 py-1 font-mono text-xs transition-colors', preset.color]"
             >
               + {{ preset.label }}
             </button>
@@ -1240,13 +1240,13 @@
             type="button"
             @click="tempUnschedEnabled = !tempUnschedEnabled"
             :class="[
-              'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
-              tempUnschedEnabled ? 'bg-primary-600' : 'bg-gray-200 dark:bg-dark-600'
+              'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-150 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500',
+              tempUnschedEnabled ? 'bg-primary-500' : 'bg-gray-300 dark:bg-dark-700'
             ]"
           >
             <span
               :class="[
-                'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white transition-transform duration-150 ease-in-out dark:bg-gray-100',
                 tempUnschedEnabled ? 'translate-x-5' : 'translate-x-0'
               ]"
             />
@@ -1254,7 +1254,7 @@
         </div>
 
         <div v-if="tempUnschedEnabled" class="space-y-3">
-          <div class="rounded-lg bg-blue-50 p-3 dark:bg-blue-900/20">
+          <div class="rounded-md border border-blue-200 bg-blue-50 p-3 dark:border-blue-800/40 dark:bg-blue-900/20">
             <p class="text-xs text-blue-700 dark:text-blue-400">
               <Icon name="exclamationTriangle" size="sm" class="mr-1 inline" :stroke-width="2" />
               {{ t('admin.accounts.tempUnschedulable.notice') }}
@@ -1267,7 +1267,7 @@
               :key="preset.label"
               type="button"
               @click="addTempUnschedRule(preset.rule)"
-              class="rounded-lg bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:bg-gray-200 dark:bg-dark-600 dark:text-gray-300 dark:hover:bg-dark-500"
+              class="rounded-sm border border-gray-200 bg-white px-3 py-1.5 font-mono text-xs text-gray-600 transition-colors hover:border-gray-300 hover:text-gray-900 dark:border-dark-700 dark:bg-dark-900 dark:text-gray-300 dark:hover:border-dark-600 dark:hover:text-gray-100"
             >
               + {{ preset.label }}
             </button>
@@ -1277,7 +1277,7 @@
             <div
               v-for="(rule, index) in tempUnschedRules"
               :key="getTempUnschedRuleKey(rule)"
-              class="rounded-lg border border-gray-200 p-3 dark:border-dark-600"
+              class="rounded-md border border-gray-200 p-3 dark:border-dark-700 dark:bg-dark-900"
             >
               <div class="mb-2 flex items-center justify-between">
                 <span class="text-xs font-medium text-gray-500 dark:text-gray-400">
@@ -1360,7 +1360,7 @@
           <button
             type="button"
             @click="addTempUnschedRule()"
-            class="w-full rounded-lg border-2 border-dashed border-gray-300 px-4 py-2 text-sm text-gray-600 transition-colors hover:border-gray-400 hover:text-gray-700 dark:border-dark-500 dark:text-gray-400 dark:hover:border-dark-400 dark:hover:text-gray-300"
+            class="w-full rounded-sm border border-dashed border-gray-300 px-4 py-2 text-sm text-gray-600 transition-colors hover:border-gray-400 hover:text-gray-700 dark:border-dark-600 dark:text-gray-400 dark:hover:border-dark-500 dark:hover:text-gray-300"
           >
             <svg
               class="mr-1 inline h-4 w-4"
@@ -1427,13 +1427,13 @@
             type="button"
             @click="interceptWarmupRequests = !interceptWarmupRequests"
             :class="[
-              'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
-              interceptWarmupRequests ? 'bg-primary-600' : 'bg-gray-200 dark:bg-dark-600'
+              'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-150 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500',
+              interceptWarmupRequests ? 'bg-primary-500' : 'bg-gray-300 dark:bg-dark-700'
             ]"
           >
             <span
               :class="[
-                'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white transition-transform duration-150 ease-in-out dark:bg-gray-100',
                 interceptWarmupRequests ? 'translate-x-5' : 'translate-x-0'
               ]"
             />
@@ -1536,13 +1536,13 @@
             type="button"
             @click="openaiPassthroughEnabled = !openaiPassthroughEnabled"
             :class="[
-              'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
-              openaiPassthroughEnabled ? 'bg-primary-600' : 'bg-gray-200 dark:bg-dark-600'
+              'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-150 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500',
+              openaiPassthroughEnabled ? 'bg-primary-500' : 'bg-gray-300 dark:bg-dark-700'
             ]"
           >
             <span
               :class="[
-                'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white transition-transform duration-150 ease-in-out dark:bg-gray-100',
                 openaiPassthroughEnabled ? 'translate-x-5' : 'translate-x-0'
               ]"
             />
@@ -1586,9 +1586,9 @@
         v-if="account?.platform === 'openai' && (account?.type === 'oauth' || account?.type === 'setup-token' || account?.type === 'apikey')"
         class="border-t border-gray-200 pt-4 dark:border-dark-600"
       >
-        <div class="overflow-hidden rounded-lg border border-sky-100 bg-sky-50/60 shadow-sm dark:border-sky-900/50 dark:bg-sky-950/20">
+        <div class="overflow-hidden rounded-md border border-sky-200 bg-sky-50 dark:border-sky-800/40 dark:bg-sky-900/20">
           <div class="flex items-start gap-3 px-4 py-3">
-            <div class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-white text-sky-600 shadow-sm ring-1 ring-sky-100 dark:bg-dark-800 dark:text-sky-300 dark:ring-sky-900/60">
+            <div class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-sky-200 bg-white text-sky-600 dark:border-sky-800/40 dark:bg-dark-800 dark:text-sky-300">
               <Icon name="sparkles" size="sm" />
             </div>
             <div class="min-w-0 flex-1">
@@ -1615,7 +1615,7 @@
                 :data-testid="`codex-image-tool-${option.value}`"
                 @click="codexImageToolMode = option.value"
                 :class="[
-                  'group flex min-h-[62px] items-start gap-2 rounded-md border px-3 py-2 text-left transition-all',
+                  'group flex min-h-[68px] items-start gap-2 rounded-md border px-3 py-2 text-left transition-all',
                   codexImageToolMode === option.value
                     ? option.selectedCardClass
                     : 'border-transparent bg-transparent text-slate-600 hover:border-gray-200 hover:bg-gray-50 dark:text-slate-300 dark:hover:border-dark-500 dark:hover:bg-dark-700'
@@ -1685,13 +1685,13 @@
         </div>
         <div
           v-if="openAITextGenerationCapabilityEnabled"
-          class="rounded-lg bg-gray-50 px-3 py-2 text-xs text-gray-600 dark:bg-dark-700 dark:text-gray-300"
+          class="rounded-sm border border-gray-200 bg-gray-50 px-3 py-2 text-xs text-gray-600 dark:border-dark-700 dark:bg-dark-800 dark:text-gray-300"
         >
           <span class="font-medium">{{ t(openAIResponsesStatusKey) }}</span>
         </div>
         <div
           v-else
-          class="rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-700 dark:bg-amber-900/20 dark:text-amber-300"
+          class="rounded-sm border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700 dark:border-amber-800/40 dark:bg-amber-900/20 dark:text-amber-300"
           data-testid="openai-responses-mode-not-applicable"
         >
           {{ t('admin.accounts.openai.responsesModeTextDisabledHint') }}
@@ -1702,11 +1702,11 @@
             <label
               v-for="option in openAIEndpointCapabilityOptions"
               :key="option.value"
-              class="flex cursor-pointer items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm dark:border-dark-600"
+              class="flex cursor-pointer items-center gap-2 rounded-sm border border-gray-200 px-3 py-2 text-sm dark:border-dark-700 dark:bg-dark-900"
             >
               <input
                 type="checkbox"
-                class="rounded border-gray-300 text-primary-600 focus:ring-primary-500 dark:border-dark-500"
+                class="rounded-sm border-gray-300 text-primary-600 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:border-dark-600"
                 :data-testid="`openai-endpoint-capability-${option.value}`"
                 :checked="openAIEndpointCapabilities.includes(option.value)"
                 @change="toggleOpenAIEndpointCapability(option.value, $event)"
@@ -1758,13 +1758,13 @@
             type="button"
             @click="anthropicPassthroughEnabled = !anthropicPassthroughEnabled"
             :class="[
-              'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
-              anthropicPassthroughEnabled ? 'bg-primary-600' : 'bg-gray-200 dark:bg-dark-600'
+              'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-150 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500',
+              anthropicPassthroughEnabled ? 'bg-primary-500' : 'bg-gray-300 dark:bg-dark-700'
             ]"
           >
             <span
               :class="[
-                'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white transition-transform duration-150 ease-in-out dark:bg-gray-100',
                 anthropicPassthroughEnabled ? 'translate-x-5' : 'translate-x-0'
               ]"
             />
@@ -1816,7 +1816,7 @@
         class="border-t border-gray-200 pt-4 dark:border-dark-600 space-y-4"
       >
         <div class="mb-3">
-          <h3 class="input-label mb-0 text-base font-semibold">{{ t('admin.accounts.quotaControl.title') }}</h3>
+          <h3 class="input-label mb-0 text-base font-normal tracking-tight">{{ t('admin.accounts.quotaControl.title') }}</h3>
           <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
             {{ t('admin.accounts.quotaControl.hint') }}
           </p>
@@ -1867,7 +1867,7 @@
         class="border-t border-gray-200 pt-4 dark:border-dark-600 space-y-4"
       >
         <div class="mb-3">
-          <h3 class="input-label mb-0 text-base font-semibold">{{ t('admin.accounts.quotaControl.title') }}</h3>
+          <h3 class="input-label mb-0 text-base font-normal tracking-tight">{{ t('admin.accounts.quotaControl.title') }}</h3>
           <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
             {{ t('admin.accounts.quotaLimitHint') }}
           </p>
@@ -1961,13 +1961,13 @@
             type="button"
             @click="codexCLIOnlyEnabled = !codexCLIOnlyEnabled"
             :class="[
-              'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
-              codexCLIOnlyEnabled ? 'bg-primary-600' : 'bg-gray-200 dark:bg-dark-600'
+              'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-150 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500',
+              codexCLIOnlyEnabled ? 'bg-primary-500' : 'bg-gray-300 dark:bg-dark-700'
             ]"
           >
             <span
               :class="[
-                'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white transition-transform duration-150 ease-in-out dark:bg-gray-100',
                 codexCLIOnlyEnabled ? 'translate-x-5' : 'translate-x-0'
               ]"
             />
@@ -1987,13 +1987,13 @@
             type="button"
             @click="codexCLIOnlyAppServerEnabled = !codexCLIOnlyAppServerEnabled"
             :class="[
-              'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
-              codexCLIOnlyAppServerEnabled ? 'bg-primary-600' : 'bg-gray-200 dark:bg-dark-600'
+              'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-150 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500',
+              codexCLIOnlyAppServerEnabled ? 'bg-primary-500' : 'bg-gray-300 dark:bg-dark-700'
             ]"
           >
             <span
               :class="[
-                'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white transition-transform duration-150 ease-in-out dark:bg-gray-100',
                 codexCLIOnlyAppServerEnabled ? 'translate-x-5' : 'translate-x-0'
               ]"
             />
@@ -2052,7 +2052,7 @@
             <Select v-model="openAICompactMode" :options="openAICompactModeOptions" />
           </div>
         </div>
-        <div class="rounded-lg bg-gray-50 px-3 py-2 text-xs text-gray-600 dark:bg-dark-700 dark:text-gray-300">
+        <div class="rounded-sm border border-gray-200 bg-gray-50 px-3 py-2 text-xs text-gray-600 dark:border-dark-700 dark:bg-dark-800 dark:text-gray-300">
           <span class="font-medium">{{ t(openAICompactStatusKey) }}</span>
           <span
             v-if="account?.extra?.openai_compact_checked_at"
@@ -2109,13 +2109,13 @@
             type="button"
             @click="autoPauseOnExpired = !autoPauseOnExpired"
             :class="[
-              'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
-              autoPauseOnExpired ? 'bg-primary-600' : 'bg-gray-200 dark:bg-dark-600'
+              'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-150 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500',
+              autoPauseOnExpired ? 'bg-primary-500' : 'bg-gray-300 dark:bg-dark-700'
             ]"
           >
             <span
               :class="[
-                'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white transition-transform duration-150 ease-in-out dark:bg-gray-100',
                 autoPauseOnExpired ? 'translate-x-5' : 'translate-x-0'
               ]"
             />
@@ -2134,14 +2134,14 @@
               type="button"
               @click="autoPause5hDisabled = !autoPause5hDisabled"
               :class="[
-                'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
-                autoPause5hDisabled ? 'bg-primary-600' : 'bg-gray-200 dark:bg-dark-600'
+                'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-150 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500',
+                autoPause5hDisabled ? 'bg-primary-500' : 'bg-gray-300 dark:bg-dark-700'
               ]"
               data-testid="auto-pause-5h-disabled"
             >
               <span
                 :class="[
-                  'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                  'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white transition-transform duration-150 ease-in-out dark:bg-gray-100',
                   autoPause5hDisabled ? 'translate-x-5' : 'translate-x-0'
                 ]"
               />
@@ -2170,14 +2170,14 @@
               type="button"
               @click="autoPause7dDisabled = !autoPause7dDisabled"
               :class="[
-                'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
-                autoPause7dDisabled ? 'bg-primary-600' : 'bg-gray-200 dark:bg-dark-600'
+                'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-150 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500',
+                autoPause7dDisabled ? 'bg-primary-500' : 'bg-gray-300 dark:bg-dark-700'
               ]"
               data-testid="auto-pause-7d-disabled"
             >
               <span
                 :class="[
-                  'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                  'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white transition-transform duration-150 ease-in-out dark:bg-gray-100',
                   autoPause7dDisabled ? 'translate-x-5' : 'translate-x-0'
                 ]"
               />
@@ -2207,14 +2207,14 @@
         class="border-t border-gray-200 pt-4 dark:border-dark-600 space-y-4"
       >
         <div class="mb-3">
-          <h3 class="input-label mb-0 text-base font-semibold">{{ t('admin.accounts.quotaControl.title') }}</h3>
+          <h3 class="input-label mb-0 text-base font-normal tracking-tight">{{ t('admin.accounts.quotaControl.title') }}</h3>
           <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
             {{ t('admin.accounts.quotaControl.hint') }}
           </p>
         </div>
 
         <!-- Window Cost Limit -->
-        <div class="rounded-lg border border-gray-200 p-4 dark:border-dark-600">
+        <div class="rounded-md border border-gray-200 bg-gray-50 p-4 dark:border-dark-700 dark:bg-dark-900">
           <div class="mb-3 flex items-center justify-between">
             <div>
               <label class="input-label mb-0">{{ t('admin.accounts.quotaControl.windowCost.label') }}</label>
@@ -2226,13 +2226,13 @@
               type="button"
               @click="windowCostEnabled = !windowCostEnabled"
               :class="[
-                'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
-                windowCostEnabled ? 'bg-primary-600' : 'bg-gray-200 dark:bg-dark-600'
+                'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-150 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500',
+                windowCostEnabled ? 'bg-primary-500' : 'bg-gray-300 dark:bg-dark-700'
               ]"
             >
               <span
                 :class="[
-                  'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                  'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white transition-transform duration-150 ease-in-out dark:bg-gray-100',
                   windowCostEnabled ? 'translate-x-5' : 'translate-x-0'
                 ]"
               />
@@ -2274,7 +2274,7 @@
         </div>
 
         <!-- Session Limit -->
-        <div class="rounded-lg border border-gray-200 p-4 dark:border-dark-600">
+        <div class="rounded-md border border-gray-200 bg-gray-50 p-4 dark:border-dark-700 dark:bg-dark-900">
           <div class="mb-3 flex items-center justify-between">
             <div>
               <label class="input-label mb-0">{{ t('admin.accounts.quotaControl.sessionLimit.label') }}</label>
@@ -2286,13 +2286,13 @@
               type="button"
               @click="sessionLimitEnabled = !sessionLimitEnabled"
               :class="[
-                'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
-                sessionLimitEnabled ? 'bg-primary-600' : 'bg-gray-200 dark:bg-dark-600'
+                'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-150 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500',
+                sessionLimitEnabled ? 'bg-primary-500' : 'bg-gray-300 dark:bg-dark-700'
               ]"
             >
               <span
                 :class="[
-                  'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                  'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white transition-transform duration-150 ease-in-out dark:bg-gray-100',
                   sessionLimitEnabled ? 'translate-x-5' : 'translate-x-0'
                 ]"
               />
@@ -2331,7 +2331,7 @@
         </div>
 
         <!-- RPM Limit -->
-        <div class="rounded-lg border border-gray-200 p-4 dark:border-dark-600">
+        <div class="rounded-md border border-gray-200 bg-gray-50 p-4 dark:border-dark-700 dark:bg-dark-900">
           <div class="mb-3 flex items-center justify-between">
             <div>
               <label class="input-label mb-0">{{ t('admin.accounts.quotaControl.rpmLimit.label') }}</label>
@@ -2343,13 +2343,13 @@
               type="button"
               @click="rpmLimitEnabled = !rpmLimitEnabled"
               :class="[
-                'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
-                rpmLimitEnabled ? 'bg-primary-600' : 'bg-gray-200 dark:bg-dark-600'
+                'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-150 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500',
+                rpmLimitEnabled ? 'bg-primary-500' : 'bg-gray-300 dark:bg-dark-700'
               ]"
             >
               <span
                 :class="[
-                  'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                  'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white transition-transform duration-150 ease-in-out dark:bg-gray-100',
                   rpmLimitEnabled ? 'translate-x-5' : 'translate-x-0'
                 ]"
               />
@@ -2378,10 +2378,10 @@
                   type="button"
                   @click="rpmStrategy = 'tiered'"
                   :class="[
-                    'flex-1 rounded-lg px-3 py-2 text-sm font-medium transition-all',
+                    'flex-1 rounded-sm px-3 py-2 text-sm font-medium transition-colors',
                     rpmStrategy === 'tiered'
-                      ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-400'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-dark-600 dark:text-gray-400 dark:hover:bg-dark-500'
+                      ? 'border border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-500/10 dark:text-primary-400'
+                      : 'border border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:border-dark-700 dark:bg-dark-900 dark:text-gray-400 dark:hover:border-dark-600 dark:hover:text-gray-200'
                   ]"
                 >
                   <div class="text-center">
@@ -2393,10 +2393,10 @@
                   type="button"
                   @click="rpmStrategy = 'sticky_exempt'"
                   :class="[
-                    'flex-1 rounded-lg px-3 py-2 text-sm font-medium transition-all',
+                    'flex-1 rounded-sm px-3 py-2 text-sm font-medium transition-colors',
                     rpmStrategy === 'sticky_exempt'
-                      ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-400'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-dark-600 dark:text-gray-400 dark:hover:bg-dark-500'
+                      ? 'border border-primary-500 bg-primary-50 text-primary-700 dark:bg-primary-500/10 dark:text-primary-400'
+                      : 'border border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:border-dark-700 dark:bg-dark-900 dark:text-gray-400 dark:hover:border-dark-600 dark:hover:text-gray-200'
                   ]"
                 >
                   <div class="text-center">
@@ -2434,7 +2434,7 @@
                 :class="[
                   'px-3 py-1.5 text-sm rounded-md border transition-colors',
                   userMsgQueueMode === opt.value
-                    ? 'bg-primary-600 text-white border-primary-600'
+                    ? 'border-primary-500 bg-primary-500 text-white'
                     : 'bg-white dark:bg-dark-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-dark-500 hover:bg-gray-50 dark:hover:bg-dark-600'
                 ]">
                 {{ opt.label }}
@@ -2444,7 +2444,7 @@
         </div>
 
         <!-- TLS Fingerprint -->
-        <div class="rounded-lg border border-gray-200 p-4 dark:border-dark-600">
+        <div class="rounded-md border border-gray-200 bg-gray-50 p-4 dark:border-dark-700 dark:bg-dark-900">
           <div class="flex items-center justify-between">
             <div>
               <label class="input-label mb-0">{{ t('admin.accounts.quotaControl.tlsFingerprint.label') }}</label>
@@ -2456,13 +2456,13 @@
               type="button"
               @click="tlsFingerprintEnabled = !tlsFingerprintEnabled"
               :class="[
-                'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
-                tlsFingerprintEnabled ? 'bg-primary-600' : 'bg-gray-200 dark:bg-dark-600'
+                'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-150 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500',
+                tlsFingerprintEnabled ? 'bg-primary-500' : 'bg-gray-300 dark:bg-dark-700'
               ]"
             >
               <span
                 :class="[
-                  'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                  'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white transition-transform duration-150 ease-in-out dark:bg-gray-100',
                   tlsFingerprintEnabled ? 'translate-x-5' : 'translate-x-0'
                 ]"
               />
@@ -2479,7 +2479,7 @@
         </div>
 
         <!-- Session ID Masking -->
-        <div class="rounded-lg border border-gray-200 p-4 dark:border-dark-600">
+        <div class="rounded-md border border-gray-200 bg-gray-50 p-4 dark:border-dark-700 dark:bg-dark-900">
           <div class="flex items-center justify-between">
             <div>
               <label class="input-label mb-0">{{ t('admin.accounts.quotaControl.sessionIdMasking.label') }}</label>
@@ -2491,13 +2491,13 @@
               type="button"
               @click="sessionIdMaskingEnabled = !sessionIdMaskingEnabled"
               :class="[
-                'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
-                sessionIdMaskingEnabled ? 'bg-primary-600' : 'bg-gray-200 dark:bg-dark-600'
+                'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-150 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500',
+                sessionIdMaskingEnabled ? 'bg-primary-500' : 'bg-gray-300 dark:bg-dark-700'
               ]"
             >
               <span
                 :class="[
-                  'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                  'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white transition-transform duration-150 ease-in-out dark:bg-gray-100',
                   sessionIdMaskingEnabled ? 'translate-x-5' : 'translate-x-0'
                 ]"
               />
@@ -2506,7 +2506,7 @@
         </div>
 
         <!-- Cache TTL Override -->
-        <div class="rounded-lg border border-gray-200 p-4 dark:border-dark-600">
+        <div class="rounded-md border border-gray-200 bg-gray-50 p-4 dark:border-dark-700 dark:bg-dark-900">
           <div class="flex items-center justify-between">
             <div>
               <label class="input-label mb-0">{{ t('admin.accounts.quotaControl.cacheTTLOverride.label') }}</label>
@@ -2518,13 +2518,13 @@
               type="button"
               @click="cacheTTLOverrideEnabled = !cacheTTLOverrideEnabled"
               :class="[
-                'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
-                cacheTTLOverrideEnabled ? 'bg-primary-600' : 'bg-gray-200 dark:bg-dark-600'
+                'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-150 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500',
+                cacheTTLOverrideEnabled ? 'bg-primary-500' : 'bg-gray-300 dark:bg-dark-700'
               ]"
             >
               <span
                 :class="[
-                  'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                  'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white transition-transform duration-150 ease-in-out dark:bg-gray-100',
                   cacheTTLOverrideEnabled ? 'translate-x-5' : 'translate-x-0'
                 ]"
               />
@@ -2534,7 +2534,7 @@
             <label class="input-label text-xs">{{ t('admin.accounts.quotaControl.cacheTTLOverride.target') }}</label>
             <select
               v-model="cacheTTLOverrideTarget"
-              class="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 dark:border-dark-500 dark:bg-dark-700 dark:text-white"
+              class="input mt-1 block w-full"
             >
               <option value="5m">5m</option>
               <option value="1h">1h</option>
@@ -2546,7 +2546,7 @@
         </div>
 
         <!-- Custom Base URL Relay -->
-        <div class="rounded-lg border border-gray-200 p-4 dark:border-dark-600">
+        <div class="rounded-md border border-gray-200 bg-gray-50 p-4 dark:border-dark-700 dark:bg-dark-900">
           <div class="flex items-center justify-between">
             <div>
               <label class="input-label mb-0">{{ t('admin.accounts.quotaControl.customBaseUrl.label') }}</label>
@@ -2558,13 +2558,13 @@
               type="button"
               @click="customBaseUrlEnabled = !customBaseUrlEnabled"
               :class="[
-                'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
-                customBaseUrlEnabled ? 'bg-primary-600' : 'bg-gray-200 dark:bg-dark-600'
+                'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-150 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500',
+                customBaseUrlEnabled ? 'bg-primary-500' : 'bg-gray-300 dark:bg-dark-700'
               ]"
             >
               <span
                 :class="[
-                  'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                  'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white transition-transform duration-150 ease-in-out dark:bg-gray-100',
                   customBaseUrlEnabled ? 'translate-x-5' : 'translate-x-0'
                 ]"
               />
@@ -2594,7 +2594,7 @@
               type="checkbox"
               v-model="mixedScheduling"
               disabled
-              class="h-4 w-4 cursor-not-allowed rounded border-gray-300 text-primary-500 focus:ring-primary-500 dark:border-dark-500"
+              class="h-4 w-4 cursor-not-allowed rounded-sm border-gray-300 text-primary-500 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:border-dark-600"
             />
             <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
               {{ t('admin.accounts.mixedScheduling') }}
@@ -2622,7 +2622,7 @@
             <input
               type="checkbox"
               v-model="allowOverages"
-              class="h-4 w-4 rounded border-gray-300 text-primary-500 focus:ring-primary-500 dark:border-dark-500"
+              class="h-4 w-4 rounded-sm border-gray-300 text-primary-500 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 dark:border-dark-600"
             />
             <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
               {{ t('admin.accounts.allowOverages') }}
