@@ -123,7 +123,7 @@
           @sort="handleSort"
         >
           <template #cell-name="{ value }">
-            <span class="font-medium text-gray-900 dark:text-white">{{
+            <span class="font-normal tracking-tight text-gray-900 dark:text-white">{{
               value
             }}</span>
           </template>
@@ -162,7 +162,7 @@
                   'inline-block rounded-full px-2 py-0.5 text-xs font-medium',
                   row.subscription_type === 'subscription'
                     ? 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400'
-                    : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300',
+                    : 'bg-gray-100 text-gray-600 dark:bg-dark-700 dark:text-gray-300',
                 ]"
               >
                 {{
@@ -250,7 +250,7 @@
           </template>
 
           <template #cell-rate_multiplier="{ value }">
-            <span class="text-sm text-gray-700 dark:text-gray-300"
+            <span class="font-mono text-sm tabular-nums text-gray-700 dark:text-gray-300"
               >{{ value }}x</span
             >
           </template>
@@ -270,11 +270,11 @@
                   t("admin.groups.accountsAvailable")
                 }}</span>
                 <span
-                  class="ml-1 font-medium text-emerald-600 dark:text-emerald-400"
+                  class="ml-1 font-mono font-medium tabular-nums text-emerald-600 dark:text-emerald-400"
                   >{{ row.active_account_count || 0 }}</span
                 >
                 <span
-                  class="ml-1 inline-flex items-center rounded bg-gray-100 px-1.5 py-0.5 font-medium text-gray-800 dark:bg-dark-600 dark:text-gray-300"
+                  class="ml-1 inline-flex items-center rounded-sm bg-gray-100 px-1.5 py-0.5 font-mono font-medium text-gray-700 dark:bg-dark-700 dark:text-gray-300"
                   >{{ t("admin.groups.accountsUnit") }}</span
                 >
               </div>
@@ -283,11 +283,11 @@
                   t("admin.groups.accountsRateLimited")
                 }}</span>
                 <span
-                  class="ml-1 font-medium text-amber-600 dark:text-amber-400"
+                  class="ml-1 font-mono font-medium tabular-nums text-amber-600 dark:text-amber-400"
                   >{{ row.rate_limited_account_count }}</span
                 >
                 <span
-                  class="ml-1 inline-flex items-center rounded bg-gray-100 px-1.5 py-0.5 font-medium text-gray-800 dark:bg-dark-600 dark:text-gray-300"
+                  class="ml-1 inline-flex items-center rounded-sm bg-gray-100 px-1.5 py-0.5 font-mono font-medium text-gray-700 dark:bg-dark-700 dark:text-gray-300"
                   >{{ t("admin.groups.accountsUnit") }}</span
                 >
               </div>
@@ -296,11 +296,11 @@
                   t("admin.groups.accountsTotal")
                 }}</span>
                 <span
-                  class="ml-1 font-medium text-gray-700 dark:text-gray-300"
+                  class="ml-1 font-mono font-medium tabular-nums text-gray-700 dark:text-gray-300"
                   >{{ row.account_count || 0 }}</span
                 >
                 <span
-                  class="ml-1 inline-flex items-center rounded bg-gray-100 px-1.5 py-0.5 font-medium text-gray-800 dark:bg-dark-600 dark:text-gray-300"
+                  class="ml-1 inline-flex items-center rounded-sm bg-gray-100 px-1.5 py-0.5 font-mono font-medium text-gray-700 dark:bg-dark-700 dark:text-gray-300"
                   >{{ t("admin.groups.accountsUnit") }}</span
                 >
               </div>
@@ -327,7 +327,7 @@
                 <span class="text-gray-400 dark:text-gray-500">{{
                   t("admin.groups.usageToday")
                 }}</span>
-                <span class="ml-1 font-medium text-gray-700 dark:text-gray-300"
+                <span class="ml-1 font-mono font-medium tabular-nums text-gray-700 dark:text-gray-300"
                   >${{
                     formatCost(usageMap.get(row.id)?.today_cost ?? 0)
                   }}</span
@@ -337,7 +337,7 @@
                 <span class="text-gray-400 dark:text-gray-500">{{
                   t("admin.groups.usageTotal")
                 }}</span>
-                <span class="ml-1 font-medium text-gray-700 dark:text-gray-300"
+                <span class="ml-1 font-mono font-medium tabular-nums text-gray-700 dark:text-gray-300"
                   >${{
                     formatCost(usageMap.get(row.id)?.total_cost ?? 0)
                   }}</span
@@ -361,7 +361,7 @@
             <div class="flex items-center gap-1">
               <button
                 @click="handleEdit(row)"
-                class="flex flex-col items-center gap-0.5 rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-primary-600 dark:hover:bg-dark-700 dark:hover:text-primary-400"
+                class="flex flex-col items-center gap-0.5 rounded-sm p-1.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-primary-600 dark:hover:bg-dark-700 dark:hover:text-primary-400"
               >
                 <Icon name="edit" size="sm" />
                 <span class="text-xs">{{ t("common.edit") }}</span>
@@ -398,7 +398,7 @@
               </button>
               <button
                 @click="handleRateMultipliers(row)"
-                class="flex flex-col items-center gap-0.5 rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-purple-600 dark:hover:bg-dark-700 dark:hover:text-purple-400"
+                class="flex flex-col items-center gap-0.5 rounded-sm p-1.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-purple-600 dark:hover:bg-dark-700 dark:hover:text-purple-400"
               >
                 <Icon name="dollar" size="sm" />
                 <span class="text-xs">{{
@@ -407,7 +407,7 @@
               </button>
               <button
                 @click="handleRPMOverrides(row)"
-                class="flex flex-col items-center gap-0.5 rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-orange-600 dark:hover:bg-dark-700 dark:hover:text-orange-400"
+                class="flex flex-col items-center gap-0.5 rounded-sm p-1.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-orange-600 dark:hover:bg-dark-700 dark:hover:text-orange-400"
               >
                 <Icon name="bolt" size="sm" />
                 <span class="text-xs">{{
@@ -416,7 +416,7 @@
               </button>
               <button
                 @click="handleDelete(row)"
-                class="flex flex-col items-center gap-0.5 rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400"
+                class="flex flex-col items-center gap-0.5 rounded-sm p-1.5 text-gray-500 transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400"
               >
                 <Icon name="trash" size="sm" />
                 <span class="text-xs">{{ t("common.delete") }}</span>
@@ -510,13 +510,13 @@
                 class="pointer-events-none absolute bottom-full left-0 z-50 mb-2 w-72 opacity-0 transition-all duration-200 group-hover:pointer-events-auto group-hover:opacity-100"
               >
                 <div
-                  class="rounded-lg bg-gray-900 p-3 text-white shadow-lg dark:bg-gray-800"
+                  class="rounded-md border border-gray-200 bg-white p-3 text-gray-700 dark:border-dark-600 dark:bg-dark-800 dark:text-gray-300"
                 >
-                  <p class="text-xs leading-relaxed text-gray-300">
+                  <p class="text-xs leading-relaxed text-gray-500 dark:text-gray-400">
                     {{ t("admin.groups.copyAccounts.tooltip") }}
                   </p>
                   <div
-                    class="absolute -bottom-1.5 left-3 h-3 w-3 rotate-45 bg-gray-900 dark:bg-gray-800"
+                    class="absolute -bottom-1.5 left-3 h-3 w-3 rotate-45 border-b border-r border-gray-200 bg-white dark:border-dark-600 dark:bg-dark-800"
                   ></div>
                 </div>
               </div>
@@ -638,18 +638,18 @@
                 class="pointer-events-none absolute bottom-full left-0 z-50 mb-2 w-72 opacity-0 transition-all duration-200 group-hover:pointer-events-auto group-hover:opacity-100"
               >
                 <div
-                  class="rounded-lg bg-gray-900 p-3 text-white shadow-lg dark:bg-gray-800"
+                  class="rounded-md border border-gray-200 bg-white p-3 text-gray-700 dark:border-dark-600 dark:bg-dark-800 dark:text-gray-300"
                 >
-                  <p class="mb-2 text-xs font-medium">
+                  <p class="mb-2 text-xs font-medium text-gray-900 dark:text-white">
                     {{ t("admin.groups.exclusiveTooltip.title") }}
                   </p>
-                  <p class="mb-2 text-xs leading-relaxed text-gray-300">
+                  <p class="mb-2 text-xs leading-relaxed text-gray-500 dark:text-gray-400">
                     {{ t("admin.groups.exclusiveTooltip.description") }}
                   </p>
-                  <div class="rounded bg-gray-800 p-2 dark:bg-gray-700">
-                    <p class="text-xs leading-relaxed text-gray-300">
+                  <div class="rounded-sm border border-gray-200 bg-gray-50 p-2 dark:border-dark-700 dark:bg-dark-700/50">
+                    <p class="text-xs leading-relaxed text-gray-600 dark:text-gray-300">
                       <span
-                        class="inline-flex items-center gap-1 text-primary-400"
+                        class="inline-flex items-center gap-1 text-primary-600 dark:text-primary-400"
                         ><Icon name="lightbulb" size="xs" />
                         {{ t("admin.groups.exclusiveTooltip.example") }}</span
                       >
@@ -658,7 +658,7 @@
                   </div>
                   <!-- Arrow -->
                   <div
-                    class="absolute -bottom-1.5 left-3 h-3 w-3 rotate-45 bg-gray-900 dark:bg-gray-800"
+                    class="absolute -bottom-1.5 left-3 h-3 w-3 rotate-45 border-b border-r border-gray-200 bg-white dark:border-dark-600 dark:bg-dark-800"
                   ></div>
                 </div>
               </div>
@@ -677,7 +677,7 @@
             >
               <span
                 :class="[
-                  'inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform',
+                  'inline-block h-4 w-4 transform rounded-full bg-white transition-transform',
                   createForm.is_exclusive ? 'translate-x-6' : 'translate-x-1',
                 ]"
               />
@@ -776,7 +776,7 @@
             >
               <span
                 :class="[
-                  'inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform',
+                  'inline-block h-4 w-4 transform rounded-full bg-white transition-transform',
                   createModelsListState.enabled ? 'translate-x-6' : 'translate-x-1',
                 ]"
               />
@@ -784,7 +784,7 @@
           </div>
           <div
             v-if="createModelsListState.enabled"
-            class="overflow-hidden rounded-lg border border-gray-200 bg-gray-50/50 dark:border-dark-600 dark:bg-dark-800/40"
+            class="overflow-hidden rounded-md border border-gray-200 bg-gray-50/50 dark:border-dark-700 dark:bg-dark-800/50"
           >
             <div
               v-if="!createModelsListLoading && createModelsListState.items.length > 0"
@@ -946,8 +946,8 @@
           <p class="mt-3 text-xs text-gray-500 dark:text-gray-400">
             {{ t(imagePricingI18nKey(createForm.platform, "modeHint")) }}
           </p>
-          <div class="mt-2 rounded-lg bg-gray-50 p-3 text-xs text-gray-700 dark:bg-gray-800 dark:text-gray-300">
-            <div class="mb-1 font-medium">
+          <div class="mt-2 rounded-md border border-gray-200 bg-gray-50 p-3 font-mono text-xs tabular-nums text-gray-700 dark:border-dark-700 dark:bg-dark-800 dark:text-gray-300">
+            <div class="mb-1 font-sans font-medium">
               {{ t(imagePricingI18nKey(createForm.platform, "finalPricePreview")) }}
             </div>
             <div class="grid grid-cols-3 gap-2">
@@ -1259,13 +1259,13 @@
                 class="pointer-events-none absolute bottom-full left-0 z-50 mb-2 w-72 opacity-0 transition-all duration-200 group-hover:pointer-events-auto group-hover:opacity-100"
               >
                 <div
-                  class="rounded-lg bg-gray-900 p-3 text-white shadow-lg dark:bg-gray-800"
+                  class="rounded-md border border-gray-200 bg-white p-3 text-gray-700 dark:border-dark-600 dark:bg-dark-800 dark:text-gray-300"
                 >
-                  <p class="text-xs leading-relaxed text-gray-300">
+                  <p class="text-xs leading-relaxed text-gray-500 dark:text-gray-400">
                     {{ t("admin.groups.supportedScopes.tooltip") }}
                   </p>
                   <div
-                    class="absolute -bottom-1.5 left-3 h-3 w-3 rotate-45 bg-gray-900 dark:bg-gray-800"
+                    class="absolute -bottom-1.5 left-3 h-3 w-3 rotate-45 border-b border-r border-gray-200 bg-white dark:border-dark-600 dark:bg-dark-800"
                   ></div>
                 </div>
               </div>
@@ -1332,13 +1332,13 @@
                 class="pointer-events-none absolute bottom-full left-0 z-50 mb-2 w-72 opacity-0 transition-all duration-200 group-hover:pointer-events-auto group-hover:opacity-100"
               >
                 <div
-                  class="rounded-lg bg-gray-900 p-3 text-white shadow-lg dark:bg-gray-800"
+                  class="rounded-md border border-gray-200 bg-white p-3 text-gray-700 dark:border-dark-600 dark:bg-dark-800 dark:text-gray-300"
                 >
-                  <p class="text-xs leading-relaxed text-gray-300">
+                  <p class="text-xs leading-relaxed text-gray-500 dark:text-gray-400">
                     {{ t("admin.groups.mcpXml.tooltip") }}
                   </p>
                   <div
-                    class="absolute -bottom-1.5 left-3 h-3 w-3 rotate-45 bg-gray-900 dark:bg-gray-800"
+                    class="absolute -bottom-1.5 left-3 h-3 w-3 rotate-45 border-b border-r border-gray-200 bg-white dark:border-dark-600 dark:bg-dark-800"
                   ></div>
                 </div>
               </div>
@@ -1357,7 +1357,7 @@
             >
               <span
                 :class="[
-                  'inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform',
+                  'inline-block h-4 w-4 transform rounded-full bg-white transition-transform',
                   createForm.mcp_xml_inject ? 'translate-x-6' : 'translate-x-1',
                 ]"
               />
@@ -1390,13 +1390,13 @@
                 class="pointer-events-none absolute bottom-full left-0 z-50 mb-2 w-72 opacity-0 transition-all duration-200 group-hover:pointer-events-auto group-hover:opacity-100"
               >
                 <div
-                  class="rounded-lg bg-gray-900 p-3 text-white shadow-lg dark:bg-gray-800"
+                  class="rounded-md border border-gray-200 bg-white p-3 text-gray-700 dark:border-dark-600 dark:bg-dark-800 dark:text-gray-300"
                 >
-                  <p class="text-xs leading-relaxed text-gray-300">
+                  <p class="text-xs leading-relaxed text-gray-500 dark:text-gray-400">
                     {{ t("admin.groups.claudeCode.tooltip") }}
                   </p>
                   <div
-                    class="absolute -bottom-1.5 left-3 h-3 w-3 rotate-45 bg-gray-900 dark:bg-gray-800"
+                    class="absolute -bottom-1.5 left-3 h-3 w-3 rotate-45 border-b border-r border-gray-200 bg-white dark:border-dark-600 dark:bg-dark-800"
                   ></div>
                 </div>
               </div>
@@ -1417,7 +1417,7 @@
             >
               <span
                 :class="[
-                  'inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform',
+                  'inline-block h-4 w-4 transform rounded-full bg-white transition-transform',
                   createForm.claude_code_only
                     ? 'translate-x-6'
                     : 'translate-x-1',
@@ -1626,7 +1626,7 @@
               "
             >
               <span
-                class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white ring-0 transition duration-200 ease-in-out"
                 :class="
                   createForm.allow_messages_dispatch
                     ? 'translate-x-6'
@@ -1641,10 +1641,10 @@
 
           <div v-if="createForm.allow_messages_dispatch" class="mt-3">
             <div
-              class="relative overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-dark-600 dark:bg-dark-800"
+              class="relative overflow-hidden rounded-md border border-gray-200 bg-white dark:border-dark-600 dark:bg-dark-800"
             >
               <div
-                class="border-b border-gray-100 bg-gray-50/80 px-4 py-3 dark:border-dark-700 dark:bg-dark-700/50"
+                class="border-b border-dashed border-gray-200 bg-gray-50 px-4 py-3 dark:border-dark-700 dark:bg-dark-800"
               >
                 <div class="flex items-center gap-2">
                   <div class="h-2 w-2 rounded-full bg-blue-500"></div>
@@ -1705,10 +1705,10 @@
             </div>
 
             <div
-              class="mt-5 relative overflow-hidden rounded-xl border border-primary-200 bg-white shadow-sm dark:border-primary-900/50 dark:bg-dark-800"
+              class="mt-5 relative overflow-hidden rounded-md border border-primary-300 bg-white dark:border-primary-700 dark:bg-dark-800"
             >
               <div
-                class="border-b border-primary-100 bg-primary-50/80 px-4 py-3 dark:border-primary-900/40 dark:bg-primary-900/20"
+                class="border-b border-dashed border-primary-200 bg-primary-50 px-4 py-3 dark:border-primary-800 dark:bg-primary-900/10"
               >
                 <div class="flex items-start justify-between gap-3">
                   <div>
@@ -1730,10 +1730,10 @@
                 </div>
               </div>
 
-              <div class="p-4 bg-gray-50/30 dark:bg-dark-800/30">
+              <div class="p-4 bg-gray-50/50 dark:bg-dark-900/40">
                 <div
                   v-if="createForm.exact_model_mappings.length === 0"
-                  class="flex items-center justify-between gap-3 rounded-xl border-2 border-dashed border-primary-200 bg-white px-5 py-4 text-sm text-primary-700 transition-colors hover:border-primary-300 dark:border-primary-900/40 dark:bg-dark-800 dark:text-primary-300 dark:hover:border-primary-800"
+                  class="flex items-center justify-between gap-3 rounded-md border border-dashed border-primary-300 bg-white px-5 py-4 text-sm text-primary-700 transition-colors hover:border-primary-400 dark:border-primary-700 dark:bg-dark-800 dark:text-primary-300 dark:hover:border-primary-600"
                 >
                   <span>{{
                     t("admin.groups.openaiMessages.noExactMappings")
@@ -1752,7 +1752,7 @@
                   <div
                     v-for="row in createForm.exact_model_mappings"
                     :key="getCreateMessagesDispatchRowKey(row)"
-                    class="group relative rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition-all hover:border-primary-300 hover:shadow-md dark:border-dark-600 dark:bg-dark-700 dark:hover:border-primary-700"
+                    class="group relative rounded-md border border-gray-200 bg-white p-4 transition-colors hover:border-primary-300 dark:border-dark-600 dark:bg-dark-700 dark:hover:border-primary-700"
                   >
                     <div class="flex items-center gap-4">
                       <div
@@ -1801,7 +1801,7 @@
                       <button
                         type="button"
                         @click="removeCreateMessagesDispatchMapping(row)"
-                        class="mt-6 flex h-9 w-9 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/20 dark:hover:text-red-400"
+                        class="mt-6 flex h-9 w-9 items-center justify-center rounded-sm text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/20 dark:hover:text-red-400"
                         :title="
                           t('admin.groups.openaiMessages.removeExactMapping')
                         "
@@ -1814,7 +1814,7 @@
                   <button
                     type="button"
                     @click="addCreateMessagesDispatchMapping"
-                    class="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-gray-300 bg-white py-3 text-sm font-medium text-gray-500 transition-all hover:border-primary-300 hover:bg-primary-50/50 hover:text-primary-600 dark:border-dark-600 dark:bg-dark-800 dark:text-gray-400 dark:hover:border-primary-800 dark:hover:bg-primary-900/20 dark:hover:text-primary-400"
+                    class="flex w-full items-center justify-center gap-2 rounded-md border border-dashed border-gray-300 bg-white py-3 text-sm font-medium text-gray-500 transition-colors hover:border-primary-300 hover:bg-primary-50/50 hover:text-primary-600 dark:border-dark-600 dark:bg-dark-800 dark:text-gray-400 dark:hover:border-primary-700 dark:hover:bg-primary-900/20 dark:hover:text-primary-400"
                   >
                     <Icon name="plus" size="sm" />
                     {{ t("admin.groups.openaiMessages.addExactMapping") }}
@@ -1865,7 +1865,7 @@
               "
             >
               <span
-                class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white ring-0 transition duration-200 ease-in-out"
                 :class="
                   createForm.require_oauth_only
                     ? 'translate-x-6'
@@ -1902,7 +1902,7 @@
               "
             >
               <span
-                class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white ring-0 transition duration-200 ease-in-out"
                 :class="
                   createForm.require_privacy_set
                     ? 'translate-x-6'
@@ -1952,13 +1952,13 @@
                 class="pointer-events-none absolute bottom-full left-0 z-50 mb-2 w-80 opacity-0 transition-all duration-200 group-hover:pointer-events-auto group-hover:opacity-100"
               >
                 <div
-                  class="rounded-lg bg-gray-900 p-3 text-white shadow-lg dark:bg-gray-800"
+                  class="rounded-md border border-gray-200 bg-white p-3 text-gray-700 dark:border-dark-600 dark:bg-dark-800 dark:text-gray-300"
                 >
-                  <p class="text-xs leading-relaxed text-gray-300">
+                  <p class="text-xs leading-relaxed text-gray-500 dark:text-gray-400">
                     {{ t("admin.groups.modelRouting.tooltip") }}
                   </p>
                   <div
-                    class="absolute -bottom-1.5 left-3 h-3 w-3 rotate-45 bg-gray-900 dark:bg-gray-800"
+                    class="absolute -bottom-1.5 left-3 h-3 w-3 rotate-45 border-b border-r border-gray-200 bg-white dark:border-dark-600 dark:bg-dark-800"
                   ></div>
                 </div>
               </div>
@@ -1981,7 +1981,7 @@
             >
               <span
                 :class="[
-                  'inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform',
+                  'inline-block h-4 w-4 transform rounded-full bg-white transition-transform',
                   createForm.model_routing_enabled
                     ? 'translate-x-6'
                     : 'translate-x-1',
@@ -2010,7 +2010,7 @@
             <div
               v-for="rule in createModelRoutingRules"
               :key="getCreateRuleRenderKey(rule)"
-              class="rounded-lg border border-gray-200 p-3 dark:border-dark-600"
+              class="rounded-md border border-gray-200 p-3 dark:border-dark-600"
             >
               <div class="flex items-start gap-3">
                 <div class="flex-1 space-y-2">
@@ -2074,7 +2074,7 @@
                           accountSearchResults[getCreateRuleSearchKey(rule)]
                             ?.length > 0
                         "
-                        class="absolute z-50 mt-1 max-h-48 w-full overflow-auto rounded-lg border bg-white shadow-lg dark:border-dark-600 dark:bg-dark-800"
+                        class="absolute z-50 mt-1 max-h-48 w-full overflow-auto rounded-md border border-gray-200 bg-white dark:border-dark-600 dark:bg-dark-800"
                       >
                         <button
                           v-for="account in accountSearchResults[
@@ -2233,13 +2233,13 @@
                 class="pointer-events-none absolute bottom-full left-0 z-50 mb-2 w-72 opacity-0 transition-all duration-200 group-hover:pointer-events-auto group-hover:opacity-100"
               >
                 <div
-                  class="rounded-lg bg-gray-900 p-3 text-white shadow-lg dark:bg-gray-800"
+                  class="rounded-md border border-gray-200 bg-white p-3 text-gray-700 dark:border-dark-600 dark:bg-dark-800 dark:text-gray-300"
                 >
-                  <p class="text-xs leading-relaxed text-gray-300">
+                  <p class="text-xs leading-relaxed text-gray-500 dark:text-gray-400">
                     {{ t("admin.groups.copyAccounts.tooltipEdit") }}
                   </p>
                   <div
-                    class="absolute -bottom-1.5 left-3 h-3 w-3 rotate-45 bg-gray-900 dark:bg-gray-800"
+                    class="absolute -bottom-1.5 left-3 h-3 w-3 rotate-45 border-b border-r border-gray-200 bg-white dark:border-dark-600 dark:bg-dark-800"
                   ></div>
                 </div>
               </div>
@@ -2359,18 +2359,18 @@
                 class="pointer-events-none absolute bottom-full left-0 z-50 mb-2 w-72 opacity-0 transition-all duration-200 group-hover:pointer-events-auto group-hover:opacity-100"
               >
                 <div
-                  class="rounded-lg bg-gray-900 p-3 text-white shadow-lg dark:bg-gray-800"
+                  class="rounded-md border border-gray-200 bg-white p-3 text-gray-700 dark:border-dark-600 dark:bg-dark-800 dark:text-gray-300"
                 >
-                  <p class="mb-2 text-xs font-medium">
+                  <p class="mb-2 text-xs font-medium text-gray-900 dark:text-white">
                     {{ t("admin.groups.exclusiveTooltip.title") }}
                   </p>
-                  <p class="mb-2 text-xs leading-relaxed text-gray-300">
+                  <p class="mb-2 text-xs leading-relaxed text-gray-500 dark:text-gray-400">
                     {{ t("admin.groups.exclusiveTooltip.description") }}
                   </p>
-                  <div class="rounded bg-gray-800 p-2 dark:bg-gray-700">
-                    <p class="text-xs leading-relaxed text-gray-300">
+                  <div class="rounded-sm border border-gray-200 bg-gray-50 p-2 dark:border-dark-700 dark:bg-dark-700/50">
+                    <p class="text-xs leading-relaxed text-gray-600 dark:text-gray-300">
                       <span
-                        class="inline-flex items-center gap-1 text-primary-400"
+                        class="inline-flex items-center gap-1 text-primary-600 dark:text-primary-400"
                         ><Icon name="lightbulb" size="xs" />
                         {{ t("admin.groups.exclusiveTooltip.example") }}</span
                       >
@@ -2379,7 +2379,7 @@
                   </div>
                   <!-- Arrow -->
                   <div
-                    class="absolute -bottom-1.5 left-3 h-3 w-3 rotate-45 bg-gray-900 dark:bg-gray-800"
+                    class="absolute -bottom-1.5 left-3 h-3 w-3 rotate-45 border-b border-r border-gray-200 bg-white dark:border-dark-600 dark:bg-dark-800"
                   ></div>
                 </div>
               </div>
@@ -2398,7 +2398,7 @@
             >
               <span
                 :class="[
-                  'inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform',
+                  'inline-block h-4 w-4 transform rounded-full bg-white transition-transform',
                   editForm.is_exclusive ? 'translate-x-6' : 'translate-x-1',
                 ]"
               />
@@ -2502,7 +2502,7 @@
             >
               <span
                 :class="[
-                  'inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform',
+                  'inline-block h-4 w-4 transform rounded-full bg-white transition-transform',
                   editModelsListState.enabled ? 'translate-x-6' : 'translate-x-1',
                 ]"
               />
@@ -2510,7 +2510,7 @@
           </div>
           <div
             v-if="editModelsListState.enabled"
-            class="overflow-hidden rounded-lg border border-gray-200 bg-gray-50/50 dark:border-dark-600 dark:bg-dark-800/40"
+            class="overflow-hidden rounded-md border border-gray-200 bg-gray-50/50 dark:border-dark-700 dark:bg-dark-800/50"
           >
             <div
               v-if="!editModelsListLoading && editModelsListState.items.length > 0"
@@ -2672,8 +2672,8 @@
           <p class="mt-3 text-xs text-gray-500 dark:text-gray-400">
             {{ t(imagePricingI18nKey(editForm.platform, "modeHint")) }}
           </p>
-          <div class="mt-2 rounded-lg bg-gray-50 p-3 text-xs text-gray-700 dark:bg-gray-800 dark:text-gray-300">
-            <div class="mb-1 font-medium">
+          <div class="mt-2 rounded-md border border-gray-200 bg-gray-50 p-3 font-mono text-xs tabular-nums text-gray-700 dark:border-dark-700 dark:bg-dark-800 dark:text-gray-300">
+            <div class="mb-1 font-sans font-medium">
               {{ t(imagePricingI18nKey(editForm.platform, "finalPricePreview")) }}
             </div>
             <div class="grid grid-cols-3 gap-2">
@@ -2985,13 +2985,13 @@
                 class="pointer-events-none absolute bottom-full left-0 z-50 mb-2 w-72 opacity-0 transition-all duration-200 group-hover:pointer-events-auto group-hover:opacity-100"
               >
                 <div
-                  class="rounded-lg bg-gray-900 p-3 text-white shadow-lg dark:bg-gray-800"
+                  class="rounded-md border border-gray-200 bg-white p-3 text-gray-700 dark:border-dark-600 dark:bg-dark-800 dark:text-gray-300"
                 >
-                  <p class="text-xs leading-relaxed text-gray-300">
+                  <p class="text-xs leading-relaxed text-gray-500 dark:text-gray-400">
                     {{ t("admin.groups.supportedScopes.tooltip") }}
                   </p>
                   <div
-                    class="absolute -bottom-1.5 left-3 h-3 w-3 rotate-45 bg-gray-900 dark:bg-gray-800"
+                    class="absolute -bottom-1.5 left-3 h-3 w-3 rotate-45 border-b border-r border-gray-200 bg-white dark:border-dark-600 dark:bg-dark-800"
                   ></div>
                 </div>
               </div>
@@ -3058,13 +3058,13 @@
                 class="pointer-events-none absolute bottom-full left-0 z-50 mb-2 w-72 opacity-0 transition-all duration-200 group-hover:pointer-events-auto group-hover:opacity-100"
               >
                 <div
-                  class="rounded-lg bg-gray-900 p-3 text-white shadow-lg dark:bg-gray-800"
+                  class="rounded-md border border-gray-200 bg-white p-3 text-gray-700 dark:border-dark-600 dark:bg-dark-800 dark:text-gray-300"
                 >
-                  <p class="text-xs leading-relaxed text-gray-300">
+                  <p class="text-xs leading-relaxed text-gray-500 dark:text-gray-400">
                     {{ t("admin.groups.mcpXml.tooltip") }}
                   </p>
                   <div
-                    class="absolute -bottom-1.5 left-3 h-3 w-3 rotate-45 bg-gray-900 dark:bg-gray-800"
+                    class="absolute -bottom-1.5 left-3 h-3 w-3 rotate-45 border-b border-r border-gray-200 bg-white dark:border-dark-600 dark:bg-dark-800"
                   ></div>
                 </div>
               </div>
@@ -3083,7 +3083,7 @@
             >
               <span
                 :class="[
-                  'inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform',
+                  'inline-block h-4 w-4 transform rounded-full bg-white transition-transform',
                   editForm.mcp_xml_inject ? 'translate-x-6' : 'translate-x-1',
                 ]"
               />
@@ -3116,13 +3116,13 @@
                 class="pointer-events-none absolute bottom-full left-0 z-50 mb-2 w-72 opacity-0 transition-all duration-200 group-hover:pointer-events-auto group-hover:opacity-100"
               >
                 <div
-                  class="rounded-lg bg-gray-900 p-3 text-white shadow-lg dark:bg-gray-800"
+                  class="rounded-md border border-gray-200 bg-white p-3 text-gray-700 dark:border-dark-600 dark:bg-dark-800 dark:text-gray-300"
                 >
-                  <p class="text-xs leading-relaxed text-gray-300">
+                  <p class="text-xs leading-relaxed text-gray-500 dark:text-gray-400">
                     {{ t("admin.groups.claudeCode.tooltip") }}
                   </p>
                   <div
-                    class="absolute -bottom-1.5 left-3 h-3 w-3 rotate-45 bg-gray-900 dark:bg-gray-800"
+                    class="absolute -bottom-1.5 left-3 h-3 w-3 rotate-45 border-b border-r border-gray-200 bg-white dark:border-dark-600 dark:bg-dark-800"
                   ></div>
                 </div>
               </div>
@@ -3141,7 +3141,7 @@
             >
               <span
                 :class="[
-                  'inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform',
+                  'inline-block h-4 w-4 transform rounded-full bg-white transition-transform',
                   editForm.claude_code_only ? 'translate-x-6' : 'translate-x-1',
                 ]"
               />
@@ -3348,7 +3348,7 @@
               "
             >
               <span
-                class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white ring-0 transition duration-200 ease-in-out"
                 :class="
                   editForm.allow_messages_dispatch
                     ? 'translate-x-6'
@@ -3363,10 +3363,10 @@
 
           <div v-if="editForm.allow_messages_dispatch" class="mt-3">
             <div
-              class="relative overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-dark-600 dark:bg-dark-800"
+              class="relative overflow-hidden rounded-md border border-gray-200 bg-white dark:border-dark-600 dark:bg-dark-800"
             >
               <div
-                class="border-b border-gray-100 bg-gray-50/80 px-4 py-3 dark:border-dark-700 dark:bg-dark-700/50"
+                class="border-b border-dashed border-gray-200 bg-gray-50 px-4 py-3 dark:border-dark-700 dark:bg-dark-800"
               >
                 <div class="flex items-center gap-2">
                   <div class="h-2 w-2 rounded-full bg-blue-500"></div>
@@ -3427,10 +3427,10 @@
             </div>
 
             <div
-              class="mt-5 relative overflow-hidden rounded-xl border border-primary-200 bg-white shadow-sm dark:border-primary-900/50 dark:bg-dark-800"
+              class="mt-5 relative overflow-hidden rounded-md border border-primary-300 bg-white dark:border-primary-700 dark:bg-dark-800"
             >
               <div
-                class="border-b border-primary-100 bg-primary-50/80 px-4 py-3 dark:border-primary-900/40 dark:bg-primary-900/20"
+                class="border-b border-dashed border-primary-200 bg-primary-50 px-4 py-3 dark:border-primary-800 dark:bg-primary-900/10"
               >
                 <div class="flex items-start justify-between gap-3">
                   <div>
@@ -3452,10 +3452,10 @@
                 </div>
               </div>
 
-              <div class="p-4 bg-gray-50/30 dark:bg-dark-800/30">
+              <div class="p-4 bg-gray-50/50 dark:bg-dark-900/40">
                 <div
                   v-if="editForm.exact_model_mappings.length === 0"
-                  class="flex items-center justify-between gap-3 rounded-xl border-2 border-dashed border-primary-200 bg-white px-5 py-4 text-sm text-primary-700 transition-colors hover:border-primary-300 dark:border-primary-900/40 dark:bg-dark-800 dark:text-primary-300 dark:hover:border-primary-800"
+                  class="flex items-center justify-between gap-3 rounded-md border border-dashed border-primary-300 bg-white px-5 py-4 text-sm text-primary-700 transition-colors hover:border-primary-400 dark:border-primary-700 dark:bg-dark-800 dark:text-primary-300 dark:hover:border-primary-600"
                 >
                   <span>{{
                     t("admin.groups.openaiMessages.noExactMappings")
@@ -3474,7 +3474,7 @@
                   <div
                     v-for="row in editForm.exact_model_mappings"
                     :key="getEditMessagesDispatchRowKey(row)"
-                    class="group relative rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition-all hover:border-primary-300 hover:shadow-md dark:border-dark-600 dark:bg-dark-700 dark:hover:border-primary-700"
+                    class="group relative rounded-md border border-gray-200 bg-white p-4 transition-colors hover:border-primary-300 dark:border-dark-600 dark:bg-dark-700 dark:hover:border-primary-700"
                   >
                     <div class="flex items-center gap-4">
                       <div
@@ -3523,7 +3523,7 @@
                       <button
                         type="button"
                         @click="removeEditMessagesDispatchMapping(row)"
-                        class="mt-6 flex h-9 w-9 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/20 dark:hover:text-red-400"
+                        class="mt-6 flex h-9 w-9 items-center justify-center rounded-sm text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/20 dark:hover:text-red-400"
                         :title="
                           t('admin.groups.openaiMessages.removeExactMapping')
                         "
@@ -3536,7 +3536,7 @@
                   <button
                     type="button"
                     @click="addEditMessagesDispatchMapping"
-                    class="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-gray-300 bg-white py-3 text-sm font-medium text-gray-500 transition-all hover:border-primary-300 hover:bg-primary-50/50 hover:text-primary-600 dark:border-dark-600 dark:bg-dark-800 dark:text-gray-400 dark:hover:border-primary-800 dark:hover:bg-primary-900/20 dark:hover:text-primary-400"
+                    class="flex w-full items-center justify-center gap-2 rounded-md border border-dashed border-gray-300 bg-white py-3 text-sm font-medium text-gray-500 transition-colors hover:border-primary-300 hover:bg-primary-50/50 hover:text-primary-600 dark:border-dark-600 dark:bg-dark-800 dark:text-gray-400 dark:hover:border-primary-700 dark:hover:bg-primary-900/20 dark:hover:text-primary-400"
                   >
                     <Icon name="plus" size="sm" />
                     {{ t("admin.groups.openaiMessages.addExactMapping") }}
@@ -3587,7 +3587,7 @@
               "
             >
               <span
-                class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white ring-0 transition duration-200 ease-in-out"
                 :class="
                   editForm.require_oauth_only
                     ? 'translate-x-6'
@@ -3624,7 +3624,7 @@
               "
             >
               <span
-                class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white ring-0 transition duration-200 ease-in-out"
                 :class="
                   editForm.require_privacy_set
                     ? 'translate-x-6'
@@ -3674,13 +3674,13 @@
                 class="pointer-events-none absolute bottom-full left-0 z-50 mb-2 w-80 opacity-0 transition-all duration-200 group-hover:pointer-events-auto group-hover:opacity-100"
               >
                 <div
-                  class="rounded-lg bg-gray-900 p-3 text-white shadow-lg dark:bg-gray-800"
+                  class="rounded-md border border-gray-200 bg-white p-3 text-gray-700 dark:border-dark-600 dark:bg-dark-800 dark:text-gray-300"
                 >
-                  <p class="text-xs leading-relaxed text-gray-300">
+                  <p class="text-xs leading-relaxed text-gray-500 dark:text-gray-400">
                     {{ t("admin.groups.modelRouting.tooltip") }}
                   </p>
                   <div
-                    class="absolute -bottom-1.5 left-3 h-3 w-3 rotate-45 bg-gray-900 dark:bg-gray-800"
+                    class="absolute -bottom-1.5 left-3 h-3 w-3 rotate-45 border-b border-r border-gray-200 bg-white dark:border-dark-600 dark:bg-dark-800"
                   ></div>
                 </div>
               </div>
@@ -3702,7 +3702,7 @@
             >
               <span
                 :class="[
-                  'inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform',
+                  'inline-block h-4 w-4 transform rounded-full bg-white transition-transform',
                   editForm.model_routing_enabled
                     ? 'translate-x-6'
                     : 'translate-x-1',
@@ -3731,7 +3731,7 @@
             <div
               v-for="rule in editModelRoutingRules"
               :key="getEditRuleRenderKey(rule)"
-              class="rounded-lg border border-gray-200 p-3 dark:border-dark-600"
+              class="rounded-md border border-gray-200 p-3 dark:border-dark-600"
             >
               <div class="flex items-start gap-3">
                 <div class="flex-1 space-y-2">
@@ -3795,7 +3795,7 @@
                           accountSearchResults[getEditRuleSearchKey(rule)]
                             ?.length > 0
                         "
-                        class="absolute z-50 mt-1 max-h-48 w-full overflow-auto rounded-lg border bg-white shadow-lg dark:border-dark-600 dark:bg-dark-800"
+                        class="absolute z-50 mt-1 max-h-48 w-full overflow-auto rounded-md border border-gray-200 bg-white dark:border-dark-600 dark:bg-dark-800"
                       >
                         <button
                           v-for="account in accountSearchResults[
@@ -3934,13 +3934,13 @@
           <div
             v-for="group in sortableGroups"
             :key="group.id"
-            class="flex cursor-grab items-center gap-3 rounded-lg border border-gray-200 bg-white p-3 transition-shadow hover:shadow-md active:cursor-grabbing dark:border-dark-600 dark:bg-dark-700"
+            class="flex cursor-grab items-center gap-3 rounded-md border border-gray-200 bg-white p-3 transition-colors hover:border-gray-300 active:cursor-grabbing dark:border-dark-600 dark:bg-dark-700 dark:hover:border-dark-500"
           >
             <div class="text-gray-400">
               <Icon name="menu" size="md" />
             </div>
             <div class="flex-1">
-              <div class="font-medium text-gray-900 dark:text-white">
+              <div class="font-normal tracking-tight text-gray-900 dark:text-white">
                 {{ group.name }}
               </div>
               <div class="text-xs text-gray-500 dark:text-gray-400">
@@ -3962,7 +3962,7 @@
                 </span>
               </div>
             </div>
-            <div class="text-sm text-gray-400">#{{ group.id }}</div>
+            <div class="font-mono text-sm tabular-nums text-gray-400">#{{ group.id }}</div>
           </div>
         </VueDraggable>
       </div>
