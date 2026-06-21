@@ -1,5 +1,5 @@
 <template>
-  <div class="rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-dark-600 dark:bg-dark-800">
+  <div class="rounded-md border border-gray-200 bg-gray-50 p-3 dark:border-dark-700 dark:bg-dark-900">
     <!-- Collapsed summary header (clickable) -->
     <div
       class="flex cursor-pointer select-none items-center gap-2"
@@ -19,14 +19,14 @@
           <span
             v-for="(m, i) in entry.models.slice(0, 3)"
             :key="i"
-            class="inline-flex shrink-0 rounded px-1.5 py-0.5 text-xs"
+            class="inline-flex shrink-0 rounded-sm px-1.5 py-0.5 font-mono text-xs"
             :class="getPlatformTagClass(props.platform || '')"
           >
             {{ m }}
           </span>
           <span
             v-if="entry.models.length > 3"
-            class="whitespace-nowrap text-xs text-gray-400"
+            class="whitespace-nowrap font-mono tabular-nums text-xs text-gray-400"
           >
             +{{ entry.models.length - 3 }}
           </span>
@@ -40,7 +40,7 @@
 
         <!-- Billing mode badge -->
         <span
-          class="flex-shrink-0 rounded-full bg-primary-100 px-2 py-0.5 text-xs font-medium text-primary-700 dark:bg-primary-900/30 dark:text-primary-300"
+          class="flex-shrink-0 rounded-sm bg-primary-100 px-2 py-0.5 font-mono text-xs font-medium text-primary-700 dark:bg-primary-900/30 dark:text-primary-300"
         >
           {{ billingModeLabel }}
         </span>
@@ -55,7 +55,7 @@
       <button
         type="button"
         @click.stop="emit('remove')"
-        class="flex-shrink-0 rounded p-1 text-gray-400 hover:text-red-500"
+        class="flex-shrink-0 rounded-sm p-1 text-gray-400 hover:text-red-500"
       >
         <Icon name="trash" size="sm" />
       </button>
@@ -70,7 +70,7 @@
         <!-- Header: Models + Billing Mode -->
         <div class="mt-3 flex items-start gap-2">
           <div class="flex-1">
-            <label class="text-xs font-medium text-gray-500 dark:text-gray-400">
+            <label class="font-mono text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
               {{ t('admin.channels.form.models') }} <span class="text-red-500">*</span>
             </label>
             <ModelTagInput
@@ -82,7 +82,7 @@
             />
           </div>
           <div class="w-40">
-            <label class="text-xs font-medium text-gray-500 dark:text-gray-400">
+            <label class="font-mono text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
               {{ t('admin.channels.form.billingMode') }}
             </label>
             <Select
@@ -97,51 +97,51 @@
         <!-- Token mode -->
         <div v-if="entry.billing_mode === 'token'">
           <!-- Default prices (fallback when no interval matches) -->
-          <label class="mt-3 block text-xs font-medium text-gray-500 dark:text-gray-400">
+          <label class="mt-3 block font-mono text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
             {{ t('admin.channels.form.defaultPrices') }}
             <span class="ml-1 font-normal text-gray-400">$/MTok</span>
           </label>
           <div class="mt-1 grid grid-cols-2 gap-2 sm:grid-cols-6">
             <div>
-              <label class="text-xs text-gray-400">{{ t('admin.channels.form.inputPrice') }}</label>
+              <label class="font-mono text-xs text-gray-400">{{ t('admin.channels.form.inputPrice') }}</label>
               <input :value="entry.input_price" @input="emitField('input_price', ($event.target as HTMLInputElement).value)"
-                type="number" step="any" min="0" class="input mt-0.5 text-sm" :placeholder="t('admin.channels.form.pricePlaceholder')" />
+                type="number" step="any" min="0" class="input mt-0.5 font-mono text-sm tabular-nums" :placeholder="t('admin.channels.form.pricePlaceholder')" />
             </div>
             <div>
-              <label class="text-xs text-gray-400">{{ t('admin.channels.form.outputPrice') }}</label>
+              <label class="font-mono text-xs text-gray-400">{{ t('admin.channels.form.outputPrice') }}</label>
               <input :value="entry.output_price" @input="emitField('output_price', ($event.target as HTMLInputElement).value)"
-                type="number" step="any" min="0" class="input mt-0.5 text-sm" :placeholder="t('admin.channels.form.pricePlaceholder')" />
+                type="number" step="any" min="0" class="input mt-0.5 font-mono text-sm tabular-nums" :placeholder="t('admin.channels.form.pricePlaceholder')" />
             </div>
             <div>
-              <label class="text-xs text-gray-400">{{ t('admin.channels.form.cacheWritePrice') }}</label>
+              <label class="font-mono text-xs text-gray-400">{{ t('admin.channels.form.cacheWritePrice') }}</label>
               <input :value="entry.cache_write_price" @input="emitField('cache_write_price', ($event.target as HTMLInputElement).value)"
-                type="number" step="any" min="0" class="input mt-0.5 text-sm" :placeholder="t('admin.channels.form.pricePlaceholder')" />
+                type="number" step="any" min="0" class="input mt-0.5 font-mono text-sm tabular-nums" :placeholder="t('admin.channels.form.pricePlaceholder')" />
             </div>
             <div>
-              <label class="text-xs text-gray-400">{{ t('admin.channels.form.cacheReadPrice') }}</label>
+              <label class="font-mono text-xs text-gray-400">{{ t('admin.channels.form.cacheReadPrice') }}</label>
               <input :value="entry.cache_read_price" @input="emitField('cache_read_price', ($event.target as HTMLInputElement).value)"
-                type="number" step="any" min="0" class="input mt-0.5 text-sm" :placeholder="t('admin.channels.form.pricePlaceholder')" />
+                type="number" step="any" min="0" class="input mt-0.5 font-mono text-sm tabular-nums" :placeholder="t('admin.channels.form.pricePlaceholder')" />
             </div>
             <div>
-              <label class="text-xs text-gray-400">{{ t('admin.channels.form.imageInputPrice') }}</label>
+              <label class="font-mono text-xs text-gray-400">{{ t('admin.channels.form.imageInputPrice') }}</label>
               <input :value="entry.image_input_price" @input="emitField('image_input_price', ($event.target as HTMLInputElement).value)"
-                type="number" step="any" min="0" class="input mt-0.5 text-sm" :placeholder="t('admin.channels.form.pricePlaceholder')" />
+                type="number" step="any" min="0" class="input mt-0.5 font-mono text-sm tabular-nums" :placeholder="t('admin.channels.form.pricePlaceholder')" />
             </div>
             <div>
-              <label class="text-xs text-gray-400">{{ t('admin.channels.form.imageTokenPrice') }}</label>
+              <label class="font-mono text-xs text-gray-400">{{ t('admin.channels.form.imageTokenPrice') }}</label>
               <input :value="entry.image_output_price" @input="emitField('image_output_price', ($event.target as HTMLInputElement).value)"
-                type="number" step="any" min="0" class="input mt-0.5 text-sm" :placeholder="t('admin.channels.form.pricePlaceholder')" />
+                type="number" step="any" min="0" class="input mt-0.5 font-mono text-sm tabular-nums" :placeholder="t('admin.channels.form.pricePlaceholder')" />
             </div>
           </div>
 
           <!-- Token intervals -->
           <div class="mt-3">
             <div class="flex items-center justify-between">
-              <label class="text-xs font-medium text-gray-500 dark:text-gray-400">
+              <label class="font-mono text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
                 {{ t('admin.channels.form.intervals') }}
                 <span class="ml-1 font-normal text-gray-400">(min, max]</span>
               </label>
-              <button type="button" @click="addInterval" class="text-xs text-primary-600 hover:text-primary-700">
+              <button type="button" @click="addInterval" class="font-mono text-xs text-primary-600 hover:text-primary-700">
                 + {{ t('admin.channels.form.addInterval') }}
               </button>
             </div>
@@ -161,21 +161,21 @@
         <!-- Per-request mode -->
         <div v-else-if="entry.billing_mode === 'per_request'">
           <!-- Default per-request price -->
-          <label class="mt-3 block text-xs font-medium text-gray-500 dark:text-gray-400">
+          <label class="mt-3 block font-mono text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
             {{ t('admin.channels.form.defaultPerRequestPrice') }}
             <span class="ml-1 font-normal text-gray-400">$</span>
           </label>
           <div class="mt-1 w-48">
             <input :value="entry.per_request_price" @input="emitField('per_request_price', ($event.target as HTMLInputElement).value)"
-              type="number" step="any" min="0" class="input text-sm" :placeholder="t('admin.channels.form.pricePlaceholder')" />
+              type="number" step="any" min="0" class="input font-mono text-sm tabular-nums" :placeholder="t('admin.channels.form.pricePlaceholder')" />
           </div>
 
           <!-- Tiers -->
           <div class="mt-3 flex items-center justify-between">
-            <label class="text-xs font-medium text-gray-500 dark:text-gray-400">
+            <label class="font-mono text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
               {{ t('admin.channels.form.requestTiers') }}
             </label>
-            <button type="button" @click="addInterval" class="text-xs text-primary-600 hover:text-primary-700">
+            <button type="button" @click="addInterval" class="font-mono text-xs text-primary-600 hover:text-primary-700">
               + {{ t('admin.channels.form.addTier') }}
             </button>
           </div>
@@ -189,7 +189,7 @@
               @remove="removeInterval(idx)"
             />
           </div>
-          <div v-else class="mt-2 rounded border border-dashed border-gray-300 p-3 text-center text-xs text-gray-400 dark:border-dark-500">
+          <div v-else class="mt-2 rounded-sm border border-dashed border-gray-300 p-3 text-center font-mono text-xs text-gray-400 dark:border-dark-600">
             {{ t('admin.channels.form.noTiersYet') }}
           </div>
         </div>
@@ -197,21 +197,21 @@
         <!-- Image mode -->
         <div v-else-if="entry.billing_mode === 'image'">
           <!-- Default image price (per-request, same as per_request mode) -->
-          <label class="mt-3 block text-xs font-medium text-gray-500 dark:text-gray-400">
+          <label class="mt-3 block font-mono text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
             {{ t('admin.channels.form.defaultImagePrice') }}
             <span class="ml-1 font-normal text-gray-400">$</span>
           </label>
           <div class="mt-1 w-48">
             <input :value="entry.per_request_price" @input="emitField('per_request_price', ($event.target as HTMLInputElement).value)"
-              type="number" step="any" min="0" class="input text-sm" :placeholder="t('admin.channels.form.pricePlaceholder')" />
+              type="number" step="any" min="0" class="input font-mono text-sm tabular-nums" :placeholder="t('admin.channels.form.pricePlaceholder')" />
           </div>
 
           <!-- Image tiers -->
           <div class="mt-3 flex items-center justify-between">
-            <label class="text-xs font-medium text-gray-500 dark:text-gray-400">
+            <label class="font-mono text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
               {{ t('admin.channels.form.imageTiers') }}
             </label>
-            <button type="button" @click="addImageTier" class="text-xs text-primary-600 hover:text-primary-700">
+            <button type="button" @click="addImageTier" class="font-mono text-xs text-primary-600 hover:text-primary-700">
               + {{ t('admin.channels.form.addTier') }}
             </button>
           </div>
