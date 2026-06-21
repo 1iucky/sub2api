@@ -1,8 +1,8 @@
 <template>
-  <div class="inline-flex flex-col gap-0.5 text-xs font-medium">
+  <div class="inline-flex flex-col gap-0.5 font-mono text-xs font-medium uppercase tracking-wide">
     <!-- Row 1: Platform + Type -->
-    <div class="inline-flex items-center overflow-hidden rounded-md">
-      <span :class="['inline-flex items-center gap-1 px-2 py-1', platformClass]">
+    <div class="inline-flex items-center overflow-hidden rounded-sm border border-gray-200 dark:border-dark-700">
+      <span :class="['inline-flex items-center gap-1 border-r border-gray-200 px-2 py-1 dark:border-dark-700', platformClass]">
         <PlatformIcon :platform="platform" size="xs" />
         <span>{{ platformLabel }}</span>
       </span>
@@ -31,8 +31,8 @@
       </span>
     </div>
     <!-- Row 2: Plan type + Privacy mode (only if either exists) -->
-    <div v-if="planLabel || privacyBadge" class="inline-flex items-center overflow-hidden rounded-md">
-      <span v-if="planLabel" :class="['inline-flex items-center gap-1 px-1.5 py-1', planBadgeClass]">
+    <div v-if="planLabel || privacyBadge" class="inline-flex items-center overflow-hidden rounded-sm border border-gray-200 dark:border-dark-700">
+      <span v-if="planLabel" :class="['inline-flex items-center gap-1 border-r border-gray-200 px-1.5 py-1 dark:border-dark-700', planBadgeClass]">
         <GrokFreeIcon
           v-if="isGrokFreePlan"
           data-testid="grok-free-plan-icon"
@@ -58,7 +58,7 @@
       </span>
     </div>
     <!-- Row 3: Subscription expiration (non-free paid accounts only) -->
-    <div v-if="expiresLabel" class="text-[10px] leading-tight text-gray-400 dark:text-gray-500 pl-0.5" :title="subscriptionExpiresAt">
+    <div v-if="expiresLabel" class="pl-0.5 text-[10px] leading-tight text-gray-400 dark:text-gray-500" :title="subscriptionExpiresAt">
       {{ expiresLabel }}
     </div>
   </div>
@@ -177,34 +177,34 @@ const planIconName = computed<'bolt' | null>(() => {
 
 const platformClass = computed(() => {
   if (props.platform === 'anthropic') {
-    return 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400'
+    return 'bg-orange-50 text-orange-700 dark:bg-orange-900/20 dark:text-orange-400'
   }
   if (props.platform === 'openai') {
-    return 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
+    return 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400'
   }
   if (props.platform === 'antigravity') {
-    return 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400'
+    return 'bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400'
   }
   if (props.platform === 'grok') {
-    return 'bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300'
+    return 'bg-zinc-50 text-zinc-700 dark:bg-zinc-900/30 dark:text-zinc-300'
   }
-  return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
+  return 'bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400'
 })
 
 const typeClass = computed(() => {
   if (props.platform === 'anthropic') {
-    return 'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400'
+    return 'bg-white text-orange-600 dark:bg-dark-900 dark:text-orange-400'
   }
   if (props.platform === 'openai') {
-    return 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400'
+    return 'bg-white text-emerald-600 dark:bg-dark-900 dark:text-emerald-400'
   }
   if (props.platform === 'antigravity') {
-    return 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400'
+    return 'bg-white text-purple-600 dark:bg-dark-900 dark:text-purple-400'
   }
   if (props.platform === 'grok') {
-    return 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300'
+    return 'bg-white text-zinc-600 dark:bg-dark-900 dark:text-zinc-300'
   }
-  return 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'
+  return 'bg-white text-blue-600 dark:bg-dark-900 dark:text-blue-400'
 })
 
 const planBadgeClass = computed(() => {
