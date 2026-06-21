@@ -17,12 +17,20 @@
 
 /* ============ Factory utility classes ============ */
 
-/* Faint warm line-grid blueprint background.
-   Use behind login / empty states / homepage — NOT behind data-dense tables. */
+/* Faint warm line-grid blueprint background — factory signature.
+   Refined to match factory.ai: fine + dense (~16px tile), very subtle
+   opacity (~0.04), theme-aware line color (warm-gray on light, warm-white
+   on dark). Use behind login / empty states / homepage — NOT behind
+   data-dense tables. */
 .bg-blueprint {
-  background-image: linear-gradient(rgba(125, 114, 100, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(125, 114, 100, 0.06) 1px, transparent 1px);
-  background-size: 32px 32px;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+.dark .bg-blueprint {
+  background-image: linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
 }
 
 /* Dashed hairline divider — blueprint motif. */
@@ -46,6 +54,67 @@
 
 .dark .eyebrow {
   color: theme('colors.dark.400');
+}
+
+/* ============ Brand hover micro-interaction ============
+   Apply `.brand-hover` to a brand block (logo + siteName). On hover the logo
+   mark gently spins (slow continuous) and the letters cascade-roll with a
+   per-letter stagger driven by inline `--brand-i`. Amplitudes are small and
+   the easing is a soft cubic-bezier(0.22,1,0.36,1) so it reads as
+   "comfortable/floaty" rather than jarring. Gated behind no-preference so
+   reduce-motion users see no animation. The siteName must remain accessible:
+   keep the original text in a `.sr-only` span (or an aria-label on the
+   container) alongside the letter spans. */
+
+@keyframes brand-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes brand-letter-roll {
+  0% {
+    transform: translateY(0) rotate(0);
+    opacity: 1;
+  }
+  35% {
+    transform: translateY(-3px) rotate(-4deg);
+    opacity: 0.6;
+  }
+  70% {
+    transform: translateY(1px) rotate(3deg);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(0) rotate(0);
+    opacity: 1;
+  }
+}
+
+.brand-hover__logo {
+  display: inline-block;
+}
+
+.brand-hover__letter {
+  display: inline-block;
+  white-space: pre;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Slow continuous spin while the brand block is hovered/focused. */
+  .brand-hover:hover .brand-hover__logo,
+  .brand-hover:focus-visible .brand-hover__logo,
+  .brand-hover:focus-within .brand-hover__logo {
+    animation: brand-spin 6s linear infinite;
+  }
+
+  /* Per-letter staggered roll on hover/focus. Stagger via inline --brand-i. */
+  .brand-hover:hover .brand-hover__letter,
+  .brand-hover:focus-visible .brand-hover__letter,
+  .brand-hover:focus-within .brand-hover__letter {
+    animation: brand-letter-roll 380ms cubic-bezier(0.22, 1, 0.36, 1);
+    animation-delay: calc(var(--brand-i, 0) * 40ms);
+  }
 }
 
 /* ============ Homepage motion (factory.ai) ============
@@ -261,7 +330,9 @@
   [data-hero-demo] .sf-radar-sweep,
   [data-hero-demo] .sf-dashboard-cursor,
   .sf-marquee-track,
-  .sf-btn-hatch {
+  .sf-btn-hatch,
+  .brand-hover__logo,
+  .brand-hover__letter {
     opacity: 1 !important;
     transform: none !important;
     animation: none !important;
