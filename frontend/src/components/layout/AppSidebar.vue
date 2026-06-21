@@ -10,7 +10,12 @@
     <div
       class="brand-hover sidebar-header"
       :class="{ 'sidebar-header-collapsed': sidebarCollapsed }"
+      v-bind="brand.brandProps"
       :aria-label="siteName"
+      @mouseenter="brand.onEnter"
+      @mouseleave="brand.onLeave"
+      @focusin="brand.onEnter"
+      @focusout="brand.onLeave"
     >
       <!-- Custom Logo or Default Logo -->
       <router-link
@@ -210,6 +215,7 @@ import { sanitizeSvg } from '@/utils/sanitize'
 import { sanitizeUrl } from '@/utils/url'
 import { FeatureFlags, makeSidebarFlag } from '@/utils/featureFlags'
 import { useBatchImageAccess } from '@/composables/useBatchImageAccess'
+import { useBrandHover } from '@/composables/useBrandHover'
 
 interface NavItem {
   path: string
@@ -264,6 +270,8 @@ const sidebarNavRef = ref<HTMLElement | null>(null)
 const isDark = ref(document.documentElement.classList.contains('dark'))
 
 const homePath = computed(() => (isAdmin.value ? '/admin/dashboard' : '/dashboard'))
+// Brand micro-interaction (shared phase state — see useBrandHover).
+const brand = useBrandHover()
 
 // Track which parent nav groups are expanded
 const expandedGroups = ref<Set<string>>(new Set())
