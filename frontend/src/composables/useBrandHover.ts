@@ -12,14 +12,21 @@
  *
  * `rewind` only ever runs AFTER the first hover — initial state is `idle`, so
  * page-load shows the logo static at 0°. The phase is exposed to the template
- * via a `data-phase` attribute on the `.brand-hover` root, which the CSS in
- * `theme-override.css` keys off.
+ * via a reactive `brandClass` computed (a `:class`-bindable record) on the
+ * `.brand-hover` root, which the CSS in `theme-override.css` keys off via the
+ * `is-spinning` / `is-rewinding` classes.
+ *
+ * Why a class binding, not a `data-phase` attribute? Vue's attribute patching
+ * for `v-bind="obj"` with function-form values is fragile for plain DOM
+ * attributes (the function is invoked once, not re-evaluated reactively), so
+ * the previous `data-phase` implementation did not update on hover. A `:class`
+ * binding is plain reactive state → guaranteed DOM update.
  *
  * The composable itself is pure state — all motion lives in CSS, gated under
  * `prefers-reduced-motion: no-preference`. Under reduce the phase is forced to
  * `idle` (handlers short-circuit) so nothing animates.
  */
-import { onBeforeUnmount, ref, readonly, type Ref } from 'vue'
+import { onBeforeUnmount, ref, readonly, computed, type Ref, type ComputedRef } from 'vue'
 
 export type BrandPhase = 'idle' | 'spin' | 'rewind'
 
@@ -35,11 +42,21 @@ export function useBrandHover(): {
   phase: Readonly<Ref<BrandPhase>>
   onEnter: () => void
   onLeave: () => void
-  /** Bind onto the `.brand-hover` root element: <div v-bind="brandProps"> */
-  brandProps: { 'data-phase': () => BrandPhase }
+  /**
+   * `:class`-bindable record for the `.brand-hover` root element. Spread/merge
+   * it into the element's existing `:class` binding, e.g.
+   *   `:class="[brand.brandClass, { ... }]"`
+   * Keys: `is-spinning` (phase==='spin'), `is-rewinding` (phase==='rewind').
+   */
+  brandClass: ComputedRef<Record<string, boolean>>
 } {
   const phase = ref<BrandPhase>('idle')
   let rewindTimer: ReturnType<typeof setTimeout> | null = null
+
+  const brandClass = computed(() => ({
+    'is-spinning': phase.value === 'spin',
+    'is-rewinding': phase.value === 'rewind',
+  }))
 
   function clearTimer() {
     if (rewindTimer !== null) {
@@ -77,10 +94,6 @@ export function useBrandHover(): {
     phase: readonly(phase),
     onEnter,
     onLeave,
-    brandProps: {
-      // Vue 3 supports function-form attribute values for reactivity —
-      // re-renders when `phase.value` changes.
-      'data-phase': () => phase.value,
-    },
+    brandClass,
   }
 }

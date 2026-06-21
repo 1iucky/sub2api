@@ -17,7 +17,7 @@
       <!-- Logo/Brand -->
       <div
         class="brand-hover mb-8 text-center"
-        v-bind="brand.brandProps"
+        :class="brand.brandClass"
         :aria-label="siteName"
         @mouseenter="brand.onEnter"
         @mouseleave="brand.onLeave"
