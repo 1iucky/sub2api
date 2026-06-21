@@ -51,7 +51,7 @@
             <div
               class="border-b border-gray-100 px-6 py-4 dark:border-dark-700"
             >
-              <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              <h2 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">
                 {{ t("admin.settings.adminApiKey.title") }}
               </h2>
               <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -61,7 +61,7 @@
             <div class="space-y-4 p-6">
               <!-- Security Warning -->
               <div
-                class="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-900/20"
+                class="rounded-md border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-900/20"
               >
                 <div class="flex items-start">
                   <Icon
@@ -170,7 +170,7 @@
                 <!-- Newly Generated Key Display -->
                 <div
                   v-if="newAdminApiKey"
-                  class="space-y-3 rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-800 dark:bg-green-900/20"
+                  class="space-y-3 rounded-md border border-green-200 bg-green-50 p-4 dark:border-green-800 dark:bg-green-900/20"
                 >
                   <p
                     class="text-sm font-medium text-green-700 dark:text-green-300"
@@ -208,7 +208,7 @@
             <div
               class="border-b border-gray-100 px-6 py-4 dark:border-dark-700"
             >
-              <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              <h2 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">
                 {{ t("admin.settings.overloadCooldown.title") }}
               </h2>
               <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -309,7 +309,7 @@
             <div
               class="border-b border-gray-100 px-6 py-4 dark:border-dark-700"
             >
-              <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              <h2 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">
                 {{ t("admin.settings.rateLimit429Cooldown.title") }}
               </h2>
               <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -416,7 +416,7 @@
             <div
               class="border-b border-gray-100 px-6 py-4 dark:border-dark-700"
             >
-              <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              <h2 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">
                 {{ t("admin.settings.streamTimeout.title") }}
               </h2>
               <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -596,7 +596,7 @@
             <div
               class="border-b border-gray-100 px-6 py-4 dark:border-dark-700"
             >
-              <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              <h2 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">
                 {{ t("admin.settings.rectifier.title") }}
               </h2>
               <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -795,7 +795,7 @@
             <div
               class="border-b border-gray-100 px-6 py-4 dark:border-dark-700"
             >
-              <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              <h2 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">
                 {{ t("admin.settings.betaPolicy.title") }}
               </h2>
               <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -819,7 +819,7 @@
                 <div
                   v-for="rule in betaPolicyForm.rules"
                   :key="rule.beta_token"
-                  class="rounded-lg border border-gray-200 p-4 dark:border-dark-600"
+                  class="rounded-md border border-gray-200 p-4 dark:border-dark-600"
                 >
                   <div class="mb-3 flex items-center gap-2">
                     <span
@@ -1074,7 +1074,7 @@
             <div
               class="border-b border-gray-100 px-6 py-4 dark:border-dark-700"
             >
-              <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              <h2 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">
                 {{ t("admin.settings.openaiFastPolicy.title") }}
               </h2>
               <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -1085,7 +1085,7 @@
               <!-- Empty state -->
               <div
                 v-if="openaiFastPolicyForm.rules.length === 0"
-                class="rounded-lg border border-dashed border-gray-200 p-6 text-center text-sm text-gray-500 dark:border-dark-600 dark:text-gray-400"
+                class="rounded-md border border-dashed border-gray-200 p-6 text-center text-sm text-gray-500 dark:border-dark-600 dark:text-gray-400"
               >
                 {{ t("admin.settings.openaiFastPolicy.empty") }}
               </div>
@@ -1094,7 +1094,7 @@
               <div
                 v-for="(rule, ruleIndex) in openaiFastPolicyForm.rules"
                 :key="ruleIndex"
-                class="rounded-lg border border-gray-200 p-4 dark:border-dark-600"
+                class="rounded-md border border-gray-200 p-4 dark:border-dark-600"
               >
                 <div class="mb-3 flex items-center justify-between">
                   <span
@@ -1379,7 +1379,7 @@
             <div
               class="border-b border-gray-100 px-6 py-4 dark:border-dark-700"
             >
-              <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              <h2 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">
                 {{ t("admin.settings.registration.title") }}
               </h2>
               <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -1428,7 +1428,7 @@
                   }}
                 </p>
                 <div
-                  class="mt-3 rounded-lg border border-gray-300 bg-white p-2 dark:border-dark-500 dark:bg-dark-700"
+                  class="mt-3 rounded-md border border-gray-300 bg-white p-2 dark:border-dark-500 dark:bg-dark-700"
                 >
                   <div class="flex flex-wrap items-center gap-2">
                     <span
@@ -1620,7 +1620,7 @@
             <div
               class="border-b border-gray-100 px-6 py-4 dark:border-dark-700"
             >
-              <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              <h2 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">
                 {{ t("admin.settings.apiKeyAcl.title") }}
               </h2>
               <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -1647,7 +1647,7 @@
             <div
               class="border-b border-gray-100 px-6 py-4 dark:border-dark-700"
             >
-              <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              <h2 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">
                 {{ t("admin.settings.turnstile.title") }}
               </h2>
               <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -1730,7 +1730,7 @@
             <div
               class="border-b border-gray-100 px-6 py-4 dark:border-dark-700"
             >
-              <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              <h2 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">
                 {{ t("admin.settings.linuxdo.title") }}
               </h2>
               <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -1848,7 +1848,7 @@
             <div
               class="border-b border-gray-100 px-6 py-4 dark:border-dark-700"
             >
-              <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              <h2 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">
                 {{ localText("邮箱快捷登录", "Email OAuth Sign-in") }}
               </h2>
               <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -1862,7 +1862,7 @@
             </div>
             <div class="space-y-6 p-6">
               <div class="grid grid-cols-1 gap-6 xl:grid-cols-2">
-                <div class="rounded-lg border border-gray-200 p-4 dark:border-dark-700">
+                <div class="rounded-md border border-gray-200 p-4 dark:border-dark-700">
                   <div class="flex items-start justify-between gap-4">
                     <div>
                       <h3 class="font-medium text-gray-900 dark:text-white">
@@ -1881,7 +1881,7 @@
                   </div>
 
                   <div v-if="form.github_oauth_enabled" class="mt-4 space-y-4">
-                    <div class="rounded-lg bg-gray-50 px-3 py-2 text-xs text-gray-600 dark:bg-dark-800 dark:text-gray-300">
+                    <div class="rounded-md bg-gray-50 px-3 py-2 text-xs text-gray-600 dark:bg-dark-800 dark:text-gray-300">
                       <template v-if="isZhLocale">
                         开通引导：GitHub Settings → Developer settings →
                         <a
@@ -1972,7 +1972,7 @@
                   </div>
                 </div>
 
-                <div class="rounded-lg border border-gray-200 p-4 dark:border-dark-700">
+                <div class="rounded-md border border-gray-200 p-4 dark:border-dark-700">
                   <div class="flex items-start justify-between gap-4">
                     <div>
                       <h3 class="font-medium text-gray-900 dark:text-white">
@@ -1991,7 +1991,7 @@
                   </div>
 
                   <div v-if="form.google_oauth_enabled" class="mt-4 space-y-4">
-                    <div class="rounded-lg bg-gray-50 px-3 py-2 text-xs text-gray-600 dark:bg-dark-800 dark:text-gray-300">
+                    <div class="rounded-md bg-gray-50 px-3 py-2 text-xs text-gray-600 dark:bg-dark-800 dark:text-gray-300">
                       {{
                         localText(
                           "开通引导：Google Cloud Console → APIs & Services → OAuth consent screen 完成同意屏幕；Credentials → Create Credentials → OAuth client ID，类型选择 Web application，并把下面地址加入 Authorized redirect URIs。",
@@ -2074,7 +2074,7 @@
             <div
               class="border-b border-gray-100 px-6 py-4 dark:border-dark-700"
             >
-              <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              <h2 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">
                 {{ t("admin.settings.wechatConnect.title") }}
               </h2>
               <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -2103,7 +2103,7 @@
               >
                 <div class="space-y-4">
                   <div
-                    class="rounded-lg border border-gray-200 p-4 dark:border-dark-700"
+                    class="rounded-md border border-gray-200 p-4 dark:border-dark-700"
                   >
                     <div class="flex items-start justify-between gap-4">
                       <div>
@@ -2176,7 +2176,7 @@
                   </div>
 
                   <div
-                    class="rounded-lg border border-gray-200 p-4 dark:border-dark-700"
+                    class="rounded-md border border-gray-200 p-4 dark:border-dark-700"
                   >
                     <div class="flex items-start justify-between gap-4">
                       <div>
@@ -2254,7 +2254,7 @@
                   </div>
 
                   <div
-                    class="rounded-lg border border-gray-200 p-4 dark:border-dark-700"
+                    class="rounded-md border border-gray-200 p-4 dark:border-dark-700"
                   >
                     <div class="flex items-start justify-between gap-4">
                       <div>
@@ -2333,7 +2333,7 @@
                     (form.wechat_connect_mp_enabled ||
                       form.wechat_connect_mobile_enabled)
                   "
-                  class="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700 dark:border-amber-900/40 dark:bg-amber-900/10 dark:text-amber-300"
+                  class="rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700 dark:border-amber-900/40 dark:bg-amber-900/10 dark:text-amber-300"
                 >
                   {{
                     localText(
@@ -2416,7 +2416,7 @@
             <div
               class="border-b border-gray-100 px-6 py-4 dark:border-dark-700"
             >
-              <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              <h2 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">
                 {{ t("admin.settings.dingtalk.title") }}
               </h2>
               <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -2704,7 +2704,7 @@
             <div
               class="border-b border-gray-100 px-6 py-4 dark:border-dark-700"
             >
-              <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              <h2 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">
                 {{ t("admin.settings.oidc.title") }}
               </h2>
               <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -3117,7 +3117,7 @@
             <div
               class="border-b border-gray-100 px-6 py-4 dark:border-dark-700"
             >
-              <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              <h2 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">
                 {{ t("admin.settings.defaults.title") }}
               </h2>
               <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -3390,7 +3390,7 @@
             <div
               class="border-b border-gray-100 px-6 py-4 dark:border-dark-700"
             >
-              <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              <h2 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">
                 {{ t("admin.settings.authSourceDefaults.title") }}
               </h2>
               <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -3416,7 +3416,7 @@
                 <div
                   v-for="authSource in authSourceDefaultsMeta"
                   :key="authSource.source"
-                  class="rounded-xl border border-gray-200 p-4 dark:border-dark-700"
+                  class="rounded-md border border-gray-200 p-4 dark:border-dark-700"
                 >
                   <div class="flex items-center justify-between gap-4">
                     <div>
@@ -3733,7 +3733,7 @@
             <div
               class="border-b border-gray-100 px-6 py-4 dark:border-dark-700"
             >
-              <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              <h2 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">
                 {{ t("admin.settings.claudeCode.title") }}
               </h2>
               <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -4033,7 +4033,7 @@
             <div
               class="border-b border-gray-100 px-6 py-4 dark:border-dark-700"
             >
-              <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              <h2 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">
                 {{ t("admin.settings.scheduling.title") }}
               </h2>
               <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -4242,7 +4242,7 @@
             <div
               class="border-b border-gray-100 px-6 py-4 dark:border-dark-700"
             >
-              <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              <h2 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">
                 {{ t("admin.settings.gatewayForwarding.title") }}
               </h2>
               <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -4348,7 +4348,7 @@
                   <div
                     v-for="(block, index) in claudeOAuthSystemPromptBlocks"
                     :key="block.id"
-                    class="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-dark-700 dark:bg-dark-800/60"
+                    class="rounded-md border border-gray-200 bg-gray-50 p-4 dark:border-dark-700 dark:bg-dark-800/60"
                   >
                     <div
                       :class="[
@@ -4681,7 +4681,7 @@
             <div
               class="border-b border-gray-100 px-6 py-4 dark:border-dark-700"
             >
-              <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              <h2 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">
                 {{ t("admin.settings.webSearchEmulation.title") }}
               </h2>
               <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -4723,7 +4723,7 @@
 
                 <div
                   v-if="webSearchConfig.providers.length === 0"
-                  class="rounded-lg border border-dashed border-gray-300 p-4 text-center text-sm text-gray-400 dark:border-dark-600"
+                  class="rounded-md border border-dashed border-gray-300 p-4 text-center text-sm text-gray-400 dark:border-dark-600"
                 >
                   {{ t("admin.settings.webSearchEmulation.noProviders") }}
                 </div>
@@ -4731,7 +4731,7 @@
                 <div
                   v-for="(provider, pIdx) in webSearchConfig.providers"
                   :key="pIdx"
-                  class="rounded-lg border border-gray-200 dark:border-dark-600"
+                  class="rounded-md border border-gray-200 dark:border-dark-600"
                 >
                   <!-- Collapsible header -->
                   <div
@@ -5036,10 +5036,10 @@
             @click.self="wsTestDialogOpen = false"
           >
             <div
-              class="mx-4 w-full max-w-lg rounded-xl bg-white p-6 shadow-xl dark:bg-dark-800"
+              class="mx-4 w-full max-w-lg rounded-lg border border-gray-200 bg-white p-6 dark:border-dark-700 dark:bg-dark-800"
             >
               <h3
-                class="mb-4 text-lg font-semibold text-gray-900 dark:text-white"
+                class="mb-4 text-lg font-normal tracking-tight text-gray-900 dark:text-white"
               >
                 {{ t("admin.settings.webSearchEmulation.testResultTitle") }}
               </h3>
@@ -5069,7 +5069,7 @@
               <!-- Test results -->
               <div
                 v-if="wsTestResult"
-                class="mt-4 max-h-80 overflow-y-auto rounded-lg bg-gray-50 p-4 dark:bg-dark-700"
+                class="mt-4 max-h-80 overflow-y-auto rounded-md bg-gray-50 p-4 dark:bg-dark-700"
               >
                 <p
                   class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
@@ -5115,7 +5115,7 @@
         <!-- Usage Records Settings -->
         <div class="card">
           <div class="border-b border-gray-100 px-6 py-4 dark:border-dark-700">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+            <h2 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">
               {{ t('admin.settings.usageRecords.title') }}
             </h2>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -5150,7 +5150,7 @@
             <div
               class="border-b border-gray-100 px-6 py-4 dark:border-dark-700"
             >
-              <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              <h2 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">
                 {{ t("admin.settings.site.title") }}
               </h2>
               <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -5160,7 +5160,7 @@
             <div class="space-y-6 p-6">
               <!-- Backend Mode -->
               <div
-                class="flex items-center justify-between rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-900/20"
+                class="flex items-center justify-between rounded-md border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-900/20"
               >
                 <div>
                   <h3 class="text-sm font-medium text-gray-900 dark:text-white">
@@ -5291,7 +5291,7 @@
                   <div
                     v-for="(ep, index) in form.custom_endpoints"
                     :key="index"
-                    class="rounded-lg border border-gray-200 p-4 dark:border-dark-600"
+                    class="rounded-md border border-gray-200 p-4 dark:border-dark-600"
                   >
                     <div class="mb-3 flex items-center justify-between">
                       <span
@@ -5387,7 +5387,7 @@
 
                 <button
                   type="button"
-                  class="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-300 px-4 py-2.5 text-sm text-gray-500 transition-colors hover:border-primary-400 hover:text-primary-600 dark:border-dark-600 dark:text-gray-400 dark:hover:border-primary-500 dark:hover:text-primary-400"
+                  class="mt-3 flex w-full items-center justify-center gap-2 rounded-md border-2 border-dashed border-gray-300 px-4 py-2.5 text-sm text-gray-500 transition-colors hover:border-primary-400 hover:text-primary-600 dark:border-dark-600 dark:text-gray-400 dark:hover:border-primary-500 dark:hover:text-primary-400"
                   @click="addEndpoint"
                 >
                   <svg
@@ -5504,7 +5504,7 @@
             <div
               class="border-b border-gray-100 px-6 py-4 dark:border-dark-700"
             >
-              <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              <h2 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">
                 {{ t("admin.settings.customMenu.title") }}
               </h2>
               <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -5516,7 +5516,7 @@
               <div
                 v-for="(item, index) in form.custom_menu_items"
                 :key="item.id || index"
-                class="rounded-lg border border-gray-200 p-4 dark:border-dark-600"
+                class="rounded-md border border-gray-200 p-4 dark:border-dark-600"
               >
                 <div class="mb-3 flex items-center justify-between">
                   <span
@@ -5669,7 +5669,7 @@
               <!-- Add button -->
               <button
                 type="button"
-                class="flex w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-300 py-3 text-sm text-gray-500 transition-colors hover:border-primary-400 hover:text-primary-600 dark:border-dark-600 dark:text-gray-400 dark:hover:border-primary-500 dark:hover:text-primary-400"
+                class="flex w-full items-center justify-center gap-2 rounded-md border-2 border-dashed border-gray-300 py-3 text-sm text-gray-500 transition-colors hover:border-primary-400 hover:text-primary-600 dark:border-dark-600 dark:text-gray-400 dark:hover:border-primary-500 dark:hover:text-primary-400"
                 @click="addMenuItem"
               >
                 <svg
@@ -5698,7 +5698,7 @@
 	            <div class="border-b border-gray-100 px-6 py-4 dark:border-dark-700">
 	              <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
 	                <div>
-	                  <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+	                  <h2 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">
 	                    {{ localText("登录条款确认", "Login agreement") }}
 	                  </h2>
 	                  <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -5725,13 +5725,13 @@
 	                  <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
 	                    {{ localText("展示形式", "Display mode") }}
 	                  </label>
-	                  <div class="grid grid-cols-2 gap-2 rounded-lg bg-gray-100 p-1 dark:bg-dark-700">
+	                  <div class="grid grid-cols-2 gap-2 rounded-md bg-gray-100 p-1 dark:bg-dark-700">
                     <button
                       type="button"
-                      class="inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition"
+                      class="inline-flex items-center justify-center gap-2 rounded-sm px-3 py-2 text-sm font-medium transition"
                       :class="
                         form.login_agreement_mode === 'modal'
-                          ? 'bg-white text-primary-700 shadow-sm dark:bg-dark-800 dark:text-primary-300'
+                          ? 'bg-white text-primary-700 dark:bg-dark-800 dark:text-primary-300'
                           : 'text-gray-600 hover:text-gray-900 dark:text-dark-300 dark:hover:text-white'
                       "
                       @click="form.login_agreement_mode = 'modal'"
@@ -5741,10 +5741,10 @@
                     </button>
                     <button
                       type="button"
-                      class="inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition"
+                      class="inline-flex items-center justify-center gap-2 rounded-sm px-3 py-2 text-sm font-medium transition"
                       :class="
                         form.login_agreement_mode === 'checkbox'
-                          ? 'bg-white text-primary-700 shadow-sm dark:bg-dark-800 dark:text-primary-300'
+                          ? 'bg-white text-primary-700 dark:bg-dark-800 dark:text-primary-300'
                           : 'text-gray-600 hover:text-gray-900 dark:text-dark-300 dark:hover:text-white'
                       "
                       @click="form.login_agreement_mode = 'checkbox'"
@@ -5806,7 +5806,7 @@
                   <div
                     v-for="(doc, index) in form.login_agreement_documents"
                     :key="doc.id || index"
-                    class="rounded-lg border border-gray-200 bg-white p-4 dark:border-dark-700 dark:bg-dark-800/60"
+                    class="rounded-md border border-gray-200 bg-white p-4 dark:border-dark-700 dark:bg-dark-800/60"
                   >
                     <div class="mb-3 flex items-center justify-between gap-3">
                       <div class="flex min-w-0 items-center gap-3">
@@ -5825,7 +5825,7 @@
                           />
                         </span>
                         <div class="min-w-0">
-                          <p class="truncate text-sm font-semibold text-gray-900 dark:text-white">
+                          <p class="truncate text-sm font-medium text-gray-900 dark:text-white">
                             {{ doc.title || localText("未命名文档", "Untitled document") }}
                           </p>
                           <p class="truncate text-xs text-gray-500 dark:text-gray-400">
@@ -5862,7 +5862,7 @@
                         <label class="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400">
                           {{ localText("路由标识", "Route slug") }}
                         </label>
-                        <div class="flex overflow-hidden rounded-lg border border-gray-300 bg-white focus-within:border-primary-500 focus-within:ring-1 focus-within:ring-primary-500 dark:border-dark-600 dark:bg-dark-900">
+                        <div class="flex overflow-hidden rounded-sm border border-gray-300 bg-white focus-within:border-primary-500 dark:border-dark-600 dark:bg-dark-900">
                           <span class="inline-flex flex-shrink-0 items-center border-r border-gray-200 bg-gray-50 px-3 text-sm text-gray-500 dark:border-dark-700 dark:bg-dark-800 dark:text-dark-400">
                             /legal/
                           </span>
@@ -5899,7 +5899,7 @@
 
         <div class="card">
           <div class="border-b border-gray-100 px-6 py-4 dark:border-dark-700">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+            <h2 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">
               {{ t('admin.settings.features.channelMonitor.title') }}
             </h2>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -5949,7 +5949,7 @@
 
         <div class="card">
           <div class="border-b border-gray-100 px-6 py-4 dark:border-dark-700">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+            <h2 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">
               {{ t('admin.settings.features.availableChannels.title') }}
             </h2>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -5982,7 +5982,7 @@
 
         <div class="card">
           <div class="border-b border-gray-100 px-6 py-4 dark:border-dark-700">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+            <h2 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">
               {{ t('admin.settings.features.riskControl.title') }}
             </h2>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -6041,7 +6041,7 @@
         <!-- Affiliate (邀请返利) feature card -->
         <div class="card">
           <div class="border-b border-gray-100 px-6 py-4 dark:border-dark-700">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+            <h2 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">
               {{ t('admin.settings.features.affiliate.title') }}
             </h2>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -6149,7 +6149,7 @@
               <div class="border-t border-gray-100 pt-6 dark:border-dark-700">
                 <div class="mb-3 flex items-center justify-between">
                   <div>
-                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white">
+                    <h3 class="text-sm font-medium tracking-tight text-gray-900 dark:text-white">
                       {{ t('admin.settings.features.affiliate.customUsers.title') }}
                     </h3>
                     <p class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
@@ -6183,7 +6183,7 @@
                   </button>
                 </div>
 
-                <div class="overflow-hidden rounded-lg border border-gray-200 dark:border-dark-700">
+                <div class="overflow-hidden rounded-md border border-gray-200 dark:border-dark-700">
                   <table class="min-w-full divide-y divide-gray-200 dark:divide-dark-700">
                     <thead class="bg-gray-50 dark:bg-dark-800">
                       <tr>
@@ -6194,11 +6194,11 @@
                             @change="toggleAffiliateSelectAll"
                           />
                         </th>
-                        <th class="px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">{{ t('admin.settings.features.affiliate.customUsers.col.email') }}</th>
-                        <th class="px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">{{ t('admin.settings.features.affiliate.customUsers.col.username') }}</th>
-                        <th class="px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">{{ t('admin.settings.features.affiliate.customUsers.col.code') }}</th>
-                        <th class="px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">{{ t('admin.settings.features.affiliate.customUsers.col.rate') }}</th>
-                        <th class="px-3 py-2 text-left text-xs font-medium uppercase text-gray-500">{{ t('admin.settings.features.affiliate.customUsers.col.actions') }}</th>
+                        <th class="px-3 py-2 text-left text-xs font-mono font-medium uppercase tracking-wide text-gray-500">{{ t('admin.settings.features.affiliate.customUsers.col.email') }}</th>
+                        <th class="px-3 py-2 text-left text-xs font-mono font-medium uppercase tracking-wide text-gray-500">{{ t('admin.settings.features.affiliate.customUsers.col.username') }}</th>
+                        <th class="px-3 py-2 text-left text-xs font-mono font-medium uppercase tracking-wide text-gray-500">{{ t('admin.settings.features.affiliate.customUsers.col.code') }}</th>
+                        <th class="px-3 py-2 text-left text-xs font-mono font-medium uppercase tracking-wide text-gray-500">{{ t('admin.settings.features.affiliate.customUsers.col.rate') }}</th>
+                        <th class="px-3 py-2 text-left text-xs font-mono font-medium uppercase tracking-wide text-gray-500">{{ t('admin.settings.features.affiliate.customUsers.col.actions') }}</th>
                       </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200 bg-white dark:divide-dark-700 dark:bg-dark-900">
@@ -6229,7 +6229,7 @@
                             class="ml-1 inline-block rounded bg-primary-100 px-1.5 py-0.5 text-[10px] font-medium text-primary-700 dark:bg-primary-900/30 dark:text-primary-300"
                           >{{ t('admin.settings.features.affiliate.customUsers.customBadge') }}</span>
                         </td>
-                        <td class="px-3 py-2 text-sm">
+                        <td class="px-3 py-2 text-sm font-mono tabular-nums">
                           <span v-if="entry.aff_rebate_rate_percent != null">{{ entry.aff_rebate_rate_percent }}%</span>
                           <span v-else class="text-gray-400">{{ t('admin.settings.features.affiliate.customUsers.useGlobal') }}</span>
                         </td>
@@ -6287,8 +6287,8 @@
           class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
           @click.self="closeAffiliateModal"
         >
-          <div class="w-full max-w-md rounded-lg bg-white p-6 shadow-xl dark:bg-dark-900">
-            <h3 class="mb-4 text-lg font-semibold">
+          <div class="w-full max-w-md rounded-lg border border-gray-200 bg-white p-6 dark:border-dark-700 dark:bg-dark-900">
+            <h3 class="mb-4 text-lg font-normal tracking-tight">
               {{ affiliateModal.mode === 'add' ? t('admin.settings.features.affiliate.modal.addTitle') : t('admin.settings.features.affiliate.modal.editTitle') }}
             </h3>
             <div class="space-y-4">
@@ -6412,8 +6412,8 @@
           class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
           @click.self="affiliateBatchModal.open = false"
         >
-          <div class="w-full max-w-md rounded-lg bg-white p-6 shadow-xl dark:bg-dark-900">
-            <h3 class="mb-4 text-lg font-semibold">
+          <div class="w-full max-w-md rounded-lg border border-gray-200 bg-white p-6 dark:border-dark-700 dark:bg-dark-900">
+            <h3 class="mb-4 text-lg font-normal tracking-tight">
               {{ t('admin.settings.features.affiliate.batchModal.title', { count: affiliateState.selected.length }) }}
             </h3>
             <p class="mb-4 text-sm text-gray-500">
@@ -6460,7 +6460,7 @@
             <div
               class="border-b border-gray-100 px-6 py-4 dark:border-dark-700"
             >
-              <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              <h2 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">
                 {{ t("admin.settings.payment.title") }}
               </h2>
               <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -6531,7 +6531,7 @@
                       t("admin.settings.payment.preview")
                     }}</label>
                     <div
-                      class="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-600 dark:border-dark-600 dark:bg-dark-800 dark:text-gray-300"
+                      class="rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-600 dark:border-dark-600 dark:bg-dark-800 dark:text-gray-300"
                     >
                       {{
                         (form.payment_product_name_prefix || "SiliconBase") +
@@ -6887,9 +6887,9 @@
                       type="button"
                       @click="togglePaymentType(pt.value)"
                       :class="[
-                        'rounded-lg border px-3 py-1.5 text-sm font-medium transition-all',
+                        'rounded-sm border px-3 py-1.5 text-sm font-medium transition-colors',
                         isPaymentTypeEnabled(pt.value)
-                          ? 'border-primary-500 bg-primary-500 text-white shadow-sm'
+                          ? 'border-primary-500 bg-primary-500 text-white'
                           : 'border-gray-300 bg-white text-gray-600 hover:border-gray-400 hover:bg-gray-50 dark:border-dark-600 dark:bg-dark-800 dark:text-gray-300 dark:hover:border-dark-500',
                       ]"
                     >
@@ -7001,7 +7001,7 @@
               class="flex items-center justify-between border-b border-gray-100 px-6 py-4 dark:border-dark-700"
             >
               <div>
-                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+                <h2 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">
                   {{ t("admin.settings.smtp.title") }}
                 </h2>
                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -7163,7 +7163,7 @@
             <div
               class="border-b border-gray-100 px-6 py-4 dark:border-dark-700"
             >
-              <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              <h2 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">
                 {{ t("admin.settings.testEmail.title") }}
               </h2>
               <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -11142,11 +11142,8 @@ watch(
 
 /* ============ 系统设置 Tab 导航 ============ */
 .settings-tabs-shell {
-  @apply sticky z-20 -mx-1 rounded-2xl border border-white/80 bg-white/90 p-1.5 backdrop-blur-xl;
+  @apply sticky z-20 -mx-1 rounded-md border border-gray-200 bg-white p-1 dark:border-dark-700 dark:bg-dark-900;
   top: 4.75rem;
-  box-shadow:
-    0 12px 28px rgb(15 23 42 / 0.07),
-    0 1px 0 rgb(255 255 255 / 0.9) inset;
 }
 
 .settings-tabs-scroll {
@@ -11164,7 +11161,7 @@ watch(
 }
 
 .settings-tab {
-  @apply relative isolate flex h-10 min-w-[6.75rem] shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-xl border border-transparent px-3 text-sm font-medium text-gray-600 outline-none transition-colors duration-200 ease-out dark:text-gray-300;
+  @apply relative isolate flex h-10 min-w-[6.75rem] shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-sm border border-transparent px-3 text-sm font-medium text-gray-600 outline-none transition-colors duration-150 ease-out dark:text-gray-300;
 }
 
 @media (min-width: 768px) {
@@ -11181,30 +11178,19 @@ watch(
   }
 }
 
-.settings-tab::before {
-  @apply absolute inset-0 -z-10 rounded-xl opacity-0 transition-opacity duration-200;
-  content: "";
-  background: linear-gradient(135deg, rgb(248 250 252 / 0.95), rgb(241 245 249 / 0.8));
-}
-
-.settings-tab:hover::before,
-.settings-tab:focus-visible::before {
-  opacity: 1;
+.settings-tab:hover {
+  @apply text-gray-900 dark:text-white;
 }
 
 .settings-tab:focus-visible {
-  @apply ring-2 ring-primary-500/40 ring-offset-2 ring-offset-white dark:ring-offset-dark-900;
+  @apply outline-none;
+  outline: 2px solid theme('colors.primary.500');
+  outline-offset: 2px;
 }
 
 .settings-tab-active {
-  @apply border-primary-200/80 bg-white text-primary-700 shadow-sm dark:border-primary-400/30 dark:bg-dark-700/95 dark:text-primary-200;
-  box-shadow:
-    0 8px 18px rgb(15 23 42 / 0.08),
-    0 1px 0 rgb(255 255 255 / 0.92) inset;
-}
-
-.settings-tab-active::before {
-  opacity: 0;
+  @apply text-primary-700 dark:text-primary-300;
+  background: transparent;
 }
 
 .settings-tab-active::after {
@@ -11215,11 +11201,11 @@ watch(
   height: 2px;
   border-radius: 9999px;
   content: "";
-  background: linear-gradient(90deg, #14b8a6, #0ea5e9);
+  background: theme('colors.primary.500');
 }
 
 .settings-tab-icon {
-  @apply flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-gray-500 transition-colors duration-200 dark:text-gray-400;
+  @apply flex h-7 w-7 shrink-0 items-center justify-center rounded-sm text-gray-500 transition-colors duration-150 dark:text-gray-400;
 }
 
 .settings-tab:hover .settings-tab-icon,
@@ -11228,7 +11214,7 @@ watch(
 }
 
 .settings-tab-active .settings-tab-icon {
-  @apply bg-primary-50 text-primary-600 dark:bg-primary-400/10 dark:text-primary-300;
+  @apply text-primary-600 dark:text-primary-300;
 }
 
 .settings-tab-label {
@@ -11241,20 +11227,7 @@ watch(
    because Vue's scoped-CSS compiler was dropping the `:global(.dark) ...`
    rules in the production build, leaving inactive tabs unreadable on dark. */
 .dark .settings-tabs-shell {
-  border-color: rgb(51 65 85 / 0.65);
-  background: rgb(15 23 42 / 0.86);
-  box-shadow:
-    0 16px 36px rgb(0 0 0 / 0.28),
-    0 1px 0 rgb(255 255 255 / 0.06) inset;
-}
-
-.dark .settings-tab::before {
-  background: linear-gradient(135deg, rgb(30 41 59 / 0.9), rgb(51 65 85 / 0.62));
-}
-
-.dark .settings-tab-active {
-  box-shadow:
-    0 12px 26px rgb(0 0 0 / 0.22),
-    0 1px 0 rgb(255 255 255 / 0.08) inset;
+  border-color: rgb(46 44 43 / 0.9);
+  background: rgb(10 9 8 / 0.95);
 }
 </style>
