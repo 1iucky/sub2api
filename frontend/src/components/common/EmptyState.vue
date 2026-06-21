@@ -6,19 +6,46 @@
     >
       <slot name="icon">
         <component v-if="icon" :is="icon" class="empty-state-icon h-10 w-10" aria-hidden="true" />
+        <!--
+          Authored SiliconBase / factory-aesthetic empty-state glyph.
+          Concept: faint warm line-grid (blueprint) + a dashed-outlined node
+          marking an unoccupied slot, with a single vermillion accent dot.
+          Reads as "nothing routed here yet". Inherits currentColor from the
+          themed .empty-state-icon token; vermillion #ef6f2e is the only fixed hue.
+        -->
         <svg
           v-else
           class="empty-state-icon h-10 w-10"
+          viewBox="0 0 40 40"
           fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
+          aria-hidden="true"
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+          <!-- blueprint line-grid -->
+          <g stroke="currentColor" stroke-width="0.6" opacity="0.35">
+            <path d="M8 0v40M16 0v40M24 0v40M32 0v40" />
+            <path d="M0 8h40M0 16h40M0 24h40M0 32h40" />
+          </g>
+          <!-- dashed node slot (unoccupied) -->
+          <rect
+            x="11.5"
+            y="11.5"
+            width="17"
+            height="17"
+            rx="2"
+            stroke="currentColor"
+            stroke-width="1.1"
+            stroke-dasharray="2.5 2.5"
           />
+          <!-- inner crosshair: route origin with no endpoint -->
+          <path
+            d="M20 16.5v7M16.5 20h7"
+            stroke="currentColor"
+            stroke-width="1"
+            stroke-linecap="round"
+            opacity="0.7"
+          />
+          <!-- vermillion accent dot = signal/origin marker -->
+          <circle cx="20" cy="20" r="1.8" fill="#ef6f2e" />
         </svg>
       </slot>
     </div>
