@@ -16,47 +16,47 @@
       >
         <template #cell-created_at="{ row }">
           <span
-            class="text-sm text-gray-600 dark:text-gray-400"
+            class="font-mono text-xs tabular-nums text-gray-600 dark:text-gray-400"
             :title="row.request_id || row.client_request_id"
           >{{ formatDateTime(row.created_at) }}</span>
         </template>
 
         <template #cell-type="{ row }">
-          <span class="inline-flex items-center rounded px-2 py-0.5 text-xs font-medium" :class="getTypeBadge(row).className">
+          <span class="inline-flex items-center rounded-sm px-1.5 py-0.5 font-mono text-[10px] font-medium" :class="getTypeBadge(row).className">
             {{ getTypeBadge(row).label }}
           </span>
         </template>
 
         <template #cell-endpoint="{ row }">
           <div class="max-w-[320px] space-y-1 text-xs">
-            <div class="break-all text-gray-700 dark:text-gray-300">
-              <span class="font-medium text-gray-500 dark:text-gray-400">{{ t('usage.inbound') }}:</span>
+            <div class="break-all font-mono text-gray-700 dark:text-gray-300">
+              <span class="text-[11px] uppercase tracking-wide text-gray-500 dark:text-gray-500">{{ t('usage.inbound') }}:</span>
               <span class="ml-1">{{ row.inbound_endpoint?.trim() || '-' }}</span>
             </div>
-            <div v-if="row.upstream_endpoint" class="break-all text-gray-700 dark:text-gray-300">
-              <span class="font-medium text-gray-500 dark:text-gray-400">{{ t('usage.upstream') }}:</span>
+            <div v-if="row.upstream_endpoint" class="break-all font-mono text-gray-700 dark:text-gray-300">
+              <span class="text-[11px] uppercase tracking-wide text-gray-500 dark:text-gray-500">{{ t('usage.upstream') }}:</span>
               <span class="ml-1">{{ row.upstream_endpoint?.trim() || '-' }}</span>
             </div>
           </div>
         </template>
 
         <template #cell-platform="{ row }">
-          <span class="text-sm text-gray-900 dark:text-white">{{ row.platform || '-' }}</span>
+          <span class="inline-flex items-center rounded-sm bg-gray-100 px-1.5 py-0.5 font-mono text-[10px] font-medium uppercase text-gray-600 dark:bg-dark-700 dark:text-gray-300">{{ row.platform || '-' }}</span>
         </template>
 
         <template #cell-model="{ row }">
-          <div v-if="hasModelMapping(row)" class="space-y-0.5 text-xs">
-            <div class="break-all font-medium text-gray-900 dark:text-white">{{ row.requested_model }}</div>
-            <div class="break-all text-gray-500 dark:text-gray-400"><span class="mr-0.5">↳</span>{{ row.upstream_model }}</div>
+          <div v-if="hasModelMapping(row)" class="space-y-0.5 font-mono text-xs">
+            <div class="break-all text-gray-900 dark:text-white">{{ row.requested_model }}</div>
+            <div class="break-all text-primary-600 dark:text-primary-400"><span class="mr-0.5 text-gray-400">→</span>{{ row.upstream_model }}</div>
           </div>
-          <span v-else-if="displayModel(row)" class="text-sm font-medium text-gray-900 dark:text-white">{{ displayModel(row) }}</span>
-          <span v-else class="text-sm text-gray-400 dark:text-gray-500">-</span>
+          <span v-else-if="displayModel(row)" class="font-mono text-xs text-gray-700 dark:text-gray-300">{{ displayModel(row) }}</span>
+          <span v-else class="font-mono text-xs text-gray-400 dark:text-gray-500">-</span>
         </template>
 
         <template #cell-group="{ row }">
           <span
             v-if="row.group_id"
-            class="inline-flex items-center rounded px-2 py-0.5 text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200"
+            class="inline-flex items-center rounded-sm px-2 py-0.5 font-mono text-xs bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200"
             :title="t('admin.ops.errorLog.id') + ' ' + row.group_id"
           >
             {{ row.group_name || '#' + row.group_id }}
@@ -75,7 +75,7 @@
               {{ row.user_email }}
             </button>
             <span v-else class="font-medium text-gray-900 dark:text-white">{{ row.user_email || '-' }}</span>
-            <span class="ml-1 text-gray-500 dark:text-gray-400">#{{ row.user_id }}</span>
+            <span class="ml-1 font-mono text-xs tabular-nums text-gray-500 dark:text-gray-400">#{{ row.user_id }}</span>
           </div>
           <!-- 认证失败行 user_id 为空:回退显示已删除 KEY 所有者(归因快照,与详情弹窗一致) -->
           <div v-else-if="row.deleted_key_owner_user_id" class="text-sm">
@@ -88,7 +88,7 @@
               {{ row.deleted_key_owner_email }}
             </button>
             <span v-else class="font-medium text-gray-900 dark:text-white">{{ row.deleted_key_owner_email || '-' }}</span>
-            <span class="ml-1 text-gray-500 dark:text-gray-400">#{{ row.deleted_key_owner_user_id }}</span>
+            <span class="ml-1 font-mono text-xs tabular-nums text-gray-500 dark:text-gray-400">#{{ row.deleted_key_owner_user_id }}</span>
           </div>
           <span v-else class="text-sm text-gray-400 dark:text-gray-500">-</span>
         </template>
@@ -98,7 +98,7 @@
             <span class="text-gray-900 dark:text-white">{{ row.api_key_name || '#' + row.api_key_id }}</span>
             <span
               v-if="row.api_key_deleted"
-              class="ml-1 inline-flex items-center rounded px-1 py-px text-[10px] font-medium leading-tight bg-rose-100 text-rose-600 ring-1 ring-inset ring-rose-200 dark:bg-rose-500/20 dark:text-rose-400 dark:ring-rose-500/30"
+              class="ml-1 inline-flex items-center rounded-sm px-1 py-px font-mono text-[10px] font-medium leading-tight bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/20 dark:bg-red-900/30 dark:text-red-400 dark:ring-red-500/30"
             >{{ t('admin.ops.errorLog.keyDeletedBadge') }}</span>
           </div>
           <span v-else class="text-sm text-gray-400 dark:text-gray-500">-</span>
@@ -121,16 +121,16 @@
 
         <template #cell-status="{ row }">
           <div class="flex items-center gap-1.5">
-            <span class="inline-flex items-center rounded px-2 py-0.5 text-xs font-medium" :class="getStatusClass(row.status_code)">
+            <span class="inline-flex items-center rounded-sm px-1.5 py-0.5 font-mono text-[10px] tabular-nums font-medium" :class="getStatusClass(row.status_code)">
               {{ row.status_code }}
             </span>
             <span
               v-if="row.severity"
-              :class="['rounded px-1.5 py-0.5 text-[10px] font-medium', getSeverityClass(row.severity)]"
+              :class="['rounded-sm px-1.5 py-0.5 font-mono text-[10px] font-medium', getSeverityClass(row.severity)]"
             >{{ row.severity }}</span>
             <span
               v-if="row.request_type != null && row.request_type > 0"
-              class="inline-flex items-center rounded px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-800 dark:bg-dark-700 dark:text-gray-200"
+              class="inline-flex items-center rounded-sm px-1.5 py-0.5 font-mono text-[10px] font-medium bg-gray-100 text-gray-800 dark:bg-dark-700 dark:text-gray-200"
             >{{ formatRequestType(row.request_type) }}</span>
           </div>
         </template>
@@ -138,7 +138,7 @@
         <template #cell-message="{ row }">
           <span
             v-if="row.message"
-            class="block max-w-[280px] truncate text-sm text-gray-600 dark:text-gray-400"
+            class="block max-w-[280px] truncate text-sm text-primary-600 dark:text-primary-400"
             :title="row.message"
           >{{ formatSmartMessage(row.message) || '-' }}</span>
           <span v-else class="text-sm text-gray-400 dark:text-gray-500">-</span>
@@ -166,7 +166,7 @@
         <template #cell-actions="{ row }">
           <button
             type="button"
-            class="rounded p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-primary-600 dark:hover:bg-dark-600 dark:hover:text-primary-400"
+            class="rounded-sm p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-primary-600 dark:hover:bg-dark-600 dark:hover:text-primary-400"
             :title="t('admin.ops.errorLog.details')"
             @click.stop="emit('openErrorDetail', row.id)"
           >
