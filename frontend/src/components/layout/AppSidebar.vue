@@ -9,8 +9,7 @@
     <!-- Logo/Brand -->
     <div
       class="brand-hover sidebar-header"
-      :class="{ 'sidebar-header-collapsed': sidebarCollapsed }"
-      v-bind="brand.brandProps"
+      :class="[brand.brandClass, { 'sidebar-header-collapsed': sidebarCollapsed }]"
       :aria-label="siteName"
       @mouseenter="brand.onEnter"
       @mouseleave="brand.onLeave"

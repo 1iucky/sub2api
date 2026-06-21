@@ -40,7 +40,7 @@
         <router-link
           to="/home"
           class="brand-hover group flex items-center gap-2.5"
-          v-bind="brand.brandProps"
+          :class="brand.brandClass"
           :aria-label="siteName"
           @mouseenter="brand.onEnter"
           @mouseleave="brand.onLeave"

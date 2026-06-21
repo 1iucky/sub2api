@@ -19,54 +19,67 @@
 
 /* Faint warm dashed line-grid blueprint background — factory signature.
    Dashed connector lines (虚点连接线) implemented as a tiled SVG pattern
-   data-URI: thin dashed strokes on both axes, theme-aware. Tile ~16px,
-   stroke opacity ~0.06 (slightly more presence than solid because dashed
-   lines read fainter per unit area). Used behind login / empty states /
-   console shell (AppLayout) page-wide; on the homepage it is scoped to the
-   first-screen hero region only (see `.bg-blueprint-dense`). */
+   data-URI: thin dashed strokes on both axes, theme-aware. Tile ~16px.
+   Line visibility is kept intentionally VERY low (opacity ~0.06 dark /
+   ~0.05 light) so the grid reads as faint texture blending into the base
+   surface — never as bright white lines that wash out content. Used behind
+   login / empty states / console shell (AppLayout) page-wide; on the
+   homepage it is scoped to the first-screen hero region only (see
+   `.bg-blueprint-dense`). */
 .bg-blueprint {
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g fill='none' stroke='%237d7264' stroke-width='1' stroke-dasharray='2 3' stroke-linecap='round' opacity='0.6'><path d='M0 0.5 H16'/><path d='M0.5 0 V16'/></g></svg>");
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g fill='none' stroke='%237d7264' stroke-width='1' stroke-dasharray='2 3' stroke-linecap='round' opacity='0.05'><path d='M0 0.5 H16'/><path d='M0.5 0 V16'/></g></svg>");
   background-size: 16px 16px;
 }
 
 .dark .bg-blueprint {
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g fill='none' stroke='%23d9d1c7' stroke-width='1' stroke-dasharray='2 3' stroke-linecap='round' opacity='0.7'><path d='M0 0.5 H16'/><path d='M0.5 0 V16'/></g></svg>");
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g fill='none' stroke='%23d9d1c7' stroke-width='1' stroke-dasharray='2 3' stroke-linecap='round' opacity='0.06'><path d='M0 0.5 H16'/><path d='M0.5 0 V16'/></g></svg>");
   background-size: 16px 16px;
 }
 
 /* Denser first-screen variant — homepage hero backdrop only. Finer ~11px
    tile so the blueprint reads as a tightly-knit engineering grid above the
-   fold (matches factory.ai hero density). Do NOT apply to AppLayout /
-   AuthLayout — those keep the standard `.bg-blueprint`. */
+   fold (matches factory.ai hero density). Combined with `.bg-blueprint-fade`
+   (a strong radial mask that blends the grid into the near-black bg) so the
+   dashed lines are only a faint hint toward the lower/edge of the first
+   screen — fully dissolved behind the top nav and the centered hero slogan.
+   Do NOT apply to AppLayout / AuthLayout — those keep the standard
+   `.bg-blueprint`. */
 .bg-blueprint-dense {
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='11' height='11'><g fill='none' stroke='%237d7264' stroke-width='1' stroke-dasharray='2 2.5' stroke-linecap='round' opacity='0.7'><path d='M0 0.5 H11'/><path d='M0.5 0 V11'/></g></svg>");
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='11' height='11'><g fill='none' stroke='%237d7264' stroke-width='1' stroke-dasharray='2 2.5' stroke-linecap='round' opacity='0.06'><path d='M0 0.5 H11'/><path d='M0.5 0 V11'/></g></svg>");
   background-size: 11px 11px;
 }
 
 .dark .bg-blueprint-dense {
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='11' height='11'><g fill='none' stroke='%23d9d1c7' stroke-width='1' stroke-dasharray='2 2.5' stroke-linecap='round' opacity='0.8'><path d='M0 0.5 H11'/><path d='M0.5 0 V11'/></g></svg>");
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='11' height='11'><g fill='none' stroke='%23d9d1c7' stroke-width='1' stroke-dasharray='2 2.5' stroke-linecap='round' opacity='0.07'><path d='M0 0.5 H11'/><path d='M0.5 0 V11'/></g></svg>");
   background-size: 11px 11px;
 }
 
-/* Soft radial vignette — fades the homepage hero blueprint toward the edges
-   / bottom of the first screen so it dissolves before the marquee. Applied
+/* Strong radial blend that dissolves the homepage hero blueprint into the
+   near-black base. The grid is fully masked out behind the top nav (very
+   top of the viewport) and behind the centered hero slogan (~35% down), and
+   is allowed to show only as a faint hint toward the lower / outer rim of
+   the first screen. Goal: "黑色背景和网格线的混合渐进" — a gradient blend
+   with the base surface so white reads as ambient texture, never as
+   prominent lines, and all foreground content stays fully readable. Applied
    to the backdrop element (not the section) so the clean near-black surface
-   underneath shows through. Center-weighted; opaque at center, transparent
-   at the rim. */
+   underneath shows through. All mask stops are LOW alpha so the grid is
+   always faint — peak visibility is only ~28% at the lower-edge ring. */
 .bg-blueprint-fade {
   -webkit-mask-image: radial-gradient(
-    ellipse 80% 70% at 50% 35%,
-    #000 0%,
-    #000 55%,
-    rgba(0, 0, 0, 0.55) 80%,
-    transparent 100%
+    ellipse 85% 80% at 50% 62%,
+    rgba(0, 0, 0, 0.08) 0%,
+    rgba(0, 0, 0, 0.06) 22%,
+    rgba(0, 0, 0, 0.14) 45%,
+    rgba(0, 0, 0, 0.26) 72%,
+    rgba(0, 0, 0, 0.18) 100%
   );
   mask-image: radial-gradient(
-    ellipse 80% 70% at 50% 35%,
-    #000 0%,
-    #000 55%,
-    rgba(0, 0, 0, 0.55) 80%,
-    transparent 100%
+    ellipse 85% 80% at 50% 62%,
+    rgba(0, 0, 0, 0.08) 0%,
+    rgba(0, 0, 0, 0.06) 22%,
+    rgba(0, 0, 0, 0.14) 45%,
+    rgba(0, 0, 0, 0.26) 72%,
+    rgba(0, 0, 0, 0.18) 100%
   );
 }
 
@@ -94,15 +107,17 @@
 }
 
 /* ============ Brand hover micro-interaction (phase-driven) ============
-   Apply `.brand-hover` + a `data-phase` attribute (driven by the
-   `useBrandHover` composable) to a brand block (logo + siteName).
+   Apply `.brand-hover` to a brand block (logo + siteName) and merge the
+   reactive `brandClass` from the `useBrandHover` composable into the same
+   element's `:class` binding. The composable flips `is-spinning` /
+   `is-rewinding` on/off.
 
-   Phase lifecycle (set by JS, animated by CSS):
-     data-phase="idle"   — logo static at 0°, letters at rest.
-     data-phase="spin"   — logo spins forward (slow, continuous).
-     data-phase="rewind" — logo unwinds back to 0° in one smooth reverse
-                            revolution (NOT a snap, NOT infinite reverse
-                            spin). Letters gently flip back to rest.
+   Phase lifecycle (set by JS via class, animated by CSS):
+     idle              — logo static at 0°, letters at rest.
+     is-spinning       — logo spins forward (slow, continuous).
+     is-rewinding      — logo unwinds back to 0° in one smooth reverse
+                         revolution (NOT a snap, NOT infinite reverse
+                         spin). Letters gently flip back to rest.
 
    Letters do a per-letter 3D Y-axis flip (a full rotateY revolution),
    staggered via inline `--brand-i` so each letter flips independently and
@@ -176,26 +191,26 @@
 
 @media (prefers-reduced-motion: no-preference) {
   /* Phase: spin — logo spins forward continuously while hovered. */
-  .brand-hover[data-phase='spin'] .brand-hover__logo {
+  .brand-hover.is-spinning .brand-hover__logo {
     animation: brand-spin 6s linear infinite;
   }
 
   /* Phase: rewind — logo unwinds one revolution back to 0° and settles.
      `forwards` keeps it parked at 0° when the keyframe ends; the JS layer
      then resets the phase to `idle`. */
-  .brand-hover[data-phase='rewind'] .brand-hover__logo {
+  .brand-hover.is-rewinding .brand-hover__logo {
     animation: brand-spin-back 1200ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
   }
 
   /* Phase: spin — letters flip 3D, staggered one-by-one. */
-  .brand-hover[data-phase='spin'] .brand-hover__letter {
+  .brand-hover.is-spinning .brand-hover__letter {
     animation: brand-letter-flip 480ms cubic-bezier(0.22, 1, 0.36, 1);
     animation-delay: calc(var(--brand-i, 0) * 50ms);
     transform-origin: center;
   }
 
   /* Phase: rewind — letters flip back to rest, staggered (gentle). */
-  .brand-hover[data-phase='rewind'] .brand-hover__letter {
+  .brand-hover.is-rewinding .brand-hover__letter {
     animation: brand-letter-flip-back 360ms cubic-bezier(0.22, 1, 0.36, 1);
     animation-delay: calc(var(--brand-i, 0) * 35ms);
     transform-origin: center;
