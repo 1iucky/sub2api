@@ -8,7 +8,7 @@
     <div v-if="user" class="space-y-4">
       <div
         v-if="hasActiveSubscription"
-        class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200"
+        class="rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200"
       >
         {{ t('admin.users.platformQuota.subscriptionWarning') }}
       </div>
@@ -19,16 +19,16 @@
       <div v-else class="overflow-x-auto">
         <table class="min-w-full text-sm">
           <thead>
-            <tr class="border-b border-gray-200 text-gray-700 dark:border-dark-700 dark:text-gray-300">
-              <th class="px-3 py-2 text-left font-medium">{{ t('admin.users.platformQuota.columns.platform') }}</th>
-              <th class="px-3 py-2 text-left font-medium">{{ t('admin.users.platformQuota.columns.daily') }}</th>
-              <th class="px-3 py-2 text-left font-medium">{{ t('admin.users.platformQuota.columns.weekly') }}</th>
-              <th class="px-3 py-2 text-left font-medium">{{ t('admin.users.platformQuota.columns.monthly') }}</th>
-              <th class="px-3 py-2 text-left font-medium">{{ t('admin.users.platformQuota.columns.usage') }}</th>
+            <tr class="border-b border-dashed border-gray-200 text-gray-700 dark:border-dark-700 dark:text-gray-300">
+              <th class="px-3 py-2 text-left font-mono text-xs font-medium uppercase tracking-wide">{{ t('admin.users.platformQuota.columns.platform') }}</th>
+              <th class="px-3 py-2 text-left font-mono text-xs font-medium uppercase tracking-wide">{{ t('admin.users.platformQuota.columns.daily') }}</th>
+              <th class="px-3 py-2 text-left font-mono text-xs font-medium uppercase tracking-wide">{{ t('admin.users.platformQuota.columns.weekly') }}</th>
+              <th class="px-3 py-2 text-left font-mono text-xs font-medium uppercase tracking-wide">{{ t('admin.users.platformQuota.columns.monthly') }}</th>
+              <th class="px-3 py-2 text-left font-mono text-xs font-medium uppercase tracking-wide">{{ t('admin.users.platformQuota.columns.usage') }}</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="row in quotas" :key="row.platform" class="border-b border-gray-100 dark:border-dark-800">
+            <tr v-for="row in quotas" :key="row.platform" class="border-b border-dashed border-gray-100 transition-colors hover:bg-gray-50 dark:border-dark-800 dark:hover:bg-dark-800/50">
               <td class="px-3 py-2 font-mono text-gray-900 dark:text-white">{{ row.platform }}</td>
               <td class="px-3 py-2">
                 <div class="flex items-center gap-1">
@@ -37,7 +37,7 @@
                     type="number"
                     min="0"
                     step="0.01"
-                    class="input w-24"
+                    class="input w-24 font-mono tabular-nums"
                     :placeholder="t('admin.users.platformQuota.placeholder')"
                   />
                   <button
@@ -56,7 +56,7 @@
                     type="number"
                     min="0"
                     step="0.01"
-                    class="input w-24"
+                    class="input w-24 font-mono tabular-nums"
                     :placeholder="t('admin.users.platformQuota.placeholder')"
                   />
                   <button
@@ -75,7 +75,7 @@
                     type="number"
                     min="0"
                     step="0.01"
-                    class="input w-24"
+                    class="input w-24 font-mono tabular-nums"
                     :placeholder="t('admin.users.platformQuota.placeholder')"
                   />
                   <button
@@ -87,7 +87,7 @@
                   >↻</button>
                 </div>
               </td>
-              <td class="px-3 py-2 text-xs text-gray-500 dark:text-gray-400">
+              <td class="px-3 py-2 font-mono text-xs tabular-nums text-gray-500 dark:text-gray-400">
                 {{ formatUsage(row.daily_usage_usd) }} / {{ formatUsage(row.weekly_usage_usd) }} / {{ formatUsage(row.monthly_usage_usd) }}
               </td>
             </tr>

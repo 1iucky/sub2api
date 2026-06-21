@@ -7,7 +7,7 @@
       </p>
 
       <!-- 当前分组 -->
-      <div class="rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-dark-600 dark:bg-dark-800">
+      <div class="rounded-md border border-gray-200 bg-gray-50 p-3 dark:border-dark-700 dark:bg-dark-800">
         <div class="flex items-center gap-2">
           <Icon name="shield" size="sm" class="text-purple-500" />
           <span class="font-medium text-gray-900 dark:text-white">{{ oldGroup.name }}</span>
@@ -15,7 +15,7 @@
           <span v-if="selectedGroupId" class="font-medium text-primary-600 dark:text-primary-400">
             {{ availableGroups.find(g => g.id === selectedGroupId)?.name }}
           </span>
-          <span v-else class="text-sm text-gray-400">?</span>
+          <span v-else class="font-mono text-sm text-gray-400">?</span>
         </div>
       </div>
 
@@ -24,10 +24,10 @@
         <label
           v-for="group in availableGroups"
           :key="group.id"
-          class="flex cursor-pointer items-center gap-3 rounded-lg border-2 p-3 transition-all"
+          class="flex cursor-pointer items-center gap-3 rounded-md border p-3 transition-colors duration-150"
           :class="selectedGroupId === group.id
-            ? 'border-primary-400 bg-primary-50/50 dark:border-primary-500 dark:bg-primary-900/20'
-            : 'border-gray-200 hover:border-gray-300 dark:border-dark-600 dark:hover:border-dark-500'"
+            ? 'border-primary-500 bg-primary-50/40 dark:border-primary-500 dark:bg-primary-900/20'
+            : 'border-gray-200 hover:border-gray-300 dark:border-dark-700 dark:hover:border-dark-600'"
         >
           <input
             type="radio"
@@ -36,7 +36,7 @@
             class="sr-only"
           />
           <div
-            class="flex h-5 w-5 items-center justify-center rounded-full border-2 transition-all"
+            class="flex h-5 w-5 items-center justify-center rounded-full border transition-colors"
             :class="selectedGroupId === group.id
               ? 'border-primary-500 bg-primary-500'
               : 'border-gray-300 dark:border-dark-500'"
@@ -45,7 +45,7 @@
           </div>
           <div class="flex-1">
             <span class="font-medium text-gray-900 dark:text-white">{{ group.name }}</span>
-            <span class="ml-2 text-xs text-gray-400">{{ group.platform }}</span>
+            <span class="ml-2 font-mono text-xs text-gray-400">{{ group.platform }}</span>
           </div>
         </label>
       </div>

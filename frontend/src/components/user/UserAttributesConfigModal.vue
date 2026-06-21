@@ -39,7 +39,7 @@
         <div
           v-for="attr in attributes"
           :key="attr.id"
-          class="flex items-center gap-3 rounded-lg border border-gray-200 bg-white p-3 dark:border-dark-600 dark:bg-dark-800"
+          class="flex items-center gap-3 rounded-md border border-gray-200 bg-white p-3 dark:border-dark-700 dark:bg-dark-800"
         >
           <!-- Drag Handle -->
           <div class="cursor-move text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" :title="t('admin.users.attributes.dragToReorder')">
@@ -50,7 +50,7 @@
           <div class="min-w-0 flex-1">
             <div class="flex items-center gap-2">
               <span class="font-medium text-gray-900 dark:text-white">{{ attr.name }}</span>
-              <span class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-xs text-gray-500 dark:bg-dark-700 dark:text-dark-400">
+              <span class="rounded-sm bg-gray-100 px-1.5 py-0.5 font-mono text-xs text-gray-500 dark:bg-dark-700 dark:text-dark-400">
                 {{ attr.key }}
               </span>
               <span v-if="attr.required" class="badge badge-danger text-xs">
@@ -70,14 +70,14 @@
           <div class="flex items-center gap-1">
             <button
               @click="openEditModal(attr)"
-              class="rounded-lg p-1.5 text-gray-500 hover:bg-gray-100 hover:text-primary-600 dark:hover:bg-dark-700 dark:hover:text-primary-400"
+              class="rounded-sm p-1.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-primary-600 dark:hover:bg-dark-700 dark:hover:text-primary-400"
               :title="t('common.edit')"
             >
               <Icon name="edit" size="sm" />
             </button>
             <button
               @click="confirmDelete(attr)"
-              class="rounded-lg p-1.5 text-gray-500 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400"
+              class="rounded-sm p-1.5 text-gray-500 transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400"
               :title="t('common.delete')"
             >
               <Icon name="trash" size="sm" />
@@ -161,7 +161,7 @@
           <button
             type="button"
             @click="removeOption(index)"
-            class="rounded-lg p-1.5 text-gray-500 hover:bg-red-50 hover:text-red-600"
+            class="rounded-sm p-1.5 text-gray-500 transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400"
           >
             <Icon name="x" size="sm" :stroke-width="2" />
           </button>
