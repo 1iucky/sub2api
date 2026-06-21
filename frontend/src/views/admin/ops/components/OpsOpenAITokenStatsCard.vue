@@ -158,9 +158,9 @@ function onNextPage() {
 </script>
 
 <template>
-  <section class="card p-4 md:p-5">
+  <section class="rounded-md border border-gray-200 bg-white p-4 dark:border-dark-700 dark:bg-dark-900 md:p-5">
     <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-      <h3 class="text-sm font-bold text-gray-900 dark:text-white">
+      <h3 class="text-sm font-normal tracking-tight text-gray-900 dark:text-white">
         {{ t('admin.ops.openaiTokenStats.title') }}
       </h3>
       <div class="flex flex-wrap items-center gap-2">
@@ -198,7 +198,7 @@ function onNextPage() {
       </div>
     </div>
 
-    <div v-if="errorMessage" class="mb-4 rounded-lg bg-red-50 px-3 py-2 text-xs text-red-600 dark:bg-red-900/20 dark:text-red-400">
+    <div v-if="errorMessage" class="mb-4 rounded-sm border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-600 dark:border-red-500/30 dark:bg-red-900/20 dark:text-red-400">
       {{ errorMessage }}
     </div>
 
@@ -213,7 +213,7 @@ function onNextPage() {
     />
 
     <div v-else class="space-y-3">
-      <div class="overflow-hidden rounded-xl border border-gray-200 dark:border-dark-700">
+      <div class="overflow-hidden rounded-md border border-gray-200 dark:border-dark-700">
         <div class="max-h-[420px] overflow-auto">
           <div v-if="!isDesktopViewport" class="divide-y divide-gray-100 dark:divide-dark-800">
             <div v-for="row in items" :key="row.model" class="space-y-2 p-3">
@@ -247,30 +247,30 @@ function onNextPage() {
             </div>
           </div>
           <table v-else class="min-w-full text-left text-xs md:text-sm">
-            <thead class="sticky top-0 z-10 bg-white dark:bg-dark-800">
-              <tr class="border-b border-gray-200 text-gray-500 dark:border-dark-700 dark:text-gray-400">
-                <th class="px-2 py-2 font-semibold">{{ t('admin.ops.openaiTokenStats.table.model') }}</th>
-                <th class="px-2 py-2 font-semibold">{{ t('admin.ops.openaiTokenStats.table.requestCount') }}</th>
-                <th class="px-2 py-2 font-semibold">{{ t('admin.ops.openaiTokenStats.table.avgTokensPerSec') }}</th>
-                <th class="px-2 py-2 font-semibold">{{ t('admin.ops.openaiTokenStats.table.avgFirstTokenMs') }}</th>
-                <th class="px-2 py-2 font-semibold">{{ t('admin.ops.openaiTokenStats.table.totalOutputTokens') }}</th>
-                <th class="px-2 py-2 font-semibold">{{ t('admin.ops.openaiTokenStats.table.avgDurationMs') }}</th>
-                <th class="px-2 py-2 font-semibold">{{ t('admin.ops.openaiTokenStats.table.requestsWithFirstToken') }}</th>
+            <thead class="sticky top-0 z-10 bg-gray-50 dark:bg-dark-800">
+              <tr class="border-b border-gray-200 dark:border-dark-700">
+                <th class="px-2 py-2 font-mono text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ t('admin.ops.openaiTokenStats.table.model') }}</th>
+                <th class="px-2 py-2 text-right font-mono text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ t('admin.ops.openaiTokenStats.table.requestCount') }}</th>
+                <th class="px-2 py-2 text-right font-mono text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ t('admin.ops.openaiTokenStats.table.avgTokensPerSec') }}</th>
+                <th class="px-2 py-2 text-right font-mono text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ t('admin.ops.openaiTokenStats.table.avgFirstTokenMs') }}</th>
+                <th class="px-2 py-2 text-right font-mono text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ t('admin.ops.openaiTokenStats.table.totalOutputTokens') }}</th>
+                <th class="px-2 py-2 text-right font-mono text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ t('admin.ops.openaiTokenStats.table.avgDurationMs') }}</th>
+                <th class="px-2 py-2 text-right font-mono text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ t('admin.ops.openaiTokenStats.table.requestsWithFirstToken') }}</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody class="divide-y divide-dashed divide-gray-200 dark:divide-dark-700">
               <tr
                 v-for="row in items"
                 :key="row.model"
-                class="border-b border-gray-100 text-gray-700 last:border-b-0 dark:border-dark-800 dark:text-gray-200"
+                class="text-gray-700 transition-colors hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-dark-800/60"
               >
-                <td class="px-2 py-2 font-medium">{{ row.model }}</td>
-                <td class="px-2 py-2">{{ formatInt(row.request_count) }}</td>
-                <td class="px-2 py-2">{{ formatRate(row.avg_tokens_per_sec) }}</td>
-                <td class="px-2 py-2">{{ formatRate(row.avg_first_token_ms) }}</td>
-                <td class="px-2 py-2">{{ formatInt(row.total_output_tokens) }}</td>
-                <td class="px-2 py-2">{{ formatInt(row.avg_duration_ms) }}</td>
-                <td class="px-2 py-2">{{ formatInt(row.requests_with_first_token) }}</td>
+                <td class="px-2 py-2 font-mono font-medium text-gray-900 dark:text-white">{{ row.model }}</td>
+                <td class="px-2 py-2 text-right font-mono tabular-nums">{{ formatInt(row.request_count) }}</td>
+                <td class="px-2 py-2 text-right font-mono tabular-nums">{{ formatRate(row.avg_tokens_per_sec) }}</td>
+                <td class="px-2 py-2 text-right font-mono tabular-nums">{{ formatRate(row.avg_first_token_ms) }}</td>
+                <td class="px-2 py-2 text-right font-mono tabular-nums">{{ formatInt(row.total_output_tokens) }}</td>
+                <td class="px-2 py-2 text-right font-mono tabular-nums">{{ formatInt(row.avg_duration_ms) }}</td>
+                <td class="px-2 py-2 text-right font-mono tabular-nums">{{ formatInt(row.requests_with_first_token) }}</td>
               </tr>
             </tbody>
           </table>
