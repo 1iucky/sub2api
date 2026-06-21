@@ -15,7 +15,15 @@
     <!-- Content Container -->
     <div class="relative z-10 w-full max-w-md">
       <!-- Logo/Brand -->
-      <div class="brand-hover mb-8 text-center" :aria-label="siteName">
+      <div
+        class="brand-hover mb-8 text-center"
+        v-bind="brand.brandProps"
+        :aria-label="siteName"
+        @mouseenter="brand.onEnter"
+        @mouseleave="brand.onLeave"
+        @focusin="brand.onEnter"
+        @focusout="brand.onLeave"
+      >
         <!-- Custom Logo or Default Logo -->
         <template v-if="settingsLoaded">
           <div
@@ -64,8 +72,12 @@
 import { computed, onMounted } from 'vue'
 import { useAppStore } from '@/stores'
 import { sanitizeUrl } from '@/utils/url'
+import { useBrandHover } from '@/composables/useBrandHover'
 
 const appStore = useAppStore()
+
+// Brand micro-interaction (shared phase state — see useBrandHover).
+const brand = useBrandHover()
 
 const siteName = computed(() => appStore.siteName || 'SiliconBase')
 const siteLogo = computed(() => sanitizeUrl(appStore.siteLogo || '', { allowRelative: true, allowDataUrl: true }))

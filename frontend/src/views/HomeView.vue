@@ -17,8 +17,13 @@
     v-else
     class="relative flex min-h-screen flex-col overflow-x-hidden bg-gray-50 dark:bg-dark-950"
   >
-    <!-- Backdrop: blueprint line-grid (factory signature). -->
-    <div class="pointer-events-none absolute inset-0 bg-blueprint"></div>
+    <!-- Backdrop: blueprint line-grid (factory signature), confined to the
+         first screen (nav + hero). From the marquee downward the surface is
+         clean near-black / warm off-white — NO grid. The dense variant +
+         radial vignette fade the grid out before the marquee. -->
+    <div
+      class="bg-blueprint-fade pointer-events-none absolute inset-x-0 top-0 h-screen bg-blueprint-dense"
+    ></div>
 
     <!-- ============================ NAV ============================ -->
     <header
@@ -35,7 +40,12 @@
         <router-link
           to="/home"
           class="brand-hover group flex items-center gap-2.5"
+          v-bind="brand.brandProps"
           :aria-label="siteName"
+          @mouseenter="brand.onEnter"
+          @mouseleave="brand.onLeave"
+          @focusin="brand.onEnter"
+          @focusout="brand.onLeave"
         >
           <span class="brand-hover__logo block h-6 w-6 overflow-hidden rounded-sm">
             <img :src="siteLogo || '/logo.svg'" alt="" class="h-full w-full object-contain" />
@@ -432,6 +442,7 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore, useAppStore } from '@/stores'
+import { useBrandHover } from '@/composables/useBrandHover'
 import LocaleSwitcher from '@/components/common/LocaleSwitcher.vue'
 import Icon from '@/components/icons/Icon.vue'
 import { sanitizeUrl } from '@/utils/url'
@@ -444,6 +455,11 @@ const { t } = useI18n()
 
 const authStore = useAuthStore()
 const appStore = useAppStore()
+
+// Brand wordmark micro-interaction (shared phase state with the sidebar +
+// auth layout). Logo spins forward on hover and reverse-unwinds on leave;
+// letters do a per-letter 3D flip. See composables/useBrandHover.ts.
+const brand = useBrandHover()
 
 // Site settings - directly from appStore (already initialized from injected config)
 const siteName = computed(() => appStore.cachedPublicSettings?.site_name || appStore.siteName || 'SiliconBase')

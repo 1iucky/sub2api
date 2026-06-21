@@ -17,20 +17,57 @@
 
 /* ============ Factory utility classes ============ */
 
-/* Faint warm line-grid blueprint background — factory signature.
-   Refined to match factory.ai: fine + dense (~16px tile), very subtle
-   opacity (~0.04), theme-aware line color (warm-gray on light, warm-white
-   on dark). Use behind login / empty states / homepage — NOT behind
-   data-dense tables. */
+/* Faint warm dashed line-grid blueprint background — factory signature.
+   Dashed connector lines (虚点连接线) implemented as a tiled SVG pattern
+   data-URI: thin dashed strokes on both axes, theme-aware. Tile ~16px,
+   stroke opacity ~0.06 (slightly more presence than solid because dashed
+   lines read fainter per unit area). Used behind login / empty states /
+   console shell (AppLayout) page-wide; on the homepage it is scoped to the
+   first-screen hero region only (see `.bg-blueprint-dense`). */
 .bg-blueprint {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g fill='none' stroke='%237d7264' stroke-width='1' stroke-dasharray='2 3' stroke-linecap='round' opacity='0.6'><path d='M0 0.5 H16'/><path d='M0.5 0 V16'/></g></svg>");
   background-size: 16px 16px;
 }
 
 .dark .bg-blueprint {
-  background-image: linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g fill='none' stroke='%23d9d1c7' stroke-width='1' stroke-dasharray='2 3' stroke-linecap='round' opacity='0.7'><path d='M0 0.5 H16'/><path d='M0.5 0 V16'/></g></svg>");
+  background-size: 16px 16px;
+}
+
+/* Denser first-screen variant — homepage hero backdrop only. Finer ~11px
+   tile so the blueprint reads as a tightly-knit engineering grid above the
+   fold (matches factory.ai hero density). Do NOT apply to AppLayout /
+   AuthLayout — those keep the standard `.bg-blueprint`. */
+.bg-blueprint-dense {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='11' height='11'><g fill='none' stroke='%237d7264' stroke-width='1' stroke-dasharray='2 2.5' stroke-linecap='round' opacity='0.7'><path d='M0 0.5 H11'/><path d='M0.5 0 V11'/></g></svg>");
+  background-size: 11px 11px;
+}
+
+.dark .bg-blueprint-dense {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='11' height='11'><g fill='none' stroke='%23d9d1c7' stroke-width='1' stroke-dasharray='2 2.5' stroke-linecap='round' opacity='0.8'><path d='M0 0.5 H11'/><path d='M0.5 0 V11'/></g></svg>");
+  background-size: 11px 11px;
+}
+
+/* Soft radial vignette — fades the homepage hero blueprint toward the edges
+   / bottom of the first screen so it dissolves before the marquee. Applied
+   to the backdrop element (not the section) so the clean near-black surface
+   underneath shows through. Center-weighted; opaque at center, transparent
+   at the rim. */
+.bg-blueprint-fade {
+  -webkit-mask-image: radial-gradient(
+    ellipse 80% 70% at 50% 35%,
+    #000 0%,
+    #000 55%,
+    rgba(0, 0, 0, 0.55) 80%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    ellipse 80% 70% at 50% 35%,
+    #000 0%,
+    #000 55%,
+    rgba(0, 0, 0, 0.55) 80%,
+    transparent 100%
+  );
 }
 
 /* Dashed hairline divider — blueprint motif. */
@@ -56,15 +93,26 @@
   color: theme('colors.dark.400');
 }
 
-/* ============ Brand hover micro-interaction ============
-   Apply `.brand-hover` to a brand block (logo + siteName). On hover the logo
-   mark gently spins (slow continuous) and the letters cascade-roll with a
-   per-letter stagger driven by inline `--brand-i`. Amplitudes are small and
-   the easing is a soft cubic-bezier(0.22,1,0.36,1) so it reads as
-   "comfortable/floaty" rather than jarring. Gated behind no-preference so
-   reduce-motion users see no animation. The siteName must remain accessible:
-   keep the original text in a `.sr-only` span (or an aria-label on the
-   container) alongside the letter spans. */
+/* ============ Brand hover micro-interaction (phase-driven) ============
+   Apply `.brand-hover` + a `data-phase` attribute (driven by the
+   `useBrandHover` composable) to a brand block (logo + siteName).
+
+   Phase lifecycle (set by JS, animated by CSS):
+     data-phase="idle"   — logo static at 0°, letters at rest.
+     data-phase="spin"   — logo spins forward (slow, continuous).
+     data-phase="rewind" — logo unwinds back to 0° in one smooth reverse
+                            revolution (NOT a snap, NOT infinite reverse
+                            spin). Letters gently flip back to rest.
+
+   Letters do a per-letter 3D Y-axis flip (a full rotateY revolution),
+   staggered via inline `--brand-i` so each letter flips independently and
+   one-by-one. The name wrapper carries `transform-style: preserve-3d` so the
+   flip reads as 3D. The full brand name must remain accessible: keep it in
+   a `.sr-only` span (or aria-label on the container) alongside the letter
+   spans.
+
+   Everything is gated behind `prefers-reduced-motion: no-preference` —
+   under reduce, no animation runs and the logo rests at 0°. */
 
 @keyframes brand-spin {
   to {
@@ -72,48 +120,85 @@
   }
 }
 
-@keyframes brand-letter-roll {
-  0% {
-    transform: translateY(0) rotate(0);
-    opacity: 1;
+/* One-shot reverse unwind from a full revolution back to 0°. Reads as
+   "returning to start" without needing to know the exact current spin
+   angle — the logo just rotates one revolution backward and settles. */
+@keyframes brand-spin-back {
+  from {
+    transform: rotate(360deg);
   }
-  35% {
-    transform: translateY(-3px) rotate(-4deg);
-    opacity: 0.6;
+  to {
+    transform: rotate(0deg);
   }
-  70% {
-    transform: translateY(1px) rotate(3deg);
-    opacity: 0.9;
+}
+
+/* Per-letter 3D Y-axis flip — a full rotateY revolution so the letter
+   visibly turns over (翻转) and comes back. Each letter animates
+   independently; stagger is applied via `animation-delay`. */
+@keyframes brand-letter-flip {
+  from {
+    transform: rotateY(0deg);
   }
-  100% {
-    transform: translateY(0) rotate(0);
-    opacity: 1;
+  to {
+    transform: rotateY(360deg);
   }
+}
+
+/* Gentle reverse flip back to rest on leave — letters unwind the flip
+   rather than snapping. */
+@keyframes brand-letter-flip-back {
+  from {
+    transform: rotateY(360deg);
+  }
+  to {
+    transform: rotateY(0deg);
+  }
+}
+
+.brand-hover {
+  /* Name wrapper needs 3D context so rotateY reads as a real flip. */
+  transform-style: preserve-3d;
 }
 
 .brand-hover__logo {
   display: inline-block;
+  transform-origin: center;
 }
 
 .brand-hover__letter {
   display: inline-block;
   white-space: pre;
+  transform-style: preserve-3d;
+  /* Gentle ease-back transition so manual state changes (not handled by a
+     keyframe) feel smooth instead of instant. */
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  /* Slow continuous spin while the brand block is hovered/focused. */
-  .brand-hover:hover .brand-hover__logo,
-  .brand-hover:focus-visible .brand-hover__logo,
-  .brand-hover:focus-within .brand-hover__logo {
+  /* Phase: spin — logo spins forward continuously while hovered. */
+  .brand-hover[data-phase='spin'] .brand-hover__logo {
     animation: brand-spin 6s linear infinite;
   }
 
-  /* Per-letter staggered roll on hover/focus. Stagger via inline --brand-i. */
-  .brand-hover:hover .brand-hover__letter,
-  .brand-hover:focus-visible .brand-hover__letter,
-  .brand-hover:focus-within .brand-hover__letter {
-    animation: brand-letter-roll 380ms cubic-bezier(0.22, 1, 0.36, 1);
-    animation-delay: calc(var(--brand-i, 0) * 40ms);
+  /* Phase: rewind — logo unwinds one revolution back to 0° and settles.
+     `forwards` keeps it parked at 0° when the keyframe ends; the JS layer
+     then resets the phase to `idle`. */
+  .brand-hover[data-phase='rewind'] .brand-hover__logo {
+    animation: brand-spin-back 1200ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  /* Phase: spin — letters flip 3D, staggered one-by-one. */
+  .brand-hover[data-phase='spin'] .brand-hover__letter {
+    animation: brand-letter-flip 480ms cubic-bezier(0.22, 1, 0.36, 1);
+    animation-delay: calc(var(--brand-i, 0) * 50ms);
+    transform-origin: center;
+  }
+
+  /* Phase: rewind — letters flip back to rest, staggered (gentle). */
+  .brand-hover[data-phase='rewind'] .brand-hover__letter {
+    animation: brand-letter-flip-back 360ms cubic-bezier(0.22, 1, 0.36, 1);
+    animation-delay: calc(var(--brand-i, 0) * 35ms);
+    transform-origin: center;
   }
 }
 
