@@ -12,11 +12,11 @@
       <!-- Plans Table -->
       <DataTable :columns="planColumns" :data="plans" :loading="plansLoading">
         <template #cell-name="{ value, row }">
-          <span class="text-sm font-medium" :class="getPlanNameClass(row.group_id)">{{ value }}</span>
+          <span class="text-sm font-normal" :class="getPlanNameClass(row.group_id)">{{ value }}</span>
         </template>
         <template #cell-group_id="{ value }">
           <span v-if="isGroupMissing(value)" class="text-sm">
-            <span class="text-gray-400">#{{ value }}</span>
+            <span class="font-mono tabular-nums text-gray-400">#{{ value }}</span>
             <span class="ml-1 badge badge-danger">{{ t('payment.admin.groupMissing') }}</span>
           </span>
           <GroupBadge
@@ -29,38 +29,38 @@
         </template>
         <template #cell-price="{ value, row }">
           <div class="text-sm">
-            <span class="font-medium text-gray-900 dark:text-white">{{ planCurrencySymbol(row.currency) }}{{ (value ?? 0).toFixed(2) }}</span>
-            <span v-if="row.currency" class="ml-1 text-xs text-gray-400">{{ row.currency }}</span>
-            <span v-if="row.original_price" class="ml-1 text-xs text-gray-400 line-through">{{ planCurrencySymbol(row.currency) }}{{ row.original_price.toFixed(2) }}</span>
+            <span class="font-normal tabular-nums text-primary-600 dark:text-primary-400">{{ planCurrencySymbol(row.currency) }}{{ (value ?? 0).toFixed(2) }}</span>
+            <span v-if="row.currency" class="ml-1 font-mono text-xs text-gray-400">{{ row.currency }}</span>
+            <span v-if="row.original_price" class="ml-1 font-mono text-xs tabular-nums text-gray-400 line-through">{{ planCurrencySymbol(row.currency) }}{{ row.original_price.toFixed(2) }}</span>
           </div>
         </template>
         <template #cell-validity_days="{ value, row }">
-          <span class="text-sm">{{ value }} {{ t('payment.admin.' + (row.validity_unit || 'days')) }}</span>
+          <span class="font-mono text-sm tabular-nums">{{ value }} {{ t('payment.admin.' + (row.validity_unit || 'days')) }}</span>
         </template>
         <template #cell-for_sale="{ value, row }">
           <button
             type="button"
             :class="[
-              'relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
+              'relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border border-transparent transition-colors duration-150 ease-in-out focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500',
               value ? 'bg-primary-500' : 'bg-gray-300 dark:bg-dark-600'
             ]"
             @click="toggleForSale(row)"
           >
             <span :class="[
-              'pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+              'pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white ring-0 transition duration-150 ease-in-out',
               value ? 'translate-x-4' : 'translate-x-0'
             ]" />
           </button>
         </template>
         <template #cell-actions="{ row }">
-          <div class="flex items-center gap-2">
-            <button @click="openPlanEdit(row)" class="flex flex-col items-center gap-0.5 rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-900/20 dark:hover:text-blue-400">
+          <div class="flex items-center gap-1">
+            <button @click="openPlanEdit(row)" class="flex flex-col items-center gap-0.5 rounded-sm p-1.5 text-gray-500 transition-colors duration-150 hover:bg-gray-100 hover:text-primary-600 dark:hover:bg-dark-800 dark:hover:text-primary-400">
               <Icon name="edit" size="sm" />
-              <span class="text-xs">{{ t('common.edit') }}</span>
+              <span class="font-mono text-xs uppercase tracking-wide">{{ t('common.edit') }}</span>
             </button>
-            <button @click="confirmDeletePlan(row)" class="flex flex-col items-center gap-0.5 rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400">
+            <button @click="confirmDeletePlan(row)" class="flex flex-col items-center gap-0.5 rounded-sm p-1.5 text-gray-500 transition-colors duration-150 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400">
               <Icon name="trash" size="sm" />
-              <span class="text-xs">{{ t('common.delete') }}</span>
+              <span class="font-mono text-xs uppercase tracking-wide">{{ t('common.delete') }}</span>
             </button>
           </div>
         </template>

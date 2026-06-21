@@ -4,15 +4,15 @@
       <!-- Header with Day Switcher -->
       <div class="flex items-center justify-end">
         <div class="flex items-center gap-2">
-          <div class="flex rounded-lg border border-gray-200 dark:border-dark-600">
+          <div class="flex rounded-sm border border-gray-200 dark:border-dark-700">
             <button
               v-for="d in DAYS_OPTIONS"
               :key="d"
               type="button"
-              class="px-3 py-1.5 text-xs font-medium transition-colors first:rounded-l-lg last:rounded-r-lg"
+              class="px-3 py-1.5 font-mono text-xs uppercase tracking-wide transition-colors duration-150 first:rounded-l-sm last:rounded-r-sm"
               :class="days === d
-                ? 'bg-primary-600 text-white'
-                : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-700'"
+                ? 'bg-primary-500 text-white'
+                : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-dark-800'"
               @click="days = d"
             >
               {{ d }}{{ t('payment.admin.daySuffix') }}
@@ -33,33 +33,33 @@
         <DailyRevenueChart :data="stats.daily_series || []" :loading="loading" />
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <div class="card p-4">
-            <h3 class="mb-4 text-sm font-semibold text-gray-900 dark:text-white">{{ t('payment.admin.paymentDistribution') }}</h3>
+            <h3 class="mb-4 text-sm font-normal text-gray-900 dark:text-white">{{ t('payment.admin.paymentDistribution') }}</h3>
             <div v-if="!stats.payment_methods?.length" class="flex h-32 items-center justify-center text-sm text-gray-500 dark:text-gray-400">{{ t('payment.admin.noData') }}</div>
             <div v-else class="space-y-3">
               <div v-for="method in stats.payment_methods" :key="method.type" class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
-                  <span :class="['inline-block h-3 w-3 rounded-full', methodColor(method.type)]"></span>
+                  <span :class="['inline-block h-2.5 w-2.5 rounded-full', methodColor(method.type)]"></span>
                   <span class="text-sm text-gray-700 dark:text-gray-300">{{ t('payment.methods.' + method.type, method.type) }}</span>
                 </div>
                 <div class="space-y-1 text-right">
-                  <span v-for="[currency, amount] in sortedAmounts(method.amount)" :key="currency" class="block text-sm font-medium text-gray-900 dark:text-white">{{ formatMoney(currency, amount) }}</span>
-                  <span class="ml-2 text-xs text-gray-500 dark:text-gray-400">({{ method.count }})</span>
+                  <span v-for="[currency, amount] in sortedAmounts(method.amount)" :key="currency" class="block text-sm font-normal tabular-nums text-gray-900 dark:text-white">{{ formatMoney(currency, amount) }}</span>
+                  <span class="ml-2 font-mono text-xs tabular-nums text-gray-500 dark:text-gray-400">({{ method.count }})</span>
                 </div>
               </div>
             </div>
           </div>
           <div class="card p-4">
-            <h3 class="mb-4 text-sm font-semibold text-gray-900 dark:text-white">{{ t('payment.admin.topUsers') }}</h3>
+            <h3 class="mb-4 text-sm font-normal text-gray-900 dark:text-white">{{ t('payment.admin.topUsers') }}</h3>
             <div v-if="!hasTopUsers(stats.top_users)" class="flex h-32 items-center justify-center text-sm text-gray-500 dark:text-gray-400">{{ t('payment.admin.noData') }}</div>
-            <div v-else class="space-y-2">
+            <div v-else class="space-y-1">
               <div v-for="[currency, users] in sortedTopUsers(stats.top_users)" :key="currency" class="space-y-2">
-                <p class="text-xs font-semibold text-gray-500 dark:text-gray-400">{{ currency }}</p>
-                <div v-for="(user, idx) in users" :key="user.user_id" class="flex items-center justify-between rounded-lg px-3 py-2 hover:bg-gray-50 dark:hover:bg-dark-700">
+                <p class="font-mono text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ currency }}</p>
+                <div v-for="(user, idx) in users" :key="user.user_id" class="flex items-center justify-between rounded-sm px-3 py-2 transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-dark-800">
                   <div class="flex items-center gap-3">
-                    <span :class="['flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold', rankClass(idx)]">{{ idx + 1 }}</span>
+                    <span :class="['flex h-6 w-6 items-center justify-center rounded-full font-mono text-xs font-medium tabular-nums', rankClass(idx)]">{{ idx + 1 }}</span>
                     <span class="text-sm text-gray-700 dark:text-gray-300">{{ user.email }}</span>
                   </div>
-                  <span class="text-sm font-medium text-gray-900 dark:text-white">{{ formatMoney(currency, user.amount) }}</span>
+                  <span class="text-sm font-normal tabular-nums text-primary-600 dark:text-primary-400">{{ formatMoney(currency, user.amount) }}</span>
                 </div>
               </div>
             </div>
@@ -101,10 +101,10 @@ function methodColor(type: string): string {
 }
 
 function rankClass(idx: number): string {
-  if (idx === 0) return 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
-  if (idx === 1) return 'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
-  if (idx === 2) return 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
-  return 'bg-gray-100 text-gray-500 dark:bg-dark-700 dark:text-gray-400'
+  if (idx === 0) return 'bg-primary-50 text-primary-700 dark:bg-primary-500/10 dark:text-primary-400'
+  if (idx === 1) return 'bg-gray-100 text-gray-600 dark:bg-dark-800 dark:text-gray-300'
+  if (idx === 2) return 'bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400'
+  return 'bg-gray-50 text-gray-500 dark:bg-dark-800 dark:text-gray-400'
 }
 
 function sortedAmounts(amounts: CurrencyAmounts): [string, number][] {
