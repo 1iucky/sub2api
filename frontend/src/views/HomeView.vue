@@ -109,12 +109,12 @@
         <router-link
           to="/home"
           class="brand-hover group flex items-center gap-2.5"
-          :class="brand.brandClass"
+          :class="brandClass"
           :aria-label="siteName"
-          @mouseenter="brand.onEnter"
-          @mouseleave="brand.onLeave"
-          @focusin="brand.onEnter"
-          @focusout="brand.onLeave"
+          @mouseenter="onEnter"
+          @mouseleave="onLeave"
+          @focusin="onEnter"
+          @focusout="onLeave"
         >
           <span class="brand-hover__logo block h-6 w-6 overflow-hidden rounded-sm">
             <img :src="siteLogo || '/logo.svg'" alt="" class="h-full w-full object-contain" />
@@ -528,7 +528,11 @@ const appStore = useAppStore()
 // Brand wordmark micro-interaction (shared phase state with the sidebar +
 // auth layout). Logo spins forward on hover and reverse-unwinds on leave;
 // letters do a per-letter 3D flip. See composables/useBrandHover.ts.
-const brand = useBrandHover()
+// Destructure so each ref/handler is a top-level setup binding — Vue only
+// auto-unwraps refs at the top level of the bindings object, not through
+// nested property access. Binding `brand.brandClass` directly would pass the
+// ComputedRef object to `:class` instead of its value (animation never fires).
+const { brandClass, onEnter, onLeave } = useBrandHover()
 
 // Site settings - directly from appStore (already initialized from injected config)
 const siteName = computed(() => appStore.cachedPublicSettings?.site_name || appStore.siteName || 'SiliconBase')
