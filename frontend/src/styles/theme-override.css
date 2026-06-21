@@ -17,70 +17,54 @@
 
 /* ============ Factory utility classes ============ */
 
-/* Faint warm dashed line-grid blueprint background — factory signature.
-   Dashed connector lines (虚点连接线) implemented as a tiled SVG pattern
-   data-URI: thin dashed strokes on both axes, theme-aware. Tile ~16px.
-   Line visibility is kept intentionally VERY low (opacity ~0.06 dark /
-   ~0.05 light) so the grid reads as faint texture blending into the base
-   surface — never as bright white lines that wash out content. Used behind
-   login / empty states / console shell (AppLayout) page-wide; on the
-   homepage it is scoped to the first-screen hero region only (see
-   `.bg-blueprint-dense`). */
+/* Faint SOLID hairline line-grid blueprint background — factory signature.
+   Matches factory.ai's REAL production background (verified from their CSS
+   bundle): a tiled solid line grid at very low opacity, NOT dashed, NOT
+   bright, NO colored mesh, NO hard radial vignette. Reads as faint ambient
+   texture blended into the base near-black surface.
+   - Dark: faint white hairlines (~0.05 alpha).
+   - Light: faint black hairlines (~0.045 alpha).
+   Do NOT raise these opacities above ~0.06 — lines must stay subtle. */
 .bg-blueprint {
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g fill='none' stroke='%237d7264' stroke-width='1' stroke-dasharray='2 3' stroke-linecap='round' opacity='0.05'><path d='M0 0.5 H16'/><path d='M0.5 0 V16'/></g></svg>");
-  background-size: 16px 16px;
+  background-image:
+    linear-gradient(to right, rgba(0, 0, 0, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.045) 1px, transparent 1px);
+  background-size: 26px 26px;
 }
 
 .dark .bg-blueprint {
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g fill='none' stroke='%23d9d1c7' stroke-width='1' stroke-dasharray='2 3' stroke-linecap='round' opacity='0.06'><path d='M0 0.5 H16'/><path d='M0.5 0 V16'/></g></svg>");
-  background-size: 16px 16px;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 26px 26px;
 }
 
-/* Denser first-screen variant — homepage hero backdrop only. Finer ~11px
-   tile so the blueprint reads as a tightly-knit engineering grid above the
-   fold (matches factory.ai hero density). Combined with `.bg-blueprint-fade`
-   (a strong radial mask that blends the grid into the near-black bg) so the
-   dashed lines are only a faint hint toward the lower/edge of the first
-   screen — fully dissolved behind the top nav and the centered hero slogan.
-   Do NOT apply to AppLayout / AuthLayout — those keep the standard
-   `.bg-blueprint`. */
+/* Denser first-screen variant — homepage hero backdrop only. Same solid
+   style at a finer tile (18px) so the blueprint reads as a tighter
+   engineering grid above the fold (matches factory.ai hero density).
+   Same faint alpha as the page-wide grid — NOT brighter. */
 .bg-blueprint-dense {
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='11' height='11'><g fill='none' stroke='%237d7264' stroke-width='1' stroke-dasharray='2 2.5' stroke-linecap='round' opacity='0.06'><path d='M0 0.5 H11'/><path d='M0.5 0 V11'/></g></svg>");
-  background-size: 11px 11px;
+  background-image:
+    linear-gradient(to right, rgba(0, 0, 0, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.045) 1px, transparent 1px);
+  background-size: 18px 18px;
 }
 
 .dark .bg-blueprint-dense {
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='11' height='11'><g fill='none' stroke='%23d9d1c7' stroke-width='1' stroke-dasharray='2 2.5' stroke-linecap='round' opacity='0.07'><path d='M0 0.5 H11'/><path d='M0.5 0 V11'/></g></svg>");
-  background-size: 11px 11px;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 18px 18px;
 }
 
-/* Strong radial blend that dissolves the homepage hero blueprint into the
-   near-black base. The grid is fully masked out behind the top nav (very
-   top of the viewport) and behind the centered hero slogan (~35% down), and
-   is allowed to show only as a faint hint toward the lower / outer rim of
-   the first screen. Goal: "黑色背景和网格线的混合渐进" — a gradient blend
-   with the base surface so white reads as ambient texture, never as
-   prominent lines, and all foreground content stays fully readable. Applied
-   to the backdrop element (not the section) so the clean near-black surface
-   underneath shows through. All mask stops are LOW alpha so the grid is
-   always faint — peak visibility is only ~28% at the lower-edge ring. */
+/* Gentle bottom fade so the homepage first-screen grid dissolves into the
+   clean near-black surface below the fold (user wants NO grid from the
+   marquee downward). This is a SOFT dissolve, NOT a hard black vignette —
+   grid stays fully visible at the top and gently fades to transparent in
+   the bottom ~30%. Applied only to the homepage first-screen backdrop. */
 .bg-blueprint-fade {
-  -webkit-mask-image: radial-gradient(
-    ellipse 85% 80% at 50% 62%,
-    rgba(0, 0, 0, 0.08) 0%,
-    rgba(0, 0, 0, 0.06) 22%,
-    rgba(0, 0, 0, 0.14) 45%,
-    rgba(0, 0, 0, 0.26) 72%,
-    rgba(0, 0, 0, 0.18) 100%
-  );
-  mask-image: radial-gradient(
-    ellipse 85% 80% at 50% 62%,
-    rgba(0, 0, 0, 0.08) 0%,
-    rgba(0, 0, 0, 0.06) 22%,
-    rgba(0, 0, 0, 0.14) 45%,
-    rgba(0, 0, 0, 0.26) 72%,
-    rgba(0, 0, 0, 0.18) 100%
-  );
+  -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent);
+  mask-image: linear-gradient(to bottom, #000 70%, transparent);
 }
 
 /* Dashed hairline divider — blueprint motif. */
@@ -171,7 +155,11 @@
 }
 
 .brand-hover {
-  /* Name wrapper needs 3D context so rotateY reads as a real flip. */
+  /* Name wrapper needs 3D context so rotateY reads as a real flip. Without
+     `perspective`, the rotateY(360deg) flip renders flat — it looks like a
+     horizontal squish/compress instead of a real 3D flip. 600px gives a
+     gentle, readable depth. */
+  perspective: 600px;
   transform-style: preserve-3d;
 }
 

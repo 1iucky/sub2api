@@ -17,12 +17,12 @@
       <!-- Logo/Brand -->
       <div
         class="brand-hover mb-8 text-center"
-        :class="brand.brandClass"
+        :class="brandClass"
         :aria-label="siteName"
-        @mouseenter="brand.onEnter"
-        @mouseleave="brand.onLeave"
-        @focusin="brand.onEnter"
-        @focusout="brand.onLeave"
+        @mouseenter="onEnter"
+        @mouseleave="onLeave"
+        @focusin="onEnter"
+        @focusout="onLeave"
       >
         <!-- Custom Logo or Default Logo -->
         <template v-if="settingsLoaded">
@@ -77,7 +77,11 @@ import { useBrandHover } from '@/composables/useBrandHover'
 const appStore = useAppStore()
 
 // Brand micro-interaction (shared phase state — see useBrandHover).
-const brand = useBrandHover()
+// Destructure so each ref/handler is a top-level setup binding — Vue only
+// auto-unwraps refs at the top level of the bindings object, not through
+// nested property access. Binding `brand.brandClass` directly would pass the
+// ComputedRef object to `:class` instead of its value (animation never fires).
+const { brandClass, onEnter, onLeave } = useBrandHover()
 
 const siteName = computed(() => appStore.siteName || 'SiliconBase')
 const siteLogo = computed(() => sanitizeUrl(appStore.siteLogo || '', { allowRelative: true, allowDataUrl: true }))
