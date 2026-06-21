@@ -3,11 +3,8 @@
     <!-- Background: warm near-black / warm off-white base -->
     <div class="absolute inset-0 bg-white dark:bg-dark-950"></div>
 
-    <!-- Decorative Elements: warm mesh + blueprint line-grid (factory motif) -->
+    <!-- Decorative Elements: blueprint line-grid (factory motif) -->
     <div class="pointer-events-none absolute inset-0 overflow-hidden">
-      <!-- Warm ambient mesh (vermillion, low opacity) -->
-      <div class="absolute inset-0 bg-mesh-gradient opacity-80"></div>
-
       <!-- Blueprint line-grid signature -->
       <div class="absolute inset-0 bg-blueprint opacity-60"></div>
 
@@ -18,17 +15,26 @@
     <!-- Content Container -->
     <div class="relative z-10 w-full max-w-md">
       <!-- Logo/Brand -->
-      <div class="mb-8 text-center">
+      <div class="brand-hover mb-8 text-center" :aria-label="siteName">
         <!-- Custom Logo or Default Logo -->
         <template v-if="settingsLoaded">
           <div
-            class="mb-4 inline-flex h-14 w-14 items-center justify-center overflow-hidden rounded-md border border-gray-200 bg-white p-1.5 dark:border-dark-700 dark:bg-dark-900"
+            class="brand-hover__logo mb-4 inline-flex h-14 w-14 items-center justify-center overflow-hidden rounded-md border border-gray-200 bg-white p-1.5 dark:border-dark-700 dark:bg-dark-900"
           >
             <img :src="siteLogo || '/logo.svg'" alt="Logo" class="h-full w-full object-contain" />
           </div>
           <div class="eyebrow mb-2">SiliconBase</div>
           <h1 class="mb-2 text-2xl font-normal tracking-tight text-gray-900 dark:text-gray-100">
-            {{ siteName }}
+            <span class="sr-only">{{ siteName }}</span>
+            <span aria-hidden="true">
+              <span
+                v-for="(ch, i) in siteName"
+                :key="i"
+                class="brand-hover__letter"
+                :style="{ '--brand-i': i }"
+                >{{ ch }}</span
+              >
+            </span>
           </h1>
           <p class="text-sm text-gray-500 dark:text-dark-400">
             {{ siteSubtitle }}

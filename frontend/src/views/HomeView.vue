@@ -86,11 +86,8 @@
     v-else
     class="relative flex min-h-screen flex-col overflow-x-hidden bg-gray-50 dark:bg-dark-950"
   >
-    <!-- Backdrop: blueprint line-grid + faint vermillion mesh (PR1 utility kept). -->
+    <!-- Backdrop: blueprint line-grid (factory signature). -->
     <div class="pointer-events-none absolute inset-0 bg-blueprint"></div>
-    <div
-      class="pointer-events-none absolute inset-0 bg-[radial-gradient(at_40%_12%,rgba(239,111,46,0.10)_0px,transparent_55%),radial-gradient(at_85%_0%,rgba(209,80,16,0.06)_0px,transparent_50%)]"
-    ></div>
 
     <!-- ============================ NAV ============================ -->
     <header
@@ -106,15 +103,26 @@
         <!-- Brand wordmark -->
         <router-link
           to="/home"
-          class="group flex items-center gap-2.5"
+          class="brand-hover group flex items-center gap-2.5"
           :aria-label="siteName"
         >
-          <span class="block h-6 w-6 overflow-hidden rounded-sm">
+          <span class="brand-hover__logo block h-6 w-6 overflow-hidden rounded-sm">
             <img :src="siteLogo || '/logo.svg'" alt="" class="h-full w-full object-contain" />
           </span>
           <span
             class="font-mono text-[13px] uppercase tracking-[0.14em] text-gray-900 transition-colors duration-200 group-hover:text-primary-500 dark:text-gray-100"
-          >SiliconBase</span>
+          >
+            <span class="sr-only">SiliconBase</span>
+            <span aria-hidden="true">
+              <span
+                v-for="(ch, i) in 'SiliconBase'"
+                :key="i"
+                class="brand-hover__letter"
+                :style="{ '--brand-i': i }"
+                >{{ ch }}</span
+              >
+            </span>
+          </span>
         </router-link>
 
         <!-- Desktop nav links + actions -->
