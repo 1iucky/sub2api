@@ -35,10 +35,13 @@ export default {
       ctaSecondary: '阅读文档',
       demo: {
         title: 'gateway — 实时',
+        backToApp: '返回应用',
         sidebarGateway: '网关',
         sidebarPools: '账号池',
         sidebarKeys: '密钥',
         sidebarSettings: '设置',
+        factoryLabel: '你的 API 工厂',
+        live: '实时',
         kpiRpm: 'RPM',
         kpiRpmValue: '1.2k',
         kpiP95: 'P95',
@@ -54,12 +57,76 @@ export default {
         streamStatus: '200 ok',
         sparkClaude: 'claude',
         sparkOpenai: 'openai',
-        sparkGemini: 'gemini'
+        sparkGemini: 'gemini',
+        stages: {
+          signal: { title: '信号', metric: '7 日请求' },
+          triage: { title: '分流', metric: '生效规则' },
+          route: { title: '路由', metric: '吞吐' },
+          guard: { title: '守护', metric: '通过率' },
+          bill: { title: '计费', metric: '窗口重置' },
+          recover: { title: '恢复', metric: 'MTTR' }
+        },
+        kpiCards: {
+          tickets: { label: '已路由请求' },
+          validations: { label: '策略校验' },
+          merged: { label: '活跃密钥' },
+          incidents: { label: '故障切换' }
+        }
       }
     },
     marquee2: {
-      label: '兼容',
-      items: 'Claude · OpenAI · Gemini · Bedrock · Antigravity'
+      providersLabel: '兼容模型服务',
+      toolsLabel: '支持工具生态'
+    },
+    defining2: {
+      title: '定义你的 API 网关工厂',
+      cards: {
+        models: {
+          index: '01',
+          title: '模型独立性',
+          axes: {
+            coding: '编码',
+            reasoning: '推理',
+            speed: '速度',
+            cost: '成本',
+            context: '上下文',
+            tools: '工具'
+          },
+          legend: {
+            primary: 'MODEL A',
+            backup: 'MODEL B',
+            third: 'MODEL C',
+            best: 'Best of all'
+          }
+        },
+        runtime: {
+          index: '02',
+          title: '主权路由',
+          rows: {
+            saas: { title: 'SaaS', desc: '托管网关，免运维' },
+            hybrid: { title: '混合部署', desc: '你的账号，我们的控制面' },
+            selfHosted: { title: '自托管', desc: '部署在你的服务旁边' },
+            isolated: { title: '隔离网络', desc: '私有网络与代理接入' }
+          },
+          note: 'OpenAI · Claude · Gemini · Bedrock — 路由到你的工作负载所在之处'
+        },
+        workflow: {
+          index: '03',
+          title: '覆盖完整 SDLC',
+          center: '共享上下文',
+          nodes: {
+            plan: '计划',
+            execute: '执行',
+            validate: '验证',
+            ship: '发布',
+            monitor: '监控',
+            automate: '自动化',
+            signal: '信号',
+            triage: '分诊'
+          },
+          note: '不只是编码。每个阶段都会强化其他阶段。'
+        }
+      }
     },
     bento2: {
       eyebrow: '网关承担的工作',

@@ -3,8 +3,8 @@
  *
  * Loaded AFTER `style.css` (see main.ts import order) so it can:
  *   - wire Geist variable fonts (@font-face via fontsource),
- *   - register factory-specific utilities (line-grid blueprint, dashed divider,
- *     mono eyebrow label).
+ *   - register factory-specific utilities (homepage ambient grid, dashed
+ *     divider, mono eyebrow label).
  *
  * This file is intentionally additive (Tier-1 / zero-conflict): it does not
  * override any existing component class — it only adds new utilities and
@@ -17,44 +17,129 @@
 
 /* ============ Factory utility classes ============ */
 
-/* Faint SOLID hairline line-grid blueprint background — factory signature.
-   Matches factory.ai's REAL production background (verified from their CSS
-   bundle): a tiled solid line grid at very low opacity, NOT dashed, NOT
-   bright, NO colored mesh, NO hard radial vignette. Reads as faint ambient
-   texture blended into the base near-black surface.
-   - Dark: faint white hairlines (~0.05 alpha).
-   - Light: faint black hairlines (~0.045 alpha).
-   Do NOT raise these opacities above ~0.06 — lines must stay subtle. */
+/* Faint SOLID hairline line-grid blueprint background. Keep this low contrast:
+   Factory's page reads as a quiet industrial surface, not graph paper. */
 .bg-blueprint {
   background-image:
-    linear-gradient(to right, rgba(0, 0, 0, 0.045) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.045) 1px, transparent 1px);
-  background-size: 26px 26px;
+    linear-gradient(to right, rgba(31, 29, 28, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(31, 29, 28, 0.035) 1px, transparent 1px);
+  background-size: 32px 32px;
 }
 
 .dark .bg-blueprint {
   background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-  background-size: 26px 26px;
+    linear-gradient(to right, rgba(238, 238, 238, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(238, 238, 238, 0.035) 1px, transparent 1px);
+  background-size: 32px 32px;
 }
 
-/* Denser first-screen variant — homepage hero backdrop only. Same solid
-   style at a finer tile (18px) so the blueprint reads as a tighter
-   engineering grid above the fold (matches factory.ai hero density).
-   Same faint alpha as the page-wide grid — NOT brighter. */
+/* Legacy dense variant retained for existing callers, but tuned down so it
+   remains a subtle engineering texture. */
 .bg-blueprint-dense {
   background-image:
-    linear-gradient(to right, rgba(0, 0, 0, 0.045) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.045) 1px, transparent 1px);
-  background-size: 18px 18px;
+    linear-gradient(to right, rgba(31, 29, 28, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(31, 29, 28, 0.03) 1px, transparent 1px);
+  background-size: 28px 28px;
 }
 
 .dark .bg-blueprint-dense {
   background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-  background-size: 18px 18px;
+    linear-gradient(to right, rgba(238, 238, 238, 0.032) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(238, 238, 238, 0.032) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* Shared Factory surface backdrop. This approximates the current Factory.ai
+   surface without copying their image assets: near-black / warm-white base,
+   dense gray-white micro dots, sparse precision lines, brown-black edge
+   blending, and a low-contrast metallic sheen. There is intentionally no
+   orange color wash here. */
+.bg-factory-surface-grid,
+.bg-factory-home-grid {
+  background-color: #f3f2ee;
+  background-image:
+    linear-gradient(to right, rgba(31, 29, 28, 0.16) 0%, rgba(31, 29, 28, 0.07) 15%, transparent 38%),
+    linear-gradient(to left, rgba(31, 29, 28, 0.15) 0%, rgba(31, 29, 28, 0.065) 15%, transparent 38%),
+    linear-gradient(to bottom, rgba(31, 29, 28, 0.18) 0%, rgba(31, 29, 28, 0.075) 18%, transparent 44%),
+    radial-gradient(ellipse at 0% 28%, rgba(74, 67, 57, 0.1), transparent 36%),
+    radial-gradient(ellipse at 100% 28%, rgba(74, 67, 57, 0.09), transparent 36%),
+    radial-gradient(ellipse at 50% 0%, rgba(74, 67, 57, 0.08), transparent 38%),
+    radial-gradient(circle at 1px 1px, rgba(31, 29, 28, 0.11) 1px, transparent 1.28px),
+    linear-gradient(to right, rgba(31, 29, 28, 0.032) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(31, 29, 28, 0.032) 1px, transparent 1px),
+    linear-gradient(116deg, transparent 0%, rgba(31, 29, 28, 0.022) 34%, rgba(255, 255, 255, 0.46) 50%, rgba(31, 29, 28, 0.02) 66%, transparent 100%),
+    radial-gradient(ellipse at 68% 18%, rgba(255, 255, 255, 0.56), transparent 42%),
+    radial-gradient(ellipse at 42% 66%, rgba(31, 29, 28, 0.045), transparent 54%);
+  background-position:
+    center,
+    center,
+    center,
+    center,
+    center,
+    center,
+    0 0,
+    -1px -1px,
+    -1px -1px,
+    center,
+    center,
+    center;
+  background-size:
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    8px 8px,
+    192px 192px,
+    192px 192px,
+    100% 100%,
+    100% 100%,
+    100% 100%;
+}
+
+.dark .bg-factory-surface-grid,
+.dark .bg-factory-home-grid {
+  background-color: #020202;
+  background-image:
+    linear-gradient(to right, rgba(0, 0, 0, 0.54) 0%, rgba(0, 0, 0, 0.3) 14%, transparent 36%),
+    linear-gradient(to left, rgba(0, 0, 0, 0.52) 0%, rgba(0, 0, 0, 0.28) 14%, transparent 36%),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.48) 0%, rgba(0, 0, 0, 0.24) 18%, transparent 44%),
+    radial-gradient(ellipse at 0% 28%, rgba(74, 67, 57, 0.34), transparent 36%),
+    radial-gradient(ellipse at 100% 28%, rgba(74, 67, 57, 0.3), transparent 36%),
+    radial-gradient(ellipse at 50% 0%, rgba(74, 67, 57, 0.26), transparent 38%),
+    radial-gradient(circle at 1px 1px, rgba(238, 238, 238, 0.28) 1px, transparent 1.32px),
+    linear-gradient(to right, rgba(238, 238, 238, 0.062) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(238, 238, 238, 0.062) 1px, transparent 1px),
+    linear-gradient(116deg, transparent 0%, rgba(238, 238, 238, 0.018) 32%, rgba(238, 238, 238, 0.145) 50%, rgba(238, 238, 238, 0.018) 68%, transparent 100%),
+    radial-gradient(ellipse at 68% 18%, rgba(238, 238, 238, 0.09), transparent 42%),
+    radial-gradient(ellipse at 42% 66%, rgba(255, 255, 255, 0.045), transparent 54%);
+  background-position:
+    center,
+    center,
+    center,
+    center,
+    center,
+    center,
+    0 0,
+    -1px -1px,
+    -1px -1px,
+    center,
+    center,
+    center;
+  background-size:
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    8px 8px,
+    192px 192px,
+    192px 192px,
+    100% 100%,
+    100% 100%,
+    100% 100%;
 }
 
 /* Gentle bottom fade so the homepage first-screen grid dissolves into the
@@ -63,8 +148,8 @@
    grid stays fully visible at the top and gently fades to transparent in
    the bottom ~30%. Applied only to the homepage first-screen backdrop. */
 .bg-blueprint-fade {
-  -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent);
-  mask-image: linear-gradient(to bottom, #000 70%, transparent);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 62%, rgba(0, 0, 0, 0.45) 82%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 62%, rgba(0, 0, 0, 0.45) 82%, transparent 100%);
 }
 
 /* Dashed hairline divider — blueprint motif. */
@@ -288,7 +373,79 @@
     transform: translateX(0);
   }
   to {
-    transform: translateX(-50%);
+    transform: translateX(-33.3333%);
+  }
+}
+
+@keyframes marquee-reverse {
+  from {
+    transform: translateX(-33.3333%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes sf-model-radar-best-flow {
+  0%,
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0.86;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes sf-model-radar-runner-flow {
+  to {
+    stroke-dashoffset: -42;
+  }
+}
+
+@keyframes sf-model-radar-model-breathe {
+  0%,
+  100% {
+    opacity: 0.58;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+@keyframes sf-model-radar-dot-pulse {
+  0%,
+  100% {
+    opacity: 0.72;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.22);
+  }
+}
+
+@keyframes sf-sdlc-node-breathe {
+  0%,
+  100% {
+    border-color: rgba(239, 111, 46, 0.42);
+    box-shadow: 0 0 0 rgba(239, 111, 46, 0);
+  }
+  50% {
+    border-color: rgba(239, 111, 46, 0.72);
+    box-shadow: 0 0 20px rgba(239, 111, 46, 0.12);
+  }
+}
+
+@keyframes sf-sdlc-orbit-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes sf-sdlc-node-counter-rotate {
+  to {
+    transform: rotate(-360deg);
   }
 }
 
@@ -365,7 +522,71 @@
 
   /* Logo marquee — endless L→R scroll. */
   .sf-marquee-track {
-    animation: marquee 120s linear infinite;
+    animation: marquee 150s linear infinite;
+  }
+  .sf-marquee-track--reverse {
+    animation: marquee-reverse 135s linear infinite;
+  }
+
+  .sf-model-radar-model,
+  .sf-model-radar-best-dots circle {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .sf-model-radar-model {
+    animation: sf-model-radar-model-breathe 5200ms ease-in-out infinite;
+  }
+
+  .sf-model-radar-model--b {
+    animation-delay: 900ms;
+  }
+
+  .sf-model-radar-model--c {
+    animation-delay: 1800ms;
+  }
+
+  .sf-model-radar-best-path {
+    animation: sf-model-radar-best-flow 4200ms linear infinite;
+  }
+
+  .sf-model-radar-best-path--runner {
+    animation: sf-model-radar-runner-flow 1800ms linear infinite;
+  }
+
+  .sf-model-radar-best-dots circle {
+    animation: sf-model-radar-dot-pulse 2400ms ease-in-out infinite;
+  }
+
+  .sf-model-radar-best-dots circle:nth-child(2) {
+    animation-delay: 160ms;
+  }
+
+  .sf-model-radar-best-dots circle:nth-child(3) {
+    animation-delay: 320ms;
+  }
+
+  .sf-model-radar-best-dots circle:nth-child(4) {
+    animation-delay: 480ms;
+  }
+
+  .sf-model-radar-best-dots circle:nth-child(5) {
+    animation-delay: 640ms;
+  }
+
+  .sf-model-radar-best-dots circle:nth-child(6) {
+    animation-delay: 800ms;
+  }
+
+  .sf-sdlc-orbit-stage {
+    animation: sf-sdlc-orbit-rotate 36s linear infinite;
+  }
+
+  .sf-sdlc-node {
+    animation:
+      sf-sdlc-node-counter-rotate 36s linear infinite,
+      sf-sdlc-node-breathe 3600ms ease-in-out infinite;
+    animation-delay: 0ms, var(--sf-node-delay, 0ms);
   }
 
   /* Button hover hatch overlay — fades in + slides while hovered only. */
@@ -418,6 +639,14 @@
   [data-hero-demo] .sf-radar-sweep,
   [data-hero-demo] .sf-dashboard-cursor,
   .sf-marquee-track,
+  .sf-marquee-track--reverse,
+  .sf-model-radar-model,
+  .sf-model-radar-best-path,
+  .sf-model-radar-best-dots circle,
+  .sf-sdlc-path circle,
+  .sf-sdlc-orbit-stage,
+  .sf-sdlc-node-anchor,
+  .sf-sdlc-node,
   .sf-btn-hatch,
   .brand-hover__logo,
   .brand-hover__letter {
@@ -427,3 +656,381 @@
   }
 }
 
+/* ============ Homepage logo marquee + defining cards ============ */
+.sf-logo-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-width: max-content;
+  border: 1px solid rgba(31, 29, 28, 0.08);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.5);
+  padding: 0.45rem 0.9rem 0.45rem 0.5rem;
+  font-family: theme('fontFamily.mono');
+  font-size: 13px;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: theme('colors.gray.500');
+  transition: border-color 160ms ease, color 160ms ease, background-color 160ms ease;
+}
+
+.dark .sf-logo-pill {
+  border-color: rgba(238, 238, 238, 0.08);
+  background: rgba(255, 255, 255, 0.025);
+  color: theme('colors.dark.400');
+}
+
+.sf-logo-pill:hover {
+  border-color: rgba(239, 111, 46, 0.42);
+  color: theme('colors.gray.900');
+}
+
+.dark .sf-logo-pill:hover {
+  color: theme('colors.gray.100');
+}
+
+.sf-brand-mark {
+  display: inline-flex;
+  width: 1.55rem;
+  height: 1.55rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid rgba(31, 29, 28, 0.1);
+  background: rgba(31, 29, 28, 0.04);
+  font-family: theme('fontFamily.mono');
+  font-size: 10px;
+  font-weight: 600;
+  color: theme('colors.gray.700');
+}
+
+.dark .sf-brand-mark {
+  border-color: rgba(238, 238, 238, 0.1);
+  background: rgba(238, 238, 238, 0.045);
+  color: theme('colors.gray.200');
+}
+
+.sf-brand-mark--warm {
+  color: #ef6f2e;
+  background: rgba(239, 111, 46, 0.1);
+  border-color: rgba(239, 111, 46, 0.2);
+}
+
+.sf-brand-mark--green {
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.09);
+  border-color: rgba(16, 185, 129, 0.18);
+}
+
+.sf-brand-mark--blue {
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.09);
+  border-color: rgba(56, 189, 248, 0.18);
+}
+
+.sf-brand-mark--violet {
+  color: #a78bfa;
+  background: rgba(167, 139, 250, 0.09);
+  border-color: rgba(167, 139, 250, 0.18);
+}
+
+.sf-brand-mark--slate {
+  color: theme('colors.gray.600');
+  background: rgba(31, 29, 28, 0.055);
+  border-color: rgba(31, 29, 28, 0.1);
+}
+
+.dark .sf-brand-mark--slate {
+  color: theme('colors.gray.300');
+  background: rgba(238, 238, 238, 0.055);
+  border-color: rgba(238, 238, 238, 0.1);
+}
+
+.sf-mini-chart-point {
+  cursor: crosshair;
+  outline: none;
+}
+
+.sf-mini-chart-hit {
+  pointer-events: all;
+}
+
+.sf-mini-chart-crosshair,
+.sf-mini-chart-tooltip {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 140ms ease;
+}
+
+.sf-mini-chart-crosshair {
+  stroke: rgba(239, 111, 46, 0.45);
+  stroke-width: 0.8;
+  stroke-dasharray: 2 4;
+}
+
+.sf-mini-chart-point:hover .sf-mini-chart-crosshair,
+.sf-mini-chart-point:hover .sf-mini-chart-tooltip,
+.sf-mini-chart-point:focus-visible .sf-mini-chart-crosshair,
+.sf-mini-chart-point:focus-visible .sf-mini-chart-tooltip {
+  opacity: 1;
+}
+
+.sf-defining-card {
+  min-height: 520px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(31, 29, 28, 0.1);
+  border-radius: 0.5rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.48)),
+    radial-gradient(circle at 50% 0%, rgba(239, 111, 46, 0.06), transparent 42%);
+  padding: 2rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.dark .sf-defining-card {
+  border-color: rgba(238, 238, 238, 0.1);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.015)),
+    radial-gradient(circle at 50% 0%, rgba(239, 111, 46, 0.055), transparent 42%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+}
+
+.sf-defining-radar {
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sf-model-radar-grid polygon,
+.sf-model-radar-grid line {
+  fill: none;
+  stroke: rgba(31, 29, 28, 0.16);
+  stroke-width: 1;
+}
+
+.dark .sf-model-radar-grid polygon,
+.dark .sf-model-radar-grid line {
+  stroke: rgba(238, 238, 238, 0.13);
+}
+
+.sf-model-radar-model {
+  fill: rgba(31, 29, 28, 0.035);
+  stroke-width: 1.6;
+}
+
+.dark .sf-model-radar-model {
+  fill: rgba(238, 238, 238, 0.055);
+}
+
+.sf-model-radar-model--a {
+  stroke: rgba(31, 29, 28, 0.72);
+}
+
+.sf-model-radar-model--b {
+  stroke: rgba(31, 29, 28, 0.5);
+}
+
+.sf-model-radar-model--c {
+  stroke: rgba(31, 29, 28, 0.34);
+}
+
+.dark .sf-model-radar-model--a {
+  stroke: rgba(238, 238, 238, 0.82);
+}
+
+.dark .sf-model-radar-model--b {
+  stroke: rgba(238, 238, 238, 0.62);
+}
+
+.dark .sf-model-radar-model--c {
+  stroke: rgba(238, 238, 238, 0.42);
+}
+
+.sf-model-radar-best-path {
+  fill: none;
+  stroke: #ef6f2e;
+  stroke-width: 1.8;
+  stroke-dasharray: 5 5;
+  stroke-linejoin: round;
+}
+
+.sf-model-radar-best-path--runner {
+  stroke-width: 2.8;
+  stroke-dasharray: 14 28;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 5px rgba(239, 111, 46, 0.45));
+}
+
+.sf-model-radar-best-dots circle {
+  fill: #ef6f2e;
+}
+
+.sf-model-radar-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem 1.25rem;
+  font-family: theme('fontFamily.mono');
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: theme('colors.gray.500');
+}
+
+.dark .sf-model-radar-legend {
+  color: theme('colors.dark.400');
+}
+
+.sf-model-radar-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.sf-model-radar-legend-line {
+  display: inline-block;
+  width: 0.95rem;
+  height: 2px;
+  border-radius: 999px;
+  background: rgba(31, 29, 28, 0.7);
+}
+
+.dark .sf-model-radar-legend-line {
+  background: rgba(238, 238, 238, 0.76);
+}
+
+.sf-model-radar-legend-line--b {
+  background: rgba(31, 29, 28, 0.48);
+}
+
+.dark .sf-model-radar-legend-line--b {
+  background: rgba(238, 238, 238, 0.56);
+}
+
+.sf-model-radar-legend-line--c {
+  background: rgba(31, 29, 28, 0.3);
+}
+
+.dark .sf-model-radar-legend-line--c {
+  background: rgba(238, 238, 238, 0.36);
+}
+
+.sf-model-radar-legend-line--best {
+  background: #ef6f2e;
+}
+
+.sf-sdlc-orbit {
+  position: relative;
+  min-height: 330px;
+  flex: 1;
+  --sf-orbit-radius: 138px;
+  --sf-orbit-path-size: 340px;
+}
+
+.sf-sdlc-path {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--sf-orbit-path-size);
+  height: auto;
+  margin-left: calc(var(--sf-orbit-path-size) / -2);
+  margin-top: calc(var(--sf-orbit-path-size) / -2);
+  transform-origin: 170px 170px;
+  overflow: visible;
+}
+
+.sf-sdlc-path circle {
+  fill: transparent;
+  stroke: rgba(31, 29, 28, 0.34);
+  stroke-width: 1.2;
+  stroke-dasharray: 3 10;
+  stroke-linecap: round;
+}
+
+.dark .sf-sdlc-path circle {
+  stroke: rgba(238, 238, 238, 0.62);
+}
+
+.sf-sdlc-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  max-width: 6.5rem;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  font-family: theme('fontFamily.mono');
+  font-size: 12px;
+  line-height: 1.25;
+  text-transform: uppercase;
+  color: theme('colors.gray.500');
+}
+
+.dark .sf-sdlc-center {
+  color: theme('colors.dark.400');
+}
+
+.sf-sdlc-orbit-stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  transform-origin: 0 0;
+}
+
+.sf-sdlc-node-anchor {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translate(-50%, -50%) rotate(var(--sf-node-angle)) translate(var(--sf-orbit-radius)) rotate(var(--sf-node-angle-inverse));
+  transform-origin: 0 0;
+}
+
+.sf-sdlc-node {
+  display: inline-flex;
+  width: 4.55rem;
+  height: 4.55rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(239, 111, 46, 0.48);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.42);
+  font-family: theme('fontFamily.mono');
+  font-size: 10px;
+  line-height: 1;
+  text-align: center;
+  text-transform: uppercase;
+  color: theme('colors.gray.700');
+}
+
+.dark .sf-sdlc-node {
+  background: rgba(0, 0, 0, 0.32);
+  color: theme('colors.gray.200');
+}
+
+@media (max-width: 640px) {
+  .sf-logo-pill {
+    font-size: 12px;
+    padding-right: 0.75rem;
+  }
+
+  .sf-defining-card {
+    min-height: 450px;
+    padding: 1.5rem;
+  }
+
+  .sf-sdlc-node {
+    width: 4.2rem;
+    height: 4.2rem;
+    font-size: 10px;
+  }
+
+  .sf-sdlc-orbit {
+    min-height: 285px;
+    --sf-orbit-radius: 108px;
+    --sf-orbit-path-size: 268px;
+  }
+}

@@ -35,10 +35,13 @@ export default {
       ctaSecondary: 'Read the docs',
       demo: {
         title: 'gateway — live',
+        backToApp: 'Back to app',
         sidebarGateway: 'Gateway',
         sidebarPools: 'Pools',
         sidebarKeys: 'Keys',
         sidebarSettings: 'Settings',
+        factoryLabel: 'YOUR API FACTORY',
+        live: 'LIVE',
         kpiRpm: 'RPM',
         kpiRpmValue: '1.2k',
         kpiP95: 'P95',
@@ -54,12 +57,76 @@ export default {
         streamStatus: '200 ok',
         sparkClaude: 'claude',
         sparkOpenai: 'openai',
-        sparkGemini: 'gemini'
+        sparkGemini: 'gemini',
+        stages: {
+          signal: { title: 'SIGNAL', metric: 'requests / 7day' },
+          triage: { title: 'TRIAGE', metric: 'rules active' },
+          route: { title: 'ROUTE', metric: 'throughput' },
+          guard: { title: 'GUARD', metric: 'pass rate' },
+          bill: { title: 'BILL', metric: 'window reset' },
+          recover: { title: 'RECOVER', metric: 'mttr' }
+        },
+        kpiCards: {
+          tickets: { label: 'requests routed' },
+          validations: { label: 'policy checks' },
+          merged: { label: 'keys active' },
+          incidents: { label: 'failovers handled' }
+        }
       }
     },
     marquee2: {
-      label: 'Compatible with',
-      items: 'Claude · OpenAI · Gemini · Bedrock · Antigravity'
+      providersLabel: 'Compatible providers',
+      toolsLabel: 'Supported tools'
+    },
+    defining2: {
+      title: 'Defining your API Gateway Factory',
+      cards: {
+        models: {
+          index: '01',
+          title: 'Model independence',
+          axes: {
+            coding: 'CODING',
+            reasoning: 'REASONING',
+            speed: 'SPEED',
+            cost: 'COST',
+            context: 'CONTEXT',
+            tools: 'TOOLS'
+          },
+          legend: {
+            primary: 'MODEL A',
+            backup: 'MODEL B',
+            third: 'MODEL C',
+            best: 'Best of all'
+          }
+        },
+        runtime: {
+          index: '02',
+          title: 'Sovereign routing',
+          rows: {
+            saas: { title: 'SaaS', desc: 'Managed gateway, zero ops' },
+            hybrid: { title: 'Hybrid', desc: 'Your accounts, our control plane' },
+            selfHosted: { title: 'Self-hosted', desc: 'Run beside your own services' },
+            isolated: { title: 'Isolated', desc: 'Private networks and proxies' }
+          },
+          note: 'OpenAI · Claude · Gemini · Bedrock — route where your workloads already live'
+        },
+        workflow: {
+          index: '03',
+          title: 'Across the SDLC',
+          center: 'SHARED CONTEXT',
+          nodes: {
+            plan: 'Plan',
+            execute: 'Execute',
+            validate: 'Validate',
+            ship: 'Ship',
+            monitor: 'Monitor',
+            automate: 'Automate',
+            signal: 'Signal',
+            triage: 'Triage'
+          },
+          note: 'Not just coding. Every stage strengthens every other.'
+        }
+      }
     },
     bento2: {
       eyebrow: 'WHAT THE GATEWAY DOES',
