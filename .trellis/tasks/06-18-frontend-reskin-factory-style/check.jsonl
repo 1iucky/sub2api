@@ -1,0 +1,7 @@
+{"file": ".trellis/tasks/06-18-frontend-reskin-factory-style/prd.md", "reason": "Acceptance Criteria + Definition of Done to verify against."}
+{"file": ".trellis/tasks/06-18-frontend-reskin-factory-style/research/factory-ai-design-language.md", "reason": "Design spec; verify implemented tokens/classes/components match the factory aesthetic."}
+{"file": ".trellis/tasks/06-18-frontend-reskin-factory-style/research/current-frontend-inventory.md", "reason": "Confirms only the documented touch-points were edited (rebase-surface integrity)."}
+{"file": ".trellis/spec/frontend/index.md", "reason": "Frontend conventions overview for compliance checks."}
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "Quality bar the check enforces (lint/typecheck/build)."}
+{"file": ".trellis/spec/frontend/component-guidelines.md", "reason": "Component conventions to verify."}
+{"file": ".trellis/spec/frontend/type-safety.md", "reason": "Type safety; vue-tsc typecheck is an AC."}

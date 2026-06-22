@@ -1,0 +1,10 @@
+{"file": ".trellis/tasks/06-18-frontend-reskin-factory-style/design-system.md", "reason": "AUTHORITATIVE token + per-class translation spec (exact hex values, fonts, radius/shadow rules). Implement every design change against this."}
+{"file": ".trellis/tasks/06-18-frontend-reskin-factory-style/prd.md", "reason": "Source of truth: requirements, AC, tiered touch-point plan, brand + design-system decisions."}
+{"file": ".trellis/tasks/06-18-frontend-reskin-factory-style/research/factory-ai-design-language.md", "reason": "Concrete factory.ai spec: exact colors/fonts/radius/motion + Tailwind token starter; build the design system against this."}
+{"file": ".trellis/tasks/06-18-frontend-reskin-factory-style/research/current-frontend-inventory.md", "reason": "Map of routes/layouts/styling touch-points/branding hooks; tells which files to edit and how the cascade flows."}
+{"file": ".trellis/spec/frontend/index.md", "reason": "Frontend conventions overview (Vue 3 + Vite + Tailwind v3.4 + Pinia + pnpm)."}
+{"file": ".trellis/spec/frontend/directory-structure.md", "reason": "Where views/components/stores/i18n/styles live; locate Tier 0-2 touch-points."}
+{"file": ".trellis/spec/frontend/component-guidelines.md", "reason": "Component authoring conventions; relevant when editing layout components and the @apply class system."}
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "Quality bar (lint/typecheck/build) the implementation must meet."}
+{"file": ".trellis/spec/frontend/state-management.md", "reason": "Pinia store conventions; relevant to the stores/app.ts default-siteName change."}
+{"file": ".trellis/spec/guides/code-reuse-thinking-guide.md", "reason": "Reuse existing tokens/classes/patterns; do not reinvent where the cascade already covers."}

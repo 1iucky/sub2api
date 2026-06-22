@@ -38,3 +38,36 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 2: Refine Factory-inspired homepage
+
+**Date**: 2026-06-22
+**Task**: Refine Factory-inspired homepage
+**Branch**: `custom/theme`
+
+### Summary
+
+Refined the Factory.ai-inspired homepage: tuned the hero gateway dashboard, added provider and tool marquees, implemented Factory-style defining cards with radar and SDLC motion, and verified frontend typecheck/lint.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `b5bc9bbd` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
