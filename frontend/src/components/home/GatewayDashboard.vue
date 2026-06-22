@@ -2,7 +2,7 @@
   <!--
     Bespoke inline SVG "gateway dashboard" for the homepage hero.
     Hand-authored vector (no raster). Anatomy:
-      - <defs><pattern> 16px warm grid + radial radar glow
+      - theme-colored window surface + radial radar glow
       - window chrome: macOS traffic-light dots + titlebar
       - sidebar: Gateway / Pools / Keys / Settings nav rows
       - KPI tiles: RPM 1.2k · P95 240ms · Uptime 99.9% · Keys 348
@@ -20,10 +20,6 @@
     xmlns="http://www.w3.org/2000/svg"
   >
     <defs>
-      <!-- Faint 16px blueprint grid (warm). -->
-      <pattern id="sfGrid" width="16" height="16" patternUnits="userSpaceOnUse">
-        <path d="M16 0H0V16" fill="none" stroke="currentColor" stroke-width="0.5" />
-      </pattern>
       <!-- Vermillion radar glow. -->
       <radialGradient id="sfRadarGlow" cx="50%" cy="50%" r="50%">
         <stop offset="0%" stop-color="#ef6f2e" stop-opacity="0.55" />
@@ -37,11 +33,8 @@
       </linearGradient>
     </defs>
 
-    <!-- ====== Base panel + grid backdrop (uses currentColor = warm gray) ====== -->
+    <!-- ====== Base panel ====== -->
     <rect x="0.5" y="0.5" width="979" height="619" rx="15.5" class="fill-white dark:fill-dark-900" />
-    <g class="text-gray-200 dark:text-dark-700">
-      <rect x="16" y="48" width="948" height="556" rx="8" fill="url(#sfGrid)" opacity="0.6" />
-    </g>
 
     <!-- ====== Window chrome ====== -->
     <g class="sf-dashboard-segment" :style="{ '--sf-delay': '120ms' }">
@@ -219,32 +212,59 @@
 
     <!-- ====== Sparkline cards ====== -->
     <g class="sf-dashboard-segment" :style="{ '--sf-delay': '420ms' }">
-      <!-- spark 1: claude -->
-      <g transform="translate(206,404)">
+      <g
+        v-for="card in miniChartCards"
+        :key="card.key"
+        :transform="`translate(${card.x},404)`"
+      >
         <rect width="240" height="180" rx="6" class="fill-white stroke-gray-200 dark:fill-dark-900 dark:stroke-dark-800" stroke-width="1" />
-        <text x="14" y="22" class="fill-gray-400 dark:fill-dark-400" font-family="Geist Mono Variable, monospace" font-size="9" letter-spacing="0.14em">{{ t('home.hero2.demo.sparkClaude') }}</text>
-        <text x="14" y="48" class="fill-gray-900 dark:fill-white" font-family="Geist Variable, sans-serif" font-size="22" font-weight="500">428<span class="fill-gray-400 dark:fill-dark-400" font-size="11" font-weight="400">/min</span></text>
-        <path d="M14 140 L34 124 L54 132 L74 110 L94 118 L114 96 L134 104 L154 84 L174 92 L194 72 L214 80 L226 64" fill="none" stroke="#ef6f2e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-        <path d="M14 140 L34 124 L54 132 L74 110 L94 118 L114 96 L134 104 L154 84 L174 92 L194 72 L214 80 L226 64 L226 168 L14 168 Z" fill="url(#sfSparkFill)" />
-        <line x1="14" y1="168" x2="226" y2="168" class="stroke-gray-200 dark:stroke-dark-800" stroke-width="1" />
-      </g>
-      <!-- spark 2: openai -->
-      <g transform="translate(460,404)">
-        <rect width="240" height="180" rx="6" class="fill-white stroke-gray-200 dark:fill-dark-900 dark:stroke-dark-800" stroke-width="1" />
-        <text x="14" y="22" class="fill-gray-400 dark:fill-dark-400" font-family="Geist Mono Variable, monospace" font-size="9" letter-spacing="0.14em">{{ t('home.hero2.demo.sparkOpenai') }}</text>
-        <text x="14" y="48" class="fill-gray-900 dark:fill-white" font-family="Geist Variable, sans-serif" font-size="22" font-weight="500">312<span class="fill-gray-400 dark:fill-dark-400" font-size="11" font-weight="400">/min</span></text>
-        <path d="M14 130 L34 122 L54 128 L74 114 L94 120 L114 100 L134 108 L154 92 L174 98 L194 80 L214 88 L226 72" fill="none" stroke="#ef6f2e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-        <path d="M14 130 L34 122 L54 128 L74 114 L94 120 L114 100 L134 108 L154 92 L174 98 L194 80 L214 88 L226 72 L226 168 L14 168 Z" fill="url(#sfSparkFill)" />
-        <line x1="14" y1="168" x2="226" y2="168" class="stroke-gray-200 dark:stroke-dark-800" stroke-width="1" />
-      </g>
-      <!-- spark 3: gemini -->
-      <g transform="translate(714,404)">
-        <rect width="240" height="180" rx="6" class="fill-white stroke-gray-200 dark:fill-dark-900 dark:stroke-dark-800" stroke-width="1" />
-        <text x="14" y="22" class="fill-gray-400 dark:fill-dark-400" font-family="Geist Mono Variable, monospace" font-size="9" letter-spacing="0.14em">{{ t('home.hero2.demo.sparkGemini') }}</text>
-        <text x="14" y="48" class="fill-gray-900 dark:fill-white" font-family="Geist Variable, sans-serif" font-size="22" font-weight="500">186<span class="fill-gray-400 dark:fill-dark-400" font-size="11" font-weight="400">/min</span></text>
-        <path d="M14 150 L34 144 L54 148 L74 138 L94 142 L114 128 L134 134 L154 118 L174 124 L194 108 L214 116 L226 100" fill="none" stroke="#ef6f2e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-        <path d="M14 150 L34 144 L54 148 L74 138 L94 142 L114 128 L134 134 L154 118 L174 124 L194 108 L214 116 L226 100 L226 168 L14 168 Z" fill="url(#sfSparkFill)" />
-        <line x1="14" y1="168" x2="226" y2="168" class="stroke-gray-200 dark:stroke-dark-800" stroke-width="1" />
+        <text x="14" y="22" class="fill-gray-400 dark:fill-dark-400" font-family="Geist Mono Variable, monospace" font-size="9" letter-spacing="0.14em">
+          {{ t(card.labelKey) }}
+        </text>
+        <text x="14" y="50" class="fill-gray-900 dark:fill-white" font-family="Geist Variable, sans-serif" font-size="24" font-weight="500">
+          {{ card.current }}<tspan class="fill-gray-400 dark:fill-dark-400" font-size="11" font-weight="400">/min</tspan>
+        </text>
+        <text x="226" y="48" text-anchor="end" class="fill-emerald-600 dark:fill-emerald-400" font-family="Geist Mono Variable, ui-monospace, monospace" font-size="10">
+          {{ card.delta }}
+        </text>
+
+        <g class="stroke-gray-200 dark:stroke-dark-800" stroke-width="0.75" opacity="0.8">
+          <line x1="18" y1="82" x2="222" y2="82" stroke-dasharray="2 5" />
+          <line x1="18" y1="112" x2="222" y2="112" stroke-dasharray="2 5" />
+          <line x1="18" y1="142" x2="222" y2="142" stroke-dasharray="2 5" />
+        </g>
+        <path :d="miniChartAreaPath(card.values)" :fill="card.fill" opacity="0.48" />
+        <path
+          :d="miniChartLinePath(card.values)"
+          fill="none"
+          :stroke="card.stroke"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <g
+          v-for="point in miniChartPoints(card.values)"
+          :key="`${card.key}-${point.label}`"
+          class="sf-mini-chart-point"
+          tabindex="0"
+          :transform="`translate(${point.x},${point.y})`"
+        >
+          <title>{{ `${card.name} ${point.label}: ${point.value}/min` }}</title>
+          <line y1="-64" y2="28" class="sf-mini-chart-crosshair" />
+          <circle class="sf-mini-chart-hit" r="8" fill="transparent" />
+          <circle r="3" :fill="card.stroke" />
+          <g class="sf-mini-chart-tooltip" :transform="point.x > 160 ? 'translate(-70,-42)' : 'translate(10,-42)'">
+            <rect width="62" height="30" rx="4" class="fill-gray-950/95 dark:fill-white/95" />
+            <text x="8" y="12" class="fill-gray-300 dark:fill-gray-500" font-family="Geist Mono Variable, ui-monospace, monospace" font-size="8">{{ point.label }}</text>
+            <text x="8" y="24" class="fill-white dark:fill-gray-950" font-family="Geist Mono Variable, ui-monospace, monospace" font-size="10">{{ point.value }}/min</text>
+          </g>
+        </g>
+        <line x1="18" y1="156" x2="222" y2="156" class="stroke-gray-200 dark:stroke-dark-800" stroke-width="1" />
+        <g class="fill-gray-400 dark:fill-dark-500" font-family="Geist Mono Variable, ui-monospace, monospace" font-size="8">
+          <text x="18" y="170">{{ miniChartLabels[0] }}</text>
+          <text x="120" y="170" text-anchor="middle">{{ miniChartLabels[3] }}</text>
+          <text x="222" y="170" text-anchor="end">{{ miniChartLabels[7] }}</text>
+        </g>
       </g>
     </g>
   </svg>
@@ -258,4 +278,89 @@ import type { ComposerTranslation } from 'vue-i18n'
 defineProps<{
   t: ComposerTranslation
 }>()
+
+const miniChartLabels = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00']
+const miniChartBounds = {
+  x: 18,
+  y: 74,
+  width: 204,
+  height: 78,
+  baseline: 156
+}
+
+interface MiniChartCard {
+  key: string
+  name: string
+  labelKey: string
+  x: number
+  current: number
+  delta: string
+  stroke: string
+  fill: string
+  values: number[]
+}
+
+const miniChartCards: MiniChartCard[] = [
+  {
+    key: 'claude',
+    name: 'Claude',
+    labelKey: 'home.hero2.demo.sparkClaude',
+    x: 206,
+    current: 428,
+    delta: '+18%',
+    stroke: '#ef6f2e',
+    fill: 'url(#sfSparkFill)',
+    values: [314, 332, 349, 371, 366, 397, 412, 428]
+  },
+  {
+    key: 'openai',
+    name: 'OpenAI',
+    labelKey: 'home.hero2.demo.sparkOpenai',
+    x: 460,
+    current: 312,
+    delta: '+11%',
+    stroke: '#10b981',
+    fill: 'rgba(16,185,129,0.18)',
+    values: [246, 238, 264, 252, 286, 301, 294, 312]
+  },
+  {
+    key: 'gemini',
+    name: 'Gemini',
+    labelKey: 'home.hero2.demo.sparkGemini',
+    x: 714,
+    current: 186,
+    delta: '+7%',
+    stroke: '#38bdf8',
+    fill: 'rgba(56,189,248,0.16)',
+    values: [126, 141, 133, 152, 148, 169, 158, 186]
+  }
+]
+
+function miniChartPoints(values: number[]) {
+  const min = Math.min(...values)
+  const max = Math.max(...values)
+  const range = Math.max(max - min, 1)
+  return values.map((value, index) => ({
+    label: miniChartLabels[index],
+    value,
+    x: miniChartBounds.x + (index / (values.length - 1)) * miniChartBounds.width,
+    y: miniChartBounds.y + (1 - (value - min) / range) * miniChartBounds.height
+  }))
+}
+
+function miniChartLinePath(values: number[]) {
+  return miniChartPoints(values)
+    .map((point, index) => `${index === 0 ? 'M' : 'L'}${point.x.toFixed(1)} ${point.y.toFixed(1)}`)
+    .join(' ')
+}
+
+function miniChartAreaPath(values: number[]) {
+  const points = miniChartPoints(values)
+  const line = points
+    .map((point, index) => `${index === 0 ? 'M' : 'L'}${point.x.toFixed(1)} ${point.y.toFixed(1)}`)
+    .join(' ')
+  const first = points[0]
+  const last = points[points.length - 1]
+  return `${line} L${last.x.toFixed(1)} ${miniChartBounds.baseline} L${first.x.toFixed(1)} ${miniChartBounds.baseline} Z`
+}
 </script>

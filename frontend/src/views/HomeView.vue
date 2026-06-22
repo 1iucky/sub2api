@@ -17,12 +17,11 @@
     v-else
     class="relative flex min-h-screen flex-col overflow-x-hidden bg-gray-50 dark:bg-dark-950"
   >
-    <!-- Backdrop: blueprint line-grid (factory signature), confined to the
-         first screen (nav + hero). From the marquee downward the surface is
-         clean near-black / warm off-white — NO grid. The dense variant +
-         radial vignette fade the grid out before the marquee. -->
+    <!-- Backdrop: Factory-inspired ambient grid, confined to the first
+         screen. From the marquee downward the surface is clean near-black /
+         warm off-white. -->
     <div
-      class="bg-blueprint-fade pointer-events-none absolute inset-x-0 top-0 h-screen bg-blueprint-dense"
+      class="bg-blueprint-fade bg-factory-surface-grid pointer-events-none absolute inset-x-0 top-0 h-screen"
     ></div>
 
     <!-- ============================ NAV ============================ -->
@@ -237,29 +236,159 @@
       </div>
     </section>
 
-    <!-- ============================ LOGO MARQUEE ============================ -->
+    <!-- ============================ COMPATIBILITY MARQUEES ============================ -->
     <section class="relative z-10 overflow-hidden border-y border-dashed border-gray-200 py-6 dark:border-dark-800">
       <div class="mx-auto mb-4 flex max-w-[1920px] items-center gap-3 px-4 lg:px-9">
-        <span class="eyebrow whitespace-nowrap">{{ t('home.marquee2.label') }}</span>
+        <span class="eyebrow whitespace-nowrap">{{ t('home.marquee2.providersLabel') }}</span>
         <span class="h-px flex-1 bg-gray-200 dark:bg-dark-800"></span>
       </div>
       <div class="sf-marquee relative overflow-hidden">
-        <div class="sf-marquee-track flex w-max items-center gap-12 pr-12">
-          <!-- duplicated track for seamless loop -->
-          <template v-for="n in 2" :key="n">
+        <div class="sf-marquee-track flex w-max items-center gap-4 pr-4">
+          <template v-for="n in 3" :key="`provider-${n}`">
             <span
-              v-for="(item, idx) in marqueeItems"
-              :key="`${n}-${idx}`"
-              class="group inline-flex items-center gap-2 whitespace-nowrap font-mono text-[14px] uppercase tracking-[-0.01em] text-gray-400 transition-colors duration-200 hover:text-primary-500 dark:text-dark-400"
+              v-for="item in providerMarqueeItems"
+              :key="`provider-${n}-${item.name}`"
+              class="sf-logo-pill group"
             >
-              <span class="inline-block h-1.5 w-1.5 rounded-full bg-primary-500/60 group-hover:bg-primary-500"></span>
-              {{ item }}
+              <span :class="['sf-brand-mark', `sf-brand-mark--${item.tone}`]">{{ item.mark }}</span>
+              <span>{{ item.name }}</span>
             </span>
           </template>
         </div>
-        <!-- edge fades -->
         <div class="sf-marquee-fade pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-gray-50 to-transparent dark:from-dark-950"></div>
         <div class="sf-marquee-fade pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-gray-50 to-transparent dark:from-dark-950"></div>
+      </div>
+
+      <div class="mx-auto mb-4 mt-7 flex max-w-[1920px] items-center gap-3 px-4 lg:px-9">
+        <span class="eyebrow whitespace-nowrap">{{ t('home.marquee2.toolsLabel') }}</span>
+        <span class="h-px flex-1 bg-gray-200 dark:bg-dark-800"></span>
+      </div>
+      <div class="sf-marquee relative overflow-hidden">
+        <div class="sf-marquee-track sf-marquee-track--reverse flex w-max items-center gap-4 pr-4">
+          <template v-for="n in 3" :key="`tool-${n}`">
+            <span
+              v-for="item in toolMarqueeItems"
+              :key="`tool-${n}-${item.name}`"
+              class="sf-logo-pill group"
+            >
+              <span :class="['sf-brand-mark', `sf-brand-mark--${item.tone}`]">{{ item.mark }}</span>
+              <span>{{ item.name }}</span>
+            </span>
+          </template>
+        </div>
+        <div class="sf-marquee-fade pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-gray-50 to-transparent dark:from-dark-950"></div>
+        <div class="sf-marquee-fade pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-gray-50 to-transparent dark:from-dark-950"></div>
+      </div>
+    </section>
+
+    <!-- ============================ DEFINING ============================ -->
+    <section class="relative z-10 mx-auto w-full max-w-[1920px] px-4 py-20 lg:px-9 lg:py-28">
+      <div class="mb-10 lg:mb-14">
+        <h2 class="max-w-[22ch] text-[clamp(30px,4.4vw,52px)] font-normal leading-[110%] tracking-[-0.035em] text-gray-900 lg:tracking-[-0.05em] dark:text-white">
+          {{ t('home.defining2.title') }}
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <article v-reveal :style="{ '--sf-delay': '0ms' }" class="sf-defining-card">
+          <p class="font-mono text-[12px] text-primary-500">{{ t('home.defining2.cards.models.index') }}</p>
+          <h3 class="mt-3 text-xl font-normal tracking-tight text-gray-900 dark:text-white">
+            {{ t('home.defining2.cards.models.title') }}
+          </h3>
+          <div class="sf-defining-radar mt-9">
+            <svg viewBox="0 0 320 280" class="h-full w-full" aria-hidden="true">
+              <g transform="translate(160 132)">
+                <g class="sf-model-radar-grid">
+                  <polygon points="0,-92 80,-46 80,46 0,92 -80,46 -80,-46" />
+                  <polygon points="0,-69 60,-34.5 60,34.5 0,69 -60,34.5 -60,-34.5" />
+                  <polygon points="0,-46 40,-23 40,23 0,46 -40,23 -40,-23" />
+                  <polygon points="0,-23 20,-11.5 20,11.5 0,23 -20,11.5 -20,-11.5" />
+                  <line x1="0" y1="-92" x2="0" y2="92" />
+                  <line x1="80" y1="-46" x2="-80" y2="46" />
+                  <line x1="80" y1="46" x2="-80" y2="-46" />
+                </g>
+                <polygon class="sf-model-radar-model sf-model-radar-model--a" points="0,-87 58,-36 58,31 0,46 -66,38 -58,-31" />
+                <polygon class="sf-model-radar-model sf-model-radar-model--b" points="0,-72 50,-26 69,39 0,56 -46,25 -68,-39" />
+                <polygon class="sf-model-radar-model sf-model-radar-model--c" points="0,-58 42,-20 47,27 0,61 -53,30 -38,-22" />
+                <polygon class="sf-model-radar-best-path" points="0,-88 73,-42 67,38 0,78 -72,42 -75,-43" />
+                <polygon class="sf-model-radar-best-path sf-model-radar-best-path--runner" points="0,-88 73,-42 67,38 0,78 -72,42 -75,-43" />
+                <g class="sf-model-radar-best-dots">
+                  <circle cx="0" cy="-88" r="3" />
+                  <circle cx="73" cy="-42" r="3" />
+                  <circle cx="67" cy="38" r="3" />
+                  <circle cx="0" cy="78" r="3" />
+                  <circle cx="-72" cy="42" r="3" />
+                  <circle cx="-75" cy="-43" r="3" />
+                </g>
+              </g>
+              <g font-family="Geist Mono Variable, ui-monospace, monospace" font-size="10" class="fill-gray-500 dark:fill-dark-400">
+                <text x="142" y="18">{{ t('home.defining2.cards.models.axes.coding') }}</text>
+                <text x="236" y="82">{{ t('home.defining2.cards.models.axes.reasoning') }}</text>
+                <text x="236" y="180">{{ t('home.defining2.cards.models.axes.speed') }}</text>
+                <text x="146" y="252">{{ t('home.defining2.cards.models.axes.cost') }}</text>
+                <text x="24" y="180">{{ t('home.defining2.cards.models.axes.context') }}</text>
+                <text x="42" y="82">{{ t('home.defining2.cards.models.axes.tools') }}</text>
+              </g>
+            </svg>
+          </div>
+          <div class="sf-model-radar-legend mt-7">
+            <span><i class="sf-model-radar-legend-line sf-model-radar-legend-line--a"></i>{{ t('home.defining2.cards.models.legend.primary') }}</span>
+            <span><i class="sf-model-radar-legend-line sf-model-radar-legend-line--b"></i>{{ t('home.defining2.cards.models.legend.backup') }}</span>
+            <span><i class="sf-model-radar-legend-line sf-model-radar-legend-line--c"></i>{{ t('home.defining2.cards.models.legend.third') }}</span>
+            <span class="text-primary-500"><i class="sf-model-radar-legend-line sf-model-radar-legend-line--best"></i>{{ t('home.defining2.cards.models.legend.best') }}</span>
+          </div>
+        </article>
+
+        <article v-reveal :style="{ '--sf-delay': '120ms' }" class="sf-defining-card">
+          <p class="font-mono text-[12px] text-primary-500">{{ t('home.defining2.cards.runtime.index') }}</p>
+          <h3 class="mt-3 text-xl font-normal tracking-tight text-gray-900 dark:text-white">
+            {{ t('home.defining2.cards.runtime.title') }}
+          </h3>
+          <div class="mt-9 flex flex-1 flex-col">
+            <div
+              v-for="row in runtimeRows"
+              :key="row.key"
+              class="flex items-center justify-between border-t border-gray-200 py-4 first:border-t-0 dark:border-dark-800"
+            >
+              <div>
+                <p class="text-[15px] text-gray-900 dark:text-white">{{ t(`home.defining2.cards.runtime.rows.${row.key}.title`) }}</p>
+                <p class="mt-1 font-mono text-[12px] text-gray-500 dark:text-dark-400">{{ t(`home.defining2.cards.runtime.rows.${row.key}.desc`) }}</p>
+              </div>
+              <Icon name="check" size="sm" class="text-primary-500" />
+            </div>
+          </div>
+          <p class="mt-auto pt-7 font-mono text-[12px] text-gray-500 dark:text-dark-400">
+            {{ t('home.defining2.cards.runtime.note') }}
+          </p>
+        </article>
+
+        <article v-reveal :style="{ '--sf-delay': '240ms' }" class="sf-defining-card">
+          <p class="font-mono text-[12px] text-primary-500">{{ t('home.defining2.cards.workflow.index') }}</p>
+          <h3 class="mt-3 text-xl font-normal tracking-tight text-gray-900 dark:text-white">
+            {{ t('home.defining2.cards.workflow.title') }}
+          </h3>
+          <div class="sf-sdlc-orbit mt-8">
+            <svg class="sf-sdlc-path" viewBox="0 0 340 340" aria-hidden="true">
+              <circle cx="170" cy="170" r="138" />
+            </svg>
+            <span class="sf-sdlc-center">{{ t('home.defining2.cards.workflow.center') }}</span>
+            <div class="sf-sdlc-orbit-stage">
+              <span
+                v-for="(node, index) in workflowNodes"
+                :key="node.key"
+                class="sf-sdlc-node-anchor"
+                :style="{ '--sf-node-angle': `${node.angle}deg`, '--sf-node-angle-inverse': `${-node.angle}deg`, '--sf-node-delay': `${index * 160}ms` }"
+              >
+                <span class="sf-sdlc-node">
+                  {{ t(`home.defining2.cards.workflow.nodes.${node.key}`) }}
+                </span>
+              </span>
+            </div>
+          </div>
+          <p class="mt-auto pt-7 font-mono text-[12px] leading-relaxed text-gray-500 dark:text-dark-400">
+            {{ t('home.defining2.cards.workflow.note') }}
+          </p>
+        </article>
       </div>
     </section>
 
@@ -493,8 +622,59 @@ const userInitial = computed(() => {
   return user.email.charAt(0).toUpperCase()
 })
 
-// Marquee items — upstream providers row
-const marqueeItems = computed(() => t('home.marquee2.items').split('·').map((s) => s.trim()))
+type LogoTone = 'warm' | 'green' | 'blue' | 'violet' | 'slate'
+interface LogoMarqueeItem {
+  name: string
+  mark: string
+  tone: LogoTone
+}
+
+const providerMarqueeItems: LogoMarqueeItem[] = [
+  { name: 'Claude', mark: '✦', tone: 'warm' },
+  { name: 'OpenAI', mark: 'OA', tone: 'green' },
+  { name: 'Gemini', mark: 'G', tone: 'blue' },
+  { name: 'Bedrock', mark: 'AWS', tone: 'slate' },
+  { name: 'Antigravity', mark: 'AG', tone: 'violet' },
+  { name: 'DeepSeek', mark: 'DS', tone: 'blue' },
+  { name: 'Moonshot', mark: 'K', tone: 'slate' },
+  { name: 'Qwen', mark: 'Q', tone: 'violet' },
+  { name: 'OpenRouter', mark: 'OR', tone: 'green' }
+]
+
+const toolMarqueeItems: LogoMarqueeItem[] = [
+  { name: 'Claude Code', mark: 'CC', tone: 'warm' },
+  { name: 'Codex', mark: 'CX', tone: 'green' },
+  { name: 'OpenCode', mark: 'OC', tone: 'slate' },
+  { name: 'Trae', mark: 'T', tone: 'violet' },
+  { name: 'WorkBuddy', mark: 'WB', tone: 'blue' },
+  { name: 'Cursor', mark: '↗', tone: 'slate' },
+  { name: 'Windsurf', mark: 'W', tone: 'blue' },
+  { name: 'Cline', mark: 'CL', tone: 'green' },
+  { name: 'Roo Code', mark: 'RC', tone: 'warm' },
+  { name: 'Aider', mark: 'AI', tone: 'violet' },
+  { name: 'GitHub Copilot', mark: 'GH', tone: 'slate' },
+  { name: 'Gemini CLI', mark: 'G', tone: 'blue' },
+  { name: 'Continue', mark: 'CT', tone: 'green' },
+  { name: 'Zed', mark: 'Z', tone: 'slate' }
+]
+
+const runtimeRows = [
+  { key: 'saas' },
+  { key: 'hybrid' },
+  { key: 'selfHosted' },
+  { key: 'isolated' }
+] as const
+
+const workflowNodes = [
+  { key: 'plan', angle: -90 },
+  { key: 'execute', angle: -45 },
+  { key: 'validate', angle: 0 },
+  { key: 'ship', angle: 45 },
+  { key: 'monitor', angle: 90 },
+  { key: 'automate', angle: 135 },
+  { key: 'signal', angle: 180 },
+  { key: 'triage', angle: -135 }
+] as const
 
 // Nav scroll state (subtle border + backdrop on scroll)
 const mobileOpen = ref(false)
