@@ -1,0 +1,12 @@
+{"file": ".trellis/spec/frontend/index.md", "reason": "Frontend scope touches layout, routing, pages, API clients, and i18n."}
+{"file": ".trellis/spec/frontend/component-guidelines.md", "reason": "New and modified Vue components should follow local component patterns."}
+{"file": ".trellis/spec/frontend/type-safety.md", "reason": "New API DTOs and model catalog types need typed frontend contracts."}
+{"file": ".trellis/spec/frontend/state-management.md", "reason": "Theme state and page data loading should respect existing state-management conventions."}
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "Frontend quality requirements for implementation and verification."}
+{"file": ".trellis/spec/backend/index.md", "reason": "Backend scope may add schema, service, and handler APIs for model catalog."}
+{"file": ".trellis/spec/backend/database-guidelines.md", "reason": "Model catalog persistence will need Ent schema and migration awareness."}
+{"file": ".trellis/spec/backend/error-handling.md", "reason": "New admin/user APIs should use project error-handling conventions."}
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "Backend quality requirements for implementation and tests."}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "Feature spans database, service, API, router, i18n, and frontend UI."}
+{"file": ".trellis/spec/guides/code-reuse-thinking-guide.md", "reason": "Theme, channel status, and model display should reuse existing helpers and patterns."}
+{"file": ".trellis/tasks/06-23-console-status-model-catalog/research/cosphere-model-pages.md", "reason": "Reference implementation patterns for model management and marketplace."}

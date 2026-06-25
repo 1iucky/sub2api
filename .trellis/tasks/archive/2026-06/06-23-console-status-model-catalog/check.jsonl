@@ -1,0 +1,10 @@
+{"file": ".trellis/spec/frontend/index.md", "reason": "Verify frontend changes against project guidance."}
+{"file": ".trellis/spec/frontend/component-guidelines.md", "reason": "Review Vue component structure and reuse."}
+{"file": ".trellis/spec/frontend/type-safety.md", "reason": "Review frontend API/type safety."}
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "Frontend lint/test quality gate."}
+{"file": ".trellis/spec/backend/index.md", "reason": "Verify backend changes against project guidance."}
+{"file": ".trellis/spec/backend/database-guidelines.md", "reason": "Review schema/persistence changes if implemented."}
+{"file": ".trellis/spec/backend/error-handling.md", "reason": "Review API error behavior."}
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "Backend lint/test quality gate."}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "Check end-to-end data flow consistency."}
+{"file": ".trellis/spec/guides/code-reuse-thinking-guide.md", "reason": "Check for unnecessary duplication and missed reuse."}
