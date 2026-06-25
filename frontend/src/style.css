@@ -74,11 +74,21 @@
   }
 
   .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 whitespace-nowrap;
+    @apply rounded-sm px-4 py-2 text-sm font-medium leading-5;
+    @apply transition-colors duration-150 ease-in-out;
+    @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500;
+    @apply disabled:cursor-not-allowed disabled:opacity-50;
     @apply bg-primary-500 text-white;
     @apply hover:bg-primary-600;
   }
 
   .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 whitespace-nowrap;
+    @apply rounded-sm px-4 py-2 text-sm font-medium leading-5;
+    @apply transition-colors duration-150 ease-in-out;
+    @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500;
+    @apply disabled:cursor-not-allowed disabled:opacity-50;
     @apply bg-white text-gray-800;
     @apply border border-gray-300;
     @apply hover:bg-gray-100 hover:text-gray-950;
@@ -87,21 +97,41 @@
   }
 
   .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 whitespace-nowrap;
+    @apply rounded-sm px-4 py-2 text-sm font-medium leading-5;
+    @apply transition-colors duration-150 ease-in-out;
+    @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500;
+    @apply disabled:cursor-not-allowed disabled:opacity-50;
     @apply bg-transparent text-gray-600 dark:text-gray-300;
     @apply hover:bg-gray-100 dark:hover:bg-dark-800;
   }
 
   .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 whitespace-nowrap;
+    @apply rounded-sm px-4 py-2 text-sm font-medium leading-5;
+    @apply transition-colors duration-150 ease-in-out;
+    @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500;
+    @apply disabled:cursor-not-allowed disabled:opacity-50;
     @apply bg-red-500 text-white;
     @apply hover:bg-red-600;
   }
 
   .btn-success {
+    @apply inline-flex items-center justify-center gap-2 whitespace-nowrap;
+    @apply rounded-sm px-4 py-2 text-sm font-medium leading-5;
+    @apply transition-colors duration-150 ease-in-out;
+    @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500;
+    @apply disabled:cursor-not-allowed disabled:opacity-50;
     @apply bg-emerald-500 text-white;
     @apply hover:bg-emerald-600;
   }
 
   .btn-warning {
+    @apply inline-flex items-center justify-center gap-2 whitespace-nowrap;
+    @apply rounded-sm px-4 py-2 text-sm font-medium leading-5;
+    @apply transition-colors duration-150 ease-in-out;
+    @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500;
+    @apply disabled:cursor-not-allowed disabled:opacity-50;
     @apply bg-amber-500 text-white;
     @apply hover:bg-amber-600;
   }
@@ -133,7 +163,7 @@
   }
 
   .btn-sm {
-    @apply rounded-sm px-3 py-1.5 text-xs;
+    @apply rounded-sm px-3 py-1.5 text-xs leading-4;
   }
 
   .btn-md {
@@ -145,7 +175,7 @@
   }
 
   .btn-icon {
-    @apply rounded-sm p-2.5;
+    @apply shrink-0 rounded-sm p-2.5;
   }
 
   /* ============ 输入框样式 ============ */
@@ -520,7 +550,7 @@
   /* ============ 侧边栏 ============ */
   .sidebar {
     @apply fixed inset-y-0 left-0 z-40;
-    @apply w-64 bg-white dark:bg-dark-950;
+    @apply w-64 bg-white dark:bg-dark-900;
     @apply border-r border-gray-200 dark:border-dark-800;
     @apply flex flex-col;
     @apply transition-transform duration-300;

@@ -136,17 +136,27 @@
 
         <!-- Desktop nav links + actions -->
         <div class="hidden items-center gap-6 md:flex">
-          <a
-            v-if="docUrl"
-            :href="docUrl"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="font-mono text-[12px] uppercase tracking-[0.14em] text-gray-500 transition-colors duration-200 hover:text-primary-500 dark:text-dark-400"
-          >{{ t('home.nav.docs') }}</a>
+          <div class="home-nav-hover-group flex items-center gap-6">
+            <a
+              v-if="docUrl"
+              :href="docUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="home-nav-link font-mono text-[12px] uppercase tracking-[0.14em] text-gray-700 transition-colors duration-200 hover:text-primary-500 dark:text-gray-200"
+            >{{ t('home.nav.docs') }}</a>
+            <router-link
+              to="/status"
+              class="home-nav-link font-mono text-[12px] uppercase tracking-[0.14em] text-gray-800 transition-colors duration-200 hover:text-primary-500 dark:text-gray-100"
+            >{{ t('home.nav.status') }}</router-link>
+            <router-link
+              to="/models"
+              class="home-nav-link font-mono text-[12px] uppercase tracking-[0.14em] text-gray-800 transition-colors duration-200 hover:text-primary-500 dark:text-gray-100"
+            >{{ t('home.nav.models') }}</router-link>
+          </div>
           <LocaleSwitcher />
           <button
             @click="toggleTheme"
-            class="rounded-sm p-1.5 text-gray-500 transition-colors duration-150 hover:bg-gray-100 hover:text-gray-900 dark:text-dark-400 dark:hover:bg-dark-800 dark:hover:text-white"
+            class="rounded-sm p-1.5 text-gray-700 transition-colors duration-150 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-200 dark:hover:bg-dark-800 dark:hover:text-white"
             :title="isDark ? t('home.switchToLight') : t('home.switchToDark')"
             :aria-label="isDark ? t('home.switchToLight') : t('home.switchToDark')"
           >
@@ -176,7 +186,7 @@
           <LocaleSwitcher />
           <button
             @click="toggleTheme"
-            class="rounded-sm p-1.5 text-gray-500 transition-colors duration-150 hover:bg-gray-100 hover:text-gray-900 dark:text-dark-400 dark:hover:bg-dark-800 dark:hover:text-white"
+            class="rounded-sm p-1.5 text-gray-700 transition-colors duration-150 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-200 dark:hover:bg-dark-800 dark:hover:text-white"
             :aria-label="isDark ? t('home.switchToLight') : t('home.switchToDark')"
           >
             <Icon v-if="isDark" name="sun" size="md" />
@@ -228,6 +238,16 @@
               rel="noopener noreferrer"
               class="rounded-sm px-3 py-2 font-mono text-[12px] uppercase tracking-[0.12em] text-gray-600 transition-colors duration-150 hover:bg-gray-100 hover:text-gray-900 dark:text-dark-300 dark:hover:bg-dark-800 dark:hover:text-white"
             >{{ t('home.nav.docs') }}</a>
+            <router-link
+              to="/status"
+              class="rounded-sm px-3 py-2 font-mono text-[12px] uppercase tracking-[0.12em] text-gray-600 transition-colors duration-150 hover:bg-gray-100 hover:text-gray-900 dark:text-dark-300 dark:hover:bg-dark-800 dark:hover:text-white"
+              @click="mobileOpen = false"
+            >{{ t('home.nav.status') }}</router-link>
+            <router-link
+              to="/models"
+              class="rounded-sm px-3 py-2 font-mono text-[12px] uppercase tracking-[0.12em] text-gray-600 transition-colors duration-150 hover:bg-gray-100 hover:text-gray-900 dark:text-dark-300 dark:hover:bg-dark-800 dark:hover:text-white"
+              @click="mobileOpen = false"
+            >{{ t('home.nav.models') }}</router-link>
             <router-link
               :to="isAuthenticated ? dashboardPath : '/login'"
               class="mt-2 inline-flex items-center justify-center rounded-sm border border-dark-800 bg-dark-950 px-3 py-2 font-mono text-[12px] uppercase tracking-[0.12em] text-white dark:border-dark-700 dark:bg-dark-900"
@@ -555,84 +575,7 @@
       </div>
     </section>
 
-    <!-- ============================ FOOTER PANEL ============================ -->
-    <footer class="relative z-10 mx-auto w-full max-w-[1920px] px-4 pb-10 lg:px-9">
-      <div
-        class="rounded-lg border border-gray-200 bg-white px-6 py-10 dark:border-dark-800 dark:bg-dark-900 lg:px-10 lg:py-12"
-      >
-        <div class="grid grid-cols-2 gap-8 lg:grid-cols-12 lg:gap-6">
-          <!-- Brand block -->
-          <div class="col-span-2 flex flex-col gap-3 lg:col-span-4">
-            <div class="flex items-center gap-2.5">
-              <span class="block h-6 w-6 overflow-hidden rounded-sm">
-                <img :src="siteLogo || '/logo.svg'" alt="" class="h-full w-full object-contain" />
-              </span>
-              <span class="font-mono text-[13px] uppercase tracking-[0.14em] text-gray-900 dark:text-gray-100">SiliconBase</span>
-            </div>
-            <p class="max-w-[36ch] font-mono text-[12px] uppercase tracking-[0.12em] text-gray-500 dark:text-dark-400">
-              {{ t('home.footer2.tagline') }}
-            </p>
-            <a
-              :href="githubUrl"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="font-mono text-[12px] uppercase tracking-[0.12em] text-primary-500 transition-colors duration-200 hover:text-primary-400"
-            >{{ t('home.footer2.domain') }}</a>
-          </div>
-
-          <!-- Resources column -->
-          <div class="flex flex-col gap-3 lg:col-span-3 lg:col-start-7">
-            <p class="eyebrow">{{ t('home.footer2.columns.resources') }}</p>
-            <a
-              v-if="docUrl"
-              :href="docUrl"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="font-mono text-[13px] tracking-[-0.01em] text-gray-600 transition-colors duration-200 hover:text-primary-500 dark:text-dark-300"
-            >{{ t('home.footer2.links.docs') }}</a>
-            <a
-              :href="githubUrl"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="font-mono text-[13px] tracking-[-0.01em] text-gray-600 transition-colors duration-200 hover:text-primary-500 dark:text-dark-300"
-            >{{ t('home.footer2.links.status') }}</a>
-            <a
-              :href="githubUrl"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="font-mono text-[13px] tracking-[-0.01em] text-gray-600 transition-colors duration-200 hover:text-primary-500 dark:text-dark-300"
-            >{{ t('home.footer2.links.changelog') }}</a>
-          </div>
-
-          <!-- Legal column -->
-          <div class="flex flex-col gap-3 lg:col-span-3">
-            <p class="eyebrow">{{ t('home.footer2.columns.legal') }}</p>
-            <a
-              :href="githubUrl"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="font-mono text-[13px] tracking-[-0.01em] text-gray-600 transition-colors duration-200 hover:text-primary-500 dark:text-dark-300"
-            >{{ t('home.footer2.links.privacy') }}</a>
-            <a
-              :href="githubUrl"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="font-mono text-[13px] tracking-[-0.01em] text-gray-600 transition-colors duration-200 hover:text-primary-500 dark:text-dark-300"
-            >{{ t('home.footer2.links.terms') }}</a>
-          </div>
-        </div>
-
-        <!-- Bottom row -->
-        <div class="mt-10 flex flex-col items-start justify-between gap-3 border-t border-dashed border-gray-200 pt-6 dark:border-dark-800 md:flex-row md:items-center">
-          <p class="font-mono text-[11px] uppercase tracking-[0.12em] text-gray-500 dark:text-dark-400">
-            {{ t('home.footer2.copyright') }}
-          </p>
-          <p class="font-mono text-[11px] uppercase tracking-[0.12em] text-gray-400 dark:text-dark-400">
-            {{ t('home.footer2.domain') }}
-          </p>
-        </div>
-      </div>
-    </footer>
+    <PublicFooter :doc-url="docUrl" :site-logo="siteLogo" />
   </div>
 </template>
 
@@ -641,9 +584,11 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore, useAppStore } from '@/stores'
 import { useBrandHover } from '@/composables/useBrandHover'
+import { useTheme } from '@/composables/useTheme'
 import LocaleSwitcher from '@/components/common/LocaleSwitcher.vue'
 import Icon from '@/components/icons/Icon.vue'
 import { sanitizeUrl } from '@/utils/url'
+import PublicFooter from '@/components/home/PublicFooter.vue'
 import GatewayDashboard from '@/components/home/GatewayDashboard.vue'
 import PoolingChart from '@/components/home/PoolingChart.vue'
 import RoutingDiagram from '@/components/home/RoutingDiagram.vue'
@@ -680,10 +625,7 @@ const isHomeContentUrl = computed(() => {
 })
 
 // Theme
-const isDark = ref(document.documentElement.classList.contains('dark'))
-
-// Brand / marketing URL
-const githubUrl = 'https://siliconbase.link'
+const { isDark, toggleTheme, syncThemeFromDocument } = useTheme()
 
 // Auth state
 const isAuthenticated = computed(() => authStore.isAuthenticated)
@@ -756,16 +698,9 @@ function handleScroll() {
   navScrolled.value = window.scrollY > 8
 }
 
-// Toggle theme
-function toggleTheme() {
-  isDark.value = !isDark.value
-  document.documentElement.classList.toggle('dark', isDark.value)
-  localStorage.setItem('theme', isDark.value ? 'dark' : 'light')
-}
-
 onMounted(() => {
   // Theme is already bootstrapped by main.ts initThemeClass(); sync local ref.
-  isDark.value = document.documentElement.classList.contains('dark')
+  syncThemeFromDocument()
 
   // Auth + settings (kept from original logic)
   authStore.checkAuth()
@@ -810,5 +745,9 @@ onBeforeUnmount(() => {
   .sf-drawer-leave-active .sf-drawer-panel {
     transition: none;
   }
+}
+
+.home-nav-hover-group:hover .home-nav-link:not(:hover) {
+  opacity: 0.42;
 }
 </style>

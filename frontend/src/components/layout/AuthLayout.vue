@@ -12,6 +12,10 @@
       <div class="absolute inset-4 border border-gray-200/60 dark:border-dark-700/60"></div>
     </div>
 
+    <div class="absolute right-5 top-5 z-20 sm:right-6 sm:top-6">
+      <LocaleSwitcher />
+    </div>
+
     <!-- Content Container -->
     <div class="relative z-10 w-full max-w-md">
       <!-- Logo/Brand -->
@@ -31,12 +35,14 @@
           >
             <img :src="siteLogo || '/logo.svg'" alt="Logo" class="h-full w-full object-contain" />
           </div>
-          <div class="eyebrow mb-2">SiliconBase</div>
-          <h1 class="mb-2 text-2xl font-normal tracking-tight text-gray-900 dark:text-gray-100">
-            <span class="sr-only">{{ siteName }}</span>
+          <h1
+            v-if="displaySiteName"
+            class="mb-2 text-2xl font-normal tracking-tight text-gray-900 dark:text-gray-100"
+          >
+            <span class="sr-only">{{ displaySiteName }}</span>
             <span aria-hidden="true">
               <span
-                v-for="(ch, i) in siteName"
+                v-for="(ch, i) in displaySiteName"
                 :key="i"
                 class="brand-hover__letter"
                 :style="{ '--brand-i': i }"
@@ -73,6 +79,7 @@ import { computed, onMounted } from 'vue'
 import { useAppStore } from '@/stores'
 import { sanitizeUrl } from '@/utils/url'
 import { useBrandHover } from '@/composables/useBrandHover'
+import LocaleSwitcher from '@/components/common/LocaleSwitcher.vue'
 
 const appStore = useAppStore()
 
@@ -84,6 +91,10 @@ const appStore = useAppStore()
 const { brandClass, onEnter, onLeave } = useBrandHover()
 
 const siteName = computed(() => appStore.siteName || 'SiliconBase')
+const displaySiteName = computed(() => {
+  const configuredName = appStore.cachedPublicSettings?.site_name?.trim() || ''
+  return configuredName && configuredName !== 'SiliconBase' ? configuredName : ''
+})
 const siteLogo = computed(() => sanitizeUrl(appStore.siteLogo || '', { allowRelative: true, allowDataUrl: true }))
 const siteSubtitle = computed(() => appStore.cachedPublicSettings?.site_subtitle || 'Subscription to API Conversion Platform')
 const settingsLoaded = computed(() => appStore.publicSettingsLoaded)

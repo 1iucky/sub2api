@@ -79,22 +79,46 @@
 
       <div>
         <label class="input-label">{{ t('admin.channelMonitor.form.primaryModel') }} <span class="text-red-500">*</span></label>
-        <input
+        <Select
           v-model="form.primary_model"
           data-testid="monitor-primary-model"
-          type="text"
-          required
-          class="input font-medium"
-          :class="getPlatformTextClass(form.provider)"
+          :options="modelSelectOptions"
+          searchable
+          creatable
+          :creatable-prefix="t('common.search')"
           :placeholder="t('admin.channelMonitor.form.primaryModelPlaceholder')"
-        />
+        >
+          <template #option="{ option }">
+            <div class="min-w-0 flex-1">
+              <div class="truncate text-sm text-gray-900 dark:text-gray-100">{{ option.label }}</div>
+              <div class="truncate font-mono text-xs text-gray-500 dark:text-dark-400">{{ option.value }}</div>
+            </div>
+          </template>
+        </Select>
       </div>
 
       <div>
         <label class="input-label">{{ t('admin.channelMonitor.form.extraModels') }}</label>
+        <Select
+          :model-value="null"
+          :options="extraModelOptions"
+          searchable
+          clearable
+          creatable
+          :creatable-prefix="t('common.search')"
+          :placeholder="t('admin.channelMonitor.form.extraModelsSelectPlaceholder')"
+          @change="handleExtraModelSelect"
+        >
+          <template #option="{ option }">
+            <div class="min-w-0 flex-1">
+              <div class="truncate text-sm text-gray-900 dark:text-gray-100">{{ option.label }}</div>
+              <div class="truncate font-mono text-xs text-gray-500 dark:text-dark-400">{{ option.value }}</div>
+            </div>
+          </template>
+        </Select>
         <ModelTagInput
           :models="form.extra_models"
-          :platform="form.provider"
+          class="mt-2"
           :placeholder="t('admin.channelMonitor.form.extraModelsPlaceholder')"
           @update:models="form.extra_models = $event"
         />
@@ -115,6 +139,12 @@
         <label class="input-label">{{ t('admin.channelMonitor.form.jitterSeconds') }}</label>
         <input v-model.number="form.jitter_seconds" type="number" min="0" :max="maxJitterSeconds" class="input" />
         <p class="mt-1 text-xs text-gray-400">{{ t('admin.channelMonitor.form.jitterSecondsHint') }}</p>
+      </div>
+
+      <div>
+        <label class="input-label">{{ t('admin.channelMonitor.form.retryCount') }}</label>
+        <input v-model.number="form.retry_count" type="number" min="0" max="5" class="input font-mono tabular-nums" />
+        <p class="mt-1 text-xs text-gray-400">{{ t('admin.channelMonitor.form.retryCountHint') }}</p>
       </div>
 
       <div class="flex items-center justify-between">
@@ -206,11 +236,12 @@ import BaseDialog from '@/components/common/BaseDialog.vue'
 import Toggle from '@/components/common/Toggle.vue'
 import Select from '@/components/common/Select.vue'
 import ModelTagInput from '@/components/admin/channel/ModelTagInput.vue'
-import { getPlatformTextClass } from '@/components/admin/channel/types'
 import MonitorKeyPickerDialog from '@/components/admin/monitor/MonitorKeyPickerDialog.vue'
 import MonitorAdvancedRequestConfig from '@/components/admin/monitor/MonitorAdvancedRequestConfig.vue'
 import ProviderIcon from '@/components/user/monitor/ProviderIcon.vue'
 import { useChannelMonitorFormat } from '@/composables/useChannelMonitorFormat'
+import adminModelsAPI from '@/api/admin/models'
+import type { ModelCatalog } from '@/api/models'
 import {
   PROVIDER_OPENAI,
   PROVIDER_ANTHROPIC,
@@ -266,6 +297,7 @@ interface MonitorForm {
   group_name: string
   interval_seconds: number
   jitter_seconds: number
+  retry_count: number
   enabled: boolean
   // 高级设置快照
   template_id: number | null
@@ -285,6 +317,7 @@ const form = reactive<MonitorForm>({
   group_name: '',
   interval_seconds: systemDefaultInterval.value,
   jitter_seconds: 0,
+  retry_count: 0,
   enabled: true,
   template_id: null,
   extra_headers: {},
@@ -300,6 +333,8 @@ let suppressFormWatchers = false
 // 可用模板列表（进入 dialog 时一次性拉取 cache；按 provider / api mode 过滤）。
 const templatesCache = ref<ChannelMonitorTemplate[]>([])
 const templatesLoading = ref(false)
+const catalogModels = ref<ModelCatalog[]>([])
+const catalogLoading = ref(false)
 
 const templateOptions = computed(() => {
   const items = templatesCache.value.filter((t) => {
@@ -325,6 +360,34 @@ async function loadTemplates() {
   } finally {
     templatesLoading.value = false
   }
+}
+
+async function loadCatalogModels() {
+  if (catalogModels.value.length > 0 || catalogLoading.value) return
+  catalogLoading.value = true
+  try {
+    const res = await adminModelsAPI.list(1, 100, {
+      status: 'active',
+      sort_by: 'model_id',
+      sort_order: 'asc',
+    })
+    catalogModels.value = res.items || []
+  } catch (err: unknown) {
+    console.warn('load model catalog failed', err)
+    catalogModels.value = []
+  } finally {
+    catalogLoading.value = false
+  }
+}
+
+function handleExtraModelSelect(value: string | number | boolean | null) {
+  if (typeof value !== 'string') return
+  const model = value.trim()
+  if (!model) return
+  const normalized = model.toLowerCase()
+  if (form.primary_model.trim().toLowerCase() === normalized) return
+  if (form.extra_models.some(item => item.trim().toLowerCase() === normalized)) return
+  form.extra_models = [...form.extra_models, model]
 }
 
 // 模板下拉绑定：value 是 string（Select 组件约束），需要与 number | null 互转。
@@ -364,6 +427,22 @@ const apiModeOptions = computed<{ value: APIMode; label: string; hint: string }[
     hint: t('admin.channelMonitor.form.apiModeResponsesHint'),
   },
 ])
+
+const modelSelectOptions = computed(() => catalogModels.value.map(model => ({
+  value: model.model_id,
+  label: model.display_name || model.model_id,
+  description: model.model_id,
+  model,
+})))
+
+const extraModelOptions = computed(() => {
+  const selected = new Set(form.extra_models.map(model => model.trim().toLowerCase()).filter(Boolean))
+  const primary = form.primary_model.trim().toLowerCase()
+  return modelSelectOptions.value.filter((option) => {
+    const value = String(option.value).toLowerCase()
+    return value !== primary && !selected.has(value)
+  })
+})
 
 function normalizeAPIMode(mode: APIMode | undefined | null): APIMode {
   return mode === API_MODE_RESPONSES ? API_MODE_RESPONSES : API_MODE_CHAT_COMPLETIONS
@@ -454,6 +533,7 @@ function resetForm() {
   form.group_name = ''
   form.interval_seconds = systemDefaultInterval.value
   form.jitter_seconds = 0
+  form.retry_count = 0
   form.enabled = true
   form.template_id = null
   form.extra_headers = {}
@@ -474,6 +554,7 @@ function loadFromMonitor(m: ChannelMonitor) {
   form.group_name = m.group_name || ''
   form.interval_seconds = m.interval_seconds || systemDefaultInterval.value
   form.jitter_seconds = m.jitter_seconds || 0
+  form.retry_count = m.retry_count ?? 0
   form.enabled = m.enabled
   form.template_id = m.template_id ?? null
   form.extra_headers = { ...(m.extra_headers || {}) }
@@ -489,6 +570,7 @@ watch(
   ([show, m]) => {
     if (!show) return
     void loadTemplates()
+    void loadCatalogModels()
     if (m) loadFromMonitor(m)
     else resetForm()
   },
@@ -541,6 +623,7 @@ function buildPayload(): CreateParams {
     enabled: form.enabled,
     interval_seconds: form.interval_seconds,
     jitter_seconds: form.jitter_seconds || 0,
+    retry_count: Number(form.retry_count) || 0,
     template_id: form.template_id,
     extra_headers: form.extra_headers,
     body_override_mode: form.body_override_mode,

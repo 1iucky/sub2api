@@ -167,6 +167,16 @@ const routes: RouteRecordRaw[] = [
     }
   },
   {
+    path: '/status',
+    name: 'PublicStatus',
+    component: () => import('@/views/StatusView.vue'),
+    meta: {
+      requiresAuth: false,
+      title: 'Channel Status',
+      titleKey: 'channelStatus.title'
+    }
+  },
+  {
     path: '/legal/:documentId',
     name: 'LegalDocument',
     component: () => import('@/views/public/LegalDocumentView.vue'),
@@ -274,6 +284,17 @@ const routes: RouteRecordRaw[] = [
       title: 'Available Channels',
       titleKey: 'availableChannels.title',
       descriptionKey: 'availableChannels.description'
+    }
+  },
+  {
+    path: '/models',
+    name: 'ModelMarketplace',
+    component: () => import('@/views/user/ModelMarketplaceView.vue'),
+    meta: {
+      requiresAuth: false,
+      title: 'Model Marketplace',
+      titleKey: 'models.marketplaceTitle',
+      descriptionKey: 'models.marketplaceDescription'
     }
   },
   {
@@ -487,6 +508,18 @@ const routes: RouteRecordRaw[] = [
       title: 'Channel Monitor',
       titleKey: 'admin.channelMonitor.title',
       descriptionKey: 'admin.channelMonitor.description'
+    }
+  },
+  {
+    path: '/admin/models',
+    name: 'AdminModels',
+    component: () => import('@/views/admin/ModelCatalogView.vue'),
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true,
+      title: 'Model Management',
+      titleKey: 'admin.models.title',
+      descriptionKey: 'admin.models.description'
     }
   },
   {

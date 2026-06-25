@@ -29,23 +29,58 @@ func defaultLoginAgreementDocuments() []LoginAgreementDocument {
 			ID:        "terms",
 			Title:     "服务条款",
 			ContentMD: "",
+			TitleI18n: map[string]string{
+				"zh": "服务条款",
+				"en": "Terms of Service",
+			},
+			ContentI18n: map[string]string{"zh": "", "en": ""},
 		},
 		{
 			ID:        "usage-policy",
 			Title:     "使用政策",
 			ContentMD: "",
+			TitleI18n: map[string]string{
+				"zh": "使用政策",
+				"en": "Usage Policies",
+			},
+			ContentI18n: map[string]string{"zh": "", "en": ""},
 		},
 		{
 			ID:        "supported-regions",
 			Title:     "支持的国家和地区",
 			ContentMD: "",
+			TitleI18n: map[string]string{
+				"zh": "支持的国家和地区",
+				"en": "Supported Countries and Regions",
+			},
+			ContentI18n: map[string]string{"zh": "", "en": ""},
 		},
 		{
 			ID:        "service-specific-terms",
 			Title:     "服务特定条款",
 			ContentMD: "",
+			TitleI18n: map[string]string{
+				"zh": "服务特定条款",
+				"en": "Service-Specific Terms",
+			},
+			ContentI18n: map[string]string{"zh": "", "en": ""},
 		},
 	}
+}
+
+func normalizeLoginAgreementI18n(raw map[string]string) map[string]string {
+	if len(raw) == 0 {
+		return nil
+	}
+	out := make(map[string]string, len(raw))
+	for locale, value := range raw {
+		locale = strings.ToLower(strings.TrimSpace(locale))
+		if locale == "" {
+			continue
+		}
+		out[locale] = strings.TrimSpace(value)
+	}
+	return out
 }
 
 func normalizeLoginAgreementDocumentID(raw string) string {
@@ -78,7 +113,9 @@ func normalizeLoginAgreementDocuments(docs []LoginAgreementDocument) []LoginAgre
 	for i, doc := range docs {
 		title := strings.TrimSpace(doc.Title)
 		content := strings.TrimSpace(doc.ContentMD)
-		if title == "" && content == "" {
+		titleI18n := normalizeLoginAgreementI18n(doc.TitleI18n)
+		contentI18n := normalizeLoginAgreementI18n(doc.ContentI18n)
+		if title == "" && content == "" && len(titleI18n) == 0 && len(contentI18n) == 0 {
 			continue
 		}
 		id := normalizeLoginAgreementDocumentID(doc.ID)
@@ -92,9 +129,11 @@ func normalizeLoginAgreementDocuments(docs []LoginAgreementDocument) []LoginAgre
 		}
 		seen[id]++
 		normalized = append(normalized, LoginAgreementDocument{
-			ID:        id,
-			Title:     title,
-			ContentMD: content,
+			ID:          id,
+			Title:       title,
+			ContentMD:   content,
+			TitleI18n:   titleI18n,
+			ContentI18n: contentI18n,
 		})
 	}
 	return normalized

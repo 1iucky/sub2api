@@ -633,6 +633,7 @@ var (
 		{Name: "enabled", Type: field.TypeBool, Default: true},
 		{Name: "interval_seconds", Type: field.TypeInt},
 		{Name: "jitter_seconds", Type: field.TypeInt, Default: 0},
+		{Name: "retry_count", Type: field.TypeInt, Default: 0},
 		{Name: "last_checked_at", Type: field.TypeTime, Nullable: true},
 		{Name: "created_by", Type: field.TypeInt64},
 		{Name: "extra_headers", Type: field.TypeJSON},
@@ -648,7 +649,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "channel_monitors_channel_monitor_request_templates_request_template",
-				Columns:    []*schema.Column{ChannelMonitorsColumns[19]},
+				Columns:    []*schema.Column{ChannelMonitorsColumns[20]},
 				RefColumns: []*schema.Column{ChannelMonitorRequestTemplatesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -657,7 +658,7 @@ var (
 			{
 				Name:    "channelmonitor_enabled_last_checked_at",
 				Unique:  false,
-				Columns: []*schema.Column{ChannelMonitorsColumns[11], ChannelMonitorsColumns[14]},
+				Columns: []*schema.Column{ChannelMonitorsColumns[11], ChannelMonitorsColumns[15]},
 			},
 			{
 				Name:    "channelmonitor_provider",
@@ -677,7 +678,7 @@ var (
 			{
 				Name:    "channelmonitor_template_id",
 				Unique:  false,
-				Columns: []*schema.Column{ChannelMonitorsColumns[19]},
+				Columns: []*schema.Column{ChannelMonitorsColumns[20]},
 			},
 		},
 	}
@@ -1082,6 +1083,100 @@ var (
 				Name:    "identityadoptiondecision_identity_id",
 				Unique:  false,
 				Columns: []*schema.Column{IdentityAdoptionDecisionsColumns[6]},
+			},
+		},
+	}
+	// ModelCatalogsColumns holds the columns for the "model_catalogs" table.
+	ModelCatalogsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "created_at", Type: field.TypeTime, SchemaType: map[string]string{"postgres": "timestamptz"}},
+		{Name: "updated_at", Type: field.TypeTime, SchemaType: map[string]string{"postgres": "timestamptz"}},
+		{Name: "model_id", Type: field.TypeString, Size: 200},
+		{Name: "normalized_model_id", Type: field.TypeString, Size: 200},
+		{Name: "display_name", Type: field.TypeString, Size: 200, Default: ""},
+		{Name: "platform", Type: field.TypeString, Size: 50, Default: ""},
+		{Name: "provider", Type: field.TypeString, Size: 100, Default: ""},
+		{Name: "mode", Type: field.TypeString, Size: 50, Default: ""},
+		{Name: "description", Type: field.TypeString, Default: ""},
+		{Name: "tags", Type: field.TypeJSON},
+		{Name: "capabilities", Type: field.TypeJSON},
+		{Name: "endpoints", Type: field.TypeJSON},
+		{Name: "pricing", Type: field.TypeJSON},
+		{Name: "metadata", Type: field.TypeJSON},
+		{Name: "status", Type: field.TypeEnum, Enums: []string{"active", "disabled"}, Default: "active"},
+		{Name: "visibility", Type: field.TypeEnum, Enums: []string{"public", "admin"}, Default: "public"},
+		{Name: "source", Type: field.TypeString, Size: 50, Default: "manual"},
+		{Name: "icon_key", Type: field.TypeString, Size: 80, Default: ""},
+		{Name: "last_synced_at", Type: field.TypeTime, Nullable: true},
+		{Name: "vendor_id", Type: field.TypeInt64, Nullable: true},
+	}
+	// ModelCatalogsTable holds the schema information for the "model_catalogs" table.
+	ModelCatalogsTable = &schema.Table{
+		Name:       "model_catalogs",
+		Columns:    ModelCatalogsColumns,
+		PrimaryKey: []*schema.Column{ModelCatalogsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "model_catalogs_model_vendors_vendor",
+				Columns:    []*schema.Column{ModelCatalogsColumns[20]},
+				RefColumns: []*schema.Column{ModelVendorsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "modelcatalog_platform_normalized_model_id",
+				Unique:  true,
+				Columns: []*schema.Column{ModelCatalogsColumns[6], ModelCatalogsColumns[4]},
+			},
+			{
+				Name:    "modelcatalog_platform",
+				Unique:  false,
+				Columns: []*schema.Column{ModelCatalogsColumns[6]},
+			},
+			{
+				Name:    "modelcatalog_provider",
+				Unique:  false,
+				Columns: []*schema.Column{ModelCatalogsColumns[7]},
+			},
+			{
+				Name:    "modelcatalog_vendor_id",
+				Unique:  false,
+				Columns: []*schema.Column{ModelCatalogsColumns[20]},
+			},
+			{
+				Name:    "modelcatalog_status_visibility",
+				Unique:  false,
+				Columns: []*schema.Column{ModelCatalogsColumns[15], ModelCatalogsColumns[16]},
+			},
+			{
+				Name:    "modelcatalog_source",
+				Unique:  false,
+				Columns: []*schema.Column{ModelCatalogsColumns[17]},
+			},
+		},
+	}
+	// ModelVendorsColumns holds the columns for the "model_vendors" table.
+	ModelVendorsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "created_at", Type: field.TypeTime, SchemaType: map[string]string{"postgres": "timestamptz"}},
+		{Name: "updated_at", Type: field.TypeTime, SchemaType: map[string]string{"postgres": "timestamptz"}},
+		{Name: "name", Type: field.TypeString, Unique: true, Size: 100},
+		{Name: "provider_key", Type: field.TypeString, Size: 80, Default: ""},
+		{Name: "icon_key", Type: field.TypeString, Size: 80, Default: ""},
+		{Name: "description", Type: field.TypeString, Default: ""},
+		{Name: "sort_order", Type: field.TypeInt, Default: 0},
+	}
+	// ModelVendorsTable holds the schema information for the "model_vendors" table.
+	ModelVendorsTable = &schema.Table{
+		Name:       "model_vendors",
+		Columns:    ModelVendorsColumns,
+		PrimaryKey: []*schema.Column{ModelVendorsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "modelvendor_provider_key",
+				Unique:  false,
+				Columns: []*schema.Column{ModelVendorsColumns[4]},
 			},
 		},
 	}
@@ -2107,6 +2202,8 @@ var (
 		GroupsTable,
 		IdempotencyRecordsTable,
 		IdentityAdoptionDecisionsTable,
+		ModelCatalogsTable,
+		ModelVendorsTable,
 		PaymentAuditLogsTable,
 		PaymentOrdersTable,
 		PaymentProviderInstancesTable,
@@ -2203,6 +2300,13 @@ func init() {
 	IdentityAdoptionDecisionsTable.ForeignKeys[1].RefTable = PendingAuthSessionsTable
 	IdentityAdoptionDecisionsTable.Annotation = &entsql.Annotation{
 		Table: "identity_adoption_decisions",
+	}
+	ModelCatalogsTable.ForeignKeys[0].RefTable = ModelVendorsTable
+	ModelCatalogsTable.Annotation = &entsql.Annotation{
+		Table: "model_catalogs",
+	}
+	ModelVendorsTable.Annotation = &entsql.Annotation{
+		Table: "model_vendors",
 	}
 	PaymentAuditLogsTable.Annotation = &entsql.Annotation{
 		Table: "payment_audit_logs",

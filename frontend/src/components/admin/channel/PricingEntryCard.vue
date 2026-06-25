@@ -73,6 +73,25 @@
             <label class="font-mono text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
               {{ t('admin.channels.form.models') }} <span class="text-red-500">*</span>
             </label>
+            <Select
+              class="mt-1"
+              :model-value="null"
+              :options="modelOptions"
+              :placeholder="t('admin.channels.form.modelSelectorPlaceholder', '搜索模型目录并选择回填')"
+              searchable
+              clearable
+              @change="onModelSelected"
+            >
+              <template #option="{ option }">
+                <span class="min-w-0 flex-1">
+                  <span class="block truncate text-sm text-gray-900 dark:text-gray-100">{{ option.label }}</span>
+                  <span class="block truncate font-mono text-xs text-gray-500">{{ option.model_id }}</span>
+                </span>
+                <span class="rounded-sm bg-gray-100 px-1.5 py-0.5 text-[10px] uppercase text-gray-500 dark:bg-dark-800">
+                  {{ option.platform }}
+                </span>
+              </template>
+            </Select>
             <ModelTagInput
               :models="entry.models"
               :platform="props.platform"
@@ -232,7 +251,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Select from '@/components/common/Select.vue'
 import Icon from '@/components/icons/Icon.vue'
@@ -242,6 +261,8 @@ import type { PricingFormEntry, IntervalFormEntry } from './types'
 import { perTokenToMTok, getPlatformTagClass } from './types'
 import type { BillingMode } from '@/api/admin/channels'
 import channelsAPI from '@/api/admin/channels'
+import adminModelsAPI from '@/api/admin/models'
+import type { ModelCatalog } from '@/api/models'
 
 const { t } = useI18n()
 
@@ -260,6 +281,7 @@ const emit = defineEmits<{
 
 // Collapse state: entries with existing models default to collapsed
 const collapsed = ref(props.entry.models.length > 0)
+const catalogModels = ref<ModelCatalog[]>([])
 
 const billingModeOptions = computed(() => [
   { value: 'token', label: t('admin.channels.billingMode.token') },
@@ -272,6 +294,44 @@ const billingModeLabel = computed(() => {
   const opt = billingModeOptions.value.find(o => o.value === props.entry.billing_mode)
   return opt ? opt.label : props.entry.billing_mode
 })
+
+const modelOptions = computed(() => {
+  const selected = new Set(props.entry.models.map(model => model.toLowerCase()))
+  return catalogModels.value
+    .filter(model => !selected.has(model.model_id.toLowerCase()))
+    .map(model => ({
+      value: model.model_id,
+      label: model.display_name || model.model_id,
+      description: model.model_id,
+      model_id: model.model_id,
+      platform: model.platform,
+      vendor: model.vendor?.name || model.provider,
+    }))
+})
+
+onMounted(() => {
+  void loadCatalogModels()
+})
+
+async function loadCatalogModels() {
+  try {
+    const res = await adminModelsAPI.list(1, 100, {
+      status: 'active',
+      visibility: 'public',
+      sort_by: 'model_id',
+      sort_order: 'asc'
+    })
+    catalogModels.value = res.items || []
+  } catch {
+    catalogModels.value = []
+  }
+}
+
+function onModelSelected(value: string | number | boolean | null) {
+  if (typeof value !== 'string' || !value) return
+  if (props.entry.models.includes(value)) return
+  void onModelsUpdate([...props.entry.models, value])
+}
 
 function emitField(field: keyof PricingFormEntry, value: string) {
   emit('update', { ...props.entry, [field]: value === '' ? null : value })

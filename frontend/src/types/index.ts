@@ -202,6 +202,8 @@ export interface LoginAgreementDocument {
   id: string
   title: string
   content_md: string
+  title_i18n?: Partial<Record<'zh' | 'en', string>>
+  content_i18n?: Partial<Record<'zh' | 'en', string>>
 }
 
 export interface PublicSettings {

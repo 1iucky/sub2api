@@ -150,6 +150,9 @@ func (s *ChannelMonitorService) Create(ctx context.Context, p ChannelMonitorCrea
 	if err := validateExtraHeaders(p.ExtraHeaders); err != nil {
 		return nil, err
 	}
+	if err := validateRetryCount(p.RetryCount); err != nil {
+		return nil, err
+	}
 	encrypted, err := s.encryptor.Encrypt(p.APIKey)
 	if err != nil {
 		return nil, fmt.Errorf("encrypt api key: %w", err)
@@ -166,6 +169,7 @@ func (s *ChannelMonitorService) Create(ctx context.Context, p ChannelMonitorCrea
 		Enabled:          p.Enabled,
 		IntervalSeconds:  p.IntervalSeconds,
 		JitterSeconds:    p.JitterSeconds,
+		RetryCount:       p.RetryCount,
 		CreatedBy:        p.CreatedBy,
 		TemplateID:       p.TemplateID,
 		ExtraHeaders:     emptyHeadersIfNil(p.ExtraHeaders),
@@ -521,7 +525,9 @@ func (s *ChannelMonitorService) runChecksConcurrent(ctx context.Context, m *Chan
 	for i, model := range models {
 		i, model := i, model
 		eg.Go(func() error {
-			r := runCheckForModel(ctx, m.Provider, m.Endpoint, m.APIKey, model, opts)
+			r := runMonitorCheckWithRetries(m.RetryCount, func() *CheckResult {
+				return runCheckForModel(ctx, m.Provider, m.Endpoint, m.APIKey, model, opts)
+			})
 			r.PingLatencyMs = pingMs
 			mu.Lock()
 			results[i] = r
@@ -531,6 +537,28 @@ func (s *ChannelMonitorService) runChecksConcurrent(ctx context.Context, m *Chan
 	}
 	_ = eg.Wait()
 	return results
+}
+
+// runMonitorCheckWithRetries 对单个模型执行检查，并在失败时重试 retryCount 次。
+// retryCount 表示额外重试次数，0 表示只执行 1 次。
+func runMonitorCheckWithRetries(retryCount int, run func() *CheckResult) *CheckResult {
+	if retryCount < 0 {
+		retryCount = 0
+	}
+	var last *CheckResult
+	for attempt := 0; attempt <= retryCount; attempt++ {
+		last = run()
+		if last == nil {
+			continue
+		}
+		if last.Status == MonitorStatusOperational || last.Status == MonitorStatusDegraded {
+			return last
+		}
+	}
+	if last == nil {
+		return &CheckResult{Status: MonitorStatusError, CheckedAt: time.Now()}
+	}
+	return last
 }
 
 // ---------- 调度器协作 ----------
@@ -731,6 +759,12 @@ func applyMonitorUpdate(existing *ChannelMonitor, p ChannelMonitorUpdateParams) 
 		if err := validateJitter(existing.JitterSeconds, existing.IntervalSeconds); err != nil {
 			return err
 		}
+	}
+	if p.RetryCount != nil {
+		if err := validateRetryCount(*p.RetryCount); err != nil {
+			return err
+		}
+		existing.RetryCount = *p.RetryCount
 	}
 	return applyMonitorAdvancedUpdate(existing, p, providerChanged)
 }

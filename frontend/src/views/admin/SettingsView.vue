@@ -9,7 +9,13 @@
       </div>
 
       <!-- Settings Form -->
-      <form v-else @submit.prevent="saveSettings" class="space-y-6" novalidate>
+      <form
+        v-else
+        @submit.prevent="saveSettings"
+        class="space-y-6"
+        novalidate
+        autocomplete="off"
+      >
         <!-- Tab Navigation -->
         <div class="settings-tabs-shell">
           <nav
@@ -2109,6 +2115,9 @@
                       v-model="form.turnstile_secret_key"
                       type="password"
                       class="input font-mono text-sm"
+                      autocomplete="new-password"
+                      autocapitalize="off"
+                      spellcheck="false"
                       placeholder="0x4AAAAAAA..."
                     />
                     <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
@@ -2447,6 +2456,9 @@
                       v-model="form.linuxdo_connect_client_secret"
                       type="password"
                       class="input font-mono text-sm"
+                      autocomplete="new-password"
+                      autocapitalize="off"
+                      spellcheck="false"
                       :placeholder="
                         form.linuxdo_connect_client_secret_configured
                           ? t(
@@ -2585,6 +2597,9 @@
                           v-model="form.github_oauth_client_secret"
                           type="password"
                           class="input font-mono text-sm"
+                          autocomplete="new-password"
+                          autocapitalize="off"
+                          spellcheck="false"
                           :placeholder="
                             form.github_oauth_client_secret_configured
                               ? localText('密钥已配置，留空以保留当前值。', 'Secret configured. Leave empty to keep the current value.')
@@ -2679,6 +2694,9 @@
                           v-model="form.google_oauth_client_secret"
                           type="password"
                           class="input font-mono text-sm"
+                          autocomplete="new-password"
+                          autocapitalize="off"
+                          spellcheck="false"
                           :placeholder="
                             form.google_oauth_client_secret_configured
                               ? localText('密钥已配置，留空以保留当前值。', 'Secret configured. Leave empty to keep the current value.')
@@ -2822,6 +2840,9 @@
                           data-testid="wechat-connect-open-app-secret"
                           type="password"
                           class="input font-mono text-sm"
+                          autocomplete="new-password"
+                          autocapitalize="off"
+                          spellcheck="false"
                           :placeholder="
                             form.wechat_connect_open_app_secret_configured
                               ? localText(
@@ -2900,6 +2921,9 @@
                           data-testid="wechat-connect-mp-app-secret"
                           type="password"
                           class="input font-mono text-sm"
+                          autocomplete="new-password"
+                          autocapitalize="off"
+                          spellcheck="false"
                           :placeholder="
                             form.wechat_connect_mp_app_secret_configured
                               ? localText(
@@ -2973,6 +2997,9 @@
                           data-testid="wechat-connect-mobile-app-secret"
                           type="password"
                           class="input font-mono text-sm"
+                          autocomplete="new-password"
+                          autocapitalize="off"
+                          spellcheck="false"
                           :placeholder="
                             form.wechat_connect_mobile_app_secret_configured
                               ? localText(
@@ -3133,6 +3160,9 @@
                       v-model="form.dingtalk_connect_client_secret"
                       type="password"
                       class="input font-mono text-sm"
+                      autocomplete="new-password"
+                      autocapitalize="off"
+                      spellcheck="false"
                       :placeholder="
                         form.dingtalk_connect_client_secret_configured
                           ? t(
@@ -3434,6 +3464,9 @@
                       v-model="form.oidc_connect_client_secret"
                       type="password"
                       class="input font-mono text-sm"
+                      autocomplete="new-password"
+                      autocapitalize="off"
+                      spellcheck="false"
                       :placeholder="
                         form.oidc_connect_client_secret_configured
                           ? t(
@@ -6825,13 +6858,13 @@
                     <h3 class="text-sm font-medium text-gray-900 dark:text-white">
                       {{ localText("协议文档", "Agreement documents") }}
                     </h3>
-                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                      {{
-                        localText(
-                          "文档名称可自定义，内容按 Markdown 保存。可参考：服务条款、使用政策、支持的国家和地区、服务特定条款。",
-                          "Document titles are customizable and content is saved as Markdown.",
-                        )
-                      }}
+	                  <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+	                    {{
+	                      localText(
+	                          "文档按简体中文和 English 分别配置，内容按 Markdown 保存。",
+	                          "Configure each document separately for Simplified Chinese and English. Content is saved as Markdown.",
+	                        )
+	                      }}
                     </p>
                   </div>
                   <button
@@ -6868,7 +6901,7 @@
                         </span>
                         <div class="min-w-0">
                           <p class="truncate text-sm font-medium text-gray-900 dark:text-white">
-                            {{ doc.title || localText("未命名文档", "Untitled document") }}
+	                            {{ loginAgreementDocumentPreviewTitle(doc) || localText("未命名文档", "Untitled document") }}
                           </p>
                           <p class="truncate text-xs text-gray-500 dark:text-gray-400">
                             {{ loginAgreementRoutePath(doc, index) }}
@@ -6888,21 +6921,34 @@
                       </button>
                     </div>
 
-                    <div class="grid grid-cols-1 gap-3 lg:grid-cols-2">
-                      <div>
-                        <label class="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400">
-                          {{ localText("文档名称", "Document title") }}
-                        </label>
-                        <input
-                          v-model="doc.title"
-                          type="text"
-                          class="input text-sm"
-                          :placeholder="localText('例如：服务条款', 'Example: Terms of Service')"
-                        />
-                      </div>
-                      <div>
-                        <label class="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400">
-                          {{ localText("路由标识", "Route slug") }}
+	                    <div class="grid grid-cols-1 gap-3 lg:grid-cols-[minmax(0,1fr)_260px]">
+	                      <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+	                        <label>
+	                          <span class="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400">
+	                            {{ localText("简体中文名称", "Simplified Chinese Title") }}
+	                          </span>
+	                          <input
+	                            v-model="doc.title_i18n.zh"
+	                            type="text"
+	                            class="input text-sm"
+	                            placeholder="例如：服务条款"
+	                          />
+	                        </label>
+	                        <label>
+	                          <span class="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400">
+	                            {{ localText("英文名称", "English Title") }}
+	                          </span>
+	                          <input
+	                            v-model="doc.title_i18n.en"
+	                            type="text"
+	                            class="input text-sm"
+	                            placeholder="Example: Terms of Service"
+	                          />
+	                        </label>
+	                      </div>
+	                      <div>
+	                        <label class="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400">
+	                          {{ localText("路由标识", "Route slug") }}
                         </label>
                         <div class="flex overflow-hidden rounded-sm border border-gray-300 bg-white focus-within:border-primary-500 dark:border-dark-600 dark:bg-dark-900">
                           <span class="inline-flex flex-shrink-0 items-center border-r border-gray-200 bg-gray-50 px-3 text-sm text-gray-500 dark:border-dark-700 dark:bg-dark-800 dark:text-dark-400">
@@ -6917,17 +6963,30 @@
                         </div>
                       </div>
                     </div>
-                    <div class="mt-3">
-                      <label class="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400">
-                        {{ localText("Markdown 内容", "Markdown content") }}
-                      </label>
-                        <textarea
-                          v-model="doc.content_md"
-                          rows="8"
-                          class="input font-mono text-sm"
-                          :placeholder="localText('在这里填写正式 Markdown 内容。', 'Write the final Markdown content here.')"
-                        ></textarea>
-                    </div>
+	                    <div class="mt-3 grid gap-3 lg:grid-cols-2">
+	                      <label>
+	                        <span class="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400">
+	                          简体中文 Markdown
+	                        </span>
+	                          <textarea
+	                            v-model="doc.content_i18n.zh"
+	                            rows="8"
+	                            class="input font-mono text-sm"
+	                            placeholder="在这里填写正式 Markdown 内容。"
+	                          ></textarea>
+	                      </label>
+	                      <label>
+	                        <span class="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400">
+	                          English Markdown
+	                        </span>
+	                          <textarea
+	                            v-model="doc.content_i18n.en"
+	                            rows="8"
+	                            class="input font-mono text-sm"
+	                            placeholder="Write the final Markdown content here."
+	                          ></textarea>
+	                      </label>
+	                    </div>
                   </div>
                 </div>
               </div>
@@ -8939,27 +8998,35 @@ const tablePageSizeMin = 5;
 const tablePageSizeMax = 1000;
 const tablePageSizeDefault = 20;
 
-function defaultLoginAgreementDocuments(): LoginAgreementDocument[] {
+function defaultLoginAgreementDocuments(): LocalizedAgreementFormDocument[] {
   return [
     {
       id: "terms",
       title: localText("服务条款", "Terms of Service"),
       content_md: "",
+      title_i18n: { zh: "服务条款", en: "Terms of Service" },
+      content_i18n: { zh: "", en: "" },
     },
     {
       id: "usage-policy",
       title: localText("使用政策", "Usage Policy"),
       content_md: "",
+      title_i18n: { zh: "使用政策", en: "Usage Policy" },
+      content_i18n: { zh: "", en: "" },
     },
     {
       id: "supported-regions",
       title: localText("支持的国家和地区", "Supported Countries and Regions"),
       content_md: "",
+      title_i18n: { zh: "支持的国家和地区", en: "Supported Countries and Regions" },
+      content_i18n: { zh: "", en: "" },
     },
     {
       id: "service-specific-terms",
       title: localText("服务特定条款", "Service-Specific Terms"),
       content_md: "",
+      title_i18n: { zh: "服务特定条款", en: "Service-Specific Terms" },
+      content_i18n: { zh: "", en: "" },
     },
   ];
 }
@@ -8978,8 +9045,34 @@ function loginAgreementRoutePath(
   index: number,
 ): string {
   const id =
-    normalizeLoginAgreementDocumentId(doc.id || doc.title) || `doc-${index + 1}`;
+    normalizeLoginAgreementDocumentId(doc.id || loginAgreementDocumentPreviewTitle(doc)) || `doc-${index + 1}`;
   return `/legal/${id}`;
+}
+
+function normalizeLoginAgreementDocumentForForm(
+  doc: Partial<LoginAgreementDocument>,
+): LocalizedAgreementFormDocument {
+  const titleZh = (doc.title_i18n?.zh || doc.title || "").trim();
+  const titleEn = (doc.title_i18n?.en || "").trim();
+  const contentZh = (doc.content_i18n?.zh || doc.content_md || "").trim();
+  const contentEn = (doc.content_i18n?.en || "").trim();
+  return {
+    id: doc.id || "",
+    title: titleZh || titleEn,
+    content_md: contentZh || contentEn,
+    title_i18n: {
+      zh: titleZh,
+      en: titleEn,
+    },
+    content_i18n: {
+      zh: contentZh,
+      en: contentEn,
+    },
+  };
+}
+
+function loginAgreementDocumentPreviewTitle(doc: LoginAgreementDocument): string {
+  return (doc.title_i18n?.zh || doc.title_i18n?.en || doc.title || "").trim();
 }
 
 type ClaudeOAuthSystemPromptPreset =
@@ -9369,9 +9462,11 @@ type SettingsForm = Omit<
   | "wechat_connect_open_enabled"
   | "wechat_connect_mp_enabled"
   | "wechat_connect_mobile_enabled"
+  | "login_agreement_documents"
 > & {
   /** Form always binds a concrete boolean (SystemSettings marks this optional). */
   channel_monitor_hide_throughput: boolean;
+  login_agreement_documents: LocalizedAgreementFormDocument[];
   smtp_password: string;
   turnstile_secret_key: string;
   tencent_captcha_app_secret_key: string;
@@ -9410,6 +9505,11 @@ type SettingsForm = Omit<
   // 系统全局平台限额 map；form 内始终归一化为全 4 平台对象（模板非空绑定依赖此不变量）
   default_platform_quotas: DefaultPlatformQuotasMap;
   account_scheduling_thresholds: ReturnType<typeof normalizeAccountSchedulingThresholdsMap>;
+};
+
+type LocalizedAgreementFormDocument = LoginAgreementDocument & {
+  title_i18n: { zh: string; en: string };
+  content_i18n: { zh: string; en: string };
 };
 
 const schedulingThresholdPlatforms = SCHEDULING_THRESHOLD_PLATFORMS;
@@ -10495,27 +10595,36 @@ function removeEndpoint(index: number) {
 }
 
 function addLoginAgreementDocument() {
-  form.login_agreement_documents.push({
+  form.login_agreement_documents.push(normalizeLoginAgreementDocumentForForm({
     id: `custom-${Date.now().toString(36)}`,
     title: "",
     content_md: "",
-  });
+  }));
 }
 
 function removeLoginAgreementDocument(index: number) {
   form.login_agreement_documents.splice(index, 1);
 }
 
-function normalizeLoginAgreementDocumentsForSave(): LoginAgreementDocument[] {
+function normalizeLoginAgreementDocumentsForSave(): LocalizedAgreementFormDocument[] {
   return form.login_agreement_documents
-    .map((doc, index) => ({
-      id:
-        normalizeLoginAgreementDocumentId(doc.id || doc.title) ||
-        `doc-${index + 1}`,
-      title: doc.title.trim(),
-      content_md: doc.content_md.trim(),
-    }))
-    .filter((doc) => doc.title || doc.content_md);
+    .map((doc, index) => {
+      const normalized = normalizeLoginAgreementDocumentForForm(doc);
+      return {
+        ...normalized,
+        id:
+          normalizeLoginAgreementDocumentId(normalized.id || loginAgreementDocumentPreviewTitle(normalized)) ||
+          `doc-${index + 1}`,
+      };
+    })
+    .filter((doc) =>
+      doc.title_i18n?.zh ||
+      doc.title_i18n?.en ||
+      doc.content_i18n?.zh ||
+      doc.content_i18n?.en ||
+      doc.title ||
+      doc.content_md
+    );
 }
 
 function findDuplicateLoginAgreementDocumentId(
@@ -10687,15 +10796,13 @@ async function loadSettings() {
     );
     form.login_agreement_updated_at =
       settings.login_agreement_updated_at || "2026-03-31";
-    form.login_agreement_documents =
-      Array.isArray(settings.login_agreement_documents) &&
-      settings.login_agreement_documents.length > 0
-        ? settings.login_agreement_documents.map((doc) => ({
-            id: doc.id || "",
-            title: doc.title || "",
-            content_md: doc.content_md || "",
-          }))
-        : defaultLoginAgreementDocuments();
+	    form.login_agreement_documents =
+	      Array.isArray(settings.login_agreement_documents) &&
+	      settings.login_agreement_documents.length > 0
+	        ? settings.login_agreement_documents.map((doc) =>
+	            normalizeLoginAgreementDocumentForForm(doc),
+	          )
+	        : defaultLoginAgreementDocuments();
     Object.assign(authSourceDefaults, buildAuthSourceDefaultsState(settings));
     form.default_platform_quotas = normalizePlatformQuotasMap(settings.default_platform_quotas);
     form.account_scheduling_thresholds = normalizeAccountSchedulingThresholdsMap(
@@ -11394,6 +11501,13 @@ async function saveSettings() {
         (form as Record<string, unknown>)[key] = value;
       }
     }
+    form.login_agreement_documents =
+      Array.isArray(updated.login_agreement_documents) &&
+      updated.login_agreement_documents.length > 0
+        ? updated.login_agreement_documents.map((doc) =>
+            normalizeLoginAgreementDocumentForForm(doc),
+          )
+        : defaultLoginAgreementDocuments();
     Object.assign(authSourceDefaults, buildAuthSourceDefaultsState(updated));
     form.default_platform_quotas = normalizePlatformQuotasMap(updated.default_platform_quotas);
     form.account_scheduling_thresholds = normalizeAccountSchedulingThresholdsMap(

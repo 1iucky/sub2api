@@ -170,6 +170,7 @@ export default {
         docs: '文档',
         status: '状态',
         changelog: '更新日志',
+        modelMarketplace: '模型集市',
         privacy: '隐私',
         terms: '条款'
       },

@@ -1,29 +1,6 @@
 <template>
   <div class="min-h-screen bg-gray-50 text-gray-900 dark:bg-dark-950 dark:text-white">
-    <header class="border-b border-gray-200 bg-white/95 dark:border-dark-800 dark:bg-dark-900/95">
-      <div class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
-        <RouterLink to="/home" class="flex min-w-0 items-center gap-3">
-          <template v-if="settings">
-            <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200 dark:bg-dark-800 dark:ring-dark-700">
-              <img :src="siteLogo || '/logo.svg'" alt="Logo" class="h-full w-full object-contain" />
-            </span>
-            <span class="truncate text-base font-semibold text-gray-950 dark:text-white">
-              {{ siteName }}
-            </span>
-          </template>
-          <template v-else>
-            <span class="h-10 w-10 flex-shrink-0 animate-pulse rounded-xl bg-gray-200 dark:bg-dark-700" aria-hidden="true"></span>
-            <span class="h-5 w-28 animate-pulse rounded bg-gray-200 dark:bg-dark-700" aria-hidden="true"></span>
-          </template>
-        </RouterLink>
-        <RouterLink
-          to="/login"
-          class="inline-flex flex-shrink-0 items-center justify-center rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-primary-600/20 transition hover:bg-primary-700"
-        >
-          {{ t('home.login') }}
-        </RouterLink>
-      </div>
-    </header>
+    <PublicTopNav />
 
     <main class="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:py-10">
       <div v-if="loading" class="flex min-h-[320px] items-center justify-center">
@@ -86,6 +63,7 @@
         </div>
       </article>
     </main>
+    <PublicFooter :doc-url="settings?.doc_url || ''" :site-logo="siteLogo" />
   </div>
 </template>
 
@@ -96,19 +74,22 @@ import { marked } from 'marked'
 import DOMPurify from 'dompurify'
 import { useI18n } from 'vue-i18n'
 import Icon from '@/components/icons/Icon.vue'
-import { getLocale } from '@/i18n'
+import PublicTopNav from '@/components/home/PublicTopNav.vue'
+import PublicFooter from '@/components/home/PublicFooter.vue'
+import { useAppStore } from '@/stores'
 import { sanitizeUrl } from '@/utils/url'
-import { useAppStore } from '@/stores/app'
-import type { LoginAgreementDocument } from '@/types'
+import { localizeLoginAgreementDocument } from '@/utils/loginAgreement'
+import type { LocalizedLoginAgreementDocument } from '@/utils/loginAgreement'
+import type { PublicSettings } from '@/types'
 import zhAdminCompliance from '../../../../docs/legal/admin-compliance.zh.md?raw'
 import enAdminCompliance from '../../../../docs/legal/admin-compliance.en.md?raw'
 
 type LegalDocumentIcon = 'document' | 'shield' | 'globe' | 'cog'
 
 const route = useRoute()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const appStore = useAppStore()
-const settings = computed(() => appStore.cachedPublicSettings)
+const settings = ref<PublicSettings | null>(appStore.cachedPublicSettings)
 const loading = ref(!settings.value)
 const loadError = ref(false)
 
@@ -120,7 +101,6 @@ marked.setOptions({
 const documentId = computed(() => String(route.params.documentId || ''))
 const isAdminComplianceDocument = computed(() => documentId.value === 'admin-compliance')
 const documents = computed(() => settings.value?.login_agreement_documents ?? [])
-const siteName = computed(() => settings.value?.site_name || 'SiliconBase')
 const siteLogo = computed(() => sanitizeUrl(settings.value?.site_logo || '', {
   allowRelative: true,
   allowDataUrl: true,
@@ -132,25 +112,26 @@ const documentTypeLabel = computed(() =>
   isAdminComplianceDocument.value ? t('legal.adminCompliance') : t('legal.loginAgreement')
 )
 
-const currentDocument = computed<LoginAgreementDocument | null>(() => {
+const currentDocument = computed<LocalizedLoginAgreementDocument | null>(() => {
   if (isAdminComplianceDocument.value) {
-    return {
+    return localizeLoginAgreementDocument({
       id: 'admin-compliance',
       title: t('adminCompliance.title'),
-      content_md: getLocale() === 'zh' ? zhAdminCompliance : enAdminCompliance
-    }
+      content_md: locale.value === 'zh' ? zhAdminCompliance : enAdminCompliance
+    }, locale.value, t)
   }
   const id = documentId.value
   if (!id) {
     return null
   }
-  return documents.value.find((doc) => doc.id === id) ?? null
+  const doc = documents.value.find((item) => item.id === id)
+  return doc ? localizeLoginAgreementDocument(doc, locale.value, t) : null
 })
 
-const hasContent = computed(() => Boolean(currentDocument.value?.content_md?.trim()))
+const hasContent = computed(() => Boolean(currentDocument.value?.localized_content_md?.trim()))
 
 const renderedHtml = computed(() => {
-  const content = currentDocument.value?.content_md?.trim() || ''
+  const content = currentDocument.value?.localized_content_md?.trim() || ''
   if (!content) {
     return ''
   }
@@ -174,8 +155,12 @@ const documentIcon = computed<LegalDocumentIcon>(() => {
 
 onMounted(async () => {
   loadError.value = false
-  const loadedSettings = await appStore.fetchPublicSettings()
-  if (!loadedSettings) {
+  try {
+    settings.value = settings.value || await appStore.fetchPublicSettings()
+  } catch {
+    loadError.value = true
+  }
+  if (!settings.value) {
     loadError.value = true
   }
   loading.value = false

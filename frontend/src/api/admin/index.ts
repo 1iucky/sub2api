@@ -29,6 +29,7 @@ import tlsFingerprintProfileAPI from './tlsFingerprintProfile'
 import channelsAPI from './channels'
 import channelMonitorAPI from './channelMonitor'
 import channelMonitorTemplateAPI from './channelMonitorTemplate'
+import adminModelsAPI from './models'
 import adminPaymentAPI from './payment'
 import affiliatesAPI from './affiliates'
 import riskControlAPI from './riskControl'
@@ -65,6 +66,7 @@ export const adminAPI = {
   channels: channelsAPI,
   channelMonitor: channelMonitorAPI,
   channelMonitorTemplate: channelMonitorTemplateAPI,
+  models: adminModelsAPI,
   payment: adminPaymentAPI,
   affiliates: affiliatesAPI,
   riskControl: riskControlAPI,
@@ -99,6 +101,7 @@ export {
   channelsAPI,
   channelMonitorAPI,
   channelMonitorTemplateAPI,
+  adminModelsAPI,
   adminPaymentAPI,
   affiliatesAPI,
   riskControlAPI,
@@ -115,3 +118,4 @@ export type { ErrorPassthroughRule, CreateRuleRequest, UpdateRuleRequest } from 
 export type { BackupAgentHealth, DataManagementConfig } from './dataManagement'
 export type { TLSFingerprintProfile, CreateProfileRequest, UpdateProfileRequest } from './tlsFingerprintProfile'
 export type { ContentModerationConfig, ContentModerationLog, ModerationMode } from './riskControl'
+export type { ModelCatalogRequest, ModelVendorRequest, SyncPricingResult } from './models'

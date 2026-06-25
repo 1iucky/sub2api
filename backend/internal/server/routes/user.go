@@ -95,6 +95,13 @@ func RegisterUserRoutes(
 			channels.GET("/available", h.AvailableChannel.List)
 		}
 
+		// 模型广场（用户只读）
+		models := authenticated.Group("/models")
+		{
+			models.GET("", h.ModelCatalog.List)
+			models.GET("/vendors", h.ModelCatalog.Vendors)
+		}
+
 		// 使用记录（聚合统计属重查询，叠加更严格的按用户限流）
 		usage := authenticated.Group("/usage")
 		usage.Use(panelRateLimiter.Heavy())
