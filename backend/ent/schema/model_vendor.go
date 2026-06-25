@@ -44,6 +44,10 @@ func (ModelVendor) Fields() []ent.Field {
 			Default(""),
 		field.Int("sort_order").
 			Default(0),
+		field.Time("deleted_at").
+			Optional().
+			Nillable().
+			SchemaType(map[string]string{"postgres": "timestamptz"}),
 	}
 }
 
@@ -57,5 +61,6 @@ func (ModelVendor) Edges() []ent.Edge {
 func (ModelVendor) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("provider_key"),
+		index.Fields("deleted_at"),
 	}
 }

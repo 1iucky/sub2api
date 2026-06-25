@@ -29,6 +29,7 @@ type ModelVendor struct {
 	IconKey     string
 	Description string
 	SortOrder   int
+	DeletedAt   *time.Time
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
@@ -124,6 +125,7 @@ type ModelCatalogListFilters struct {
 	Visibility      string
 	PublicOnly      bool
 	WithPricingOnly bool
+	DeduplicateByID bool
 }
 
 type ModelVendorListFilters struct {
@@ -169,6 +171,7 @@ type ModelCatalogRepository interface {
 	ListVendors(ctx context.Context, filters ModelVendorListFilters) ([]ModelVendor, error)
 	GetVendor(ctx context.Context, id int64) (*ModelVendor, error)
 	UpsertVendor(ctx context.Context, input ModelVendorUpsert) (*ModelVendor, error)
+	FindDeletedVendorByProviderKey(ctx context.Context, providerKey string) (*ModelVendor, error)
 	DeleteVendor(ctx context.Context, id int64) error
 	CountPricingAssociations(ctx context.Context, models []ModelCatalog) (map[int64]ModelCatalogPricingAssociation, error)
 }
@@ -281,14 +284,25 @@ func (s *ModelCatalogService) SyncFromPricing(ctx context.Context) (ModelCatalog
 		vendorInput := defaultVendorForProvider(entry.Provider)
 		vendor, ok := vendorCache[vendorInput.ProviderKey]
 		if !ok {
-			var err error
-			vendor, err = s.UpsertVendor(ctx, vendorInput)
-			if err != nil {
+			deletedVendor, err := s.repo.FindDeletedVendorByProviderKey(ctx, vendorInput.ProviderKey)
+			if err != nil && err != ErrModelVendorNotFound {
 				return result, err
+			}
+			if err == nil && deletedVendor != nil {
+				vendor = nil
+			} else {
+				vendor, err = s.UpsertVendor(ctx, vendorInput)
+				if err != nil {
+					return result, err
+				}
 			}
 			vendorCache[vendorInput.ProviderKey] = vendor
 		}
-		input := modelCatalogInputFromPricing(entry, vendor.ID, now)
+		var vendorID *int64
+		if vendor != nil {
+			vendorID = &vendor.ID
+		}
+		input := modelCatalogInputFromPricing(entry, vendorID, now)
 		_, created, err := s.repo.UpsertModelFromSync(ctx, input)
 		if err != nil {
 			return result, err
@@ -311,6 +325,9 @@ type ModelCatalogSyncResult struct {
 func normalizeModelCatalogFilters(filters ModelCatalogListFilters) ModelCatalogListFilters {
 	filters.Search = strings.TrimSpace(filters.Search)
 	filters.Platform = strings.ToLower(strings.TrimSpace(filters.Platform))
+	if filters.Platform != "" {
+		filters.Platform = NormalizeModelCatalogPlatform(filters.Platform)
+	}
 	filters.Provider = strings.ToLower(strings.TrimSpace(filters.Provider))
 	filters.Status = strings.TrimSpace(filters.Status)
 	filters.Visibility = strings.TrimSpace(filters.Visibility)
@@ -337,6 +354,7 @@ func normalizeModelCatalogInput(input ModelCatalogUpsert, allowPartial bool) (Mo
 	if input.Platform == "" {
 		input.Platform = providerToPlatform(input.Provider)
 	}
+	input.Platform = NormalizeModelCatalogPlatform(input.Platform)
 	if input.Platform == "" {
 		return input, infraerrors.BadRequest("MODEL_PLATFORM_REQUIRED", "platform is required")
 	}

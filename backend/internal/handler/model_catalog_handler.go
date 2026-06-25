@@ -37,6 +37,7 @@ func (h *ModelCatalogHandler) List(c *gin.Context) {
 		VendorID:        vendorID,
 		PublicOnly:      true,
 		WithPricingOnly: true,
+		DeduplicateByID: true,
 	})
 	if err != nil {
 		response.ErrorFrom(c, err)

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { matchMonitorsByModelId } from './modelMarketplaceMonitor'
+import { dedupeModelsByModelId, matchMonitorsByModelId } from './modelMarketplaceMonitor'
 
 describe('matchMonitorsByModelId', () => {
   it('matches monitors by exact model id only', () => {
@@ -13,5 +13,29 @@ describe('matchMonitorsByModelId', () => {
       'deepseek-v4-flash',
       'gpt-4o',
     ])
+  })
+
+  it('deduplicates marketplace models by normalized model id and keeps the better priced row', () => {
+    const models = [
+      {
+        id: 1,
+        model_id: 'GLM-5.2',
+        related_pricing: { channel_count: 1, entries: [{}] },
+        updated_at: '2026-06-01T00:00:00Z',
+      },
+      {
+        id: 2,
+        model_id: 'glm-5.2',
+        related_pricing: { channel_count: 2, entries: [{}, {}] },
+        updated_at: '2026-06-02T00:00:00Z',
+      },
+      {
+        id: 3,
+        model_id: 'deepseek-v4-flash',
+        related_pricing: { channel_count: 1, entries: [{}] },
+      },
+    ] as any
+
+    expect(dedupeModelsByModelId(models).map(model => model.id)).toEqual([2, 3])
   })
 })

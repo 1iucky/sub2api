@@ -28,6 +28,8 @@ const (
 	FieldDescription = "description"
 	// FieldSortOrder holds the string denoting the sort_order field in the database.
 	FieldSortOrder = "sort_order"
+	// FieldDeletedAt holds the string denoting the deleted_at field in the database.
+	FieldDeletedAt = "deleted_at"
 	// EdgeModels holds the string denoting the models edge name in mutations.
 	EdgeModels = "models"
 	// Table holds the table name of the modelvendor in the database.
@@ -51,6 +53,7 @@ var Columns = []string{
 	FieldIconKey,
 	FieldDescription,
 	FieldSortOrder,
+	FieldDeletedAt,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -127,6 +130,11 @@ func ByDescription(opts ...sql.OrderTermOption) OrderOption {
 // BySortOrder orders the results by the sort_order field.
 func BySortOrder(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldSortOrder, opts...).ToFunc()
+}
+
+// ByDeletedAt orders the results by the deleted_at field.
+func ByDeletedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDeletedAt, opts...).ToFunc()
 }
 
 // ByModelsCount orders the results by models count.

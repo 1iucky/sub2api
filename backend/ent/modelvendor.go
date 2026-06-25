@@ -31,6 +31,8 @@ type ModelVendor struct {
 	Description string `json:"description,omitempty"`
 	// SortOrder holds the value of the "sort_order" field.
 	SortOrder int `json:"sort_order,omitempty"`
+	// DeletedAt holds the value of the "deleted_at" field.
+	DeletedAt *time.Time `json:"deleted_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ModelVendorQuery when eager-loading is set.
 	Edges        ModelVendorEdges `json:"edges"`
@@ -64,7 +66,7 @@ func (*ModelVendor) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case modelvendor.FieldName, modelvendor.FieldProviderKey, modelvendor.FieldIconKey, modelvendor.FieldDescription:
 			values[i] = new(sql.NullString)
-		case modelvendor.FieldCreatedAt, modelvendor.FieldUpdatedAt:
+		case modelvendor.FieldCreatedAt, modelvendor.FieldUpdatedAt, modelvendor.FieldDeletedAt:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -129,6 +131,13 @@ func (_m *ModelVendor) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.SortOrder = int(value.Int64)
 			}
+		case modelvendor.FieldDeletedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field deleted_at", values[i])
+			} else if value.Valid {
+				_m.DeletedAt = new(time.Time)
+				*_m.DeletedAt = value.Time
+			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -190,6 +199,11 @@ func (_m *ModelVendor) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("sort_order=")
 	builder.WriteString(fmt.Sprintf("%v", _m.SortOrder))
+	builder.WriteString(", ")
+	if v := _m.DeletedAt; v != nil {
+		builder.WriteString("deleted_at=")
+		builder.WriteString(v.Format(time.ANSIC))
+	}
 	builder.WriteByte(')')
 	return builder.String()
 }

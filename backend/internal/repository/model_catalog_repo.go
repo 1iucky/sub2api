@@ -23,9 +23,41 @@ func (r *modelCatalogRepository) ListModels(ctx context.Context, params paginati
 	where, args := buildModelCatalogWhere(filters)
 	argIdx := len(args) + 1
 	whereClause := strings.Join(where, " AND ")
+	fromClause := `model_catalogs mc`
+	if filters.DeduplicateByID {
+		fromClause = fmt.Sprintf(`(
+			SELECT *
+			FROM (
+				SELECT mc.*,
+				       ROW_NUMBER() OVER (
+				         PARTITION BY mc.normalized_model_id
+				         ORDER BY
+				           (
+				             SELECT COUNT(DISTINCT c.id)
+				             FROM channel_model_pricing cmp
+				             JOIN channels c ON c.id = cmp.channel_id
+				             WHERE c.status = 'active'
+				               AND EXISTS (
+				                 SELECT 1
+				                 FROM jsonb_array_elements_text(cmp.models::jsonb) AS m(name)
+				                 WHERE LOWER(TRIM(m.name)) = mc.normalized_model_id
+				               )
+				           ) DESC,
+				           CASE mc.source WHEN 'manual' THEN 0 ELSE 1 END ASC,
+				           mc.updated_at DESC,
+				           mc.id DESC
+				       ) AS model_catalog_rank
+				FROM model_catalogs mc
+				LEFT JOIN model_vendors mv ON mv.id = mc.vendor_id AND mv.deleted_at IS NULL
+				WHERE %s
+			) ranked_model_catalogs
+			WHERE model_catalog_rank = 1
+		) mc`, whereClause)
+		whereClause = "1=1"
+	}
 
 	var total int64
-	if err := r.db.QueryRowContext(ctx, fmt.Sprintf(`SELECT COUNT(*) FROM model_catalogs mc LEFT JOIN model_vendors mv ON mv.id = mc.vendor_id WHERE %s`, whereClause), args...).Scan(&total); err != nil {
+	if err := r.db.QueryRowContext(ctx, fmt.Sprintf(`SELECT COUNT(*) FROM %s LEFT JOIN model_vendors mv ON mv.id = mc.vendor_id AND mv.deleted_at IS NULL WHERE %s`, fromClause, whereClause), args...).Scan(&total); err != nil {
 		return nil, nil, fmt.Errorf("count model catalog: %w", err)
 	}
 
@@ -41,11 +73,11 @@ func (r *modelCatalogRepository) ListModels(ctx context.Context, params paginati
 		       mc.mode, mc.description, mc.tags, mc.capabilities, mc.endpoints, mc.pricing, mc.metadata,
 		       mc.status, mc.visibility, mc.source, mc.icon_key, mc.last_synced_at, mc.created_at, mc.updated_at,
 		       mv.id, mv.name, mv.provider_key, mv.icon_key, mv.description, mv.sort_order, mv.created_at, mv.updated_at
-		FROM model_catalogs mc
-		LEFT JOIN model_vendors mv ON mv.id = mc.vendor_id
+		FROM %s
+		LEFT JOIN model_vendors mv ON mv.id = mc.vendor_id AND mv.deleted_at IS NULL
 		WHERE %s
 		ORDER BY %s
-		LIMIT $%d OFFSET $%d`, whereClause, orderBy, argIdx, argIdx+1)
+		LIMIT $%d OFFSET $%d`, fromClause, whereClause, orderBy, argIdx, argIdx+1)
 	args = append(args, pageSize, offset)
 
 	rows, err := r.db.QueryContext(ctx, query, args...)
@@ -72,7 +104,7 @@ func (r *modelCatalogRepository) GetModel(ctx context.Context, id int64) (*servi
 		       mc.status, mc.visibility, mc.source, mc.icon_key, mc.last_synced_at, mc.created_at, mc.updated_at,
 		       mv.id, mv.name, mv.provider_key, mv.icon_key, mv.description, mv.sort_order, mv.created_at, mv.updated_at
 		FROM model_catalogs mc
-		LEFT JOIN model_vendors mv ON mv.id = mc.vendor_id
+		LEFT JOIN model_vendors mv ON mv.id = mc.vendor_id AND mv.deleted_at IS NULL
 		WHERE mc.id = $1`, id)
 	if err != nil {
 		return nil, fmt.Errorf("get model catalog: %w", err)
@@ -134,7 +166,7 @@ func (r *modelCatalogRepository) DeleteModel(ctx context.Context, id int64) erro
 }
 
 func (r *modelCatalogRepository) DeleteVendor(ctx context.Context, id int64) error {
-	result, err := r.db.ExecContext(ctx, `DELETE FROM model_vendors WHERE id = $1`, id)
+	result, err := r.db.ExecContext(ctx, `UPDATE model_vendors SET deleted_at = NOW(), updated_at = NOW() WHERE id = $1 AND deleted_at IS NULL`, id)
 	if err != nil {
 		return fmt.Errorf("delete model vendor: %w", err)
 	}
@@ -166,9 +198,9 @@ func (r *modelCatalogRepository) ListVendors(ctx context.Context, filters servic
 		where = append(where, fmt.Sprintf("(name ILIKE $%d OR provider_key ILIKE $%d)", len(args), len(args)))
 	}
 	rows, err := r.db.QueryContext(ctx, fmt.Sprintf(`
-		SELECT id, name, provider_key, icon_key, description, sort_order, created_at, updated_at
+		SELECT id, name, provider_key, icon_key, description, sort_order, deleted_at, created_at, updated_at
 		FROM model_vendors
-		WHERE %s
+		WHERE deleted_at IS NULL AND %s
 		ORDER BY sort_order ASC, name ASC`, strings.Join(where, " AND ")), args...)
 	if err != nil {
 		return nil, fmt.Errorf("list model vendors: %w", err)
@@ -179,8 +211,8 @@ func (r *modelCatalogRepository) ListVendors(ctx context.Context, filters servic
 
 func (r *modelCatalogRepository) GetVendor(ctx context.Context, id int64) (*service.ModelVendor, error) {
 	rows, err := r.db.QueryContext(ctx, `
-		SELECT id, name, provider_key, icon_key, description, sort_order, created_at, updated_at
-		FROM model_vendors WHERE id = $1`, id)
+		SELECT id, name, provider_key, icon_key, description, sort_order, deleted_at, created_at, updated_at
+		FROM model_vendors WHERE id = $1 AND deleted_at IS NULL`, id)
 	if err != nil {
 		return nil, fmt.Errorf("get model vendor: %w", err)
 	}
@@ -205,12 +237,34 @@ func (r *modelCatalogRepository) UpsertVendor(ctx context.Context, input service
 		    icon_key = EXCLUDED.icon_key,
 		    description = EXCLUDED.description,
 		    sort_order = EXCLUDED.sort_order,
+		    deleted_at = NULL,
 		    updated_at = NOW()
 		RETURNING id`, input.Name, input.ProviderKey, input.IconKey, input.Description, input.SortOrder).Scan(&id)
 	if err != nil {
 		return nil, fmt.Errorf("upsert model vendor: %w", err)
 	}
 	return r.GetVendor(ctx, id)
+}
+
+func (r *modelCatalogRepository) FindDeletedVendorByProviderKey(ctx context.Context, providerKey string) (*service.ModelVendor, error) {
+	rows, err := r.db.QueryContext(ctx, `
+		SELECT id, name, provider_key, icon_key, description, sort_order, deleted_at, created_at, updated_at
+		FROM model_vendors
+		WHERE deleted_at IS NOT NULL AND provider_key = $1
+		ORDER BY updated_at DESC
+		LIMIT 1`, strings.ToLower(strings.TrimSpace(providerKey)))
+	if err != nil {
+		return nil, fmt.Errorf("find deleted model vendor: %w", err)
+	}
+	defer func() { _ = rows.Close() }()
+	vendors, err := scanModelVendorRows(rows)
+	if err != nil {
+		return nil, err
+	}
+	if len(vendors) == 0 {
+		return nil, service.ErrModelVendorNotFound
+	}
+	return &vendors[0], nil
 }
 
 func (r *modelCatalogRepository) CountPricingAssociations(ctx context.Context, models []service.ModelCatalog) (map[int64]service.ModelCatalogPricingAssociation, error) {
@@ -593,8 +647,12 @@ func scanModelVendorRows(rows *sql.Rows) ([]service.ModelVendor, error) {
 	vendors := []service.ModelVendor{}
 	for rows.Next() {
 		var v service.ModelVendor
-		if err := rows.Scan(&v.ID, &v.Name, &v.ProviderKey, &v.IconKey, &v.Description, &v.SortOrder, &v.CreatedAt, &v.UpdatedAt); err != nil {
+		var deletedAt sql.NullTime
+		if err := rows.Scan(&v.ID, &v.Name, &v.ProviderKey, &v.IconKey, &v.Description, &v.SortOrder, &deletedAt, &v.CreatedAt, &v.UpdatedAt); err != nil {
 			return nil, fmt.Errorf("scan model vendor: %w", err)
+		}
+		if deletedAt.Valid {
+			v.DeletedAt = &deletedAt.Time
 		}
 		vendors = append(vendors, v)
 	}
