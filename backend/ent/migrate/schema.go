@@ -1166,6 +1166,7 @@ var (
 		{Name: "icon_key", Type: field.TypeString, Size: 80, Default: ""},
 		{Name: "description", Type: field.TypeString, Default: ""},
 		{Name: "sort_order", Type: field.TypeInt, Default: 0},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true, SchemaType: map[string]string{"postgres": "timestamptz"}},
 	}
 	// ModelVendorsTable holds the schema information for the "model_vendors" table.
 	ModelVendorsTable = &schema.Table{
@@ -1177,6 +1178,11 @@ var (
 				Name:    "modelvendor_provider_key",
 				Unique:  false,
 				Columns: []*schema.Column{ModelVendorsColumns[4]},
+			},
+			{
+				Name:    "modelvendor_deleted_at",
+				Unique:  false,
+				Columns: []*schema.Column{ModelVendorsColumns[8]},
 			},
 		},
 	}

@@ -30693,6 +30693,7 @@ type ModelVendorMutation struct {
 	description   *string
 	sort_order    *int
 	addsort_order *int
+	deleted_at    *time.Time
 	clearedFields map[string]struct{}
 	models        map[int64]struct{}
 	removedmodels map[int64]struct{}
@@ -31072,6 +31073,55 @@ func (m *ModelVendorMutation) ResetSortOrder() {
 	m.addsort_order = nil
 }
 
+// SetDeletedAt sets the "deleted_at" field.
+func (m *ModelVendorMutation) SetDeletedAt(t time.Time) {
+	m.deleted_at = &t
+}
+
+// DeletedAt returns the value of the "deleted_at" field in the mutation.
+func (m *ModelVendorMutation) DeletedAt() (r time.Time, exists bool) {
+	v := m.deleted_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeletedAt returns the old "deleted_at" field's value of the ModelVendor entity.
+// If the ModelVendor object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ModelVendorMutation) OldDeletedAt(ctx context.Context) (v *time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeletedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeletedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeletedAt: %w", err)
+	}
+	return oldValue.DeletedAt, nil
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (m *ModelVendorMutation) ClearDeletedAt() {
+	m.deleted_at = nil
+	m.clearedFields[modelvendor.FieldDeletedAt] = struct{}{}
+}
+
+// DeletedAtCleared returns if the "deleted_at" field was cleared in this mutation.
+func (m *ModelVendorMutation) DeletedAtCleared() bool {
+	_, ok := m.clearedFields[modelvendor.FieldDeletedAt]
+	return ok
+}
+
+// ResetDeletedAt resets all changes to the "deleted_at" field.
+func (m *ModelVendorMutation) ResetDeletedAt() {
+	m.deleted_at = nil
+	delete(m.clearedFields, modelvendor.FieldDeletedAt)
+}
+
 // AddModelIDs adds the "models" edge to the ModelCatalog entity by ids.
 func (m *ModelVendorMutation) AddModelIDs(ids ...int64) {
 	if m.models == nil {
@@ -31160,7 +31210,7 @@ func (m *ModelVendorMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ModelVendorMutation) Fields() []string {
-	fields := make([]string, 0, 7)
+	fields := make([]string, 0, 8)
 	if m.created_at != nil {
 		fields = append(fields, modelvendor.FieldCreatedAt)
 	}
@@ -31181,6 +31231,9 @@ func (m *ModelVendorMutation) Fields() []string {
 	}
 	if m.sort_order != nil {
 		fields = append(fields, modelvendor.FieldSortOrder)
+	}
+	if m.deleted_at != nil {
+		fields = append(fields, modelvendor.FieldDeletedAt)
 	}
 	return fields
 }
@@ -31204,6 +31257,8 @@ func (m *ModelVendorMutation) Field(name string) (ent.Value, bool) {
 		return m.Description()
 	case modelvendor.FieldSortOrder:
 		return m.SortOrder()
+	case modelvendor.FieldDeletedAt:
+		return m.DeletedAt()
 	}
 	return nil, false
 }
@@ -31227,6 +31282,8 @@ func (m *ModelVendorMutation) OldField(ctx context.Context, name string) (ent.Va
 		return m.OldDescription(ctx)
 	case modelvendor.FieldSortOrder:
 		return m.OldSortOrder(ctx)
+	case modelvendor.FieldDeletedAt:
+		return m.OldDeletedAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown ModelVendor field %s", name)
 }
@@ -31285,6 +31342,13 @@ func (m *ModelVendorMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetSortOrder(v)
 		return nil
+	case modelvendor.FieldDeletedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeletedAt(v)
+		return nil
 	}
 	return fmt.Errorf("unknown ModelVendor field %s", name)
 }
@@ -31329,7 +31393,11 @@ func (m *ModelVendorMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *ModelVendorMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(modelvendor.FieldDeletedAt) {
+		fields = append(fields, modelvendor.FieldDeletedAt)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -31342,6 +31410,11 @@ func (m *ModelVendorMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *ModelVendorMutation) ClearField(name string) error {
+	switch name {
+	case modelvendor.FieldDeletedAt:
+		m.ClearDeletedAt()
+		return nil
+	}
 	return fmt.Errorf("unknown ModelVendor nullable field %s", name)
 }
 
@@ -31369,6 +31442,9 @@ func (m *ModelVendorMutation) ResetField(name string) error {
 		return nil
 	case modelvendor.FieldSortOrder:
 		m.ResetSortOrder()
+		return nil
+	case modelvendor.FieldDeletedAt:
+		m.ResetDeletedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown ModelVendor field %s", name)

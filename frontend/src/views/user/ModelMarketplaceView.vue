@@ -27,23 +27,20 @@
               </button>
             </div>
 
-            <label class="mt-5 block">
-              <span class="mb-2 block text-xs text-stone-500 dark:text-stone-400">{{ t('models.search') }}</span>
-              <span class="relative block">
-                <Icon name="search" size="sm" class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
-                <input
-                  v-model.trim="filters.search"
-                  type="search"
-                  class="h-9 w-full rounded-sm border border-stone-300 bg-white pl-9 pr-3 text-sm text-stone-900 outline-none transition-colors placeholder:text-stone-400 focus:border-primary-500 dark:border-stone-800 dark:bg-[#100e0b] dark:text-stone-100"
-                  :placeholder="t('models.searchPlaceholder')"
-                  @input="debouncedLoad"
-                />
-              </span>
-            </label>
-
             <div class="mt-6 border-t border-stone-200 pt-5 dark:border-stone-800">
               <p class="mb-3 text-xs text-stone-500 dark:text-stone-400">{{ t('models.vendor') }}</p>
-              <div class="max-h-56 space-y-2 overflow-auto pr-1">
+              <label class="mb-2 block">
+                <span class="relative block">
+                  <Icon name="search" size="xs" class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
+                  <input
+                    v-model.trim="vendorSearch"
+                    type="search"
+                    class="market-input h-8 w-full pl-8 pr-3 text-xs"
+                    :placeholder="t('models.search')"
+                  />
+                </span>
+              </label>
+              <div class="max-h-80 space-y-1 overflow-auto pr-1">
                 <button
                   type="button"
                   class="market-filter-option"
@@ -56,7 +53,7 @@
                   <span>{{ t('models.allVendors') }}</span>
                 </button>
                 <button
-                  v-for="vendor in vendors"
+                  v-for="vendor in filteredVendors"
                   :key="vendor.id"
                   type="button"
                   class="market-filter-option"
@@ -76,7 +73,7 @@
 
             <div class="mt-6 border-t border-stone-200 pt-5 dark:border-stone-800">
               <p class="mb-3 text-xs text-stone-500 dark:text-stone-400">{{ t('models.capabilities') }}</p>
-              <div class="space-y-2">
+              <div class="space-y-1">
                 <button
                   v-for="capability in capabilityFilters"
                   :key="capability.key"
@@ -96,7 +93,7 @@
 
             <div class="mt-6 border-t border-stone-200 pt-5 dark:border-stone-800">
               <p class="mb-3 text-xs text-stone-500 dark:text-stone-400">{{ t('models.priceRange') }}</p>
-              <div class="grid grid-cols-2 gap-2">
+              <div class="grid grid-cols-2 gap-1.5">
                 <button
                   v-for="band in priceBands"
                   :key="band.value"
@@ -114,7 +111,7 @@
 
             <div class="mt-6 border-t border-stone-200 pt-5 dark:border-stone-800">
               <p class="mb-3 text-xs text-stone-500 dark:text-stone-400">{{ t('models.contextRange') }}</p>
-              <div class="space-y-2">
+              <div class="space-y-1">
                 <button
                   v-for="band in contextBands"
                   :key="band.value"
@@ -134,13 +131,26 @@
         </aside>
 
         <div class="min-w-0">
-          <div class="mb-5 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <div>
+          <div class="mb-5 flex flex-col gap-3 rounded-md border border-stone-300 bg-white/60 p-3 dark:border-stone-800 dark:bg-[#171410] xl:flex-row xl:items-end xl:justify-between">
+            <label class="min-w-0 flex-1">
+              <span class="input-label">{{ t('models.search') }}</span>
+              <span class="relative block">
+                <Icon name="search" size="sm" class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
+                <input
+                  v-model.trim="filters.search"
+                  type="search"
+                  class="market-input h-10 w-full pl-9 pr-3"
+                  :placeholder="t('models.searchPlaceholder')"
+                  @input="debouncedLoad"
+                />
+              </span>
+            </label>
+            <div class="xl:pb-2">
               <p class="font-mono text-xs uppercase tracking-[0.12em] text-stone-500 dark:text-stone-400">
                 {{ t('models.resultCount', { total: pagination.total, shown: filteredModels.length }) }}
               </p>
             </div>
-            <div class="flex flex-wrap items-center gap-2">
+            <div class="flex flex-wrap items-end gap-2">
               <Select
                 v-model="filters.platform"
                 :options="platformOptions"
@@ -158,7 +168,7 @@
             </div>
           </div>
 
-          <div v-if="loading" class="grid gap-4 xl:grid-cols-2">
+          <div v-if="loading && models.length === 0" class="grid gap-4 xl:grid-cols-3">
             <div
               v-for="n in 6"
               :key="n"
@@ -170,11 +180,21 @@
             <p class="text-sm text-stone-500 dark:text-stone-400">{{ t('models.empty') }}</p>
           </div>
 
-          <div v-else class="grid gap-4 xl:grid-cols-2">
-            <article
+          <div v-else class="relative">
+            <div
+              v-if="loading"
+              class="absolute inset-0 z-10 grid place-items-center rounded-md bg-[#f6f2ea]/70 backdrop-blur-sm dark:bg-[#14120f]/70"
+            >
+              <span class="inline-flex items-center gap-2 rounded-full border border-stone-300 bg-white px-4 py-2 text-sm text-stone-600 shadow-sm dark:border-stone-700 dark:bg-[#171410] dark:text-stone-300">
+                <Icon name="refresh" size="sm" class="animate-spin" />
+                {{ t('common.loading') }}
+              </span>
+            </div>
+            <div class="grid gap-3 xl:grid-cols-3">
+              <article
               v-for="model in filteredModels"
               :key="model.id"
-              class="group cursor-pointer rounded-md border bg-white/70 p-5 transition-colors hover:border-primary-500/60 dark:bg-[#171410]"
+              class="group cursor-pointer rounded-md border bg-white/70 p-4 transition duration-200 hover:-translate-y-1 hover:border-primary-500/60 hover:shadow-lg dark:bg-[#171410]"
               :class="drawerModel?.id === model.id
                 ? 'border-primary-500 shadow-[0_0_0_1px_rgba(245,158,11,0.25)] dark:bg-[#1b1712]'
                 : 'border-stone-300 dark:border-stone-800'"
@@ -186,7 +206,7 @@
                     <ModelIcon :model="model.model_id" :icon-key="model.icon_key || model.vendor?.icon_key" size="22px" />
                   </span>
                   <div class="min-w-0">
-                    <h3 class="truncate text-lg font-semibold tracking-[-0.01em] text-stone-950 dark:text-stone-50">
+                    <h3 class="truncate text-base font-semibold tracking-[-0.01em] text-stone-950 dark:text-stone-50">
                       {{ model.display_name || model.model_id }}
                     </h3>
                     <p class="mt-1 truncate text-sm text-stone-500 dark:text-stone-400">
@@ -227,17 +247,10 @@
                 ></span>
               </div>
 
-              <div class="mt-3 flex items-center justify-between gap-3 text-xs">
-                <span class="inline-flex items-center gap-1.5 rounded-sm px-2 py-1" :class="availabilityBadge(model).class">
-                  <span class="h-1.5 w-1.5 rounded-full" :class="availabilityBadge(model).dotClass"></span>
-                  {{ availabilityBadge(model).label }}
-                </span>
-              </div>
-
-              <div class="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-stone-200 pt-4 dark:border-stone-800 md:grid-cols-4">
+              <div class="mt-4 grid grid-cols-2 gap-x-3 gap-y-2 border-t border-stone-200 pt-4 dark:border-stone-800 md:grid-cols-4">
                 <div v-for="item in pricingItems(model)" :key="item.key">
                   <p class="text-[11px] text-stone-500 dark:text-stone-400">{{ item.label }}</p>
-                  <p class="mt-1 font-mono text-sm font-semibold text-stone-950 dark:text-stone-100">
+                  <p class="mt-1 font-mono text-xs font-semibold text-stone-950 dark:text-stone-100">
                     {{ item.value }}
                   </p>
                 </div>
@@ -260,7 +273,8 @@
                   {{ t('models.intervalPricingBadge') }}
                 </span>
               </div>
-            </article>
+              </article>
+            </div>
           </div>
 
           <div v-if="pagination.pages > 1" class="mt-6 flex items-center justify-end gap-2">
@@ -438,7 +452,7 @@ import type { UserMonitorView } from '@/api/channelMonitor'
 import { useAppStore, useAuthStore } from '@/stores'
 import { extractApiErrorMessage } from '@/utils/apiError'
 import { useTheme } from '@/composables/useTheme'
-import { matchMonitorsByModelId } from './modelMarketplaceMonitor'
+import { dedupeModelsByModelId, matchMonitorsByModelId } from './modelMarketplaceMonitor'
 
 const { t } = useI18n()
 const appStore = useAppStore()
@@ -450,6 +464,7 @@ const models = ref<ModelCatalog[]>([])
 const vendors = ref<ModelVendor[]>([])
 const monitors = ref<UserMonitorView[]>([])
 const drawerModel = ref<ModelCatalog | null>(null)
+const vendorSearch = ref('')
 const page = ref(1)
 const pagination = reactive({ total: 0, pages: 1 })
 const filters = reactive({
@@ -481,6 +496,16 @@ const platformOptions = computed(() => [
   { value: '', label: t('models.allPlatforms') },
   ...platforms.value.map(platform => ({ value: platform, label: providerLabel(platform) })),
 ])
+
+const filteredVendors = computed(() => {
+  const query = vendorSearch.value.trim().toLowerCase()
+  if (!query) return vendors.value
+  return vendors.value.filter(vendor => [
+    vendor.name,
+    vendor.provider_key,
+    vendor.icon_key,
+  ].some(value => String(value || '').toLowerCase().includes(query)))
+})
 
 const priceBands = computed(() => [
   { value: 'all', label: t('models.priceBands.all') },
@@ -539,7 +564,7 @@ async function loadModels() {
       search: filters.search,
       platform: filters.platform,
     })
-    models.value = res.items || []
+    models.value = dedupeModelsByModelId(res.items || [])
     pagination.total = res.total
     pagination.pages = res.pages || 1
   } catch (err) {
@@ -865,8 +890,12 @@ onMounted(async () => {
   @apply flex items-center gap-3 font-mono text-[12px] uppercase tracking-[0.14em] text-stone-600 dark:text-stone-400;
 }
 
+.market-input {
+  @apply rounded-sm border border-stone-300 bg-white text-sm text-stone-900 outline-none transition-colors placeholder:text-stone-400 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/25 dark:border-stone-800 dark:bg-[#100e0b] dark:text-stone-100;
+}
+
 .market-filter-option {
-  @apply flex w-full items-center gap-2 rounded-sm border border-stone-300 bg-white/70 px-2.5 py-2 text-left text-sm text-stone-700 transition-colors hover:border-primary-400 hover:text-stone-950 dark:border-stone-800 dark:bg-[#100e0b] dark:text-stone-300 dark:hover:text-stone-100;
+  @apply flex w-full items-center gap-2 rounded-sm border border-stone-300 bg-white/70 px-2.5 py-1.5 text-left text-sm text-stone-700 transition-colors hover:border-primary-400 hover:text-stone-950 dark:border-stone-800 dark:bg-[#100e0b] dark:text-stone-300 dark:hover:text-stone-100;
 }
 
 .market-filter-option-active {

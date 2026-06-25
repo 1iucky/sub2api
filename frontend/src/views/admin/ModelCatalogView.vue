@@ -552,10 +552,8 @@ const platformOptions = [
   { value: 'openai', label: 'OpenAI Completions' },
   { value: 'gemini', label: 'Google Gemini' },
   { value: 'antigravity', label: 'Antigravity' },
-  { value: 'openrouter', label: 'OpenRouter' },
-  { value: 'deepseek', label: 'DeepSeek' },
-  { value: 'dashscope', label: 'DashScope' },
 ]
+const allowedModelPlatforms = new Set(platformOptions.map(option => option.value))
 
 const vendorIconPresets = [
   'openai',
@@ -693,8 +691,10 @@ function resetForm(model?: ModelCatalog) {
   form.visibility = model?.visibility || 'public'
   form.source = model?.source || 'manual'
   form.icon_key = ''
-  platformSelection.value = uniqueStrings([...(model?.endpoints || []), model?.platform || ''])
-  form.platform = platformSelection.value[0] || model?.platform || ''
+  platformSelection.value = uniqueStrings([...(model?.endpoints || []), normalizeModelPlatformForForm(model?.platform || '')])
+    .map(normalizeModelPlatformForForm)
+    .filter(platform => allowedModelPlatforms.has(platform))
+  form.platform = platformSelection.value[0] || ''
   form.endpoints = [...platformSelection.value]
   tagInput.value = (model?.tags || []).join(', ')
   vendorSelection.value = model?.vendor_id ? String(model.vendor_id) : ''
@@ -1078,6 +1078,15 @@ function formatTokenLimit(value: number | null) {
 function providerLabel(value: string) {
   const option = platformOptions.find(item => item.value === value)
   return option?.label || value || '-'
+}
+
+function normalizeModelPlatformForForm(value: string) {
+  const normalized = value.trim().toLowerCase()
+  if (normalized === 'anthropic' || normalized === 'claude') return 'anthropic'
+  if (['gemini', 'google', 'vertex_ai', 'vertex-ai', 'vertex'].includes(normalized)) return 'gemini'
+  if (normalized === 'antigravity') return 'antigravity'
+  if (!normalized) return ''
+  return 'openai'
 }
 
 function normalizeIconKey(value?: string) {

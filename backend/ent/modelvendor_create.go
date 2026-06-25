@@ -113,6 +113,20 @@ func (_c *ModelVendorCreate) SetNillableSortOrder(v *int) *ModelVendorCreate {
 	return _c
 }
 
+// SetDeletedAt sets the "deleted_at" field.
+func (_c *ModelVendorCreate) SetDeletedAt(v time.Time) *ModelVendorCreate {
+	_c.mutation.SetDeletedAt(v)
+	return _c
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (_c *ModelVendorCreate) SetNillableDeletedAt(v *time.Time) *ModelVendorCreate {
+	if v != nil {
+		_c.SetDeletedAt(*v)
+	}
+	return _c
+}
+
 // AddModelIDs adds the "models" edge to the ModelCatalog entity by IDs.
 func (_c *ModelVendorCreate) AddModelIDs(ids ...int64) *ModelVendorCreate {
 	_c.mutation.AddModelIDs(ids...)
@@ -282,6 +296,10 @@ func (_c *ModelVendorCreate) createSpec() (*ModelVendor, *sqlgraph.CreateSpec) {
 		_spec.SetField(modelvendor.FieldSortOrder, field.TypeInt, value)
 		_node.SortOrder = value
 	}
+	if value, ok := _c.mutation.DeletedAt(); ok {
+		_spec.SetField(modelvendor.FieldDeletedAt, field.TypeTime, value)
+		_node.DeletedAt = &value
+	}
 	if nodes := _c.mutation.ModelsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -428,6 +446,24 @@ func (u *ModelVendorUpsert) AddSortOrder(v int) *ModelVendorUpsert {
 	return u
 }
 
+// SetDeletedAt sets the "deleted_at" field.
+func (u *ModelVendorUpsert) SetDeletedAt(v time.Time) *ModelVendorUpsert {
+	u.Set(modelvendor.FieldDeletedAt, v)
+	return u
+}
+
+// UpdateDeletedAt sets the "deleted_at" field to the value that was provided on create.
+func (u *ModelVendorUpsert) UpdateDeletedAt() *ModelVendorUpsert {
+	u.SetExcluded(modelvendor.FieldDeletedAt)
+	return u
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (u *ModelVendorUpsert) ClearDeletedAt() *ModelVendorUpsert {
+	u.SetNull(modelvendor.FieldDeletedAt)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create.
 // Using this option is equivalent to using:
 //
@@ -561,6 +597,27 @@ func (u *ModelVendorUpsertOne) AddSortOrder(v int) *ModelVendorUpsertOne {
 func (u *ModelVendorUpsertOne) UpdateSortOrder() *ModelVendorUpsertOne {
 	return u.Update(func(s *ModelVendorUpsert) {
 		s.UpdateSortOrder()
+	})
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (u *ModelVendorUpsertOne) SetDeletedAt(v time.Time) *ModelVendorUpsertOne {
+	return u.Update(func(s *ModelVendorUpsert) {
+		s.SetDeletedAt(v)
+	})
+}
+
+// UpdateDeletedAt sets the "deleted_at" field to the value that was provided on create.
+func (u *ModelVendorUpsertOne) UpdateDeletedAt() *ModelVendorUpsertOne {
+	return u.Update(func(s *ModelVendorUpsert) {
+		s.UpdateDeletedAt()
+	})
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (u *ModelVendorUpsertOne) ClearDeletedAt() *ModelVendorUpsertOne {
+	return u.Update(func(s *ModelVendorUpsert) {
+		s.ClearDeletedAt()
 	})
 }
 
@@ -863,6 +920,27 @@ func (u *ModelVendorUpsertBulk) AddSortOrder(v int) *ModelVendorUpsertBulk {
 func (u *ModelVendorUpsertBulk) UpdateSortOrder() *ModelVendorUpsertBulk {
 	return u.Update(func(s *ModelVendorUpsert) {
 		s.UpdateSortOrder()
+	})
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (u *ModelVendorUpsertBulk) SetDeletedAt(v time.Time) *ModelVendorUpsertBulk {
+	return u.Update(func(s *ModelVendorUpsert) {
+		s.SetDeletedAt(v)
+	})
+}
+
+// UpdateDeletedAt sets the "deleted_at" field to the value that was provided on create.
+func (u *ModelVendorUpsertBulk) UpdateDeletedAt() *ModelVendorUpsertBulk {
+	return u.Update(func(s *ModelVendorUpsert) {
+		s.UpdateDeletedAt()
+	})
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (u *ModelVendorUpsertBulk) ClearDeletedAt() *ModelVendorUpsertBulk {
+	return u.Update(func(s *ModelVendorUpsert) {
+		s.ClearDeletedAt()
 	})
 }
 

@@ -105,16 +105,15 @@ func pricingMapFromLiteLLM(p *LiteLLMModelPricing) map[string]any {
 	return pricing
 }
 
-func modelCatalogInputFromPricing(entry PricingCatalogEntry, vendorID int64, syncedAt time.Time) ModelCatalogUpsert {
+func modelCatalogInputFromPricing(entry PricingCatalogEntry, vendorID *int64, syncedAt time.Time) ModelCatalogUpsert {
 	platform := providerToPlatform(entry.Provider)
-	vendorIDPtr := vendorID
 	iconKey := iconKeyForProvider(entry.Provider)
 	return ModelCatalogUpsert{
 		ModelID:      entry.ModelID,
 		DisplayName:  entry.ModelID,
 		Platform:     platform,
 		Provider:     entry.Provider,
-		VendorID:     &vendorIDPtr,
+		VendorID:     vendorID,
 		Mode:         entry.Mode,
 		Tags:         modelTagsFromPricing(entry),
 		Capabilities: entry.Capabilities,
@@ -239,8 +238,25 @@ func providerToPlatform(provider string) string {
 		return PlatformOpenAI
 	case "google", "gemini", "vertex_ai":
 		return PlatformGemini
+	case "antigravity":
+		return PlatformAntigravity
 	default:
-		return strings.ToLower(strings.TrimSpace(provider))
+		return PlatformOpenAI
+	}
+}
+
+func NormalizeModelCatalogPlatform(platform string) string {
+	switch strings.ToLower(strings.TrimSpace(platform)) {
+	case PlatformAnthropic, "claude":
+		return PlatformAnthropic
+	case PlatformGemini, "google", "vertex_ai", "vertex-ai", "vertex":
+		return PlatformGemini
+	case PlatformAntigravity:
+		return PlatformAntigravity
+	case PlatformOpenAI, "":
+		return PlatformOpenAI
+	default:
+		return PlatformOpenAI
 	}
 }
 

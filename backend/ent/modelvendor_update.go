@@ -112,6 +112,26 @@ func (_u *ModelVendorUpdate) AddSortOrder(v int) *ModelVendorUpdate {
 	return _u
 }
 
+// SetDeletedAt sets the "deleted_at" field.
+func (_u *ModelVendorUpdate) SetDeletedAt(v time.Time) *ModelVendorUpdate {
+	_u.mutation.SetDeletedAt(v)
+	return _u
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (_u *ModelVendorUpdate) SetNillableDeletedAt(v *time.Time) *ModelVendorUpdate {
+	if v != nil {
+		_u.SetDeletedAt(*v)
+	}
+	return _u
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (_u *ModelVendorUpdate) ClearDeletedAt() *ModelVendorUpdate {
+	_u.mutation.ClearDeletedAt()
+	return _u
+}
+
 // AddModelIDs adds the "models" edge to the ModelCatalog entity by IDs.
 func (_u *ModelVendorUpdate) AddModelIDs(ids ...int64) *ModelVendorUpdate {
 	_u.mutation.AddModelIDs(ids...)
@@ -241,6 +261,12 @@ func (_u *ModelVendorUpdate) sqlSave(ctx context.Context) (_node int, err error)
 	}
 	if value, ok := _u.mutation.AddedSortOrder(); ok {
 		_spec.AddField(modelvendor.FieldSortOrder, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.DeletedAt(); ok {
+		_spec.SetField(modelvendor.FieldDeletedAt, field.TypeTime, value)
+	}
+	if _u.mutation.DeletedAtCleared() {
+		_spec.ClearField(modelvendor.FieldDeletedAt, field.TypeTime)
 	}
 	if _u.mutation.ModelsCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -387,6 +413,26 @@ func (_u *ModelVendorUpdateOne) SetNillableSortOrder(v *int) *ModelVendorUpdateO
 // AddSortOrder adds value to the "sort_order" field.
 func (_u *ModelVendorUpdateOne) AddSortOrder(v int) *ModelVendorUpdateOne {
 	_u.mutation.AddSortOrder(v)
+	return _u
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (_u *ModelVendorUpdateOne) SetDeletedAt(v time.Time) *ModelVendorUpdateOne {
+	_u.mutation.SetDeletedAt(v)
+	return _u
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (_u *ModelVendorUpdateOne) SetNillableDeletedAt(v *time.Time) *ModelVendorUpdateOne {
+	if v != nil {
+		_u.SetDeletedAt(*v)
+	}
+	return _u
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (_u *ModelVendorUpdateOne) ClearDeletedAt() *ModelVendorUpdateOne {
+	_u.mutation.ClearDeletedAt()
 	return _u
 }
 
@@ -549,6 +595,12 @@ func (_u *ModelVendorUpdateOne) sqlSave(ctx context.Context) (_node *ModelVendor
 	}
 	if value, ok := _u.mutation.AddedSortOrder(); ok {
 		_spec.AddField(modelvendor.FieldSortOrder, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.DeletedAt(); ok {
+		_spec.SetField(modelvendor.FieldDeletedAt, field.TypeTime, value)
+	}
+	if _u.mutation.DeletedAtCleared() {
+		_spec.ClearField(modelvendor.FieldDeletedAt, field.TypeTime)
 	}
 	if _u.mutation.ModelsCleared() {
 		edge := &sqlgraph.EdgeSpec{

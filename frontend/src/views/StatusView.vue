@@ -89,7 +89,16 @@
         <p class="mt-2 text-sm text-gray-500 dark:text-dark-400">{{ t('channelStatus.empty.description') }}</p>
       </section>
 
-      <section v-else class="mt-6 space-y-8">
+      <section v-else class="relative mt-6 space-y-8">
+        <div
+          v-if="loading"
+          class="absolute inset-0 z-10 grid place-items-center rounded-md bg-gray-50/70 backdrop-blur-sm dark:bg-dark-950/70"
+        >
+          <span class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm text-gray-600 shadow-sm dark:border-dark-700 dark:bg-dark-900 dark:text-dark-300">
+            <Icon name="refresh" size="sm" class="animate-spin" />
+            {{ t('common.loading') }}
+          </span>
+        </div>
         <div
           v-for="providerGroup in providerGroups"
           :key="providerGroup.provider"
