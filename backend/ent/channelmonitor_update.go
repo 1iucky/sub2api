@@ -210,6 +210,27 @@ func (_u *ChannelMonitorUpdate) AddJitterSeconds(v int) *ChannelMonitorUpdate {
 	return _u
 }
 
+// SetRetryCount sets the "retry_count" field.
+func (_u *ChannelMonitorUpdate) SetRetryCount(v int) *ChannelMonitorUpdate {
+	_u.mutation.ResetRetryCount()
+	_u.mutation.SetRetryCount(v)
+	return _u
+}
+
+// SetNillableRetryCount sets the "retry_count" field if the given value is not nil.
+func (_u *ChannelMonitorUpdate) SetNillableRetryCount(v *int) *ChannelMonitorUpdate {
+	if v != nil {
+		_u.SetRetryCount(*v)
+	}
+	return _u
+}
+
+// AddRetryCount adds value to the "retry_count" field.
+func (_u *ChannelMonitorUpdate) AddRetryCount(v int) *ChannelMonitorUpdate {
+	_u.mutation.AddRetryCount(v)
+	return _u
+}
+
 // SetLastCheckedAt sets the "last_checked_at" field.
 func (_u *ChannelMonitorUpdate) SetLastCheckedAt(v time.Time) *ChannelMonitorUpdate {
 	_u.mutation.SetLastCheckedAt(v)
@@ -488,6 +509,11 @@ func (_u *ChannelMonitorUpdate) check() error {
 			return &ValidationError{Name: "jitter_seconds", err: fmt.Errorf(`ent: validator failed for field "ChannelMonitor.jitter_seconds": %w`, err)}
 		}
 	}
+	if v, ok := _u.mutation.RetryCount(); ok {
+		if err := channelmonitor.RetryCountValidator(v); err != nil {
+			return &ValidationError{Name: "retry_count", err: fmt.Errorf(`ent: validator failed for field "ChannelMonitor.retry_count": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.BodyOverrideMode(); ok {
 		if err := channelmonitor.BodyOverrideModeValidator(v); err != nil {
 			return &ValidationError{Name: "body_override_mode", err: fmt.Errorf(`ent: validator failed for field "ChannelMonitor.body_override_mode": %w`, err)}
@@ -557,6 +583,12 @@ func (_u *ChannelMonitorUpdate) sqlSave(ctx context.Context) (_node int, err err
 	}
 	if value, ok := _u.mutation.AddedJitterSeconds(); ok {
 		_spec.AddField(channelmonitor.FieldJitterSeconds, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.RetryCount(); ok {
+		_spec.SetField(channelmonitor.FieldRetryCount, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedRetryCount(); ok {
+		_spec.AddField(channelmonitor.FieldRetryCount, field.TypeInt, value)
 	}
 	if value, ok := _u.mutation.LastCheckedAt(); ok {
 		_spec.SetField(channelmonitor.FieldLastCheckedAt, field.TypeTime, value)
@@ -899,6 +931,27 @@ func (_u *ChannelMonitorUpdateOne) AddJitterSeconds(v int) *ChannelMonitorUpdate
 	return _u
 }
 
+// SetRetryCount sets the "retry_count" field.
+func (_u *ChannelMonitorUpdateOne) SetRetryCount(v int) *ChannelMonitorUpdateOne {
+	_u.mutation.ResetRetryCount()
+	_u.mutation.SetRetryCount(v)
+	return _u
+}
+
+// SetNillableRetryCount sets the "retry_count" field if the given value is not nil.
+func (_u *ChannelMonitorUpdateOne) SetNillableRetryCount(v *int) *ChannelMonitorUpdateOne {
+	if v != nil {
+		_u.SetRetryCount(*v)
+	}
+	return _u
+}
+
+// AddRetryCount adds value to the "retry_count" field.
+func (_u *ChannelMonitorUpdateOne) AddRetryCount(v int) *ChannelMonitorUpdateOne {
+	_u.mutation.AddRetryCount(v)
+	return _u
+}
+
 // SetLastCheckedAt sets the "last_checked_at" field.
 func (_u *ChannelMonitorUpdateOne) SetLastCheckedAt(v time.Time) *ChannelMonitorUpdateOne {
 	_u.mutation.SetLastCheckedAt(v)
@@ -1190,6 +1243,11 @@ func (_u *ChannelMonitorUpdateOne) check() error {
 			return &ValidationError{Name: "jitter_seconds", err: fmt.Errorf(`ent: validator failed for field "ChannelMonitor.jitter_seconds": %w`, err)}
 		}
 	}
+	if v, ok := _u.mutation.RetryCount(); ok {
+		if err := channelmonitor.RetryCountValidator(v); err != nil {
+			return &ValidationError{Name: "retry_count", err: fmt.Errorf(`ent: validator failed for field "ChannelMonitor.retry_count": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.BodyOverrideMode(); ok {
 		if err := channelmonitor.BodyOverrideModeValidator(v); err != nil {
 			return &ValidationError{Name: "body_override_mode", err: fmt.Errorf(`ent: validator failed for field "ChannelMonitor.body_override_mode": %w`, err)}
@@ -1276,6 +1334,12 @@ func (_u *ChannelMonitorUpdateOne) sqlSave(ctx context.Context) (_node *ChannelM
 	}
 	if value, ok := _u.mutation.AddedJitterSeconds(); ok {
 		_spec.AddField(channelmonitor.FieldJitterSeconds, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.RetryCount(); ok {
+		_spec.SetField(channelmonitor.FieldRetryCount, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedRetryCount(); ok {
+		_spec.AddField(channelmonitor.FieldRetryCount, field.TypeInt, value)
 	}
 	if value, ok := _u.mutation.LastCheckedAt(); ok {
 		_spec.SetField(channelmonitor.FieldLastCheckedAt, field.TypeTime, value)

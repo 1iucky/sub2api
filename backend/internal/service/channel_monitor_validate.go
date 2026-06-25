@@ -52,6 +52,14 @@ func validateJitter(jitterSec, intervalSec int) error {
 	return nil
 }
 
+// validateRetryCount 校验失败后的额外重试次数。0 表示不重试。
+func validateRetryCount(count int) error {
+	if count < 0 || count > monitorMaxRetryCount {
+		return ErrChannelMonitorInvalidRetryCount
+	}
+	return nil
+}
+
 // validateEndpoint 校验 endpoint：
 //   - scheme 强制 https（拒绝 http，避免明文凭证 + 部分 SSRF 利用面）
 //   - 必须为 origin（无 path/query/fragment），防止用户填 https://api.openai.com/v1

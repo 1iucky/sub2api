@@ -59,6 +59,45 @@ func setupFakeAnthropic(t *testing.T, handler *captureHandler) string {
 	return srv.URL
 }
 
+type anthropicChallengeHandler struct {
+	lastBody            map[string]any
+	lastHeaders         http.Header
+	responseMode        string // "json" or "sse"
+	includeMessageStart bool
+}
+
+func (h *anthropicChallengeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	h.lastHeaders = r.Header.Clone()
+	defer func() { _ = r.Body.Close() }()
+
+	var parsed map[string]any
+	_ = json.NewDecoder(r.Body).Decode(&parsed)
+	h.lastBody = parsed
+
+	answer := answerFromOpenAIRequest(parsed)
+	if h.responseMode == "sse" {
+		w.Header().Set("Content-Type", "text/event-stream")
+		w.WriteHeader(http.StatusOK)
+		if h.includeMessageStart {
+			_, _ = w.Write([]byte(`event: message_start` + "\n"))
+			_, _ = w.Write([]byte(`data: {"type":"message_start","message":{"id":"msg_1","type":"message","role":"assistant","content":[],"model":"claude-test","stop_reason":"","usage":{"input_tokens":1}}}` + "\n\n"))
+		}
+		_, _ = w.Write([]byte(`event: content_block_delta` + "\n"))
+		_, _ = w.Write([]byte(`data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"` + answer + `"}}` + "\n\n"))
+		_, _ = w.Write([]byte(`event: message_delta` + "\n"))
+		_, _ = w.Write([]byte(`data: {"type":"message_delta","usage":{"output_tokens":1}}` + "\n\n"))
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	_ = json.NewEncoder(w).Encode(map[string]any{
+		"content": []map[string]any{
+			{"type": "text", "text": answer},
+		},
+	})
+}
+
 type openAICaptureHandler struct {
 	lastBody                  map[string]any
 	lastHeaders               http.Header
@@ -66,6 +105,10 @@ type openAICaptureHandler struct {
 	status                    int
 	rawResponse               string
 	responsesLeadingReasoning bool
+	responsesCompletedSSE     bool
+	rawContentType            string
+	rawBody                   string
+	cfRay                     string
 }
 
 func (h *openAICaptureHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -78,6 +121,17 @@ func (h *openAICaptureHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 
 	if h.status == 0 {
 		h.status = http.StatusOK
+	}
+	if h.rawBody != "" {
+		if h.rawContentType != "" {
+			w.Header().Set("Content-Type", h.rawContentType)
+		}
+		if h.cfRay != "" {
+			w.Header().Set("cf-ray", h.cfRay)
+		}
+		w.WriteHeader(h.status)
+		_, _ = w.Write([]byte(h.rawBody))
+		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(h.status)
@@ -106,6 +160,10 @@ func (h *openAICaptureHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 		_ = json.NewEncoder(w).Encode(map[string]any{
 			"output": output,
 		})
+		return
+	}
+	if h.responsesCompletedSSE {
+		_, _ = w.Write([]byte(`data: {"type":"response.completed","response":{"id":"resp_1","object":"response","model":"gpt-test","status":"completed","output":[{"type":"message","id":"msg_1","role":"assistant","status":"completed","content":[{"type":"output_text","text":"` + answer + `"}]}]}}` + "\n\n"))
 		return
 	}
 	_ = json.NewEncoder(w).Encode(map[string]any{
@@ -163,6 +221,38 @@ func TestRunCheckForModel_OffMode_PreservesDefaultBody(t *testing.T) {
 	}
 	if h.lastHeaders.Get("x-api-key") != "sk-fake" {
 		t.Errorf("expected adapter's x-api-key header, got %q", h.lastHeaders.Get("x-api-key"))
+	}
+}
+
+func TestRunCheckForModel_AnthropicExtractsTextFromJsonContent(t *testing.T) {
+	h := &anthropicChallengeHandler{}
+	swapMonitorHTTPClient(t)
+	srv := httptest.NewServer(h)
+	t.Cleanup(srv.Close)
+
+	res := runCheckForModel(context.Background(), MonitorProviderAnthropic, srv.URL, "sk-fake", "claude-x", nil)
+
+	if res.Status != MonitorStatusOperational {
+		t.Fatalf("anthropic json response should pass challenge, got status=%s message=%q", res.Status, res.Message)
+	}
+	if h.lastBody["model"] != "claude-x" {
+		t.Fatalf("expected anthropic request model claude-x, got %v", h.lastBody["model"])
+	}
+}
+
+func TestRunCheckForModel_AnthropicExtractsTextFromSSE(t *testing.T) {
+	h := &anthropicChallengeHandler{responseMode: "sse", includeMessageStart: true}
+	swapMonitorHTTPClient(t)
+	srv := httptest.NewServer(h)
+	t.Cleanup(srv.Close)
+
+	res := runCheckForModel(context.Background(), MonitorProviderAnthropic, srv.URL, "sk-fake", "claude-x", nil)
+
+	if res.Status != MonitorStatusOperational {
+		t.Fatalf("anthropic sse response should pass challenge, got status=%s message=%q", res.Status, res.Message)
+	}
+	if h.lastBody["model"] != "claude-x" {
+		t.Fatalf("expected anthropic request model claude-x, got %v", h.lastBody["model"])
 	}
 }
 
@@ -328,6 +418,45 @@ func TestRunCheckForModel_OpenAIResponses_SkipsLeadingReasoningItem(t *testing.T
 	}
 	if h.lastPath != providerOpenAIResponsesPath {
 		t.Fatalf("expected responses path %q, got %q", providerOpenAIResponsesPath, h.lastPath)
+	}
+}
+
+func TestRunCheckForModel_OpenAIChat_ExtractsTextFromResponsesCompletedSSE(t *testing.T) {
+	h := &openAICaptureHandler{responsesCompletedSSE: true}
+	endpoint := setupFakeOpenAI(t, h)
+
+	res := runCheckForModel(context.Background(), MonitorProviderOpenAI, endpoint, "sk-openai", "gpt-test", nil)
+
+	if res.Status != MonitorStatusOperational {
+		t.Fatalf("chat request should extract challenge answer from response.completed SSE, got status=%s message=%q", res.Status, res.Message)
+	}
+	if h.lastPath != providerOpenAIPath {
+		t.Fatalf("expected chat completions path %q, got %q", providerOpenAIPath, h.lastPath)
+	}
+}
+
+func TestRunCheckForModel_CloudflareChallengeFormatsFriendlyMessage(t *testing.T) {
+	h := &openAICaptureHandler{
+		status:         http.StatusForbidden,
+		rawContentType: "text/html; charset=UTF-8",
+		cfRay:          "test-ray-123",
+		rawBody:        `<!DOCTYPE html><html lang="en-US"><head><title>Just a moment...</title></head><body><script>window._cf_chl_opt={};</script></body></html>`,
+	}
+	endpoint := setupFakeOpenAI(t, h)
+
+	res := runCheckForModel(context.Background(), MonitorProviderOpenAI, endpoint, "sk-openai", "gpt-5.4", nil)
+
+	if res.Status != MonitorStatusError {
+		t.Fatalf("cloudflare challenge should be monitor error, got status=%s", res.Status)
+	}
+	if !strings.Contains(res.Message, "Cloudflare challenge") {
+		t.Fatalf("expected friendly Cloudflare message, got %q", res.Message)
+	}
+	if !strings.Contains(res.Message, "test-ray-123") {
+		t.Fatalf("expected cf-ray in message, got %q", res.Message)
+	}
+	if strings.Contains(strings.ToLower(res.Message), "<!doctype") || strings.Contains(strings.ToLower(res.Message), "<html") {
+		t.Fatalf("message should not expose raw HTML, got %q", res.Message)
 	}
 }
 

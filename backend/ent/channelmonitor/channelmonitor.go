@@ -41,6 +41,8 @@ const (
 	FieldIntervalSeconds = "interval_seconds"
 	// FieldJitterSeconds holds the string denoting the jitter_seconds field in the database.
 	FieldJitterSeconds = "jitter_seconds"
+	// FieldRetryCount holds the string denoting the retry_count field in the database.
+	FieldRetryCount = "retry_count"
 	// FieldLastCheckedAt holds the string denoting the last_checked_at field in the database.
 	FieldLastCheckedAt = "last_checked_at"
 	// FieldCreatedBy holds the string denoting the created_by field in the database.
@@ -100,6 +102,7 @@ var Columns = []string{
 	FieldEnabled,
 	FieldIntervalSeconds,
 	FieldJitterSeconds,
+	FieldRetryCount,
 	FieldLastCheckedAt,
 	FieldCreatedBy,
 	FieldTemplateID,
@@ -151,6 +154,10 @@ var (
 	DefaultJitterSeconds int
 	// JitterSecondsValidator is a validator for the "jitter_seconds" field. It is called by the builders before save.
 	JitterSecondsValidator func(int) error
+	// DefaultRetryCount holds the default value on creation for the "retry_count" field.
+	DefaultRetryCount int
+	// RetryCountValidator is a validator for the "retry_count" field. It is called by the builders before save.
+	RetryCountValidator func(int) error
 	// DefaultExtraHeaders holds the default value on creation for the "extra_headers" field.
 	DefaultExtraHeaders map[string]string
 	// DefaultBodyOverrideMode holds the default value on creation for the "body_override_mode" field.
@@ -250,6 +257,11 @@ func ByIntervalSeconds(opts ...sql.OrderTermOption) OrderOption {
 // ByJitterSeconds orders the results by the jitter_seconds field.
 func ByJitterSeconds(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldJitterSeconds, opts...).ToFunc()
+}
+
+// ByRetryCount orders the results by the retry_count field.
+func ByRetryCount(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRetryCount, opts...).ToFunc()
 }
 
 // ByLastCheckedAt orders the results by the last_checked_at field.

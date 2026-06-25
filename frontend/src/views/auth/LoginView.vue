@@ -348,7 +348,7 @@ function applyLoginAgreementSettings(settings: {
   login_agreement_documents?: LoginAgreementDocument[]
 }): void {
   const documents = Array.isArray(settings.login_agreement_documents)
-    ? settings.login_agreement_documents.filter((doc) => doc.title?.trim())
+    ? settings.login_agreement_documents
     : []
   loginAgreementDocuments.value = documents
   loginAgreementEnabled.value = settings.login_agreement_enabled === true && documents.length > 0
@@ -356,7 +356,7 @@ function applyLoginAgreementSettings(settings: {
   loginAgreementUpdatedAt.value = settings.login_agreement_updated_at || ''
   loginAgreementRevision.value =
     settings.login_agreement_revision ||
-    `${loginAgreementUpdatedAt.value}:${documents.map((doc) => `${doc.id}:${doc.title}`).join('|')}`
+    `${loginAgreementUpdatedAt.value}:${documents.map((doc) => `${doc.id}:${doc.title}:${doc.content_md}`).join('|')}`
 
   agreementAccepted.value = !loginAgreementEnabled.value || hasAcceptedLoginAgreement(loginAgreementRevision.value)
   showAgreementModal.value =

@@ -23,6 +23,8 @@ import (
 	"github.com/Wei-Shaw/sub2api/ent/group"
 	"github.com/Wei-Shaw/sub2api/ent/idempotencyrecord"
 	"github.com/Wei-Shaw/sub2api/ent/identityadoptiondecision"
+	"github.com/Wei-Shaw/sub2api/ent/modelcatalog"
+	"github.com/Wei-Shaw/sub2api/ent/modelvendor"
 	"github.com/Wei-Shaw/sub2api/ent/paymentauditlog"
 	"github.com/Wei-Shaw/sub2api/ent/paymentorder"
 	"github.com/Wei-Shaw/sub2api/ent/paymentproviderinstance"
@@ -704,12 +706,32 @@ func init() {
 	channelmonitor.DefaultJitterSeconds = channelmonitorDescJitterSeconds.Default.(int)
 	// channelmonitor.JitterSecondsValidator is a validator for the "jitter_seconds" field. It is called by the builders before save.
 	channelmonitor.JitterSecondsValidator = channelmonitorDescJitterSeconds.Validators[0].(func(int) error)
+	// channelmonitorDescRetryCount is the schema descriptor for retry_count field.
+	channelmonitorDescRetryCount := channelmonitorFields[11].Descriptor()
+	// channelmonitor.DefaultRetryCount holds the default value on creation for the retry_count field.
+	channelmonitor.DefaultRetryCount = channelmonitorDescRetryCount.Default.(int)
+	// channelmonitor.RetryCountValidator is a validator for the "retry_count" field. It is called by the builders before save.
+	channelmonitor.RetryCountValidator = func() func(int) error {
+		validators := channelmonitorDescRetryCount.Validators
+		fns := [...]func(int) error{
+			validators[0].(func(int) error),
+			validators[1].(func(int) error),
+		}
+		return func(retry_count int) error {
+			for _, fn := range fns {
+				if err := fn(retry_count); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	// channelmonitorDescExtraHeaders is the schema descriptor for extra_headers field.
-	channelmonitorDescExtraHeaders := channelmonitorFields[14].Descriptor()
+	channelmonitorDescExtraHeaders := channelmonitorFields[15].Descriptor()
 	// channelmonitor.DefaultExtraHeaders holds the default value on creation for the extra_headers field.
 	channelmonitor.DefaultExtraHeaders = channelmonitorDescExtraHeaders.Default.(map[string]string)
 	// channelmonitorDescBodyOverrideMode is the schema descriptor for body_override_mode field.
-	channelmonitorDescBodyOverrideMode := channelmonitorFields[15].Descriptor()
+	channelmonitorDescBodyOverrideMode := channelmonitorFields[16].Descriptor()
 	// channelmonitor.DefaultBodyOverrideMode holds the default value on creation for the body_override_mode field.
 	channelmonitor.DefaultBodyOverrideMode = channelmonitorDescBodyOverrideMode.Default.(string)
 	// channelmonitor.BodyOverrideModeValidator is a validator for the "body_override_mode" field. It is called by the builders before save.
@@ -1159,6 +1181,170 @@ func init() {
 	identityadoptiondecisionDescDecidedAt := identityadoptiondecisionFields[4].Descriptor()
 	// identityadoptiondecision.DefaultDecidedAt holds the default value on creation for the decided_at field.
 	identityadoptiondecision.DefaultDecidedAt = identityadoptiondecisionDescDecidedAt.Default.(func() time.Time)
+	modelcatalogMixin := schema.ModelCatalog{}.Mixin()
+	modelcatalogMixinFields0 := modelcatalogMixin[0].Fields()
+	_ = modelcatalogMixinFields0
+	modelcatalogFields := schema.ModelCatalog{}.Fields()
+	_ = modelcatalogFields
+	// modelcatalogDescCreatedAt is the schema descriptor for created_at field.
+	modelcatalogDescCreatedAt := modelcatalogMixinFields0[0].Descriptor()
+	// modelcatalog.DefaultCreatedAt holds the default value on creation for the created_at field.
+	modelcatalog.DefaultCreatedAt = modelcatalogDescCreatedAt.Default.(func() time.Time)
+	// modelcatalogDescUpdatedAt is the schema descriptor for updated_at field.
+	modelcatalogDescUpdatedAt := modelcatalogMixinFields0[1].Descriptor()
+	// modelcatalog.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	modelcatalog.DefaultUpdatedAt = modelcatalogDescUpdatedAt.Default.(func() time.Time)
+	// modelcatalog.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	modelcatalog.UpdateDefaultUpdatedAt = modelcatalogDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// modelcatalogDescModelID is the schema descriptor for model_id field.
+	modelcatalogDescModelID := modelcatalogFields[0].Descriptor()
+	// modelcatalog.ModelIDValidator is a validator for the "model_id" field. It is called by the builders before save.
+	modelcatalog.ModelIDValidator = func() func(string) error {
+		validators := modelcatalogDescModelID.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(model_id string) error {
+			for _, fn := range fns {
+				if err := fn(model_id); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// modelcatalogDescNormalizedModelID is the schema descriptor for normalized_model_id field.
+	modelcatalogDescNormalizedModelID := modelcatalogFields[1].Descriptor()
+	// modelcatalog.NormalizedModelIDValidator is a validator for the "normalized_model_id" field. It is called by the builders before save.
+	modelcatalog.NormalizedModelIDValidator = func() func(string) error {
+		validators := modelcatalogDescNormalizedModelID.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(normalized_model_id string) error {
+			for _, fn := range fns {
+				if err := fn(normalized_model_id); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// modelcatalogDescDisplayName is the schema descriptor for display_name field.
+	modelcatalogDescDisplayName := modelcatalogFields[2].Descriptor()
+	// modelcatalog.DefaultDisplayName holds the default value on creation for the display_name field.
+	modelcatalog.DefaultDisplayName = modelcatalogDescDisplayName.Default.(string)
+	// modelcatalog.DisplayNameValidator is a validator for the "display_name" field. It is called by the builders before save.
+	modelcatalog.DisplayNameValidator = modelcatalogDescDisplayName.Validators[0].(func(string) error)
+	// modelcatalogDescPlatform is the schema descriptor for platform field.
+	modelcatalogDescPlatform := modelcatalogFields[3].Descriptor()
+	// modelcatalog.DefaultPlatform holds the default value on creation for the platform field.
+	modelcatalog.DefaultPlatform = modelcatalogDescPlatform.Default.(string)
+	// modelcatalog.PlatformValidator is a validator for the "platform" field. It is called by the builders before save.
+	modelcatalog.PlatformValidator = modelcatalogDescPlatform.Validators[0].(func(string) error)
+	// modelcatalogDescProvider is the schema descriptor for provider field.
+	modelcatalogDescProvider := modelcatalogFields[4].Descriptor()
+	// modelcatalog.DefaultProvider holds the default value on creation for the provider field.
+	modelcatalog.DefaultProvider = modelcatalogDescProvider.Default.(string)
+	// modelcatalog.ProviderValidator is a validator for the "provider" field. It is called by the builders before save.
+	modelcatalog.ProviderValidator = modelcatalogDescProvider.Validators[0].(func(string) error)
+	// modelcatalogDescMode is the schema descriptor for mode field.
+	modelcatalogDescMode := modelcatalogFields[6].Descriptor()
+	// modelcatalog.DefaultMode holds the default value on creation for the mode field.
+	modelcatalog.DefaultMode = modelcatalogDescMode.Default.(string)
+	// modelcatalog.ModeValidator is a validator for the "mode" field. It is called by the builders before save.
+	modelcatalog.ModeValidator = modelcatalogDescMode.Validators[0].(func(string) error)
+	// modelcatalogDescDescription is the schema descriptor for description field.
+	modelcatalogDescDescription := modelcatalogFields[7].Descriptor()
+	// modelcatalog.DefaultDescription holds the default value on creation for the description field.
+	modelcatalog.DefaultDescription = modelcatalogDescDescription.Default.(string)
+	// modelcatalogDescTags is the schema descriptor for tags field.
+	modelcatalogDescTags := modelcatalogFields[8].Descriptor()
+	// modelcatalog.DefaultTags holds the default value on creation for the tags field.
+	modelcatalog.DefaultTags = modelcatalogDescTags.Default.([]string)
+	// modelcatalogDescCapabilities is the schema descriptor for capabilities field.
+	modelcatalogDescCapabilities := modelcatalogFields[9].Descriptor()
+	// modelcatalog.DefaultCapabilities holds the default value on creation for the capabilities field.
+	modelcatalog.DefaultCapabilities = modelcatalogDescCapabilities.Default.(map[string]interface{})
+	// modelcatalogDescEndpoints is the schema descriptor for endpoints field.
+	modelcatalogDescEndpoints := modelcatalogFields[10].Descriptor()
+	// modelcatalog.DefaultEndpoints holds the default value on creation for the endpoints field.
+	modelcatalog.DefaultEndpoints = modelcatalogDescEndpoints.Default.([]string)
+	// modelcatalogDescPricing is the schema descriptor for pricing field.
+	modelcatalogDescPricing := modelcatalogFields[11].Descriptor()
+	// modelcatalog.DefaultPricing holds the default value on creation for the pricing field.
+	modelcatalog.DefaultPricing = modelcatalogDescPricing.Default.(map[string]interface{})
+	// modelcatalogDescMetadata is the schema descriptor for metadata field.
+	modelcatalogDescMetadata := modelcatalogFields[12].Descriptor()
+	// modelcatalog.DefaultMetadata holds the default value on creation for the metadata field.
+	modelcatalog.DefaultMetadata = modelcatalogDescMetadata.Default.(map[string]interface{})
+	// modelcatalogDescSource is the schema descriptor for source field.
+	modelcatalogDescSource := modelcatalogFields[15].Descriptor()
+	// modelcatalog.DefaultSource holds the default value on creation for the source field.
+	modelcatalog.DefaultSource = modelcatalogDescSource.Default.(string)
+	// modelcatalog.SourceValidator is a validator for the "source" field. It is called by the builders before save.
+	modelcatalog.SourceValidator = modelcatalogDescSource.Validators[0].(func(string) error)
+	// modelcatalogDescIconKey is the schema descriptor for icon_key field.
+	modelcatalogDescIconKey := modelcatalogFields[16].Descriptor()
+	// modelcatalog.DefaultIconKey holds the default value on creation for the icon_key field.
+	modelcatalog.DefaultIconKey = modelcatalogDescIconKey.Default.(string)
+	// modelcatalog.IconKeyValidator is a validator for the "icon_key" field. It is called by the builders before save.
+	modelcatalog.IconKeyValidator = modelcatalogDescIconKey.Validators[0].(func(string) error)
+	modelvendorMixin := schema.ModelVendor{}.Mixin()
+	modelvendorMixinFields0 := modelvendorMixin[0].Fields()
+	_ = modelvendorMixinFields0
+	modelvendorFields := schema.ModelVendor{}.Fields()
+	_ = modelvendorFields
+	// modelvendorDescCreatedAt is the schema descriptor for created_at field.
+	modelvendorDescCreatedAt := modelvendorMixinFields0[0].Descriptor()
+	// modelvendor.DefaultCreatedAt holds the default value on creation for the created_at field.
+	modelvendor.DefaultCreatedAt = modelvendorDescCreatedAt.Default.(func() time.Time)
+	// modelvendorDescUpdatedAt is the schema descriptor for updated_at field.
+	modelvendorDescUpdatedAt := modelvendorMixinFields0[1].Descriptor()
+	// modelvendor.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	modelvendor.DefaultUpdatedAt = modelvendorDescUpdatedAt.Default.(func() time.Time)
+	// modelvendor.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	modelvendor.UpdateDefaultUpdatedAt = modelvendorDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// modelvendorDescName is the schema descriptor for name field.
+	modelvendorDescName := modelvendorFields[0].Descriptor()
+	// modelvendor.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	modelvendor.NameValidator = func() func(string) error {
+		validators := modelvendorDescName.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(name string) error {
+			for _, fn := range fns {
+				if err := fn(name); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// modelvendorDescProviderKey is the schema descriptor for provider_key field.
+	modelvendorDescProviderKey := modelvendorFields[1].Descriptor()
+	// modelvendor.DefaultProviderKey holds the default value on creation for the provider_key field.
+	modelvendor.DefaultProviderKey = modelvendorDescProviderKey.Default.(string)
+	// modelvendor.ProviderKeyValidator is a validator for the "provider_key" field. It is called by the builders before save.
+	modelvendor.ProviderKeyValidator = modelvendorDescProviderKey.Validators[0].(func(string) error)
+	// modelvendorDescIconKey is the schema descriptor for icon_key field.
+	modelvendorDescIconKey := modelvendorFields[2].Descriptor()
+	// modelvendor.DefaultIconKey holds the default value on creation for the icon_key field.
+	modelvendor.DefaultIconKey = modelvendorDescIconKey.Default.(string)
+	// modelvendor.IconKeyValidator is a validator for the "icon_key" field. It is called by the builders before save.
+	modelvendor.IconKeyValidator = modelvendorDescIconKey.Validators[0].(func(string) error)
+	// modelvendorDescDescription is the schema descriptor for description field.
+	modelvendorDescDescription := modelvendorFields[3].Descriptor()
+	// modelvendor.DefaultDescription holds the default value on creation for the description field.
+	modelvendor.DefaultDescription = modelvendorDescDescription.Default.(string)
+	// modelvendorDescSortOrder is the schema descriptor for sort_order field.
+	modelvendorDescSortOrder := modelvendorFields[4].Descriptor()
+	// modelvendor.DefaultSortOrder holds the default value on creation for the sort_order field.
+	modelvendor.DefaultSortOrder = modelvendorDescSortOrder.Default.(int)
 	paymentauditlogFields := schema.PaymentAuditLog{}.Fields()
 	_ = paymentauditlogFields
 	// paymentauditlogDescOrderID is the schema descriptor for order_id field.

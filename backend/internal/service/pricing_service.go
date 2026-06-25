@@ -126,6 +126,18 @@ type LiteLLMModelPricing struct {
 	OutputCostPerImage                  float64 `json:"output_cost_per_image"`       // 图片生成模型每张图片价格
 	OutputCostPerImageToken             float64 `json:"output_cost_per_image_token"` // 图片输出 token 价格
 	InputCostPerImageToken              float64 `json:"input_cost_per_image_token"`  // 图片输入 token 价格（如 gpt-image-2 图片编辑）
+	MaxInputTokens                      int     `json:"max_input_tokens,omitempty"`
+	MaxOutputTokens                     int     `json:"max_output_tokens,omitempty"`
+	MaxTokens                           int     `json:"max_tokens,omitempty"`
+	SupportsAssistantPrefill            bool    `json:"supports_assistant_prefill,omitempty"`
+	SupportsComputerUse                 bool    `json:"supports_computer_use,omitempty"`
+	SupportsFunctionCalling             bool    `json:"supports_function_calling,omitempty"`
+	SupportsPDFInput                    bool    `json:"supports_pdf_input,omitempty"`
+	SupportsReasoning                   bool    `json:"supports_reasoning,omitempty"`
+	SupportsResponseSchema              bool    `json:"supports_response_schema,omitempty"`
+	SupportsToolChoice                  bool    `json:"supports_tool_choice,omitempty"`
+	SupportsVision                      bool    `json:"supports_vision,omitempty"`
+	SupportsWebSearch                   bool    `json:"supports_web_search,omitempty"`
 
 	// TokenPricingAbsent 表示源数据中 input/output token 价格均缺失（仅有图片价）。
 	// 此类条目只可用于图片计费，token 计费必须回退到 fallback 或 fail-closed，
@@ -160,6 +172,18 @@ type LiteLLMRawEntry struct {
 	OutputCostPerImage                  *float64 `json:"output_cost_per_image"`
 	OutputCostPerImageToken             *float64 `json:"output_cost_per_image_token"`
 	InputCostPerImageToken              *float64 `json:"input_cost_per_image_token"`
+	MaxInputTokens                      *int     `json:"max_input_tokens"`
+	MaxOutputTokens                     *int     `json:"max_output_tokens"`
+	MaxTokens                           *int     `json:"max_tokens"`
+	SupportsAssistantPrefill            bool     `json:"supports_assistant_prefill"`
+	SupportsComputerUse                 bool     `json:"supports_computer_use"`
+	SupportsFunctionCalling             bool     `json:"supports_function_calling"`
+	SupportsPDFInput                    bool     `json:"supports_pdf_input"`
+	SupportsReasoning                   bool     `json:"supports_reasoning"`
+	SupportsResponseSchema              bool     `json:"supports_response_schema"`
+	SupportsToolChoice                  bool     `json:"supports_tool_choice"`
+	SupportsVision                      bool     `json:"supports_vision"`
+	SupportsWebSearch                   bool     `json:"supports_web_search"`
 }
 
 // PricingService 动态价格服务
@@ -442,11 +466,20 @@ func (s *PricingService) parsePricingData(body []byte) (map[string]*LiteLLMModel
 		}
 
 		pricing := &LiteLLMModelPricing{
-			LiteLLMProvider:       entry.LiteLLMProvider,
-			Mode:                  entry.Mode,
-			SupportsPromptCaching: entry.SupportsPromptCaching,
-			SupportsServiceTier:   entry.SupportsServiceTier,
-			TokenPricingAbsent:    entry.InputCostPerToken == nil && entry.OutputCostPerToken == nil,
+			LiteLLMProvider:          entry.LiteLLMProvider,
+			Mode:                     entry.Mode,
+			SupportsPromptCaching:    entry.SupportsPromptCaching,
+			SupportsServiceTier:      entry.SupportsServiceTier,
+			TokenPricingAbsent:       entry.InputCostPerToken == nil && entry.OutputCostPerToken == nil,
+			SupportsAssistantPrefill: entry.SupportsAssistantPrefill,
+			SupportsComputerUse:      entry.SupportsComputerUse,
+			SupportsFunctionCalling:  entry.SupportsFunctionCalling,
+			SupportsPDFInput:         entry.SupportsPDFInput,
+			SupportsReasoning:        entry.SupportsReasoning,
+			SupportsResponseSchema:   entry.SupportsResponseSchema,
+			SupportsToolChoice:       entry.SupportsToolChoice,
+			SupportsVision:           entry.SupportsVision,
+			SupportsWebSearch:        entry.SupportsWebSearch,
 		}
 
 		if entry.InputCostPerToken != nil {
@@ -493,6 +526,15 @@ func (s *PricingService) parsePricingData(body []byte) (map[string]*LiteLLMModel
 		}
 		if entry.InputCostPerImageToken != nil {
 			pricing.InputCostPerImageToken = *entry.InputCostPerImageToken
+		}
+		if entry.MaxInputTokens != nil {
+			pricing.MaxInputTokens = *entry.MaxInputTokens
+		}
+		if entry.MaxOutputTokens != nil {
+			pricing.MaxOutputTokens = *entry.MaxOutputTokens
+		}
+		if entry.MaxTokens != nil {
+			pricing.MaxTokens = *entry.MaxTokens
 		}
 
 		result[modelName] = pricing

@@ -92,8 +92,8 @@ export function getLocale(): LocaleCode {
 }
 
 export const availableLocales = [
-  { code: 'en', name: 'English', flag: '🇺🇸' },
-  { code: 'zh', name: '中文', flag: '🇨🇳' }
+  { code: 'zh', name: '简体中文' },
+  { code: 'en', name: 'English' }
 ] as const
 
 export default i18n

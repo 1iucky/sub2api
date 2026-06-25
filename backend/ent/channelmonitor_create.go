@@ -151,6 +151,20 @@ func (_c *ChannelMonitorCreate) SetNillableJitterSeconds(v *int) *ChannelMonitor
 	return _c
 }
 
+// SetRetryCount sets the "retry_count" field.
+func (_c *ChannelMonitorCreate) SetRetryCount(v int) *ChannelMonitorCreate {
+	_c.mutation.SetRetryCount(v)
+	return _c
+}
+
+// SetNillableRetryCount sets the "retry_count" field if the given value is not nil.
+func (_c *ChannelMonitorCreate) SetNillableRetryCount(v *int) *ChannelMonitorCreate {
+	if v != nil {
+		_c.SetRetryCount(*v)
+	}
+	return _c
+}
+
 // SetLastCheckedAt sets the "last_checked_at" field.
 func (_c *ChannelMonitorCreate) SetLastCheckedAt(v time.Time) *ChannelMonitorCreate {
 	_c.mutation.SetLastCheckedAt(v)
@@ -323,6 +337,10 @@ func (_c *ChannelMonitorCreate) defaults() {
 		v := channelmonitor.DefaultJitterSeconds
 		_c.mutation.SetJitterSeconds(v)
 	}
+	if _, ok := _c.mutation.RetryCount(); !ok {
+		v := channelmonitor.DefaultRetryCount
+		_c.mutation.SetRetryCount(v)
+	}
 	if _, ok := _c.mutation.ExtraHeaders(); !ok {
 		v := channelmonitor.DefaultExtraHeaders
 		_c.mutation.SetExtraHeaders(v)
@@ -414,6 +432,14 @@ func (_c *ChannelMonitorCreate) check() error {
 	if v, ok := _c.mutation.JitterSeconds(); ok {
 		if err := channelmonitor.JitterSecondsValidator(v); err != nil {
 			return &ValidationError{Name: "jitter_seconds", err: fmt.Errorf(`ent: validator failed for field "ChannelMonitor.jitter_seconds": %w`, err)}
+		}
+	}
+	if _, ok := _c.mutation.RetryCount(); !ok {
+		return &ValidationError{Name: "retry_count", err: errors.New(`ent: missing required field "ChannelMonitor.retry_count"`)}
+	}
+	if v, ok := _c.mutation.RetryCount(); ok {
+		if err := channelmonitor.RetryCountValidator(v); err != nil {
+			return &ValidationError{Name: "retry_count", err: fmt.Errorf(`ent: validator failed for field "ChannelMonitor.retry_count": %w`, err)}
 		}
 	}
 	if _, ok := _c.mutation.CreatedBy(); !ok {
@@ -508,6 +534,10 @@ func (_c *ChannelMonitorCreate) createSpec() (*ChannelMonitor, *sqlgraph.CreateS
 	if value, ok := _c.mutation.JitterSeconds(); ok {
 		_spec.SetField(channelmonitor.FieldJitterSeconds, field.TypeInt, value)
 		_node.JitterSeconds = value
+	}
+	if value, ok := _c.mutation.RetryCount(); ok {
+		_spec.SetField(channelmonitor.FieldRetryCount, field.TypeInt, value)
+		_node.RetryCount = value
 	}
 	if value, ok := _c.mutation.LastCheckedAt(); ok {
 		_spec.SetField(channelmonitor.FieldLastCheckedAt, field.TypeTime, value)
@@ -789,6 +819,24 @@ func (u *ChannelMonitorUpsert) UpdateJitterSeconds() *ChannelMonitorUpsert {
 // AddJitterSeconds adds v to the "jitter_seconds" field.
 func (u *ChannelMonitorUpsert) AddJitterSeconds(v int) *ChannelMonitorUpsert {
 	u.Add(channelmonitor.FieldJitterSeconds, v)
+	return u
+}
+
+// SetRetryCount sets the "retry_count" field.
+func (u *ChannelMonitorUpsert) SetRetryCount(v int) *ChannelMonitorUpsert {
+	u.Set(channelmonitor.FieldRetryCount, v)
+	return u
+}
+
+// UpdateRetryCount sets the "retry_count" field to the value that was provided on create.
+func (u *ChannelMonitorUpsert) UpdateRetryCount() *ChannelMonitorUpsert {
+	u.SetExcluded(channelmonitor.FieldRetryCount)
+	return u
+}
+
+// AddRetryCount adds v to the "retry_count" field.
+func (u *ChannelMonitorUpsert) AddRetryCount(v int) *ChannelMonitorUpsert {
+	u.Add(channelmonitor.FieldRetryCount, v)
 	return u
 }
 
@@ -1119,6 +1167,27 @@ func (u *ChannelMonitorUpsertOne) AddJitterSeconds(v int) *ChannelMonitorUpsertO
 func (u *ChannelMonitorUpsertOne) UpdateJitterSeconds() *ChannelMonitorUpsertOne {
 	return u.Update(func(s *ChannelMonitorUpsert) {
 		s.UpdateJitterSeconds()
+	})
+}
+
+// SetRetryCount sets the "retry_count" field.
+func (u *ChannelMonitorUpsertOne) SetRetryCount(v int) *ChannelMonitorUpsertOne {
+	return u.Update(func(s *ChannelMonitorUpsert) {
+		s.SetRetryCount(v)
+	})
+}
+
+// AddRetryCount adds v to the "retry_count" field.
+func (u *ChannelMonitorUpsertOne) AddRetryCount(v int) *ChannelMonitorUpsertOne {
+	return u.Update(func(s *ChannelMonitorUpsert) {
+		s.AddRetryCount(v)
+	})
+}
+
+// UpdateRetryCount sets the "retry_count" field to the value that was provided on create.
+func (u *ChannelMonitorUpsertOne) UpdateRetryCount() *ChannelMonitorUpsertOne {
+	return u.Update(func(s *ChannelMonitorUpsert) {
+		s.UpdateRetryCount()
 	})
 }
 
@@ -1631,6 +1700,27 @@ func (u *ChannelMonitorUpsertBulk) AddJitterSeconds(v int) *ChannelMonitorUpsert
 func (u *ChannelMonitorUpsertBulk) UpdateJitterSeconds() *ChannelMonitorUpsertBulk {
 	return u.Update(func(s *ChannelMonitorUpsert) {
 		s.UpdateJitterSeconds()
+	})
+}
+
+// SetRetryCount sets the "retry_count" field.
+func (u *ChannelMonitorUpsertBulk) SetRetryCount(v int) *ChannelMonitorUpsertBulk {
+	return u.Update(func(s *ChannelMonitorUpsert) {
+		s.SetRetryCount(v)
+	})
+}
+
+// AddRetryCount adds v to the "retry_count" field.
+func (u *ChannelMonitorUpsertBulk) AddRetryCount(v int) *ChannelMonitorUpsertBulk {
+	return u.Update(func(s *ChannelMonitorUpsert) {
+		s.AddRetryCount(v)
+	})
+}
+
+// UpdateRetryCount sets the "retry_count" field to the value that was provided on create.
+func (u *ChannelMonitorUpsertBulk) UpdateRetryCount() *ChannelMonitorUpsertBulk {
+	return u.Update(func(s *ChannelMonitorUpsert) {
+		s.UpdateRetryCount()
 	})
 }
 

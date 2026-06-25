@@ -170,6 +170,7 @@ export default {
         docs: 'Docs',
         status: 'Status',
         changelog: 'Changelog',
+        modelMarketplace: 'Model Marketplace',
         privacy: 'Privacy',
         terms: 'Terms'
       },

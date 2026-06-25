@@ -83,6 +83,13 @@ func RegisterUserRoutes(
 			channels.GET("/available", h.AvailableChannel.List)
 		}
 
+		// 模型广场（用户只读）
+		models := authenticated.Group("/models")
+		{
+			models.GET("", h.ModelCatalog.List)
+			models.GET("/vendors", h.ModelCatalog.Vendors)
+		}
+
 		// 使用记录
 		usage := authenticated.Group("/usage")
 		{

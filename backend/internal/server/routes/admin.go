@@ -102,6 +102,9 @@ func RegisterAdminRoutes(
 		// 渠道管理
 		registerChannelRoutes(admin, h)
 
+		// 模型目录管理
+		registerModelCatalogRoutes(admin, h)
+
 		// 渠道监控
 		registerChannelMonitorRoutes(admin, h)
 
@@ -694,6 +697,21 @@ func registerChannelRoutes(admin *gin.RouterGroup, h *handler.Handlers) {
 		channels.POST("", h.Admin.Channel.Create)
 		channels.PUT("/:id", h.Admin.Channel.Update)
 		channels.DELETE("/:id", h.Admin.Channel.Delete)
+	}
+}
+
+func registerModelCatalogRoutes(admin *gin.RouterGroup, h *handler.Handlers) {
+	models := admin.Group("/models")
+	{
+		models.GET("", h.Admin.ModelCatalog.List)
+		models.POST("", h.Admin.ModelCatalog.Create)
+		models.POST("/sync-pricing", h.Admin.ModelCatalog.SyncFromPricing)
+		models.GET("/vendors", h.Admin.ModelCatalog.Vendors)
+		models.POST("/vendors", h.Admin.ModelCatalog.UpsertVendor)
+		models.DELETE("/vendors/:id", h.Admin.ModelCatalog.DeleteVendor)
+		models.GET("/:id", h.Admin.ModelCatalog.Get)
+		models.PUT("/:id", h.Admin.ModelCatalog.Update)
+		models.DELETE("/:id", h.Admin.ModelCatalog.Delete)
 	}
 }
 

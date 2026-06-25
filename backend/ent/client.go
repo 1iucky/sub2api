@@ -33,6 +33,8 @@ import (
 	"github.com/Wei-Shaw/sub2api/ent/group"
 	"github.com/Wei-Shaw/sub2api/ent/idempotencyrecord"
 	"github.com/Wei-Shaw/sub2api/ent/identityadoptiondecision"
+	"github.com/Wei-Shaw/sub2api/ent/modelcatalog"
+	"github.com/Wei-Shaw/sub2api/ent/modelvendor"
 	"github.com/Wei-Shaw/sub2api/ent/paymentauditlog"
 	"github.com/Wei-Shaw/sub2api/ent/paymentorder"
 	"github.com/Wei-Shaw/sub2api/ent/paymentproviderinstance"
@@ -98,6 +100,10 @@ type Client struct {
 	IdempotencyRecord *IdempotencyRecordClient
 	// IdentityAdoptionDecision is the client for interacting with the IdentityAdoptionDecision builders.
 	IdentityAdoptionDecision *IdentityAdoptionDecisionClient
+	// ModelCatalog is the client for interacting with the ModelCatalog builders.
+	ModelCatalog *ModelCatalogClient
+	// ModelVendor is the client for interacting with the ModelVendor builders.
+	ModelVendor *ModelVendorClient
 	// PaymentAuditLog is the client for interacting with the PaymentAuditLog builders.
 	PaymentAuditLog *PaymentAuditLogClient
 	// PaymentOrder is the client for interacting with the PaymentOrder builders.
@@ -167,6 +173,8 @@ func (c *Client) init() {
 	c.Group = NewGroupClient(c.config)
 	c.IdempotencyRecord = NewIdempotencyRecordClient(c.config)
 	c.IdentityAdoptionDecision = NewIdentityAdoptionDecisionClient(c.config)
+	c.ModelCatalog = NewModelCatalogClient(c.config)
+	c.ModelVendor = NewModelVendorClient(c.config)
 	c.PaymentAuditLog = NewPaymentAuditLogClient(c.config)
 	c.PaymentOrder = NewPaymentOrderClient(c.config)
 	c.PaymentProviderInstance = NewPaymentProviderInstanceClient(c.config)
@@ -297,6 +305,8 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		Group:                         NewGroupClient(cfg),
 		IdempotencyRecord:             NewIdempotencyRecordClient(cfg),
 		IdentityAdoptionDecision:      NewIdentityAdoptionDecisionClient(cfg),
+		ModelCatalog:                  NewModelCatalogClient(cfg),
+		ModelVendor:                   NewModelVendorClient(cfg),
 		PaymentAuditLog:               NewPaymentAuditLogClient(cfg),
 		PaymentOrder:                  NewPaymentOrderClient(cfg),
 		PaymentProviderInstance:       NewPaymentProviderInstanceClient(cfg),
@@ -354,6 +364,8 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		Group:                         NewGroupClient(cfg),
 		IdempotencyRecord:             NewIdempotencyRecordClient(cfg),
 		IdentityAdoptionDecision:      NewIdentityAdoptionDecisionClient(cfg),
+		ModelCatalog:                  NewModelCatalogClient(cfg),
+		ModelVendor:                   NewModelVendorClient(cfg),
 		PaymentAuditLog:               NewPaymentAuditLogClient(cfg),
 		PaymentOrder:                  NewPaymentOrderClient(cfg),
 		PaymentProviderInstance:       NewPaymentProviderInstanceClient(cfg),
@@ -408,11 +420,11 @@ func (c *Client) Use(hooks ...Hook) {
 		c.BatchImageJob, c.ChannelMonitor, c.ChannelMonitorDailyRollup,
 		c.ChannelMonitorHistory, c.ChannelMonitorRequestTemplate,
 		c.ErrorPassthroughRule, c.Group, c.IdempotencyRecord,
-		c.IdentityAdoptionDecision, c.PaymentAuditLog, c.PaymentOrder,
-		c.PaymentProviderInstance, c.PendingAuthSession, c.PromoCode, c.PromoCodeUsage,
-		c.Proxy, c.RedeemCode, c.SecuritySecret, c.Setting, c.SubscriptionPlan,
-		c.TLSFingerprintProfile, c.UsageCleanupTask, c.UsageLog, c.User,
-		c.UserAllowedGroup, c.UserAttributeDefinition, c.UserAttributeValue,
+		c.IdentityAdoptionDecision, c.ModelCatalog, c.ModelVendor, c.PaymentAuditLog,
+		c.PaymentOrder, c.PaymentProviderInstance, c.PendingAuthSession, c.PromoCode,
+		c.PromoCodeUsage, c.Proxy, c.RedeemCode, c.SecuritySecret, c.Setting,
+		c.SubscriptionPlan, c.TLSFingerprintProfile, c.UsageCleanupTask, c.UsageLog,
+		c.User, c.UserAllowedGroup, c.UserAttributeDefinition, c.UserAttributeValue,
 		c.UserPlatformQuota, c.UserSubscription,
 	} {
 		n.Use(hooks...)
@@ -428,11 +440,11 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 		c.BatchImageJob, c.ChannelMonitor, c.ChannelMonitorDailyRollup,
 		c.ChannelMonitorHistory, c.ChannelMonitorRequestTemplate,
 		c.ErrorPassthroughRule, c.Group, c.IdempotencyRecord,
-		c.IdentityAdoptionDecision, c.PaymentAuditLog, c.PaymentOrder,
-		c.PaymentProviderInstance, c.PendingAuthSession, c.PromoCode, c.PromoCodeUsage,
-		c.Proxy, c.RedeemCode, c.SecuritySecret, c.Setting, c.SubscriptionPlan,
-		c.TLSFingerprintProfile, c.UsageCleanupTask, c.UsageLog, c.User,
-		c.UserAllowedGroup, c.UserAttributeDefinition, c.UserAttributeValue,
+		c.IdentityAdoptionDecision, c.ModelCatalog, c.ModelVendor, c.PaymentAuditLog,
+		c.PaymentOrder, c.PaymentProviderInstance, c.PendingAuthSession, c.PromoCode,
+		c.PromoCodeUsage, c.Proxy, c.RedeemCode, c.SecuritySecret, c.Setting,
+		c.SubscriptionPlan, c.TLSFingerprintProfile, c.UsageCleanupTask, c.UsageLog,
+		c.User, c.UserAllowedGroup, c.UserAttributeDefinition, c.UserAttributeValue,
 		c.UserPlatformQuota, c.UserSubscription,
 	} {
 		n.Intercept(interceptors...)
@@ -478,6 +490,10 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.IdempotencyRecord.mutate(ctx, m)
 	case *IdentityAdoptionDecisionMutation:
 		return c.IdentityAdoptionDecision.mutate(ctx, m)
+	case *ModelCatalogMutation:
+		return c.ModelCatalog.mutate(ctx, m)
+	case *ModelVendorMutation:
+		return c.ModelVendor.mutate(ctx, m)
 	case *PaymentAuditLogMutation:
 		return c.PaymentAuditLog.mutate(ctx, m)
 	case *PaymentOrderMutation:
@@ -3415,6 +3431,304 @@ func (c *IdentityAdoptionDecisionClient) mutate(ctx context.Context, m *Identity
 		return (&IdentityAdoptionDecisionDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown IdentityAdoptionDecision mutation op: %q", m.Op())
+	}
+}
+
+// ModelCatalogClient is a client for the ModelCatalog schema.
+type ModelCatalogClient struct {
+	config
+}
+
+// NewModelCatalogClient returns a client for the ModelCatalog from the given config.
+func NewModelCatalogClient(c config) *ModelCatalogClient {
+	return &ModelCatalogClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `modelcatalog.Hooks(f(g(h())))`.
+func (c *ModelCatalogClient) Use(hooks ...Hook) {
+	c.hooks.ModelCatalog = append(c.hooks.ModelCatalog, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `modelcatalog.Intercept(f(g(h())))`.
+func (c *ModelCatalogClient) Intercept(interceptors ...Interceptor) {
+	c.inters.ModelCatalog = append(c.inters.ModelCatalog, interceptors...)
+}
+
+// Create returns a builder for creating a ModelCatalog entity.
+func (c *ModelCatalogClient) Create() *ModelCatalogCreate {
+	mutation := newModelCatalogMutation(c.config, OpCreate)
+	return &ModelCatalogCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of ModelCatalog entities.
+func (c *ModelCatalogClient) CreateBulk(builders ...*ModelCatalogCreate) *ModelCatalogCreateBulk {
+	return &ModelCatalogCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *ModelCatalogClient) MapCreateBulk(slice any, setFunc func(*ModelCatalogCreate, int)) *ModelCatalogCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &ModelCatalogCreateBulk{err: fmt.Errorf("calling to ModelCatalogClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*ModelCatalogCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &ModelCatalogCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for ModelCatalog.
+func (c *ModelCatalogClient) Update() *ModelCatalogUpdate {
+	mutation := newModelCatalogMutation(c.config, OpUpdate)
+	return &ModelCatalogUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ModelCatalogClient) UpdateOne(_m *ModelCatalog) *ModelCatalogUpdateOne {
+	mutation := newModelCatalogMutation(c.config, OpUpdateOne, withModelCatalog(_m))
+	return &ModelCatalogUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ModelCatalogClient) UpdateOneID(id int64) *ModelCatalogUpdateOne {
+	mutation := newModelCatalogMutation(c.config, OpUpdateOne, withModelCatalogID(id))
+	return &ModelCatalogUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for ModelCatalog.
+func (c *ModelCatalogClient) Delete() *ModelCatalogDelete {
+	mutation := newModelCatalogMutation(c.config, OpDelete)
+	return &ModelCatalogDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *ModelCatalogClient) DeleteOne(_m *ModelCatalog) *ModelCatalogDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *ModelCatalogClient) DeleteOneID(id int64) *ModelCatalogDeleteOne {
+	builder := c.Delete().Where(modelcatalog.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ModelCatalogDeleteOne{builder}
+}
+
+// Query returns a query builder for ModelCatalog.
+func (c *ModelCatalogClient) Query() *ModelCatalogQuery {
+	return &ModelCatalogQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeModelCatalog},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a ModelCatalog entity by its id.
+func (c *ModelCatalogClient) Get(ctx context.Context, id int64) (*ModelCatalog, error) {
+	return c.Query().Where(modelcatalog.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ModelCatalogClient) GetX(ctx context.Context, id int64) *ModelCatalog {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryVendor queries the vendor edge of a ModelCatalog.
+func (c *ModelCatalogClient) QueryVendor(_m *ModelCatalog) *ModelVendorQuery {
+	query := (&ModelVendorClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(modelcatalog.Table, modelcatalog.FieldID, id),
+			sqlgraph.To(modelvendor.Table, modelvendor.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, modelcatalog.VendorTable, modelcatalog.VendorColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *ModelCatalogClient) Hooks() []Hook {
+	return c.hooks.ModelCatalog
+}
+
+// Interceptors returns the client interceptors.
+func (c *ModelCatalogClient) Interceptors() []Interceptor {
+	return c.inters.ModelCatalog
+}
+
+func (c *ModelCatalogClient) mutate(ctx context.Context, m *ModelCatalogMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&ModelCatalogCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&ModelCatalogUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&ModelCatalogUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&ModelCatalogDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown ModelCatalog mutation op: %q", m.Op())
+	}
+}
+
+// ModelVendorClient is a client for the ModelVendor schema.
+type ModelVendorClient struct {
+	config
+}
+
+// NewModelVendorClient returns a client for the ModelVendor from the given config.
+func NewModelVendorClient(c config) *ModelVendorClient {
+	return &ModelVendorClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `modelvendor.Hooks(f(g(h())))`.
+func (c *ModelVendorClient) Use(hooks ...Hook) {
+	c.hooks.ModelVendor = append(c.hooks.ModelVendor, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `modelvendor.Intercept(f(g(h())))`.
+func (c *ModelVendorClient) Intercept(interceptors ...Interceptor) {
+	c.inters.ModelVendor = append(c.inters.ModelVendor, interceptors...)
+}
+
+// Create returns a builder for creating a ModelVendor entity.
+func (c *ModelVendorClient) Create() *ModelVendorCreate {
+	mutation := newModelVendorMutation(c.config, OpCreate)
+	return &ModelVendorCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of ModelVendor entities.
+func (c *ModelVendorClient) CreateBulk(builders ...*ModelVendorCreate) *ModelVendorCreateBulk {
+	return &ModelVendorCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *ModelVendorClient) MapCreateBulk(slice any, setFunc func(*ModelVendorCreate, int)) *ModelVendorCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &ModelVendorCreateBulk{err: fmt.Errorf("calling to ModelVendorClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*ModelVendorCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &ModelVendorCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for ModelVendor.
+func (c *ModelVendorClient) Update() *ModelVendorUpdate {
+	mutation := newModelVendorMutation(c.config, OpUpdate)
+	return &ModelVendorUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ModelVendorClient) UpdateOne(_m *ModelVendor) *ModelVendorUpdateOne {
+	mutation := newModelVendorMutation(c.config, OpUpdateOne, withModelVendor(_m))
+	return &ModelVendorUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ModelVendorClient) UpdateOneID(id int64) *ModelVendorUpdateOne {
+	mutation := newModelVendorMutation(c.config, OpUpdateOne, withModelVendorID(id))
+	return &ModelVendorUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for ModelVendor.
+func (c *ModelVendorClient) Delete() *ModelVendorDelete {
+	mutation := newModelVendorMutation(c.config, OpDelete)
+	return &ModelVendorDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *ModelVendorClient) DeleteOne(_m *ModelVendor) *ModelVendorDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *ModelVendorClient) DeleteOneID(id int64) *ModelVendorDeleteOne {
+	builder := c.Delete().Where(modelvendor.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ModelVendorDeleteOne{builder}
+}
+
+// Query returns a query builder for ModelVendor.
+func (c *ModelVendorClient) Query() *ModelVendorQuery {
+	return &ModelVendorQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeModelVendor},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a ModelVendor entity by its id.
+func (c *ModelVendorClient) Get(ctx context.Context, id int64) (*ModelVendor, error) {
+	return c.Query().Where(modelvendor.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ModelVendorClient) GetX(ctx context.Context, id int64) *ModelVendor {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryModels queries the models edge of a ModelVendor.
+func (c *ModelVendorClient) QueryModels(_m *ModelVendor) *ModelCatalogQuery {
+	query := (&ModelCatalogClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(modelvendor.Table, modelvendor.FieldID, id),
+			sqlgraph.To(modelcatalog.Table, modelcatalog.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, modelvendor.ModelsTable, modelvendor.ModelsColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *ModelVendorClient) Hooks() []Hook {
+	return c.hooks.ModelVendor
+}
+
+// Interceptors returns the client interceptors.
+func (c *ModelVendorClient) Interceptors() []Interceptor {
+	return c.inters.ModelVendor
+}
+
+func (c *ModelVendorClient) mutate(ctx context.Context, m *ModelVendorMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&ModelVendorCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&ModelVendorUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&ModelVendorUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&ModelVendorDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown ModelVendor mutation op: %q", m.Op())
 	}
 }
 
@@ -6702,22 +7016,24 @@ type (
 		AuthIdentityChannel, BatchImageEvent, BatchImageItem, BatchImageJob,
 		ChannelMonitor, ChannelMonitorDailyRollup, ChannelMonitorHistory,
 		ChannelMonitorRequestTemplate, ErrorPassthroughRule, Group, IdempotencyRecord,
-		IdentityAdoptionDecision, PaymentAuditLog, PaymentOrder,
-		PaymentProviderInstance, PendingAuthSession, PromoCode, PromoCodeUsage, Proxy,
-		RedeemCode, SecuritySecret, Setting, SubscriptionPlan, TLSFingerprintProfile,
-		UsageCleanupTask, UsageLog, User, UserAllowedGroup, UserAttributeDefinition,
-		UserAttributeValue, UserPlatformQuota, UserSubscription []ent.Hook
+		IdentityAdoptionDecision, ModelCatalog, ModelVendor, PaymentAuditLog,
+		PaymentOrder, PaymentProviderInstance, PendingAuthSession, PromoCode,
+		PromoCodeUsage, Proxy, RedeemCode, SecuritySecret, Setting, SubscriptionPlan,
+		TLSFingerprintProfile, UsageCleanupTask, UsageLog, User, UserAllowedGroup,
+		UserAttributeDefinition, UserAttributeValue, UserPlatformQuota,
+		UserSubscription []ent.Hook
 	}
 	inters struct {
 		APIKey, Account, AccountGroup, Announcement, AnnouncementRead, AuthIdentity,
 		AuthIdentityChannel, BatchImageEvent, BatchImageItem, BatchImageJob,
 		ChannelMonitor, ChannelMonitorDailyRollup, ChannelMonitorHistory,
 		ChannelMonitorRequestTemplate, ErrorPassthroughRule, Group, IdempotencyRecord,
-		IdentityAdoptionDecision, PaymentAuditLog, PaymentOrder,
-		PaymentProviderInstance, PendingAuthSession, PromoCode, PromoCodeUsage, Proxy,
-		RedeemCode, SecuritySecret, Setting, SubscriptionPlan, TLSFingerprintProfile,
-		UsageCleanupTask, UsageLog, User, UserAllowedGroup, UserAttributeDefinition,
-		UserAttributeValue, UserPlatformQuota, UserSubscription []ent.Interceptor
+		IdentityAdoptionDecision, ModelCatalog, ModelVendor, PaymentAuditLog,
+		PaymentOrder, PaymentProviderInstance, PendingAuthSession, PromoCode,
+		PromoCodeUsage, Proxy, RedeemCode, SecuritySecret, Setting, SubscriptionPlan,
+		TLSFingerprintProfile, UsageCleanupTask, UsageLog, User, UserAllowedGroup,
+		UserAttributeDefinition, UserAttributeValue, UserPlatformQuota,
+		UserSubscription []ent.Interceptor
 	}
 )
 

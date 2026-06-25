@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/Wei-Shaw/sub2api/internal/pkg/servertiming"
+	"github.com/Wei-Shaw/sub2api/internal/util/httputil"
 	"github.com/tidwall/gjson"
 )
 
@@ -67,7 +68,7 @@ func runCheckForModel(ctx context.Context, provider, endpoint, apiKey, model str
 	mode := bodyOverrideMode(opts)
 
 	start := time.Now()
-	respText, rawBody, statusCode, err := callProvider(ctx, provider, endpoint, apiKey, model, challenge.Prompt, opts)
+	respText, rawBody, statusCode, respHeaders, err := callProvider(ctx, provider, endpoint, apiKey, model, challenge.Prompt, opts)
 	latency := time.Since(start)
 	latencyMs := int(latency / time.Millisecond)
 	res.LatencyMs = &latencyMs
@@ -81,8 +82,7 @@ func runCheckForModel(ctx context.Context, provider, endpoint, apiKey, model str
 		// 错误路径：用 rawBody 而非 respText（gjson textPath 抽取在错误响应里通常为空，
 		// 会丢掉真正的上游错误信息，例如 `{"error":{"message":"No available accounts ..."}}`）。
 		res.Status = MonitorStatusError
-		bodySnippet := truncateForErrorBody(rawBody)
-		res.Message = truncateMessage(sanitizeErrorMessage(fmt.Sprintf("upstream HTTP %d: %s", statusCode, bodySnippet)))
+		res.Message = formatMonitorUpstreamHTTPError(statusCode, respHeaders, rawBody)
 		return res
 	}
 
@@ -271,41 +271,120 @@ func isSupportedProvider(p string) bool {
 //   - rawBody: 完整响应体的字符串形式（已被 monitorResponseMaxBytes 截断），用于错误路径保留上游真实回包
 //   - status: HTTP 状态码
 //   - err: 网络 / 序列化错误
-func callProvider(ctx context.Context, provider, endpoint, apiKey, model, prompt string, opts *CheckOptions) (extractedText, rawBody string, status int, err error) {
+func callProvider(ctx context.Context, provider, endpoint, apiKey, model, prompt string, opts *CheckOptions) (extractedText, rawBody string, status int, headers http.Header, err error) {
 	requestedAPIMode := checkAPIMode(opts)
 	if err := validateAPIMode(provider, requestedAPIMode); err != nil {
-		return "", "", 0, err
+		return "", "", 0, nil, err
 	}
 	adapter, apiMode, ok := providerAdapterFor(provider, requestedAPIMode)
 	if !ok {
-		return "", "", 0, fmt.Errorf("unsupported provider %q", provider)
+		return "", "", 0, nil, fmt.Errorf("unsupported provider %q", provider)
 	}
 	body, err := buildRequestBody(adapter, provider, apiMode, model, prompt, opts)
 	if err != nil {
-		return "", "", 0, err
+		return "", "", 0, nil, err
 	}
-	headers := mergeHeaders(adapter.buildHeaders(apiKey), opts)
+	reqHeaders := mergeHeaders(adapter.buildHeaders(apiKey), opts)
 	full := joinURL(endpoint, adapter.buildPath(model))
-	respBytes, status, err := postRawJSON(ctx, full, body, headers)
+	respBytes, status, respHeaders, err := postRawJSON(ctx, full, body, reqHeaders)
 	if err != nil {
-		return "", "", status, err
+		return "", "", status, respHeaders, err
 	}
 	if provider == MonitorProviderOpenAI && apiMode == MonitorAPIModeResponses {
-		return extractOpenAIResponsesText(respBytes), string(respBytes), status, nil
+		return extractOpenAIResponsesText(respBytes), string(respBytes), status, respHeaders, nil
 	}
-	return gjson.GetBytes(respBytes, adapter.textPath).String(), string(respBytes), status, nil
+	if provider == MonitorProviderOpenAI {
+		return extractOpenAIChatText(respBytes), string(respBytes), status, respHeaders, nil
+	}
+	if provider == MonitorProviderAnthropic {
+		return extractAnthropicText(respBytes), string(respBytes), status, respHeaders, nil
+	}
+	return gjson.GetBytes(respBytes, adapter.textPath).String(), string(respBytes), status, respHeaders, nil
+}
+
+// extractOpenAIChatText 兼容本项目“当前服务”作为监控 endpoint 时可能出现的几类回包：
+// 1. 标准 Chat Completions JSON: choices[].message.content
+// 2. 兼容层返回的 Responses JSON: output[].content[].text
+// 3. text/event-stream 中的 Chat/Responses data 帧（即使请求 stream=false，上游兼容层也可能这样返回）
+func extractOpenAIChatText(respBytes []byte) string {
+	if text := extractOpenAIChatJSONText(gjson.ParseBytes(respBytes)); strings.TrimSpace(text) != "" {
+		return text
+	}
+	if text := extractOpenAIResponsesText(respBytes); strings.TrimSpace(text) != "" {
+		return text
+	}
+	return extractOpenAISSEText(respBytes)
+}
+
+func extractOpenAIChatJSONText(root gjson.Result) string {
+	if !root.Exists() {
+		return ""
+	}
+	var texts []string
+	choices := root.Get("choices")
+	if !choices.IsArray() {
+		return root.Get("choices.0.message.content").String()
+	}
+	choices.ForEach(func(_, choice gjson.Result) bool {
+		content := choice.Get("message.content")
+		if text := openAIContentText(content); strings.TrimSpace(text) != "" {
+			texts = append(texts, text)
+		}
+		return true
+	})
+	return strings.Join(texts, "")
+}
+
+func extractOpenAIChatDeltaText(root gjson.Result) string {
+	var texts []string
+	root.Get("choices").ForEach(func(_, choice gjson.Result) bool {
+		content := choice.Get("delta.content")
+		if text := openAIContentText(content); strings.TrimSpace(text) != "" {
+			texts = append(texts, text)
+		}
+		return true
+	})
+	return strings.Join(texts, "")
+}
+
+func openAIContentText(content gjson.Result) string {
+	switch {
+	case !content.Exists():
+		return ""
+	case content.IsArray():
+		var parts []string
+		content.ForEach(func(_, part gjson.Result) bool {
+			if text := part.Get("text").String(); strings.TrimSpace(text) != "" {
+				parts = append(parts, text)
+			}
+			return true
+		})
+		return strings.Join(parts, "")
+	default:
+		return content.String()
+	}
 }
 
 // extractOpenAIResponsesText 聚合 Responses API 的最终 assistant 文本。
 // Responses 的 output 数组顺序由模型决定：reasoning / tool-call item 可能排在 message 前面，
 // 因此不能假设文本永远在 output.0.content.0.text。
 func extractOpenAIResponsesText(respBytes []byte) string {
-	if text := gjson.GetBytes(respBytes, "output_text").String(); strings.TrimSpace(text) != "" {
+	root := gjson.ParseBytes(respBytes)
+	if text := extractOpenAIResponsesTextFromResult(root); strings.TrimSpace(text) != "" {
 		return text
 	}
+	return extractOpenAIResponsesTextFromResult(root.Get("response"))
+}
 
+func extractOpenAIResponsesTextFromResult(root gjson.Result) string {
+	if !root.Exists() {
+		return ""
+	}
+	if text := root.Get("output_text").String(); strings.TrimSpace(text) != "" {
+		return text
+	}
 	var texts []string
-	outputs := gjson.GetBytes(respBytes, "output")
+	outputs := root.Get("output")
 	if outputs.IsArray() {
 		outputs.ForEach(func(_, output gjson.Result) bool {
 			outputType := output.Get("type").String()
@@ -335,7 +414,228 @@ func extractOpenAIResponsesText(respBytes []byte) string {
 	if len(texts) > 0 {
 		return strings.Join(texts, "")
 	}
-	return gjson.GetBytes(respBytes, providerOpenAIResponsesAdapter.textPath).String()
+	return root.Get(providerOpenAIResponsesAdapter.textPath).String()
+}
+
+func extractOpenAISSEText(respBytes []byte) string {
+	var deltas []string
+	terminalText := ""
+	flush := func(data string) {
+		text, terminal := extractOpenAISSEDataText(data)
+		if strings.TrimSpace(text) == "" {
+			return
+		}
+		if terminal {
+			terminalText = text
+			return
+		}
+		deltas = append(deltas, text)
+	}
+
+	var dataLines []string
+	for _, line := range strings.Split(string(respBytes), "\n") {
+		line = strings.TrimRight(line, "\r")
+		if strings.TrimSpace(line) == "" {
+			if len(dataLines) > 0 {
+				flush(strings.Join(dataLines, "\n"))
+				dataLines = nil
+			}
+			continue
+		}
+		if data, ok := strings.CutPrefix(line, "data:"); ok {
+			dataLines = append(dataLines, strings.TrimSpace(data))
+		}
+	}
+	if len(dataLines) > 0 {
+		flush(strings.Join(dataLines, "\n"))
+	}
+
+	if strings.TrimSpace(terminalText) != "" {
+		return terminalText
+	}
+	return strings.Join(deltas, "")
+}
+
+func extractOpenAISSEDataText(data string) (text string, terminal bool) {
+	data = strings.TrimSpace(data)
+	if data == "" || data == "[DONE]" || !gjson.Valid(data) {
+		return "", false
+	}
+	root := gjson.Parse(data)
+	if text := extractOpenAIChatJSONText(root); strings.TrimSpace(text) != "" {
+		return text, true
+	}
+	if text := extractOpenAIResponsesTextFromResult(root); strings.TrimSpace(text) != "" {
+		return text, true
+	}
+	if text := extractOpenAIResponsesTextFromResult(root.Get("response")); strings.TrimSpace(text) != "" {
+		return text, true
+	}
+	if text := extractOpenAIChatDeltaText(root); strings.TrimSpace(text) != "" {
+		return text, false
+	}
+	if text := root.Get("delta").String(); root.Get("type").String() == "response.output_text.delta" && strings.TrimSpace(text) != "" {
+		return text, false
+	}
+	return "", false
+}
+
+// extractAnthropicText 兼容 /v1/messages 可能返回的两种形态：
+// 1. 标准 JSON：content[].text
+// 2. text/event-stream：message_start / content_block_start / content_block_delta / message_delta
+func extractAnthropicText(respBytes []byte) string {
+	if text := extractAnthropicJSONText(gjson.ParseBytes(respBytes)); strings.TrimSpace(text) != "" {
+		return text
+	}
+	if text := extractAnthropicSSEText(respBytes); strings.TrimSpace(text) != "" {
+		return text
+	}
+	return gjson.GetBytes(respBytes, providerAdapters[MonitorProviderAnthropic].textPath).String()
+}
+
+func extractAnthropicJSONText(root gjson.Result) string {
+	if !root.Exists() {
+		return ""
+	}
+	if text := anthropicContentBlocksText(root.Get("content")); strings.TrimSpace(text) != "" {
+		return text
+	}
+	if text := anthropicContentBlocksText(root.Get("response.content")); strings.TrimSpace(text) != "" {
+		return text
+	}
+	if text := anthropicContentBlocksText(root.Get("message.content")); strings.TrimSpace(text) != "" {
+		return text
+	}
+	return ""
+}
+
+func extractAnthropicSSEText(respBytes []byte) string {
+	var parts []string
+
+	var eventLines []string
+	flush := func(lines []string) {
+		if len(lines) == 0 {
+			return
+		}
+		eventType, data := parseSSERecord(lines)
+		if text := extractAnthropicSSERecordText(eventType, data); strings.TrimSpace(text) != "" {
+			// Anthropic 流式文本通常分散在 content_block_delta 中，逐段拼接即可。
+			parts = append(parts, text)
+		}
+	}
+
+	for _, line := range strings.Split(string(respBytes), "\n") {
+		line = strings.TrimRight(line, "\r")
+		if strings.TrimSpace(line) == "" {
+			flush(eventLines)
+			eventLines = nil
+			continue
+		}
+		eventLines = append(eventLines, line)
+	}
+	flush(eventLines)
+	return strings.Join(parts, "")
+}
+
+func parseSSERecord(lines []string) (eventType, data string) {
+	var dataLines []string
+	for _, line := range lines {
+		trimmed := strings.TrimSpace(line)
+		if strings.HasPrefix(trimmed, "event:") {
+			eventType = strings.TrimSpace(strings.TrimPrefix(trimmed, "event:"))
+			continue
+		}
+		if strings.HasPrefix(trimmed, "data:") {
+			dataLines = append(dataLines, strings.TrimSpace(strings.TrimPrefix(trimmed, "data:")))
+		}
+	}
+	return eventType, strings.Join(dataLines, "\n")
+}
+
+func extractAnthropicSSERecordText(eventType, data string) string {
+	data = strings.TrimSpace(data)
+	if data == "" || data == "[DONE]" || !gjson.Valid(data) {
+		return ""
+	}
+
+	root := gjson.Parse(data)
+	if text := anthropicMessageStartText(root); strings.TrimSpace(text) != "" {
+		return text
+	}
+	if text := anthropicContentBlockStartText(root); strings.TrimSpace(text) != "" {
+		return text
+	}
+	if text := anthropicContentBlockDeltaText(root); strings.TrimSpace(text) != "" {
+		return text
+	}
+	if text := anthropicMessageDeltaText(root); strings.TrimSpace(text) != "" {
+		return text
+	}
+	// 某些兼容层会直接把最终消息包在 data 里，不带标准 SSE 事件名。
+	if eventType == "message" {
+		return anthropicContentBlocksText(root.Get("content"))
+	}
+	return ""
+}
+
+func anthropicMessageStartText(root gjson.Result) string {
+	if text := anthropicContentBlocksText(root.Get("message.content")); strings.TrimSpace(text) != "" {
+		return text
+	}
+	if text := anthropicContentBlocksText(root.Get("content")); strings.TrimSpace(text) != "" {
+		return text
+	}
+	return ""
+}
+
+func anthropicContentBlockStartText(root gjson.Result) string {
+	block := root.Get("content_block")
+	if !block.Exists() {
+		return ""
+	}
+	if text := block.Get("text").String(); strings.TrimSpace(text) != "" {
+		return text
+	}
+	return ""
+}
+
+func anthropicContentBlockDeltaText(root gjson.Result) string {
+	delta := root.Get("delta")
+	if !delta.Exists() {
+		return ""
+	}
+	if text := delta.Get("text").String(); strings.TrimSpace(text) != "" {
+		return text
+	}
+	return ""
+}
+
+func anthropicMessageDeltaText(root gjson.Result) string {
+	if text := root.Get("delta.text").String(); strings.TrimSpace(text) != "" {
+		return text
+	}
+	return ""
+}
+
+func anthropicContentBlocksText(content gjson.Result) string {
+	switch {
+	case !content.Exists():
+		return ""
+	case content.IsArray():
+		var parts []string
+		content.ForEach(func(_, block gjson.Result) bool {
+			if blockType := block.Get("type").String(); blockType != "" && blockType != "text" {
+				return true
+			}
+			if text := block.Get("text").String(); strings.TrimSpace(text) != "" {
+				parts = append(parts, text)
+			}
+			return true
+		})
+		return strings.Join(parts, "")
+	default:
+		return content.String()
+	}
 }
 
 // mergeHeaders 把用户自定义 headers 合并到 adapter 默认 headers 上。
@@ -476,10 +776,10 @@ func hasNonEmptyBodyValue(v any) bool {
 
 // postRawJSON 发送 POST + 已序列化好的 JSON 字节，限制响应体大小，返回响应字节、HTTP status、错误。
 // adapter 自行 marshal 是为了精确控制字段顺序与类型，所以这里直接收 []byte 而不是 any。
-func postRawJSON(ctx context.Context, fullURL string, payload []byte, headers map[string]string) ([]byte, int, error) {
+func postRawJSON(ctx context.Context, fullURL string, payload []byte, headers map[string]string) ([]byte, int, http.Header, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, fullURL, bytes.NewReader(payload))
 	if err != nil {
-		return nil, 0, fmt.Errorf("build request: %w", err)
+		return nil, 0, nil, fmt.Errorf("build request: %w", err)
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept", "application/json")
@@ -489,15 +789,15 @@ func postRawJSON(ctx context.Context, fullURL string, payload []byte, headers ma
 
 	resp, err := monitorHTTPClient.Do(req)
 	if err != nil {
-		return nil, 0, fmt.Errorf("do request: %w", err)
+		return nil, 0, nil, fmt.Errorf("do request: %w", err)
 	}
 	defer func() { _ = resp.Body.Close() }()
 
 	respBody, err := io.ReadAll(io.LimitReader(resp.Body, monitorResponseMaxBytes))
 	if err != nil {
-		return nil, resp.StatusCode, fmt.Errorf("read body: %w", err)
+		return nil, resp.StatusCode, resp.Header.Clone(), fmt.Errorf("read body: %w", err)
 	}
-	return respBody, resp.StatusCode, nil
+	return respBody, resp.StatusCode, resp.Header.Clone(), nil
 }
 
 // joinURL 把 base origin 与 path 拼成完整 URL。
@@ -561,6 +861,21 @@ func sanitizeErrorMessage(msg string) string {
 		msg = p.pattern.ReplaceAllString(msg, p.replace)
 	}
 	return msg
+}
+
+func formatMonitorUpstreamHTTPError(statusCode int, headers http.Header, rawBody string) string {
+	body := []byte(rawBody)
+	if httputil.IsCloudflareChallengeResponse(statusCode, headers, body) {
+		msg := httputil.FormatCloudflareChallengeMessage(
+			fmt.Sprintf("upstream HTTP %d: Cloudflare challenge / access restricted by upstream", statusCode),
+			headers,
+			body,
+		)
+		return truncateMessage(sanitizeErrorMessage(msg))
+	}
+
+	bodySnippet := truncateForErrorBody(rawBody)
+	return truncateMessage(sanitizeErrorMessage(fmt.Sprintf("upstream HTTP %d: %s", statusCode, bodySnippet)))
 }
 
 // truncateMessage 把消息按 monitorMessageMaxBytes 截断，避免 DB 列溢出与日志过长。

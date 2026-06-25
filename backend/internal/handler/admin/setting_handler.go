@@ -392,9 +392,11 @@ func loginAgreementDocumentsToDTO(items []service.LoginAgreementDocument) []dto.
 	result := make([]dto.LoginAgreementDocument, 0, len(items))
 	for _, item := range items {
 		result = append(result, dto.LoginAgreementDocument{
-			ID:        item.ID,
-			Title:     item.Title,
-			ContentMD: item.ContentMD,
+			ID:          item.ID,
+			Title:       item.Title,
+			ContentMD:   item.ContentMD,
+			TitleI18n:   cloneStringMap(item.TitleI18n),
+			ContentI18n: cloneStringMap(item.ContentI18n),
 		})
 	}
 	return result
@@ -405,16 +407,29 @@ func loginAgreementDocumentsToService(items []dto.LoginAgreementDocument) []serv
 	for _, item := range items {
 		title := strings.TrimSpace(item.Title)
 		content := strings.TrimSpace(item.ContentMD)
-		if title == "" && content == "" {
+		if title == "" && content == "" && len(item.TitleI18n) == 0 && len(item.ContentI18n) == 0 {
 			continue
 		}
 		result = append(result, service.LoginAgreementDocument{
-			ID:        strings.TrimSpace(item.ID),
-			Title:     title,
-			ContentMD: content,
+			ID:          strings.TrimSpace(item.ID),
+			Title:       title,
+			ContentMD:   content,
+			TitleI18n:   cloneStringMap(item.TitleI18n),
+			ContentI18n: cloneStringMap(item.ContentI18n),
 		})
 	}
 	return result
+}
+
+func cloneStringMap(values map[string]string) map[string]string {
+	if len(values) == 0 {
+		return nil
+	}
+	out := make(map[string]string, len(values))
+	for key, value := range values {
+		out[key] = value
+	}
+	return out
 }
 
 func systemSettingsResponseData(settings dto.SystemSettings, authSourceDefaults *service.AuthSourceDefaultSettings) map[string]any {
