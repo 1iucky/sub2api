@@ -104,3 +104,36 @@ Implemented the public model marketplace, model catalog management, independent 
 ### Next Steps
 
 - None - task complete
+
+
+## Session 4: Refine model marketplace monitor linkage
+
+**Date**: 2026-06-26
+**Task**: Refine model marketplace monitor linkage
+**Branch**: `custom/theme`
+
+### Summary
+
+Implemented vendor soft-delete persistence, protocol platform normalization, public model deduplication by model ID, monitor timeline linkage, and marketplace/status loading UI refinements.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `ece2b446` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
