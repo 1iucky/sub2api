@@ -71,3 +71,36 @@ Refined the Factory.ai-inspired homepage: tuned the hero gateway dashboard, adde
 ### Next Steps
 
 - None - task complete
+
+
+## Session 3: Model marketplace and channel monitor linkage
+
+**Date**: 2026-06-25
+**Task**: Model marketplace and channel monitor linkage
+**Branch**: `custom/theme`
+
+### Summary
+
+Implemented the public model marketplace, model catalog management, independent status page, channel-monitor retry count, and model_id-only monitor linkage for marketplace availability.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `f871f61b` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
