@@ -40,7 +40,7 @@
                   />
                 </span>
               </label>
-              <div class="max-h-80 space-y-1 overflow-auto pr-1">
+              <div class="max-h-80 overflow-auto pr-1">
                 <button
                   type="button"
                   class="market-filter-option"
@@ -73,7 +73,7 @@
 
             <div class="mt-6 border-t border-stone-200 pt-5 dark:border-stone-800">
               <p class="mb-3 text-xs text-stone-500 dark:text-stone-400">{{ t('models.capabilities') }}</p>
-              <div class="space-y-1">
+              <div>
                 <button
                   v-for="capability in capabilityFilters"
                   :key="capability.key"
@@ -111,7 +111,7 @@
 
             <div class="mt-6 border-t border-stone-200 pt-5 dark:border-stone-800">
               <p class="mb-3 text-xs text-stone-500 dark:text-stone-400">{{ t('models.contextRange') }}</p>
-              <div class="space-y-1">
+              <div>
                 <button
                   v-for="band in contextBands"
                   :key="band.value"
@@ -155,12 +155,12 @@
                 v-model="filters.platform"
                 :options="platformOptions"
                 class="min-w-[180px]"
-                @change="loadModels"
+                @change="reloadModels"
               />
               <button
                 class="btn-secondary btn-sm h-9 font-mono uppercase tracking-[0.12em]"
                 :disabled="loading"
-                @click="loadModels"
+                @click="reloadModels"
               >
                 <Icon name="refresh" size="sm" :class="loading ? 'animate-spin' : ''" />
                 {{ t('common.refresh') }}
@@ -168,7 +168,7 @@
             </div>
           </div>
 
-          <div v-if="loading && models.length === 0" class="grid gap-4 xl:grid-cols-3">
+          <div v-if="initialLoading" class="grid gap-4 xl:grid-cols-3">
             <div
               v-for="n in 6"
               :key="n"
@@ -277,22 +277,14 @@
             </div>
           </div>
 
-          <div v-if="pagination.pages > 1" class="mt-6 flex items-center justify-end gap-2">
-            <button
-              class="btn-secondary btn-sm"
-              :disabled="page <= 1"
-              @click="page--; loadModels()"
-            >
-              {{ t('common.previous') }}
-            </button>
-            <span class="text-sm text-stone-500">{{ page }} / {{ pagination.pages }}</span>
-            <button
-              class="btn-secondary btn-sm"
-              :disabled="page >= pagination.pages"
-              @click="page++; loadModels()"
-            >
-              {{ t('common.next') }}
-            </button>
+          <div v-if="filteredModels.length > 0" ref="loadMoreSentinel" class="mt-6 flex min-h-10 items-center justify-center">
+            <span v-if="loadingMore" class="inline-flex items-center gap-2 rounded-full border border-stone-300 bg-white px-4 py-2 text-sm text-stone-600 dark:border-stone-700 dark:bg-[#171410] dark:text-stone-300">
+              <Icon name="refresh" size="sm" class="animate-spin" />
+              {{ t('common.loading') }}
+            </span>
+            <span v-else-if="!hasMoreModels" class="font-mono text-xs uppercase tracking-[0.12em] text-stone-400">
+              {{ t('models.resultCount', { total: pagination.total, shown: filteredModels.length }) }}
+            </span>
           </div>
         </div>
       </section>
@@ -440,7 +432,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Icon from '@/components/icons/Icon.vue'
 import ModelIcon from '@/components/common/ModelIcon.vue'
@@ -460,13 +452,15 @@ const authStore = useAuthStore()
 const { syncThemeFromDocument } = useTheme()
 
 const loading = ref(false)
+const loadingMore = ref(false)
 const models = ref<ModelCatalog[]>([])
 const vendors = ref<ModelVendor[]>([])
 const monitors = ref<UserMonitorView[]>([])
 const drawerModel = ref<ModelCatalog | null>(null)
 const vendorSearch = ref('')
-const page = ref(1)
+const page = ref(0)
 const pagination = reactive({ total: 0, pages: 1 })
+const loadMoreSentinel = ref<HTMLElement | null>(null)
 const filters = reactive({
   search: '',
   platform: '',
@@ -476,6 +470,10 @@ const filters = reactive({
   contextBand: 'all'
 })
 let searchTimer: number | undefined
+let modelsAbortController: AbortController | null = null
+let modelsRequestSeq = 0
+let loadMoreObserver: IntersectionObserver | null = null
+const MARKETPLACE_PAGE_SIZE = 20
 
 type CapabilityIcon = 'eye' | 'link' | 'filter' | 'brain' | 'database' | 'globe' | 'document' | 'terminal' | 'sparkles'
 
@@ -545,33 +543,81 @@ function resetFilters() {
   filters.capabilities = []
   filters.priceBand = 'all'
   filters.contextBand = 'all'
-  page.value = 1
-  void loadModels()
+  void reloadModels()
 }
 
 function debouncedLoad() {
   window.clearTimeout(searchTimer)
   searchTimer = window.setTimeout(() => {
-    page.value = 1
-    void loadModels()
+    void reloadModels()
   }, 250)
 }
 
-async function loadModels() {
-  loading.value = true
+const initialLoading = computed(() => loading.value && models.value.length === 0)
+const hasMoreModels = computed(() => page.value < pagination.pages)
+
+async function reloadModels() {
+  page.value = 0
+  models.value = []
+  drawerModel.value = null
+  await loadModelsPage(1, false)
+}
+
+async function loadNextModelsPage() {
+  if (loading.value || loadingMore.value || !hasMoreModels.value) return
+  await loadModelsPage(page.value + 1, true)
+}
+
+async function loadModelsPage(targetPage: number, append: boolean) {
+  modelsAbortController?.abort()
+  const ctrl = new AbortController()
+  modelsAbortController = ctrl
+  const seq = ++modelsRequestSeq
+  if (append) {
+    loadingMore.value = true
+  } else {
+    loading.value = true
+  }
   try {
-    const res = await listModels(page.value, 48, {
+    const res = await listModels(targetPage, MARKETPLACE_PAGE_SIZE, {
       search: filters.search,
       platform: filters.platform,
-    })
-    models.value = dedupeModelsByModelId(res.items || [])
+    }, { signal: ctrl.signal })
+    if (ctrl.signal.aborted || seq !== modelsRequestSeq) return
+    models.value = dedupeModelsByModelId(append ? [...models.value, ...(res.items || [])] : (res.items || []))
+    page.value = res.page || targetPage
     pagination.total = res.total
     pagination.pages = res.pages || 1
+    await nextTick()
+    setupLoadMoreObserver()
   } catch (err) {
+    const e = err as { name?: string; code?: string }
+    if (e?.name === 'AbortError' || e?.code === 'ERR_CANCELED') return
     appStore.showError(extractApiErrorMessage(err, t('models.loadFailed')))
   } finally {
-    loading.value = false
+    if (seq === modelsRequestSeq) {
+      if (append) {
+        loadingMore.value = false
+      } else {
+        loading.value = false
+      }
+      if (modelsAbortController === ctrl) modelsAbortController = null
+    }
   }
+}
+
+function setupLoadMoreObserver() {
+  loadMoreObserver?.disconnect()
+  if (!loadMoreSentinel.value) return
+  loadMoreObserver = new IntersectionObserver((entries) => {
+    if (entries.some(entry => entry.isIntersecting)) {
+      void loadNextModelsPage()
+    }
+  }, {
+    rootMargin: '480px 0px',
+    threshold: 0,
+  })
+  loadMoreObserver.observe(loadMoreSentinel.value)
 }
 
 function openDrawer(model: ModelCatalog) {
@@ -881,7 +927,17 @@ onMounted(async () => {
   } catch {
     monitors.value = []
   }
-  await loadModels()
+  await reloadModels()
+})
+
+watch(loadMoreSentinel, () => {
+  nextTick(() => setupLoadMoreObserver())
+})
+
+onBeforeUnmount(() => {
+  window.clearTimeout(searchTimer)
+  modelsAbortController?.abort()
+  loadMoreObserver?.disconnect()
 })
 </script>
 

@@ -82,11 +82,18 @@
         <Select
           v-model="form.primary_model"
           data-testid="monitor-primary-model"
-          :options="modelSelectOptions"
+          :options="primaryModelOptions"
+          :search-placeholder="t('admin.channels.form.modelSelectorSearchPlaceholder', '输入模型名称搜索')"
+          :empty-text="primaryModelSearchEmptyText"
+          :loading="primaryModelSearchLoading"
+          :loading-text="t('common.loading', '加载中...')"
           searchable
           creatable
+          clearable
+          :filter-options="false"
           :creatable-prefix="t('common.search')"
           :placeholder="t('admin.channelMonitor.form.primaryModelPlaceholder')"
+          @search="onPrimaryModelSearch"
         >
           <template #option="{ option }">
             <div class="min-w-0 flex-1">
@@ -102,11 +109,17 @@
         <Select
           :model-value="null"
           :options="extraModelOptions"
+          :search-placeholder="t('admin.channels.form.modelSelectorSearchPlaceholder', '输入模型名称搜索')"
+          :empty-text="extraModelSearchEmptyText"
+          :loading="extraModelSearchLoading"
+          :loading-text="t('common.loading', '加载中...')"
           searchable
           clearable
           creatable
+          :filter-options="false"
           :creatable-prefix="t('common.search')"
           :placeholder="t('admin.channelMonitor.form.extraModelsSelectPlaceholder')"
+          @search="onExtraModelSearch"
           @change="handleExtraModelSelect"
         >
           <template #option="{ option }">
@@ -215,7 +228,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, watch } from 'vue'
+import { ref, reactive, computed, watch, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAppStore } from '@/stores/app'
 import { extractApiErrorMessage } from '@/utils/apiError'
@@ -333,8 +346,18 @@ let suppressFormWatchers = false
 // 可用模板列表（进入 dialog 时一次性拉取 cache；按 provider / api mode 过滤）。
 const templatesCache = ref<ChannelMonitorTemplate[]>([])
 const templatesLoading = ref(false)
-const catalogModels = ref<ModelCatalog[]>([])
-const catalogLoading = ref(false)
+const primaryCatalogModels = ref<ModelCatalog[]>([])
+const extraCatalogModels = ref<ModelCatalog[]>([])
+const primaryModelSearchQuery = ref('')
+const extraModelSearchQuery = ref('')
+const primaryModelSearchLoading = ref(false)
+const extraModelSearchLoading = ref(false)
+let primaryModelSearchTimer: ReturnType<typeof setTimeout> | null = null
+let extraModelSearchTimer: ReturnType<typeof setTimeout> | null = null
+let primaryModelSearchAbortController: AbortController | null = null
+let extraModelSearchAbortController: AbortController | null = null
+let primaryModelSearchSeq = 0
+let extraModelSearchSeq = 0
 
 const templateOptions = computed(() => {
   const items = templatesCache.value.filter((t) => {
@@ -359,24 +382,6 @@ async function loadTemplates() {
     console.warn('load monitor templates failed', err)
   } finally {
     templatesLoading.value = false
-  }
-}
-
-async function loadCatalogModels() {
-  if (catalogModels.value.length > 0 || catalogLoading.value) return
-  catalogLoading.value = true
-  try {
-    const res = await adminModelsAPI.list(1, 100, {
-      status: 'active',
-      sort_by: 'model_id',
-      sort_order: 'asc',
-    })
-    catalogModels.value = res.items || []
-  } catch (err: unknown) {
-    console.warn('load model catalog failed', err)
-    catalogModels.value = []
-  } finally {
-    catalogLoading.value = false
   }
 }
 
@@ -428,21 +433,132 @@ const apiModeOptions = computed<{ value: APIMode; label: string; hint: string }[
   },
 ])
 
-const modelSelectOptions = computed(() => catalogModels.value.map(model => ({
-  value: model.model_id,
-  label: model.display_name || model.model_id,
-  description: model.model_id,
-  model,
-})))
+function mapModelOption(model: ModelCatalog) {
+  return {
+    value: model.model_id,
+    label: model.display_name || model.model_id,
+    description: model.model_id,
+    model,
+  }
+}
+
+const primaryModelOptions = computed(() => primaryCatalogModels.value.map(mapModelOption))
 
 const extraModelOptions = computed(() => {
   const selected = new Set(form.extra_models.map(model => model.trim().toLowerCase()).filter(Boolean))
   const primary = form.primary_model.trim().toLowerCase()
-  return modelSelectOptions.value.filter((option) => {
+  return extraCatalogModels.value.map(mapModelOption).filter((option) => {
     const value = String(option.value).toLowerCase()
     return value !== primary && !selected.has(value)
   })
 })
+
+const primaryModelSearchEmptyText = computed(() => {
+  if (!primaryModelSearchQuery.value.trim()) {
+    return t('admin.channels.form.modelSelectorTypeToSearch', '输入模型名称开始搜索')
+  }
+  return t('common.noOptionsFound', '未找到匹配选项')
+})
+
+const extraModelSearchEmptyText = computed(() => {
+  if (!extraModelSearchQuery.value.trim()) {
+    return t('admin.channels.form.modelSelectorTypeToSearch', '输入模型名称开始搜索')
+  }
+  return t('common.noOptionsFound', '未找到匹配选项')
+})
+
+function clearPrimaryModelSearchTimer() {
+  if (primaryModelSearchTimer) {
+    clearTimeout(primaryModelSearchTimer)
+    primaryModelSearchTimer = null
+  }
+}
+
+function clearExtraModelSearchTimer() {
+  if (extraModelSearchTimer) {
+    clearTimeout(extraModelSearchTimer)
+    extraModelSearchTimer = null
+  }
+}
+
+function onPrimaryModelSearch(query: string) {
+  primaryModelSearchQuery.value = query
+  clearPrimaryModelSearchTimer()
+  primaryModelSearchAbortController?.abort()
+  const seq = ++primaryModelSearchSeq
+
+  const keyword = query.trim()
+  if (!keyword) {
+    primaryCatalogModels.value = []
+    primaryModelSearchLoading.value = false
+    return
+  }
+
+  primaryModelSearchLoading.value = true
+  primaryModelSearchTimer = setTimeout(() => {
+    void searchCatalogModels(keyword, seq, 'primary')
+  }, 300)
+}
+
+function onExtraModelSearch(query: string) {
+  extraModelSearchQuery.value = query
+  clearExtraModelSearchTimer()
+  extraModelSearchAbortController?.abort()
+  const seq = ++extraModelSearchSeq
+
+  const keyword = query.trim()
+  if (!keyword) {
+    extraCatalogModels.value = []
+    extraModelSearchLoading.value = false
+    return
+  }
+
+  extraModelSearchLoading.value = true
+  extraModelSearchTimer = setTimeout(() => {
+    void searchCatalogModels(keyword, seq, 'extra')
+  }, 300)
+}
+
+async function searchCatalogModels(keyword: string, seq: number, target: 'primary' | 'extra') {
+  const ctrl = new AbortController()
+  if (target === 'primary') {
+    primaryModelSearchAbortController = ctrl
+  } else {
+    extraModelSearchAbortController = ctrl
+  }
+
+  try {
+    const res = await adminModelsAPI.list(1, 30, {
+      search: keyword,
+      status: 'active',
+      visibility: 'public',
+      sort_by: 'model_id',
+      sort_order: 'asc',
+    }, { signal: ctrl.signal })
+
+    if (target === 'primary') {
+      if (seq !== primaryModelSearchSeq || primaryModelSearchQuery.value.trim() !== keyword) return
+      primaryCatalogModels.value = res.items || []
+    } else {
+      if (seq !== extraModelSearchSeq || extraModelSearchQuery.value.trim() !== keyword) return
+      extraCatalogModels.value = res.items || []
+    }
+  } catch {
+    if (ctrl.signal.aborted) return
+    if (target === 'primary') {
+      primaryCatalogModels.value = []
+    } else {
+      extraCatalogModels.value = []
+    }
+  } finally {
+    if (target === 'primary' && seq === primaryModelSearchSeq) {
+      primaryModelSearchLoading.value = false
+    }
+    if (target === 'extra' && seq === extraModelSearchSeq) {
+      extraModelSearchLoading.value = false
+    }
+  }
+}
 
 function normalizeAPIMode(mode: APIMode | undefined | null): APIMode {
   return mode === API_MODE_RESPONSES ? API_MODE_RESPONSES : API_MODE_CHAT_COMPLETIONS
@@ -570,12 +686,18 @@ watch(
   ([show, m]) => {
     if (!show) return
     void loadTemplates()
-    void loadCatalogModels()
     if (m) loadFromMonitor(m)
     else resetForm()
   },
   { immediate: true },
 )
+
+onUnmounted(() => {
+  clearPrimaryModelSearchTimer()
+  clearExtraModelSearchTimer()
+  primaryModelSearchAbortController?.abort()
+  extraModelSearchAbortController?.abort()
+})
 
 function useCurrentDomain() {
   form.endpoint = window.location.origin
