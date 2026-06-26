@@ -8,7 +8,7 @@ vi.mock('vue-i18n', async () => {
   const actual = await vi.importActual<typeof import('vue-i18n')>('vue-i18n')
   return {
     ...actual,
-    useI18n: () => ({ t: (key: string) => key }),
+    useI18n: () => ({ t: (key: string, fallback?: string) => fallback || key }),
   }
 })
 
@@ -111,5 +111,27 @@ describe('Select dropdown viewport constraints', () => {
     expect(dropdown?.style.left).toBe('312px')
     expect(dropdown?.style.minWidth).toBe('0px')
     expect(dropdown?.style.maxWidth).toBe('0px')
+  })
+})
+
+describe('Select', () => {
+  it('emits search text from the dropdown search input', async () => {
+    const wrapper = mount(Select, {
+      attachTo: document.body,
+      props: {
+        modelValue: null,
+        options: [],
+        searchable: true,
+      },
+    })
+
+    await wrapper.get('button').trigger('click')
+    const input = document.body.querySelector('.select-search-input') as HTMLInputElement
+    input.value = 'glm'
+    input.dispatchEvent(new Event('input'))
+    await nextTick()
+
+    expect(wrapper.emitted('search')).toEqual([['glm']])
+    wrapper.unmount()
   })
 })

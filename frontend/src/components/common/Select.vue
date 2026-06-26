@@ -75,42 +75,47 @@
 
           <!-- Options list -->
           <div class="select-options" ref="optionsListRef">
-            <div
-              v-for="(option, index) in filteredOptions"
-              :key="`${typeof getOptionValue(option)}:${String(getOptionValue(option) ?? '')}`"
-              role="option"
-              :aria-selected="isSelected(option)"
-              :aria-disabled="isOptionDisabled(option)"
-              @click.stop="!isOptionDisabled(option) && selectOption(option)"
-              @mouseenter="handleOptionMouseEnter(option, index)"
-              :class="[
-                'select-option',
-                isGroupHeaderOption(option) && 'select-option-group',
-                isSelected(option) && 'select-option-selected',
-                isOptionDisabled(option) && !isGroupHeaderOption(option) && 'select-option-disabled',
-                focusedIndex === index && !isGroupHeaderOption(option) && 'select-option-focused'
-              ]"
-            >
-              <slot name="option" :option="option" :selected="isSelected(option)">
-                <Icon
-                  v-if="option._creatable"
-                  name="search"
-                  size="sm"
-                  class="flex-shrink-0 text-gray-400"
-                />
-                <span class="select-option-label" :class="option._creatable && 'italic text-gray-500 dark:text-dark-300'">{{ getOptionLabel(option) }}</span>
-                <Icon
-                  v-if="isSelected(option)"
-                  name="check"
-                  size="sm"
-                  class="text-primary-500"
-                  :stroke-width="2"
-                />
-              </slot>
+            <div v-if="loading" class="select-empty">
+              {{ loadingTextDisplay }}
             </div>
+            <template v-else>
+              <div
+                v-for="(option, index) in filteredOptions"
+                :key="`${typeof getOptionValue(option)}:${String(getOptionValue(option) ?? '')}`"
+                role="option"
+                :aria-selected="isSelected(option)"
+                :aria-disabled="isOptionDisabled(option)"
+                @click.stop="!isOptionDisabled(option) && selectOption(option)"
+                @mouseenter="handleOptionMouseEnter(option, index)"
+                :class="[
+                  'select-option',
+                  isGroupHeaderOption(option) && 'select-option-group',
+                  isSelected(option) && 'select-option-selected',
+                  isOptionDisabled(option) && !isGroupHeaderOption(option) && 'select-option-disabled',
+                  focusedIndex === index && !isGroupHeaderOption(option) && 'select-option-focused'
+                ]"
+              >
+                <slot name="option" :option="option" :selected="isSelected(option)">
+                  <Icon
+                    v-if="option._creatable"
+                    name="search"
+                    size="sm"
+                    class="flex-shrink-0 text-gray-400"
+                  />
+                  <span class="select-option-label" :class="option._creatable && 'italic text-gray-500 dark:text-dark-300'">{{ getOptionLabel(option) }}</span>
+                  <Icon
+                    v-if="isSelected(option)"
+                    name="check"
+                    size="sm"
+                    class="text-primary-500"
+                    :stroke-width="2"
+                  />
+                </slot>
+              </div>
+            </template>
 
             <!-- Empty state -->
-            <div v-if="filteredOptions.length === 0" class="select-empty">
+            <div v-if="!loading && filteredOptions.length === 0" class="select-empty">
               {{ emptyTextDisplay }}
             </div>
           </div>
@@ -146,6 +151,9 @@ interface Props {
   searchable?: boolean | 'auto'
   searchPlaceholder?: string
   emptyText?: string
+  loading?: boolean
+  loadingText?: string
+  filterOptions?: boolean
   valueKey?: string
   labelKey?: string
   creatable?: boolean
@@ -159,12 +167,15 @@ interface Props {
 interface Emits {
   (e: 'update:modelValue', value: string | number | boolean | null): void
   (e: 'change', value: string | number | boolean | null, option: SelectOption | null): void
+  (e: 'search', query: string): void
 }
 
 const props = withDefaults(defineProps<Props>(), {
   disabled: false,
   error: false,
   searchable: 'auto',
+  loading: false,
+  filterOptions: true,
   creatable: false,
   creatablePrefix: '',
   clearable: false,
@@ -191,6 +202,7 @@ const dropdownMinimumWidth = 200
 const placeholderText = computed(() => props.placeholder ?? t('common.selectOption'))
 const searchPlaceholderText = computed(() => props.searchPlaceholder ?? t('common.searchPlaceholder'))
 const emptyTextDisplay = computed(() => props.emptyText ?? t('common.noOptionsFound'))
+const loadingTextDisplay = computed(() => props.loadingText ?? t('common.loading'))
 
 const isSearchable = computed(() => {
   if (props.searchable === 'auto') return props.options.length > 5
@@ -276,7 +288,7 @@ const hasValue = computed(
 
 const filteredOptions = computed(() => {
   let opts = props.options as any[]
-  if (isSearchable.value && searchQuery.value) {
+  if (isSearchable.value && searchQuery.value && props.filterOptions) {
     const query = searchQuery.value.toLowerCase()
     opts = opts.filter((opt) => {
       // Match label
@@ -293,6 +305,12 @@ const filteredOptions = computed(() => {
     }
   }
   return opts
+})
+
+watch(searchQuery, (query) => {
+  if (isSearchable.value) {
+    emit('search', query)
+  }
 })
 
 const isSelected = (option: any): boolean => {

@@ -24,7 +24,35 @@ Questions to answer:
 
 <!-- Standard structure of a component file -->
 
-(To be filled by the team)
+### Pattern: Remote Search Select
+
+Use `frontend/src/components/common/Select.vue` for dropdowns that need the project-standard trigger, popover, option, loading, and empty states.
+
+**Contract**:
+- `searchable`: set to `true` when the search input must always be visible.
+- `@search`: receives the raw search text whenever the dropdown search input changes.
+- `loading` / `loadingText`: show an in-dropdown loading state while remote data is being fetched.
+- `filter-options`: set to `false` when options already come from a remote query. Leave the default `true` for local-only selects.
+- `emptyText`: provide an action-oriented empty state, especially before the first keyword is typed.
+
+**Remote search behavior**:
+- Do not fetch a large default option page on mount or on dropdown open just to support fuzzy search.
+- Trigger remote lookup from `@search` after trimming and debouncing the keyword in the owning component.
+- Clear options for empty keywords unless the product explicitly needs default suggestions.
+- Abort or invalidate stale requests so older responses cannot overwrite newer search results.
+
+**Example**:
+```vue
+<Select
+  :model-value="null"
+  :options="remoteOptions"
+  searchable
+  :filter-options="false"
+  :loading="searching"
+  :empty-text="searchEmptyText"
+  @search="onRemoteSearch"
+/>
+```
 
 ---
 
