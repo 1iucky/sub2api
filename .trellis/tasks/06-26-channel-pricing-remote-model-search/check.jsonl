@@ -1,0 +1,4 @@
+{"file": ".trellis/spec/frontend/index.md", "reason": "Frontend quality checklist for the selector behavior change."}
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "Quality guidance for validation and avoiding regressions."}
+{"file": ".trellis/spec/frontend/type-safety.md", "reason": "Typecheck expectations for shared component emit additions."}
+{"file": ".trellis/spec/guides/index.md", "reason": "Shared thinking guide index for verification."}

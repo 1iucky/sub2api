@@ -1,0 +1,5 @@
+{"file": ".trellis/spec/frontend/index.md", "reason": "Frontend entry point and checklist for the channel pricing selector change."}
+{"file": ".trellis/spec/frontend/component-guidelines.md", "reason": "Component conventions for extending the shared Select component and pricing card."}
+{"file": ".trellis/spec/frontend/hook-guidelines.md", "reason": "Data fetching guidance for remote search behavior."}
+{"file": ".trellis/spec/frontend/type-safety.md", "reason": "Type safety guidance for Select emits and model option payloads."}
+{"file": ".trellis/spec/guides/index.md", "reason": "Shared thinking guide index for scoped frontend changes."}

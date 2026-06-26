@@ -78,8 +78,14 @@
               :model-value="null"
               :options="modelOptions"
               :placeholder="t('admin.channels.form.modelSelectorPlaceholder', '搜索模型目录并选择回填')"
+              :search-placeholder="t('admin.channels.form.modelSelectorSearchPlaceholder', '输入模型名称搜索')"
+              :empty-text="modelSearchEmptyText"
+              :loading="modelSearchLoading"
+              :loading-text="t('common.loading', '加载中...')"
               searchable
               clearable
+              :filter-options="false"
+              @search="onModelSearch"
               @change="onModelSelected"
             >
               <template #option="{ option }">
@@ -251,7 +257,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Select from '@/components/common/Select.vue'
 import Icon from '@/components/icons/Icon.vue'
@@ -279,6 +285,11 @@ const emit = defineEmits<{
 // Collapse state: entries with existing models default to collapsed
 const collapsed = ref(props.entry.models.length > 0)
 const catalogModels = ref<ModelCatalog[]>([])
+const modelSearchQuery = ref('')
+const modelSearchLoading = ref(false)
+let modelSearchTimer: ReturnType<typeof setTimeout> | null = null
+let modelSearchAbortController: AbortController | null = null
+let modelSearchSeq = 0
 
 const billingModeOptions = computed(() => [
   { value: 'token', label: t('admin.channels.billingMode.token') },
@@ -305,21 +316,64 @@ const modelOptions = computed(() => {
     }))
 })
 
-onMounted(() => {
-  void loadCatalogModels()
+const modelSearchEmptyText = computed(() => {
+  if (!modelSearchQuery.value.trim()) {
+    return t('admin.channels.form.modelSelectorTypeToSearch', '输入模型名称开始搜索')
+  }
+  return t('common.noOptionsFound', '未找到匹配选项')
 })
 
-async function loadCatalogModels() {
+onUnmounted(() => {
+  clearModelSearchTimer()
+  modelSearchAbortController?.abort()
+})
+
+function clearModelSearchTimer() {
+  if (modelSearchTimer) {
+    clearTimeout(modelSearchTimer)
+    modelSearchTimer = null
+  }
+}
+
+function onModelSearch(query: string) {
+  modelSearchQuery.value = query
+  clearModelSearchTimer()
+  modelSearchAbortController?.abort()
+  const seq = ++modelSearchSeq
+
+  const keyword = query.trim()
+  if (!keyword) {
+    catalogModels.value = []
+    modelSearchLoading.value = false
+    return
+  }
+
+  modelSearchLoading.value = true
+  modelSearchTimer = setTimeout(() => {
+    void searchCatalogModels(keyword, seq)
+  }, 300)
+}
+
+async function searchCatalogModels(keyword: string, seq: number) {
+  const ctrl = new AbortController()
+  modelSearchAbortController = ctrl
   try {
-    const res = await adminModelsAPI.list(1, 100, {
+    const res = await adminModelsAPI.list(1, 30, {
+      search: keyword,
       status: 'active',
       visibility: 'public',
       sort_by: 'model_id',
       sort_order: 'asc'
-    })
+    }, { signal: ctrl.signal })
+    if (seq !== modelSearchSeq || modelSearchQuery.value.trim() !== keyword) return
     catalogModels.value = res.items || []
-  } catch {
+  } catch (error) {
+    if (ctrl.signal.aborted) return
     catalogModels.value = []
+  } finally {
+    if (seq === modelSearchSeq) {
+      modelSearchLoading.value = false
+    }
   }
 }
 
