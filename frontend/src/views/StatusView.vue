@@ -34,8 +34,8 @@
               <p class="text-xs text-gray-500 dark:text-dark-400">{{ t('channelStatus.monitorCount') }}</p>
             </div>
             <div class="rounded-sm bg-gray-50 p-3 dark:bg-dark-800">
-              <p class="font-mono text-lg font-semibold">{{ providerGroups.length }}</p>
-              <p class="text-xs text-gray-500 dark:text-dark-400">{{ t('channelStatus.platformCount') }}</p>
+              <p class="font-mono text-lg font-semibold">{{ monitorGroups.length }}</p>
+              <p class="text-xs text-gray-500 dark:text-dark-400">{{ t('channelStatus.group') }}</p>
             </div>
             <div class="rounded-sm bg-gray-50 p-3 dark:bg-dark-800">
               <p class="font-mono text-lg font-semibold">{{ degradedCount }}</p>
@@ -56,12 +56,6 @@
               :placeholder="t('channelStatus.searchPlaceholder')"
             />
           </label>
-          <Select
-            v-model="providerFilter"
-            :options="providerSelectOptions"
-            class="min-w-[180px]"
-            searchable
-          />
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
@@ -89,7 +83,7 @@
         <p class="mt-2 text-sm text-gray-500 dark:text-dark-400">{{ t('channelStatus.empty.description') }}</p>
       </section>
 
-      <section v-else class="relative mt-6 space-y-8">
+      <section v-else class="relative mt-5 space-y-4">
         <div
           v-if="loading"
           class="absolute inset-0 z-10 grid place-items-center rounded-md bg-gray-50/70 backdrop-blur-sm dark:bg-dark-950/70"
@@ -100,113 +94,93 @@
           </span>
         </div>
         <div
-          v-for="providerGroup in providerGroups"
-          :key="providerGroup.provider"
+          v-for="group in monitorGroups"
+          :key="group.name"
           class="rounded-md border border-gray-200 bg-white dark:border-dark-800 dark:bg-dark-900"
         >
-          <div class="flex flex-col gap-3 border-b border-gray-200 p-5 dark:border-dark-800 sm:flex-row sm:items-center sm:justify-between">
+          <div class="border-b border-gray-200 px-4 py-3 dark:border-dark-800">
             <div class="flex items-center gap-3">
-              <span class="flex h-10 w-10 items-center justify-center rounded-sm font-mono text-xs font-semibold uppercase" :class="providerBadgeClass(providerGroup.provider)">
-                {{ providerInitial(providerGroup.provider) }}
+              <span class="flex h-8 w-8 items-center justify-center rounded-sm bg-gray-100 font-mono text-xs font-semibold uppercase text-gray-600 dark:bg-dark-800 dark:text-dark-300">
+                {{ groupInitial(group.name) }}
               </span>
               <div>
-                <p class="text-xs text-gray-500 dark:text-dark-400">{{ t('channelStatus.platform') }}</p>
-                <h2 class="text-xl font-semibold text-gray-950 dark:text-white">{{ providerLabel(providerGroup.provider) }}</h2>
+                <p class="text-xs text-gray-500 dark:text-dark-400">{{ t('channelStatus.group') }}</p>
+                <h2 class="text-lg font-semibold text-gray-950 dark:text-white">{{ group.name }}</h2>
               </div>
             </div>
-            <p class="font-mono text-xs uppercase tracking-[0.12em] text-gray-500 dark:text-dark-400">
-              {{ t('channelStatus.groupSummary', { groups: providerGroup.groups.length, monitors: providerGroup.total }) }}
-            </p>
           </div>
 
-          <div class="divide-y divide-gray-200 dark:divide-dark-800">
-            <div
-              v-for="group in providerGroup.groups"
-              :key="`${providerGroup.provider}-${group.name}`"
-              class="p-5"
-            >
-              <div class="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <p class="text-xs text-gray-500 dark:text-dark-400">{{ t('channelStatus.group') }}</p>
-                  <h3 class="text-base font-semibold text-gray-900 dark:text-white">{{ group.name || t('channelStatus.defaultGroup') }}</h3>
-                </div>
-                <span class="w-fit rounded-full bg-gray-100 px-2.5 py-1 text-xs text-gray-600 dark:bg-dark-800 dark:text-dark-300">
-                  {{ group.items.length }} {{ t('channelStatus.monitorsUnit') }}
-                </span>
-              </div>
-
-              <div class="grid gap-4 lg:grid-cols-2">
-                <article
-                  v-for="item in group.items"
-                  :key="item.id"
-                  class="rounded-md border border-gray-200 bg-white p-5 transition-colors hover:border-gray-300 dark:border-dark-700 dark:bg-dark-950/60 dark:hover:border-primary-500/50"
-                >
-                  <div class="flex items-start justify-between gap-3">
-                    <div class="flex min-w-0 items-start gap-3">
-                      <span
-                        class="grid h-9 w-9 shrink-0 place-items-center rounded-md ring-1 ring-black/5 dark:ring-white/10"
-                        :class="[providerGradient(item.provider), providerTintClass(item.provider)]"
-                      >
-                        <ProviderIcon :provider="item.provider" :size="20" />
-                      </span>
-                      <div class="min-w-0">
-                        <h4 class="truncate text-base font-normal tracking-tight text-gray-950 dark:text-white">{{ item.name }}</h4>
-                        <div class="mt-0.5 flex min-w-0 items-center gap-1.5">
-                          <span
-                            class="inline-flex shrink-0 items-center rounded-sm px-1.5 py-0.5 font-mono text-[10px] tracking-wide"
-                            :class="providerBadgeClass(item.provider)"
-                          >
-                            {{ providerLabel(item.provider) }}
-                          </span>
-                          <span class="truncate font-mono text-xs text-gray-500 dark:text-gray-400">{{ item.primary_model }}</span>
-                        </div>
+          <div class="p-3">
+            <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              <article
+                v-for="item in group.items"
+                :key="item.id"
+                class="rounded-md border border-gray-200 bg-white p-3 transition-colors hover:border-gray-300 dark:border-dark-700 dark:bg-dark-950/60 dark:hover:border-primary-500/50"
+              >
+                <div class="flex items-start justify-between gap-3">
+                  <div class="flex min-w-0 items-start gap-2.5">
+                    <span
+                      class="grid h-8 w-8 shrink-0 place-items-center rounded-md ring-1 ring-black/5 dark:ring-white/10"
+                      :class="[providerGradient(item.provider), providerTintClass(item.provider)]"
+                    >
+                      <ProviderIcon :provider="item.provider" :size="18" />
+                    </span>
+                    <div class="min-w-0">
+                      <h4 class="truncate text-sm font-normal tracking-tight text-gray-950 dark:text-white">{{ item.name }}</h4>
+                      <div class="mt-0.5 flex min-w-0 items-center gap-1.5">
+                        <span
+                          class="inline-flex shrink-0 items-center rounded-sm px-1.5 py-0.5 font-mono text-[10px] tracking-wide"
+                          :class="providerBadgeClass(item.provider)"
+                        >
+                          {{ providerLabel(item.provider) }}
+                        </span>
+                        <span class="truncate font-mono text-xs text-gray-500 dark:text-gray-400">{{ item.primary_model }}</span>
                       </div>
                     </div>
-                    <span class="shrink-0 rounded-sm px-2.5 py-1 font-mono text-xs tracking-wide" :class="statusBadgeClass(item.primary_status)">
-                      {{ statusLabel(item.primary_status) }}
-                    </span>
                   </div>
+                  <span class="shrink-0 rounded-sm px-2 py-0.5 font-mono text-[11px] tracking-wide" :class="statusBadgeClass(item.primary_status)">
+                    {{ statusLabel(item.primary_status) }}
+                  </span>
+                </div>
 
-                  <MonitorMetricPair
-                    primary-icon="bolt"
-                    :primary-label="t('monitorCommon.dialogLatency')"
-                    :primary-value="formatLatency(item.primary_latency_ms)"
-                    primary-unit="ms"
-                    secondary-icon="globe"
-                    :secondary-label="t('monitorCommon.endpointPing')"
-                    :secondary-value="formatLatency(item.primary_ping_latency_ms)"
-                    secondary-unit="ms"
-                  />
+                <MonitorMetricPair
+                  primary-icon="bolt"
+                  :primary-label="t('monitorCommon.dialogLatency')"
+                  :primary-value="formatLatency(item.primary_latency_ms)"
+                  primary-unit="ms"
+                  secondary-icon="globe"
+                  :secondary-label="t('monitorCommon.endpointPing')"
+                  :secondary-value="formatLatency(item.primary_ping_latency_ms)"
+                  secondary-unit="ms"
+                />
 
-                  <div class="mt-4 border-t border-dashed border-gray-200 dark:border-dark-700"></div>
+                <div class="mt-3 border-t border-dashed border-gray-200 dark:border-dark-700"></div>
 
-                  <MonitorAvailabilityRow
-                    :window-label="`${t('monitorCommon.availabilityPrefix')} · ${t('channelStatus.windowTab.7d')}`"
-                    :value="item.availability_7d"
-                    :samples-label="item.extra_models.length ? t('monitorCommon.extraModelsCount', { n: item.extra_models.length }) : undefined"
-                  />
+                <MonitorAvailabilityRow
+                  :window-label="`${t('monitorCommon.availabilityPrefix')} · ${t('channelStatus.windowTab.7d')}`"
+                  :value="item.availability_7d"
+                />
 
-                  <MonitorTimeline
-                    :buckets="item.timeline"
-                    :countdown-seconds="0"
-                    :show-countdown="false"
-                  />
+                <MonitorTimeline
+                  :buckets="item.timeline"
+                  :countdown-seconds="0"
+                  :show-countdown="false"
+                />
 
-                  <div v-if="item.extra_models.length" class="mt-4 flex flex-wrap gap-2">
-                    <span
-                      v-for="extra in item.extra_models.slice(0, 4)"
-                      :key="extra.model"
-                      class="inline-flex max-w-full items-center gap-1 rounded-sm bg-white px-2 py-1 text-xs text-gray-600 dark:bg-dark-900 dark:text-dark-300"
-                    >
-                      <span class="h-1.5 w-1.5 shrink-0 rounded-full" :class="timelineClass(extra.status)"></span>
-                      <span class="truncate">{{ extra.model }}</span>
-                    </span>
-                    <span v-if="item.extra_models.length > 4" class="rounded-sm bg-white px-2 py-1 text-xs text-gray-500 dark:bg-dark-900 dark:text-dark-400">
-                      +{{ item.extra_models.length - 4 }}
-                    </span>
-                  </div>
-                </article>
-              </div>
+                <div v-if="item.extra_models.length" class="mt-3 flex flex-wrap gap-1.5">
+                  <span
+                    v-for="extra in item.extra_models.slice(0, 4)"
+                    :key="extra.model"
+                    class="inline-flex max-w-full items-center gap-1 rounded-sm bg-white px-2 py-1 text-xs text-gray-600 dark:bg-dark-900 dark:text-dark-300"
+                  >
+                    <span class="h-1.5 w-1.5 shrink-0 rounded-full" :class="timelineClass(extra.status)"></span>
+                    <span class="truncate">{{ extra.model }}</span>
+                  </span>
+                  <span v-if="item.extra_models.length > 4" class="rounded-sm bg-white px-2 py-1 text-xs text-gray-500 dark:bg-dark-900 dark:text-dark-400">
+                    +{{ item.extra_models.length - 4 }}
+                  </span>
+                </div>
+              </article>
             </div>
           </div>
         </div>
@@ -216,11 +190,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAppStore, useAuthStore } from '@/stores'
 import Icon from '@/components/icons/Icon.vue'
-import Select from '@/components/common/Select.vue'
 import PublicTopNav from '@/components/home/PublicTopNav.vue'
 import ProviderIcon from '@/components/user/monitor/ProviderIcon.vue'
 import MonitorMetricPair from '@/components/user/monitor/MonitorMetricPair.vue'
@@ -235,17 +208,10 @@ import type { UserMonitorView } from '@/api/channelMonitor'
 import { extractApiErrorMessage } from '@/utils/apiError'
 
 type OverallStatus = 'operational' | 'degraded'
-type Provider = UserMonitorView['provider'] | string
 
 interface MonitorGroup {
   name: string
   items: UserMonitorView[]
-}
-
-interface ProviderGroup {
-  provider: Provider
-  total: number
-  groups: MonitorGroup[]
 }
 
 const { t } = useI18n()
@@ -269,21 +235,11 @@ const PROVIDER_TINT: Record<string, string> = {
 const items = ref<UserMonitorView[]>([])
 const loading = ref(false)
 const search = ref('')
-const providerFilter = ref('')
 let abortController: AbortController | null = null
-
-const providerOptions = computed<string[]>(() => {
-  return Array.from(new Set(items.value.map(item => String(item.provider || '')).filter(Boolean))).sort()
-})
-const providerSelectOptions = computed(() => [
-  { value: '', label: t('channelStatus.allProviders') },
-  ...providerOptions.value.map(provider => ({ value: provider, label: providerLabel(provider) })),
-])
 
 const filteredItems = computed(() => {
   const q = search.value.trim().toLowerCase()
   return items.value.filter((item) => {
-    if (providerFilter.value && item.provider !== providerFilter.value) return false
     if (!q) return true
     return [
       item.name,
@@ -295,27 +251,18 @@ const filteredItems = computed(() => {
   })
 })
 
-const providerGroups = computed<ProviderGroup[]>(() => {
-  const providerMap = new Map<string, Map<string, UserMonitorView[]>>()
+const monitorGroups = computed<MonitorGroup[]>(() => {
+  const groupMap = new Map<string, UserMonitorView[]>()
   for (const item of filteredItems.value) {
-    const provider = item.provider || 'unknown'
     const groupName = item.group_name || t('channelStatus.defaultGroup')
-    if (!providerMap.has(provider)) providerMap.set(provider, new Map())
-    const groupMap = providerMap.get(provider)!
     if (!groupMap.has(groupName)) groupMap.set(groupName, [])
     groupMap.get(groupName)!.push(item)
   }
-  return Array.from(providerMap.entries())
-    .sort(([a], [b]) => providerLabel(a).localeCompare(providerLabel(b)))
-    .map(([provider, groupMap]) => ({
-      provider,
-      total: Array.from(groupMap.values()).reduce((sum, groupItems) => sum + groupItems.length, 0),
-      groups: Array.from(groupMap.entries())
-        .sort(([a], [b]) => a.localeCompare(b))
-        .map(([name, groupItems]) => ({
-          name,
-          items: groupItems.slice().sort((a, b) => a.name.localeCompare(b.name)),
-        })),
+  return Array.from(groupMap.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([name, groupItems]) => ({
+      name,
+      items: groupItems.slice().sort((a, b) => a.name.localeCompare(b.name)),
     }))
 })
 
@@ -324,12 +271,6 @@ const degradedCount = computed(() => items.value.filter(item => item.primary_sta
 const overallStatus = computed<OverallStatus>(() => {
   if (items.value.length === 0) return 'operational'
   return degradedCount.value > 0 ? 'degraded' : 'operational'
-})
-
-watch(providerOptions, (options) => {
-  if (providerFilter.value && !options.includes(providerFilter.value)) {
-    providerFilter.value = ''
-  }
 })
 
 async function reload(silent = false) {
@@ -357,8 +298,8 @@ function manualReload() {
   void reload(false)
 }
 
-function providerInitial(provider: Provider) {
-  const label = providerLabel(provider)
+function groupInitial(name: string) {
+  const label = name || t('channelStatus.defaultGroup')
   if (!label || label === '-') return 'AI'
   return label
     .split(/\s+/)
