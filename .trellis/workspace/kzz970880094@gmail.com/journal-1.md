@@ -170,3 +170,36 @@ Changed channel pricing model selector to search the admin model catalog remotel
 ### Next Steps
 
 - None - task complete
+
+
+## Session 6: Optimize marketplace status and monitor selects
+
+**Date**: 2026-06-26
+**Task**: Optimize marketplace status and monitor selects
+**Branch**: `custom/theme`
+
+### Summary
+
+Implemented lazy marketplace loading, simplified public status grouping, and remote-search channel monitor model selects.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `ed6a28de` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
