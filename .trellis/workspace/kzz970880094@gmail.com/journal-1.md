@@ -137,3 +137,36 @@ Implemented vendor soft-delete persistence, protocol platform normalization, pub
 ### Next Steps
 
 - None - task complete
+
+
+## Session 5: Channel pricing remote model search
+
+**Date**: 2026-06-26
+**Task**: Channel pricing remote model search
+**Branch**: `custom/theme`
+
+### Summary
+
+Changed channel pricing model selector to search the admin model catalog remotely after keyword input, added Select remote-search support, regression tests, and frontend component spec guidance.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `67853814` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
