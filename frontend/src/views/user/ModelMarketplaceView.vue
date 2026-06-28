@@ -451,12 +451,13 @@ const appStore = useAppStore()
 const authStore = useAuthStore()
 const { syncThemeFromDocument } = useTheme()
 
-const loading = ref(false)
+const loading = ref(true)
 const loadingMore = ref(false)
 const models = ref<ModelCatalog[]>([])
 const vendors = ref<ModelVendor[]>([])
 const monitors = ref<UserMonitorView[]>([])
 const drawerModel = ref<ModelCatalog | null>(null)
+const hasLoadedModels = ref(false)
 const vendorSearch = ref('')
 const page = ref(0)
 const pagination = reactive({ total: 0, pages: 1 })
@@ -553,7 +554,7 @@ function debouncedLoad() {
   }, 250)
 }
 
-const initialLoading = computed(() => loading.value && models.value.length === 0)
+const initialLoading = computed(() => loading.value && !hasLoadedModels.value && models.value.length === 0)
 const hasMoreModels = computed(() => page.value < pagination.pages)
 
 async function reloadModels() {
@@ -600,6 +601,7 @@ async function loadModelsPage(targetPage: number, append: boolean) {
         loadingMore.value = false
       } else {
         loading.value = false
+        hasLoadedModels.value = true
       }
       if (modelsAbortController === ctrl) modelsAbortController = null
     }
@@ -910,24 +912,32 @@ function toggleCapabilityFilter(key: string) {
   }
 }
 
-onMounted(async () => {
-  syncThemeFromDocument()
-  authStore.checkAuth()
-  if (!appStore.publicSettingsLoaded) {
-    appStore.fetchPublicSettings()
-  }
+async function loadFilterMetadata() {
   try {
     vendors.value = await listVendors()
   } catch {
     vendors.value = []
   }
+}
+
+async function loadMonitorMetadata() {
   try {
     const res = await publicChannelMonitorAPI.list()
     monitors.value = res.items || []
   } catch {
     monitors.value = []
   }
-  await reloadModels()
+}
+
+onMounted(() => {
+  syncThemeFromDocument()
+  authStore.checkAuth()
+  if (!appStore.publicSettingsLoaded) {
+    appStore.fetchPublicSettings()
+  }
+  void loadFilterMetadata()
+  void loadMonitorMetadata()
+  void reloadModels()
 })
 
 watch(loadMoreSentinel, () => {

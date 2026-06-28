@@ -305,6 +305,44 @@ describe('API Client', () => {
 
       window.removeEventListener('admin-compliance-required', listener)
     })
+
+    it('redirects to unsupported-region when an API request is routed to the region block page', async () => {
+      const originalLocation = window.location
+      const assign = vi.fn()
+      Object.defineProperty(window, 'location', {
+        configurable: true,
+        value: {
+          pathname: '/dashboard',
+          href: 'https://example.test/dashboard',
+          origin: 'https://example.test',
+          assign,
+        },
+      })
+
+      const adapter = vi.fn().mockResolvedValue({
+        status: 200,
+        data: '<!doctype html><html></html>',
+        headers: { 'content-type': 'text/html' },
+        config: { url: '/user/profile' },
+        statusText: 'OK',
+        request: {
+          responseURL: 'https://example.test/unsupported-region?ip=203.0.113.10&country=China&path=/dashboard',
+        },
+      })
+      apiClient.defaults.adapter = adapter
+
+      await expect(apiClient.get('/user/profile')).rejects.toEqual(
+        expect.objectContaining({
+          code: 'UNSUPPORTED_REGION',
+        })
+      )
+      expect(assign).toHaveBeenCalledWith('/unsupported-region?ip=203.0.113.10&country=China&path=/dashboard')
+
+      Object.defineProperty(window, 'location', {
+        configurable: true,
+        value: originalLocation,
+      })
+    })
   })
 
   // --- 401 Token 刷新 ---

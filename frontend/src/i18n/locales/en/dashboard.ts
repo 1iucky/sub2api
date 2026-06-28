@@ -442,6 +442,31 @@ export default {
   channelStatus: {
     title: 'Channel Status',
     description: 'Inspect channel availability, latency and recent status',
+    publicEyebrow: 'Public Status',
+    publicTitle: 'Channel Status',
+    publicDescription: 'View channel availability, latency, and recent probe timelines for monitored channels.',
+    overallLabel: 'Overall Status',
+    monitorCount: 'Monitors',
+    platformCount: 'Platforms',
+    degradedCount: 'Issues',
+    platform: 'Platform',
+    group: 'Group',
+    defaultGroup: 'Default Group',
+    groupSummary: '{groups} groups / {monitors} monitors',
+    monitorsUnit: 'monitors',
+    historyWindow: 'Uptime over the past 90 days.',
+    viewHistoricalUptime: 'View historical uptime.',
+    daysAgo: '{days} days ago',
+    checksAgo: '{count} checks ago',
+    windowAgo: {
+      '7d': '7 days ago'
+    },
+    today: 'Today',
+    uptimeValue: '{value} % uptime',
+    extraModels: 'Extra Models',
+    timeline: 'Recent status timeline',
+    autoRefreshOn: 'Auto refresh',
+    autoRefreshOff: 'Manual refresh',
     searchPlaceholder: 'Search channels...',
     allProviders: 'All Providers',
     loadError: 'Failed to load channel status',
@@ -478,6 +503,12 @@ export default {
     empty: {
       title: 'No channels available',
       description: 'No monitored channels have been configured yet.'
+    },
+    status: {
+      operational: 'Operational',
+      degraded: 'Degraded',
+      failed: 'Unavailable',
+      error: 'Error'
     }
   },
 

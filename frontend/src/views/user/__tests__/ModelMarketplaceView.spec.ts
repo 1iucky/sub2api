@@ -5,6 +5,16 @@ import ModelMarketplaceView from '../ModelMarketplaceView.vue'
 import { listModels, listVendors } from '@/api/models'
 import publicChannelMonitorAPI from '@/api/publicChannelMonitor'
 
+function createDeferred<T>() {
+  let resolve!: (value: T) => void
+  let reject!: (reason?: unknown) => void
+  const promise = new Promise<T>((res, rej) => {
+    resolve = res
+    reject = rej
+  })
+  return { promise, resolve, reject }
+}
+
 vi.mock('vue-i18n', () => ({
   useI18n: () => ({
     t: (key: string, params?: Record<string, unknown>) => {
@@ -165,6 +175,25 @@ describe('ModelMarketplaceView lazy loading', () => {
       },
       expect.objectContaining({ signal: expect.any(AbortSignal) })
     )
+  })
+
+  it('shows the initial marketplace loading state before prerequisite requests finish', async () => {
+    const vendors = createDeferred<Awaited<ReturnType<typeof listVendors>>>()
+    const monitors = createDeferred<any>()
+    vi.mocked(listVendors).mockReturnValue(vendors.promise)
+    vi.mocked(publicChannelMonitorAPI.list).mockReturnValue(monitors.promise)
+
+    const wrapper = mountView()
+    await nextTick()
+
+    expect(wrapper.text()).not.toContain('models.empty')
+    expect(wrapper.findAll('.animate-pulse')).toHaveLength(6)
+
+    vendors.resolve([])
+    monitors.resolve({ items: [] })
+    await flushPromises()
+
+    expect(listModels).toHaveBeenCalled()
   })
 
   it('appends the next page when the lazy sentinel intersects', async () => {
