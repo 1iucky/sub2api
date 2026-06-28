@@ -449,5 +449,16 @@ export default {
     adminApiKeyForbidden: '管理 API Key 无法执行此操作，请使用已通过二次验证的管理员会话。'
   },
 
+  unsupportedRegion: {
+    pageTitle: '区域暂不支持',
+    subtitle: 'AI API 网关',
+    title: '当前区域暂不支持访问',
+    description: '{site} 暂未向当前访问地区提供服务。如你的网络出口地区发生变化，可重新尝试访问。',
+    accessInfo: '访问源：{host} · {location} · 请求路径：{path}',
+    retryHint: '点击下方按钮将返回站点首页，并由网关重新校验访问源 IP 归属地。',
+    retry: '重新检测',
+    unknownLocation: '未知地区'
+  },
+
   // Dashboard
 }

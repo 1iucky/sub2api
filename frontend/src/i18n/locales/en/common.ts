@@ -450,5 +450,16 @@ export default {
     adminApiKeyForbidden: 'Admin API keys cannot perform this operation. Use a two-factor verified admin session.'
   },
 
+  unsupportedRegion: {
+    pageTitle: 'Unsupported Region',
+    subtitle: 'AI API Gateway',
+    title: 'This region is not supported',
+    description: '{site} is not available from your current access region. If your network exit location has changed, retry the check.',
+    accessInfo: 'Access source: {host} · {location} · requested path: {path}',
+    retryHint: 'Use the button below to return to the site home page and let the gateway check your source IP region again.',
+    retry: 'Retry check',
+    unknownLocation: 'Unknown location'
+  },
+
   // Dashboard
 }

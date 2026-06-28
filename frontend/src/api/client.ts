@@ -80,6 +80,17 @@ apiClient.interceptors.request.use(
 
 apiClient.interceptors.response.use(
   (response: AxiosResponse) => {
+    const unsupportedRegionPath = resolveUnsupportedRegionPath(response)
+    if (unsupportedRegionPath) {
+      redirectToUnsupportedRegion(unsupportedRegionPath)
+      return Promise.reject({
+        status: response.status,
+        code: 'UNSUPPORTED_REGION',
+        message: 'Unsupported region',
+        url: response.config?.url,
+      })
+    }
+
     // Unwrap standard API response format { code, message, data }
     const apiResponse = response.data as ApiResponse<unknown>
     if (apiResponse && typeof apiResponse === 'object' && 'code' in apiResponse) {
@@ -116,6 +127,18 @@ apiClient.interceptors.response.use(
 
       // Validate `data` shape to avoid HTML error pages breaking our error handling.
       const apiData = (typeof data === 'object' && data !== null ? data : {}) as Record<string, any>
+
+      if (isUnsupportedRegionError(status, apiData)) {
+        const path = buildUnsupportedRegionPath(apiData.metadata)
+        redirectToUnsupportedRegion(path)
+        return Promise.reject({
+          status,
+          code: 'UNSUPPORTED_REGION',
+          message: apiData.message || 'Unsupported region',
+          metadata: apiData.metadata,
+          url,
+        })
+      }
 
       // Ops monitoring disabled: treat as feature-flagged 404, and proactively redirect away
       // from ops pages to avoid broken UI states.
@@ -261,5 +284,59 @@ apiClient.interceptors.response.use(
     })
   }
 )
+
+function resolveUnsupportedRegionPath(response: AxiosResponse): string | null {
+  const responseURL = String(response.request?.responseURL || '')
+  if (responseURL.includes('/unsupported-region')) {
+    try {
+      const url = new URL(responseURL, window.location.origin)
+      return `${url.pathname}${url.search}`
+    } catch {
+      return '/unsupported-region'
+    }
+  }
+
+  const contentType = response.headers?.['content-type'] || response.headers?.['Content-Type']
+  const isHTML = typeof contentType === 'string' && contentType.includes('text/html')
+  const body = typeof response.data === 'string' ? response.data : ''
+  if (isHTML && body.includes('/unsupported-region')) {
+    return '/unsupported-region'
+  }
+
+  return null
+}
+
+function isUnsupportedRegionError(status: number, data: Record<string, any>): boolean {
+  if (status !== 403 && status !== 451) return false
+  const values = [
+    data.code,
+    data.reason,
+    data.error,
+    data.message,
+  ].map(value => String(value || '').toLowerCase())
+  return values.some(value => (
+    value.includes('unsupported_region')
+    || value.includes('region_blocked')
+    || value.includes('unsupported region')
+  ))
+}
+
+function buildUnsupportedRegionPath(metadata: unknown): string {
+  const source = (typeof metadata === 'object' && metadata !== null ? metadata : {}) as Record<string, unknown>
+  const query = new URLSearchParams()
+  for (const key of ['ip', 'country', 'region', 'path']) {
+    const value = source[key]
+    if (typeof value === 'string' && value.trim()) {
+      query.set(key, value.trim())
+    }
+  }
+  const queryString = query.toString()
+  return queryString ? `/unsupported-region?${queryString}` : '/unsupported-region'
+}
+
+function redirectToUnsupportedRegion(path: string): void {
+  if (window.location.pathname === '/unsupported-region') return
+  window.location.assign(path || '/unsupported-region')
+}
 
 export default apiClient

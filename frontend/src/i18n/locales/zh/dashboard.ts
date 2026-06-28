@@ -461,6 +461,31 @@ export default {
   channelStatus: {
     title: '渠道状态',
     description: '查看渠道可用性、延迟和近期状态',
+    publicEyebrow: '公开状态页',
+    publicTitle: '渠道状态',
+    publicDescription: '查看监控渠道的可用率、延迟和近期探测时间线。',
+    overallLabel: '整体运行状态',
+    monitorCount: '监控',
+    platformCount: '平台',
+    degradedCount: '异常',
+    platform: '平台',
+    group: '分组',
+    defaultGroup: '默认分组',
+    groupSummary: '{groups} 个分组 / {monitors} 个监控',
+    monitorsUnit: '个监控',
+    historyWindow: '过去 90 天可用率。',
+    viewHistoricalUptime: '查看历史可用率。',
+    daysAgo: '{days} 天前',
+    checksAgo: '{count} 次检测前',
+    windowAgo: {
+      '7d': '7 天前'
+    },
+    today: '今天',
+    uptimeValue: '{value} % 可用率',
+    extraModels: '附加模型',
+    timeline: '近期状态时间线',
+    autoRefreshOn: '自动刷新',
+    autoRefreshOff: '手动刷新',
     searchPlaceholder: '搜索渠道...',
     allProviders: '全部供应商',
     loadError: '加载渠道状态失败',
@@ -497,6 +522,12 @@ export default {
     empty: {
       title: '暂无可显示的渠道',
       description: '管理员尚未配置可监控的渠道。'
+    },
+    status: {
+      operational: 'Operational',
+      degraded: 'Degraded',
+      failed: 'Unavailable',
+      error: 'Error'
     }
   },
 
