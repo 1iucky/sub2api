@@ -32,6 +32,9 @@ type ResolvedPricing struct {
 	// 来源标识
 	Source string // "channel", "litellm", "fallback"
 
+	// 展示币种，仅控制价格符号展示，不参与计费计算
+	DisplayCurrency string
+
 	// 是否支持缓存细分
 	SupportsCacheBreakdown bool
 
@@ -74,9 +77,10 @@ func (r *ModelPricingResolver) Resolve(ctx context.Context, input PricingInput) 
 			}
 			if mode == BillingModePerRequest || mode == BillingModeImage {
 				resolved := &ResolvedPricing{
-					Mode:           mode,
-					Source:         PricingSourceChannel,
-					channelPricing: chPricing,
+					Mode:            mode,
+					Source:          PricingSourceChannel,
+					DisplayCurrency: NormalizeDisplayCurrency(chPricing.DisplayCurrency),
+					channelPricing:  chPricing,
 				}
 				r.applyRequestTierOverrides(chPricing, resolved)
 				return resolved
@@ -91,6 +95,7 @@ func (r *ModelPricingResolver) Resolve(ctx context.Context, input PricingInput) 
 		Mode:                   BillingModeToken,
 		BasePricing:            basePricing,
 		Source:                 source,
+		DisplayCurrency:        DisplayCurrencyUSD,
 		SupportsCacheBreakdown: basePricing != nil && basePricing.SupportsCacheBreakdown,
 	}
 
@@ -98,6 +103,7 @@ func (r *ModelPricingResolver) Resolve(ctx context.Context, input PricingInput) 
 	if chPricing != nil {
 		resolved.Source = PricingSourceChannel
 		resolved.channelPricing = chPricing
+		resolved.DisplayCurrency = NormalizeDisplayCurrency(chPricing.DisplayCurrency)
 		r.applyTokenOverrides(chPricing, resolved)
 	} else if input.GroupID != nil {
 		r.applyChannelOverrides(ctx, *input.GroupID, input.Model, resolved)
@@ -126,6 +132,7 @@ func (r *ModelPricingResolver) applyChannelOverrides(ctx context.Context, groupI
 
 	resolved.Source = PricingSourceChannel
 	resolved.channelPricing = chPricing
+	resolved.DisplayCurrency = NormalizeDisplayCurrency(chPricing.DisplayCurrency)
 	resolved.Mode = chPricing.BillingMode
 	if resolved.Mode == "" {
 		resolved.Mode = BillingModeToken

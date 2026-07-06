@@ -521,6 +521,20 @@ func (_u *UsageLogUpdate) AddActualCost(v float64) *UsageLogUpdate {
 	return _u
 }
 
+// SetDisplayCurrency sets the "display_currency" field.
+func (_u *UsageLogUpdate) SetDisplayCurrency(v string) *UsageLogUpdate {
+	_u.mutation.SetDisplayCurrency(v)
+	return _u
+}
+
+// SetNillableDisplayCurrency sets the "display_currency" field if the given value is not nil.
+func (_u *UsageLogUpdate) SetNillableDisplayCurrency(v *string) *UsageLogUpdate {
+	if v != nil {
+		_u.SetDisplayCurrency(*v)
+	}
+	return _u
+}
+
 // SetRateMultiplier sets the "rate_multiplier" field.
 func (_u *UsageLogUpdate) SetRateMultiplier(v float64) *UsageLogUpdate {
 	_u.mutation.ResetRateMultiplier()
@@ -1031,6 +1045,11 @@ func (_u *UsageLogUpdate) check() error {
 			return &ValidationError{Name: "billing_mode", err: fmt.Errorf(`ent: validator failed for field "UsageLog.billing_mode": %w`, err)}
 		}
 	}
+	if v, ok := _u.mutation.DisplayCurrency(); ok {
+		if err := usagelog.DisplayCurrencyValidator(v); err != nil {
+			return &ValidationError{Name: "display_currency", err: fmt.Errorf(`ent: validator failed for field "UsageLog.display_currency": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.UserAgent(); ok {
 		if err := usagelog.UserAgentValidator(v); err != nil {
 			return &ValidationError{Name: "user_agent", err: fmt.Errorf(`ent: validator failed for field "UsageLog.user_agent": %w`, err)}
@@ -1206,6 +1225,9 @@ func (_u *UsageLogUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if value, ok := _u.mutation.AddedActualCost(); ok {
 		_spec.AddField(usagelog.FieldActualCost, field.TypeFloat64, value)
+	}
+	if value, ok := _u.mutation.DisplayCurrency(); ok {
+		_spec.SetField(usagelog.FieldDisplayCurrency, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.RateMultiplier(); ok {
 		_spec.SetField(usagelog.FieldRateMultiplier, field.TypeFloat64, value)
@@ -1978,6 +2000,20 @@ func (_u *UsageLogUpdateOne) AddActualCost(v float64) *UsageLogUpdateOne {
 	return _u
 }
 
+// SetDisplayCurrency sets the "display_currency" field.
+func (_u *UsageLogUpdateOne) SetDisplayCurrency(v string) *UsageLogUpdateOne {
+	_u.mutation.SetDisplayCurrency(v)
+	return _u
+}
+
+// SetNillableDisplayCurrency sets the "display_currency" field if the given value is not nil.
+func (_u *UsageLogUpdateOne) SetNillableDisplayCurrency(v *string) *UsageLogUpdateOne {
+	if v != nil {
+		_u.SetDisplayCurrency(*v)
+	}
+	return _u
+}
+
 // SetRateMultiplier sets the "rate_multiplier" field.
 func (_u *UsageLogUpdateOne) SetRateMultiplier(v float64) *UsageLogUpdateOne {
 	_u.mutation.ResetRateMultiplier()
@@ -2501,6 +2537,11 @@ func (_u *UsageLogUpdateOne) check() error {
 			return &ValidationError{Name: "billing_mode", err: fmt.Errorf(`ent: validator failed for field "UsageLog.billing_mode": %w`, err)}
 		}
 	}
+	if v, ok := _u.mutation.DisplayCurrency(); ok {
+		if err := usagelog.DisplayCurrencyValidator(v); err != nil {
+			return &ValidationError{Name: "display_currency", err: fmt.Errorf(`ent: validator failed for field "UsageLog.display_currency": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.UserAgent(); ok {
 		if err := usagelog.UserAgentValidator(v); err != nil {
 			return &ValidationError{Name: "user_agent", err: fmt.Errorf(`ent: validator failed for field "UsageLog.user_agent": %w`, err)}
@@ -2693,6 +2734,9 @@ func (_u *UsageLogUpdateOne) sqlSave(ctx context.Context) (_node *UsageLog, err 
 	}
 	if value, ok := _u.mutation.AddedActualCost(); ok {
 		_spec.AddField(usagelog.FieldActualCost, field.TypeFloat64, value)
+	}
+	if value, ok := _u.mutation.DisplayCurrency(); ok {
+		_spec.SetField(usagelog.FieldDisplayCurrency, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.RateMultiplier(); ok {
 		_spec.SetField(usagelog.FieldRateMultiplier, field.TypeFloat64, value)

@@ -173,7 +173,7 @@
         <template #cell-cost="{ row }">
           <div class="text-sm">
             <div class="flex items-center gap-1.5">
-              <span class="font-medium text-primary-600 dark:text-primary-400">${{ row.actual_cost?.toFixed(6) || '0.000000' }}</span>
+              <span class="font-medium text-primary-600 dark:text-primary-400">{{ formatUsageCost(row.actual_cost, row.display_currency) }}</span>
               <span
                 v-if="row.long_context_billing_applied"
                 data-testid="long-context-billing-marker"
@@ -191,7 +191,7 @@
               </div>
             </div>
             <div v-if="showAccountBilling && row.account_rate_multiplier != null" class="mt-0.5 font-mono text-[11px] tabular-nums text-primary-500 dark:text-primary-400">
-              A ${{ accountBilled(row).toFixed(6) }}
+              A {{ formatUsageCost(accountBilled(row), row.display_currency) }}
             </div>
           </div>
         </template>
@@ -339,37 +339,37 @@
             <div class="mb-1 text-xs font-medium uppercase tracking-wide text-dark-400">{{ t('usage.costDetails') }}</div>
             <div v-if="tooltipData && tooltipData.input_cost > 0" class="flex items-center justify-between gap-4">
               <span class="text-gray-400">{{ t('admin.usage.inputCost') }}</span>
-              <span class="font-medium tabular-nums text-gray-100">${{ tooltipData.input_cost.toFixed(6) }}</span>
+              <span class="font-medium tabular-nums text-gray-100">{{ formatUsageCost(tooltipData.input_cost, tooltipData.display_currency) }}</span>
             </div>
             <div v-if="tooltipData && hasImageInputCost(tooltipData)" class="flex items-center justify-between gap-4">
               <span class="text-gray-400">{{ t('usage.imageInputCost') }}</span>
-              <span class="font-medium text-fuchsia-300">${{ tooltipData.image_input_cost.toFixed(6) }}</span>
+              <span class="font-medium text-fuchsia-300">{{ formatUsageCost(tooltipData.image_input_cost, tooltipData.display_currency) }}</span>
             </div>
             <div v-if="tooltipData && tooltipData.output_cost > 0" class="flex items-center justify-between gap-4">
               <span class="text-gray-400">{{ t('admin.usage.outputCost') }}</span>
-              <span class="font-medium tabular-nums text-gray-100">${{ tooltipData.output_cost.toFixed(6) }}</span>
+              <span class="font-medium tabular-nums text-gray-100">{{ formatUsageCost(tooltipData.output_cost, tooltipData.display_currency) }}</span>
             </div>
             <div v-if="tooltipData && hasImageOutputCost(tooltipData)" class="flex items-center justify-between gap-4">
               <span class="text-gray-400">{{ t('usage.imageOutputCost') }}</span>
-              <span class="font-medium tabular-nums text-pink-300">${{ tooltipData.image_output_cost.toFixed(6) }}</span>
+              <span class="font-medium tabular-nums text-pink-300">{{ formatUsageCost(tooltipData.image_output_cost, tooltipData.display_currency) }}</span>
             </div>
             <!-- Token billing: show unit prices per 1M tokens -->
-            <template v-if="tooltipData && !isImageUsage(tooltipData) && (!tooltipData.billing_mode || tooltipData.billing_mode === BILLING_MODE_TOKEN)">
+            <template v-if="tooltipData && !isImageUsage(tooltipData) && (!getDisplayBillingMode(tooltipData) || getDisplayBillingMode(tooltipData) === BILLING_MODE_TOKEN)">
               <div v-if="tooltipData && textInputTokens(tooltipData) > 0" class="flex items-center justify-between gap-4">
                 <span class="text-gray-400">{{ t('usage.inputTokenPrice') }}</span>
-                <span class="font-medium tabular-nums text-sky-300">{{ formatTokenPricePerMillion(tooltipData.input_cost, textInputTokens(tooltipData)) }} {{ t('usage.perMillionTokens') }}</span>
+                <span class="font-medium tabular-nums text-sky-300">{{ formatTokenPricePerMillion(tooltipData.input_cost, textInputTokens(tooltipData), { displayCurrency: tooltipData.display_currency }) }} {{ t('usage.perMillionTokens') }}</span>
               </div>
               <div v-if="tooltipData && hasImageInputTokens(tooltipData)" class="flex items-center justify-between gap-4">
                 <span class="text-gray-400">{{ t('usage.imageInputTokenPrice') }}</span>
-                <span class="font-medium tabular-nums text-fuchsia-300">{{ formatTokenPricePerMillion(tooltipData.image_input_cost ?? 0, tooltipData.image_input_tokens) }} {{ t('usage.perMillionTokens') }}</span>
+                <span class="font-medium tabular-nums text-fuchsia-300">{{ formatTokenPricePerMillion(tooltipData.image_input_cost ?? 0, tooltipData.image_input_tokens, { displayCurrency: tooltipData.display_currency }) }} {{ t('usage.perMillionTokens') }}</span>
               </div>
               <div v-if="tooltipData && tooltipData.output_cost > 0 && textOutputTokens(tooltipData) > 0" class="flex items-center justify-between gap-4">
                 <span class="text-gray-400">{{ t('usage.outputTokenPrice') }}</span>
-                <span class="font-medium tabular-nums text-gray-100">{{ formatTokenPricePerMillion(tooltipData.output_cost, textOutputTokens(tooltipData)) }} {{ t('usage.perMillionTokens') }}</span>
+                <span class="font-medium tabular-nums text-gray-100">{{ formatTokenPricePerMillion(tooltipData.output_cost, textOutputTokens(tooltipData), { displayCurrency: tooltipData.display_currency }) }} {{ t('usage.perMillionTokens') }}</span>
               </div>
               <div v-if="tooltipData && hasImageOutputTokens(tooltipData)" class="flex items-center justify-between gap-4">
                 <span class="text-gray-400">{{ t('usage.imageOutputTokenPrice') }}</span>
-                <span class="font-medium tabular-nums text-pink-300">{{ formatTokenPricePerMillion(tooltipData.image_output_cost ?? 0, tooltipData.image_output_tokens) }} {{ t('usage.perMillionTokens') }}</span>
+                <span class="font-medium tabular-nums text-pink-300">{{ formatTokenPricePerMillion(tooltipData.image_output_cost ?? 0, tooltipData.image_output_tokens, { displayCurrency: tooltipData.display_currency }) }} {{ t('usage.perMillionTokens') }}</span>
               </div>
             </template>
             <template v-else-if="tooltipData && isImageUsage(tooltipData)">
@@ -399,24 +399,24 @@
               </div>
               <div class="flex items-center justify-between gap-4">
                 <span class="text-gray-400">{{ t('usage.imageUnitPrice') }}</span>
-                <span class="font-medium tabular-nums text-gray-100">${{ imageUnitPrice(tooltipData).toFixed(6) }}</span>
+                <span class="font-medium tabular-nums text-gray-100">{{ formatUsageCost(imageUnitPrice(tooltipData), tooltipData.display_currency) }}</span>
               </div>
               <div class="flex items-center justify-between gap-4">
                 <span class="text-gray-400">{{ t('usage.imageTotalPrice') }}</span>
-                <span class="font-medium tabular-nums text-gray-100">${{ tooltipData.total_cost?.toFixed(6) || '0.000000' }}</span>
+                <span class="font-medium tabular-nums text-gray-100">{{ formatUsageCost(tooltipData.total_cost, tooltipData.display_currency) }}</span>
               </div>
             </template>
             <div v-else class="flex items-center justify-between gap-4">
               <span class="text-gray-400">{{ t('usage.unitPrice') }}</span>
-              <span class="font-medium tabular-nums text-gray-100">${{ tooltipData?.total_cost?.toFixed(6) || '0.000000' }}</span>
+              <span class="font-medium tabular-nums text-gray-100">{{ formatUsageCost(tooltipData?.total_cost, tooltipData?.display_currency) }}</span>
             </div>
             <div v-if="tooltipData && tooltipData.cache_creation_cost > 0" class="flex items-center justify-between gap-4">
               <span class="text-gray-400">{{ t('admin.usage.cacheCreationCost') }}</span>
-              <span class="font-medium tabular-nums text-gray-100">${{ tooltipData.cache_creation_cost.toFixed(6) }}</span>
+              <span class="font-medium tabular-nums text-gray-100">{{ formatUsageCost(tooltipData.cache_creation_cost, tooltipData.display_currency) }}</span>
             </div>
             <div v-if="tooltipData && tooltipData.cache_read_cost > 0" class="flex items-center justify-between gap-4">
               <span class="text-gray-400">{{ t('admin.usage.cacheReadCost') }}</span>
-              <span class="font-medium tabular-nums text-gray-100">${{ tooltipData.cache_read_cost.toFixed(6) }}</span>
+              <span class="font-medium tabular-nums text-gray-100">{{ formatUsageCost(tooltipData.cache_read_cost, tooltipData.display_currency) }}</span>
             </div>
           </div>
           <!-- Rate and Summary -->
@@ -430,11 +430,11 @@
           </div>
           <div class="flex items-center justify-between gap-6">
             <span class="text-gray-400">{{ t('usage.original') }}</span>
-            <span class="font-medium tabular-nums text-gray-100">${{ tooltipData?.total_cost?.toFixed(6) || '0.000000' }}</span>
+            <span class="font-medium tabular-nums text-gray-100">{{ formatUsageCost(tooltipData?.total_cost, tooltipData?.display_currency) }}</span>
           </div>
           <div class="flex items-center justify-between gap-6">
             <span class="text-gray-400">{{ t('usage.userBilled') }}</span>
-            <span class="font-semibold tabular-nums text-emerald-400">${{ tooltipData?.actual_cost?.toFixed(6) || '0.000000' }}</span>
+            <span class="font-semibold tabular-nums text-emerald-400">{{ formatUsageCost(tooltipData?.actual_cost, tooltipData?.display_currency) }}</span>
           </div>
           <!-- Account billing (separated from user billing) -->
           <template v-if="showAccountBilling">
@@ -445,11 +445,11 @@
             <div class="flex items-center justify-between gap-6">
               <span class="text-gray-400">{{ t('usage.accountBilled') }}</span>
               <span class="font-semibold tabular-nums text-emerald-400">
-                ${{ accountBilled({
+                {{ formatUsageCost(accountBilled({
                   total_cost: tooltipData?.total_cost,
                   account_stats_cost: tooltipData?.account_stats_cost,
                   account_rate_multiplier: tooltipData?.account_rate_multiplier,
-                }).toFixed(6) }}
+                }), tooltipData?.display_currency) }}
               </span>
             </div>
           </template>
@@ -465,7 +465,7 @@ import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { formatDateTime, formatReasoningEffort } from '@/utils/format'
 import { formatCacheTokens, formatMultiplier } from '@/utils/formatters'
-import { formatTokenPricePerMillion } from '@/utils/usagePricing'
+import { formatTokenPricePerMillion, formatUsageCost } from '@/utils/usagePricing'
 import { getUsageServiceTierLabel } from '@/utils/usageServiceTier'
 import { resolveUsageRequestType } from '@/utils/usageRequestType'
 import {
@@ -497,15 +497,6 @@ import {
   textInputTokens,
   hasImageInputCost,
 } from '@/utils/imageUsage'
-
-/** Compute the account-billed cost for display: (account_stats_cost ?? total_cost) * rate_multiplier */
-function accountBilled(row: { total_cost?: number | null; account_stats_cost?: number | null; account_rate_multiplier?: number | null }): number {
-  const base = row.account_stats_cost != null ? row.account_stats_cost : (row.total_cost ?? 0)
-  const result = base * (row.account_rate_multiplier ?? 1)
-  return Number.isNaN(result) ? 0 : result
-}
-
-
 import DataTable from '@/components/common/DataTable.vue'
 import EmptyState from '@/components/common/EmptyState.vue'
 import IpGeoCell from '@/components/common/IpGeoCell.vue'
@@ -545,6 +536,13 @@ const { t } = useI18n()
 const showAccountBilling = props.showAccountBilling
 const showUpstreamEndpoint = props.showUpstreamEndpoint
 const ipGeoBatchLoading = ref(false)
+
+/** Compute the account-billed cost for display: (account_stats_cost ?? total_cost) * rate_multiplier */
+function accountBilled(row: { total_cost?: number | null; account_stats_cost?: number | null; account_rate_multiplier?: number | null }): number {
+  const base = row.account_stats_cost != null ? row.account_stats_cost : (row.total_cost ?? 0)
+  const result = base * (row.account_rate_multiplier ?? 1)
+  return Number.isNaN(result) ? 0 : result
+}
 
 const showIpGeoToolbar = computed(() => props.columns.some((col) => col.key === 'ip_address'))
 

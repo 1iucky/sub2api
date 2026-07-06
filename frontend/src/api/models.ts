@@ -1,4 +1,5 @@
 import { apiClient } from './client'
+import type { DisplayCurrency } from '@/utils/pricing'
 
 export interface ModelVendor {
   id: number
@@ -41,6 +42,7 @@ export interface ModelPricingAssociationEntry {
   platform: string
   models: string[]
   billing_mode: string
+  display_currency: DisplayCurrency
   input_price: number | null
   output_price: number | null
   cache_write_price: number | null
@@ -52,6 +54,7 @@ export interface ModelPricingAssociationEntry {
 }
 
 export interface ModelPricingAssociationInterval {
+  display_currency?: DisplayCurrency
   min_tokens: number
   max_tokens: number | null
   tier_label: string

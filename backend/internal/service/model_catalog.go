@@ -77,6 +77,7 @@ type ModelCatalogPricingEntry struct {
 	Platform         string                            `json:"platform"`
 	Models           []string                          `json:"models"`
 	BillingMode      string                            `json:"billing_mode"`
+	DisplayCurrency  string                            `json:"display_currency"`
 	InputPrice       *float64                          `json:"input_price"`
 	OutputPrice      *float64                          `json:"output_price"`
 	CacheWritePrice  *float64                          `json:"cache_write_price"`

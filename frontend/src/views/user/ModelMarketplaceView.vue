@@ -368,10 +368,10 @@
                       <p class="mt-1 font-mono text-xs text-stone-500">{{ formatContextInputRange(tier.min_tokens, tier.max_tokens) }}</p>
                     </div>
                     <div class="grid grid-cols-2 gap-2 text-xs text-stone-600 dark:text-stone-300">
-                      <span>{{ t('models.inputPrice') }} {{ formatUSDPerMillion(tier.input_price) }}</span>
-                      <span>{{ t('models.outputPrice') }} {{ formatUSDPerMillion(tier.output_price) }}</span>
-                      <span>{{ t('models.cacheWritePrice') }} {{ formatUSDPerMillion(tier.cache_write_price) }}</span>
-                      <span>{{ t('models.cacheReadPrice') }} {{ formatUSDPerMillion(tier.cache_read_price) }}</span>
+                      <span>{{ t('models.inputPrice') }} {{ formatPricePerMillion(tier.input_price, tier.display_currency) }}</span>
+                      <span>{{ t('models.outputPrice') }} {{ formatPricePerMillion(tier.output_price, tier.display_currency) }}</span>
+                      <span>{{ t('models.cacheWritePrice') }} {{ formatPricePerMillion(tier.cache_write_price, tier.display_currency) }}</span>
+                      <span>{{ t('models.cacheReadPrice') }} {{ formatPricePerMillion(tier.cache_read_price, tier.display_currency) }}</span>
                     </div>
                   </div>
                 </div>
@@ -443,6 +443,7 @@ import publicChannelMonitorAPI from '@/api/publicChannelMonitor'
 import type { UserMonitorView } from '@/api/channelMonitor'
 import { useAppStore, useAuthStore } from '@/stores'
 import { extractApiErrorMessage } from '@/utils/apiError'
+import { currencySymbol } from '@/utils/pricing'
 import { useTheme } from '@/composables/useTheme'
 import { dedupeModelsByModelId, matchMonitorsByModelId } from './modelMarketplaceMonitor'
 
@@ -664,11 +665,11 @@ function pricePerMillion(value: unknown): number | null {
   return raw * 1_000_000
 }
 
-function formatUSDPerMillion(value: unknown) {
+function formatPricePerMillion(value: unknown, displayCurrency: unknown = 'USD') {
   const price = pricePerMillion(value)
   if (price === null) return '-'
   const decimals = price >= 10 ? 2 : price >= 1 ? 3 : 4
-  return `$${price.toLocaleString(undefined, {
+  return `${currencySymbol(displayCurrency)}${price.toLocaleString(undefined, {
     minimumFractionDigits: price % 1 === 0 ? 0 : Math.min(2, decimals),
     maximumFractionDigits: decimals,
   })}`
@@ -677,10 +678,10 @@ function formatUSDPerMillion(value: unknown) {
 function pricingItems(model: ModelCatalog) {
   const pricing = representativePricing(model)
   return [
-    { key: 'input', label: t('models.inputPrice'), value: formatUSDPerMillion(pricing?.input_price) },
-    { key: 'output', label: t('models.outputPrice'), value: formatUSDPerMillion(pricing?.output_price) },
-    { key: 'cache-write', label: t('models.cacheWritePrice'), value: formatUSDPerMillion(pricing?.cache_write_price) },
-    { key: 'cache-read', label: t('models.cacheReadPrice'), value: formatUSDPerMillion(pricing?.cache_read_price) },
+    { key: 'input', label: t('models.inputPrice'), value: formatPricePerMillion(pricing?.input_price, pricing?.display_currency) },
+    { key: 'output', label: t('models.outputPrice'), value: formatPricePerMillion(pricing?.output_price, pricing?.display_currency) },
+    { key: 'cache-write', label: t('models.cacheWritePrice'), value: formatPricePerMillion(pricing?.cache_write_price, pricing?.display_currency) },
+    { key: 'cache-read', label: t('models.cacheReadPrice'), value: formatPricePerMillion(pricing?.cache_read_price, pricing?.display_currency) },
   ]
 }
 
@@ -690,7 +691,12 @@ function representativePricing(model: ModelCatalog): ModelPricingAssociationEntr
 }
 
 function pricingIntervals(model: ModelCatalog) {
-  return (model.related_pricing?.entries || []).flatMap(entry => entry.intervals || [])
+  return (model.related_pricing?.entries || []).flatMap(entry =>
+    (entry.intervals || []).map(interval => ({
+      ...interval,
+      display_currency: entry.display_currency,
+    }))
+  )
 }
 
 function minGroupRate(model: ModelCatalog) {
@@ -712,6 +718,7 @@ function aggregatedPricingIntervals(model: ModelCatalog) {
       tier.cache_write_price ?? '',
       tier.cache_read_price ?? '',
       tier.per_request_price ?? '',
+      tier.display_currency ?? 'USD',
     ].join(':')
     if (!byKey.has(key)) {
       byKey.set(key, { ...tier, key })

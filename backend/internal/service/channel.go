@@ -41,6 +41,20 @@ const (
 	BillingModelSourceChannelMapped = "channel_mapped"
 )
 
+const (
+	DisplayCurrencyUSD = "USD"
+	DisplayCurrencyCNY = "CNY"
+)
+
+func NormalizeDisplayCurrency(value string) string {
+	switch strings.ToUpper(strings.TrimSpace(value)) {
+	case DisplayCurrencyCNY:
+		return DisplayCurrencyCNY
+	default:
+		return DisplayCurrencyUSD
+	}
+}
+
 // Channel 渠道实体
 type Channel struct {
 	ID                 int64
@@ -88,6 +102,7 @@ type ChannelModelPricing struct {
 	Platform         string            // 所属平台（anthropic/openai/gemini/...）
 	Models           []string          // 绑定的模型列表
 	BillingMode      BillingMode       // 计费模式
+	DisplayCurrency  string            // 展示币种：USD/CNY，仅用于前端符号显示
 	InputPrice       *float64          // 每 token 输入价格（USD）— 向后兼容 flat 定价
 	OutputPrice      *float64          // 每 token 输出价格（USD）
 	CacheWritePrice  *float64          // 缓存写入价格

@@ -28,6 +28,19 @@ func TestUsageLogFromService_IncludesOpenAIWSMode(t *testing.T) {
 	require.False(t, UsageLogFromServiceAdmin(httpLog).OpenAIWSMode)
 }
 
+func TestUsageLogFromService_IncludesDisplayCurrencyForUserAndAdmin(t *testing.T) {
+	t.Parallel()
+
+	log := &service.UsageLog{
+		RequestID:       "req_display_currency",
+		Model:           "gpt-5.4",
+		DisplayCurrency: "CNY",
+	}
+
+	require.Equal(t, "CNY", UsageLogFromService(log).DisplayCurrency)
+	require.Equal(t, "CNY", UsageLogFromServiceAdmin(log).DisplayCurrency)
+}
+
 func TestUsageLogFromService_PrefersRequestTypeForLegacyFields(t *testing.T) {
 	t.Parallel()
 

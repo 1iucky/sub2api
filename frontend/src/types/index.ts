@@ -1396,6 +1396,7 @@ export interface CodexSessionImportResult {
 
 export type RedeemCodeType = 'balance' | 'concurrency' | 'subscription' | 'invitation'
 export type UsageRequestType = 'unknown' | 'sync' | 'stream' | 'ws_v2' | 'cyber'
+export type DisplayCurrency = 'USD' | 'CNY'
 export type ImageSizeSource = 'output' | 'input' | 'default' | 'legacy'
 export type ImageSizeBreakdown = Record<string, number>
 
@@ -1427,6 +1428,7 @@ export interface UsageLog {
   cache_read_cost: number
   total_cost: number
   actual_cost: number
+  display_currency?: DisplayCurrency | null
   rate_multiplier: number
   long_context_billing_applied: boolean
   billing_type: number
