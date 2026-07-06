@@ -8,8 +8,8 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 6
-- **Last Active**: 2026-06-26
+- **Total Sessions**: 7
+- **Last Active**: 2026-07-06
 <!-- @@@/auto:current-status -->
 
 ---
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~205 | Active |
+| `journal-1.md` | ~238 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 7 | 2026-07-06 | Fix subscription plan Chinese labels | `ce7f3f53` | `custom/theme` |
 | 6 | 2026-06-26 | Optimize marketplace status and monitor selects | `ed6a28de` | `custom/theme` |
 | 5 | 2026-06-26 | Channel pricing remote model search | `67853814` | `custom/theme` |
 | 4 | 2026-06-26 | Refine model marketplace monitor linkage | `ece2b446` | `custom/theme` |
