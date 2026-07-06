@@ -1,8 +1,11 @@
+import { currencySymbol } from '@/utils/pricing'
+
 export const TOKENS_PER_MILLION = 1_000_000
 
 interface TokenPriceFormatOptions {
   fractionDigits?: number
   withCurrencySymbol?: boolean
+  displayCurrency?: unknown
   emptyValue?: string
 }
 
@@ -45,5 +48,14 @@ export function formatTokenPricePerMillion(
 
   const fractionDigits = options.fractionDigits ?? 4
   const formatted = pricePerMillion.toFixed(fractionDigits)
-  return options.withCurrencySymbol == false ? formatted : `$${formatted}`
+  return options.withCurrencySymbol == false ? formatted : `${currencySymbol(options.displayCurrency)}${formatted}`
+}
+
+export function formatUsageCost(
+  value: number | null | undefined,
+  displayCurrency: unknown = 'USD',
+  fractionDigits = 6
+): string {
+  const amount = isFiniteNumber(value) ? value : 0
+  return `${currencySymbol(displayCurrency)}${amount.toFixed(fractionDigits)}`
 }

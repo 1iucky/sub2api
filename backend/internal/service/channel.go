@@ -45,6 +45,20 @@ const (
 	BillingModelSourceResponse = "response_model"
 )
 
+const (
+	DisplayCurrencyUSD = "USD"
+	DisplayCurrencyCNY = "CNY"
+)
+
+func NormalizeDisplayCurrency(value string) string {
+	switch strings.ToUpper(strings.TrimSpace(value)) {
+	case DisplayCurrencyCNY:
+		return DisplayCurrencyCNY
+	default:
+		return DisplayCurrencyUSD
+	}
+}
+
 // Channel 渠道实体
 type Channel struct {
 	ID                 int64
@@ -89,13 +103,14 @@ type AccountStatsPricingRule struct {
 type ChannelModelPricing struct {
 	ID               int64             `json:"id,omitempty"`
 	ChannelID        int64             `json:"channel_id,omitempty"`
-	Platform         string            `json:"platform"` // 所属平台（anthropic/openai/gemini/...）
-	Models           []string          `json:"models"`
-	BillingMode      BillingMode       `json:"billing_mode"`
-	InputPrice       *float64          `json:"input_price"`
-	OutputPrice      *float64          `json:"output_price"`
-	CacheWritePrice  *float64          `json:"cache_write_price"`
-	CacheReadPrice   *float64          `json:"cache_read_price"`
+	Platform         string            `json:"platform"`          // 所属平台（anthropic/openai/gemini/...）
+	Models           []string          `json:"models"`            // 绑定的模型列表
+	BillingMode      BillingMode       `json:"billing_mode"`      // 计费模式
+	DisplayCurrency  string            `json:"display_currency"`  // 展示币种：USD/CNY，仅用于前端符号显示
+	InputPrice       *float64          `json:"input_price"`       // 每 token 输入价格
+	OutputPrice      *float64          `json:"output_price"`      // 每 token 输出价格
+	CacheWritePrice  *float64          `json:"cache_write_price"` // 缓存写入价格
+	CacheReadPrice   *float64          `json:"cache_read_price"`  // 缓存读取价格
 	ImageInputPrice  *float64          `json:"image_input_price"`
 	ImageOutputPrice *float64          `json:"image_output_price"`
 	PerRequestPrice  *float64          `json:"per_request_price"`

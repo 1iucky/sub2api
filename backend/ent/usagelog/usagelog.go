@@ -68,6 +68,8 @@ const (
 	FieldTotalCost = "total_cost"
 	// FieldActualCost holds the string denoting the actual_cost field in the database.
 	FieldActualCost = "actual_cost"
+	// FieldDisplayCurrency holds the string denoting the display_currency field in the database.
+	FieldDisplayCurrency = "display_currency"
 	// FieldRateMultiplier holds the string denoting the rate_multiplier field in the database.
 	FieldRateMultiplier = "rate_multiplier"
 	// FieldLongContextBillingApplied holds the string denoting the long_context_billing_applied field in the database.
@@ -187,6 +189,7 @@ var Columns = []string{
 	FieldCacheReadCost,
 	FieldTotalCost,
 	FieldActualCost,
+	FieldDisplayCurrency,
 	FieldRateMultiplier,
 	FieldLongContextBillingApplied,
 	FieldAccountRateMultiplier,
@@ -260,6 +263,10 @@ var (
 	DefaultTotalCost float64
 	// DefaultActualCost holds the default value on creation for the "actual_cost" field.
 	DefaultActualCost float64
+	// DefaultDisplayCurrency holds the default value on creation for the "display_currency" field.
+	DefaultDisplayCurrency string
+	// DisplayCurrencyValidator is a validator for the "display_currency" field. It is called by the builders before save.
+	DisplayCurrencyValidator func(string) error
 	// DefaultRateMultiplier holds the default value on creation for the "rate_multiplier" field.
 	DefaultRateMultiplier float64
 	// DefaultLongContextBillingApplied holds the default value on creation for the "long_context_billing_applied" field.
@@ -433,6 +440,11 @@ func ByTotalCost(opts ...sql.OrderTermOption) OrderOption {
 // ByActualCost orders the results by the actual_cost field.
 func ByActualCost(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldActualCost, opts...).ToFunc()
+}
+
+// ByDisplayCurrency orders the results by the display_currency field.
+func ByDisplayCurrency(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDisplayCurrency, opts...).ToFunc()
 }
 
 // ByRateMultiplier orders the results by the rate_multiplier field.

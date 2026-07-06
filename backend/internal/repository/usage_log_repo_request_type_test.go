@@ -99,6 +99,7 @@ func TestUsageLogRepositoryCreateSyncRequestTypeAndLegacyFields(t *testing.T) {
 			sqlmock.AnyArg(), // billing_mode
 			sqlmock.AnyArg(), // account_stats_cost
 			sqlmock.AnyArg(), // session_id
+			service.DisplayCurrencyUSD,
 			createdAt,
 		).
 		WillReturnRows(sqlmock.NewRows([]string{"id", "created_at"}).AddRow(int64(99), createdAt))
@@ -191,6 +192,7 @@ func TestUsageLogRepositoryCreate_PersistsServiceTier(t *testing.T) {
 			sqlmock.AnyArg(), // billing_mode
 			sqlmock.AnyArg(), // account_stats_cost
 			sqlmock.AnyArg(), // session_id
+			service.DisplayCurrencyUSD,
 			createdAt,
 		).
 		WillReturnRows(sqlmock.NewRows([]string{"id", "created_at"}).AddRow(int64(100), createdAt))
@@ -254,6 +256,31 @@ func TestPrepareUsageLogInsert_ArgCountMatchesTypes(t *testing.T) {
 	})
 
 	require.Len(t, prepared.args, len(usageLogInsertArgTypes))
+}
+
+func TestPrepareUsageLogInsert_DefaultsAndPersistsDisplayCurrency(t *testing.T) {
+	displayCurrencyArgIndex := len(usageLogInsertArgTypes) - 2
+
+	preparedDefault := prepareUsageLogInsert(&service.UsageLog{
+		UserID:    1,
+		APIKeyID:  2,
+		AccountID: 3,
+		RequestID: "req-currency-default",
+		Model:     "gpt-5",
+		CreatedAt: time.Date(2025, 1, 6, 12, 0, 0, 0, time.UTC),
+	})
+	require.Equal(t, "USD", preparedDefault.args[displayCurrencyArgIndex])
+
+	preparedCNY := prepareUsageLogInsert(&service.UsageLog{
+		UserID:          1,
+		APIKeyID:        2,
+		AccountID:       3,
+		RequestID:       "req-currency-cny",
+		Model:           "gpt-5",
+		DisplayCurrency: "CNY",
+		CreatedAt:       time.Date(2025, 1, 6, 12, 0, 0, 0, time.UTC),
+	})
+	require.Equal(t, "CNY", preparedCNY.args[displayCurrencyArgIndex])
 }
 
 func TestPrepareUsageLogInsert_PersistsImageSizeMetadata(t *testing.T) {
@@ -852,6 +879,7 @@ func TestScanUsageLogRequestTypeAndLegacyFallback(t *testing.T) {
 			sql.NullString{},
 			sql.NullFloat64{},
 			sql.NullString{},
+			sql.NullString{Valid: true, String: service.DisplayCurrencyUSD},
 			now,
 		}})
 		require.NoError(t, err)
@@ -929,9 +957,11 @@ func TestScanUsageLogRequestTypeAndLegacyFallback(t *testing.T) {
 			sql.NullString{},  // billing_mode
 			sql.NullFloat64{}, // account_stats_cost
 			sql.NullString{},  // session_id
+			sql.NullString{Valid: true, String: service.DisplayCurrencyCNY},
 			now,
 		}})
 		require.NoError(t, err)
+		require.Equal(t, service.DisplayCurrencyCNY, log.DisplayCurrency)
 		require.NotNil(t, log.ServiceTier)
 		require.Equal(t, "priority", *log.ServiceTier)
 		require.Equal(t, service.RequestTypeWSV2, log.RequestType)
@@ -989,6 +1019,7 @@ func TestScanUsageLogRequestTypeAndLegacyFallback(t *testing.T) {
 			sql.NullString{},  // billing_mode
 			sql.NullFloat64{}, // account_stats_cost
 			sql.NullString{},  // session_id
+			sql.NullString{},
 			now,
 		}})
 		require.NoError(t, err)
@@ -1049,6 +1080,7 @@ func TestScanUsageLogRequestTypeAndLegacyFallback(t *testing.T) {
 			sql.NullString{},  // billing_mode
 			sql.NullFloat64{}, // account_stats_cost
 			sql.NullString{},  // session_id
+			sql.NullString{},
 			now,
 		}})
 		require.NoError(t, err)

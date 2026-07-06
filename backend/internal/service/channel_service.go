@@ -652,6 +652,9 @@ func validatePricingEntries(pricing []ChannelModelPricing) error {
 // validatePricingBillingMode 校验计费模式配置：按次/图片模式必须配价格或区间，所有价格字段不能为负，区间至少有一个价格字段。
 func validatePricingBillingMode(pricing []ChannelModelPricing) error {
 	for _, p := range pricing {
+		if err := checkDisplayCurrency(p); err != nil {
+			return err
+		}
 		if err := checkBillingModeRequirements(p); err != nil {
 			return err
 		}
@@ -663,6 +666,19 @@ func validatePricingBillingMode(pricing []ChannelModelPricing) error {
 		}
 	}
 	return nil
+}
+
+func checkDisplayCurrency(p ChannelModelPricing) error {
+	value := strings.TrimSpace(p.DisplayCurrency)
+	if value == "" {
+		return nil
+	}
+	switch strings.ToUpper(value) {
+	case DisplayCurrencyUSD, DisplayCurrencyCNY:
+		return nil
+	default:
+		return infraerrors.BadRequest("INVALID_DISPLAY_CURRENCY", "display_currency must be USD or CNY")
+	}
 }
 
 func checkBillingModeRequirements(p ChannelModelPricing) error {

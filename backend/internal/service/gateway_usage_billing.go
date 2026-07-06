@@ -1234,6 +1234,7 @@ func (s *GatewayService) buildRecordUsageLog(
 		ImageOutputTokens:     result.Usage.ImageOutputTokens,
 		RateMultiplier:        multiplier,
 		AccountRateMultiplier: &accountRateMultiplier,
+		DisplayCurrency:       DisplayCurrencyUSD,
 		BillingType:           billingType,
 		BillingMode:           resolveBillingMode(result, cost),
 		Stream:                result.Stream,
@@ -1266,6 +1267,7 @@ func (s *GatewayService) buildRecordUsageLog(
 		usageLog.CacheReadCost = cost.CacheReadCost
 		usageLog.TotalCost = cost.TotalCost
 		usageLog.ActualCost = cost.ActualCost
+		usageLog.DisplayCurrency = NormalizeDisplayCurrency(cost.DisplayCurrency)
 		usageLog.LongContextBillingApplied = cost.LongContextBillingApplied
 	}
 

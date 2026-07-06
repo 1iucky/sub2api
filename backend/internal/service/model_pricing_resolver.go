@@ -34,6 +34,9 @@ type ResolvedPricing struct {
 	// 来源标识
 	Source string // "channel", "litellm", "fallback"
 
+	// 展示币种，仅控制价格符号展示，不参与计费计算
+	DisplayCurrency string
+
 	// 是否支持缓存细分
 	SupportsCacheBreakdown bool
 
@@ -93,9 +96,10 @@ func (r *ModelPricingResolver) Resolve(ctx context.Context, input PricingInput) 
 			}
 			if mode == BillingModePerRequest || mode == BillingModeImage || mode == BillingModeVideo {
 				resolved := &ResolvedPricing{
-					Mode:           mode,
-					Source:         PricingSourceChannel,
-					channelPricing: chPricing,
+					Mode:            mode,
+					Source:          PricingSourceChannel,
+					DisplayCurrency: NormalizeDisplayCurrency(chPricing.DisplayCurrency),
+					channelPricing:  chPricing,
 				}
 				resolved.longContextPricingEnabled = longContextPricingEnabled
 				r.applyRequestTierOverrides(chPricing, resolved)
@@ -111,6 +115,7 @@ func (r *ModelPricingResolver) Resolve(ctx context.Context, input PricingInput) 
 		Mode:                   BillingModeToken,
 		BasePricing:            basePricing,
 		Source:                 source,
+		DisplayCurrency:        DisplayCurrencyUSD,
 		SupportsCacheBreakdown: basePricing != nil && basePricing.SupportsCacheBreakdown,
 	}
 	resolved.longContextPricingEnabled = longContextPricingEnabled
@@ -119,6 +124,7 @@ func (r *ModelPricingResolver) Resolve(ctx context.Context, input PricingInput) 
 	if chPricing != nil {
 		resolved.Source = PricingSourceChannel
 		resolved.channelPricing = chPricing
+		resolved.DisplayCurrency = NormalizeDisplayCurrency(chPricing.DisplayCurrency)
 		r.applyTokenOverrides(chPricing, resolved)
 		if !longContextPricingEnabled {
 			r.applyFirstTokenTier(resolved, chPricing)
@@ -206,6 +212,7 @@ func (r *ModelPricingResolver) applyChannelOverrides(ctx context.Context, groupI
 
 	resolved.Source = PricingSourceChannel
 	resolved.channelPricing = chPricing
+	resolved.DisplayCurrency = NormalizeDisplayCurrency(chPricing.DisplayCurrency)
 	resolved.Mode = chPricing.BillingMode
 	if resolved.Mode == "" {
 		resolved.Mode = BillingModeToken

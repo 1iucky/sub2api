@@ -272,7 +272,7 @@ func (r *modelCatalogRepository) CountPricingAssociations(ctx context.Context, m
 	for _, model := range models {
 		rows, err := r.db.QueryContext(ctx, `
 			SELECT cmp.id, cmp.channel_id, c.name, cmp.platform, cmp.models, cmp.billing_mode,
-			       cmp.input_price, cmp.output_price, cmp.cache_write_price, cmp.cache_read_price,
+			       cmp.display_currency, cmp.input_price, cmp.output_price, cmp.cache_write_price, cmp.cache_read_price,
 			       cmp.image_output_price, cmp.per_request_price
 			FROM channel_model_pricing cmp
 			JOIN channels c ON c.id = cmp.channel_id
@@ -296,12 +296,13 @@ func (r *modelCatalogRepository) CountPricingAssociations(ctx context.Context, m
 			var inputPrice, outputPrice, cacheWritePrice, cacheReadPrice, imageOutputPrice, perRequestPrice sql.NullFloat64
 			if err := rows.Scan(
 				&pricingID, &entry.ChannelID, &entry.ChannelName, &entry.Platform, &modelsJSON, &entry.BillingMode,
-				&inputPrice, &outputPrice, &cacheWritePrice, &cacheReadPrice, &imageOutputPrice, &perRequestPrice,
+				&entry.DisplayCurrency, &inputPrice, &outputPrice, &cacheWritePrice, &cacheReadPrice, &imageOutputPrice, &perRequestPrice,
 			); err != nil {
 				_ = rows.Close()
 				return nil, fmt.Errorf("scan pricing association: %w", err)
 			}
 			_ = json.Unmarshal(modelsJSON, &entry.Models)
+			entry.DisplayCurrency = service.NormalizeDisplayCurrency(entry.DisplayCurrency)
 			entry.InputPrice = nullableFloat(inputPrice)
 			entry.OutputPrice = nullableFloat(outputPrice)
 			entry.CacheWritePrice = nullableFloat(cacheWritePrice)

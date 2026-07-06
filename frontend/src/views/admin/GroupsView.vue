@@ -4481,6 +4481,7 @@ import {
 const emptyGroupPricing = (): PricingFormEntry => ({
   models: [],
   billing_mode: "token",
+  display_currency: "USD",
   input_price: null,
   output_price: null,
   cache_write_price: null,
@@ -4500,6 +4501,7 @@ const groupPricingFromAPI = (
   (pricing || []).map((entry) => ({
     models: entry.models || [],
     billing_mode: entry.billing_mode || "token",
+    display_currency: entry.display_currency === "CNY" ? "CNY" : "USD",
     input_price: perTokenToMTok(entry.input_price),
     output_price: perTokenToMTok(entry.output_price),
     cache_write_price: perTokenToMTok(entry.cache_write_price),
@@ -4520,6 +4522,7 @@ const groupPricingToAPI = (
       platform,
       models: entry.models,
       billing_mode: entry.billing_mode,
+      display_currency: entry.display_currency,
       input_price: mTokToPerToken(entry.input_price),
       output_price: mTokToPerToken(entry.output_price),
       cache_write_price: mTokToPerToken(entry.cache_write_price),

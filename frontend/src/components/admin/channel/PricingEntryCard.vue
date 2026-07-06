@@ -117,6 +117,17 @@
               class="mt-1"
             />
           </div>
+          <div class="w-32">
+            <label class="font-mono text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+              {{ t('admin.channels.form.displayCurrency', '展示币种') }}
+            </label>
+            <Select
+              :modelValue="entry.display_currency"
+              @update:modelValue="emit('update', { ...entry, display_currency: normalizeDisplayCurrency($event) })"
+              :options="currencyOptions"
+              class="mt-1"
+            />
+          </div>
         </div>
 
         <!-- Token mode -->
@@ -124,7 +135,7 @@
           <!-- Default prices (fallback when no interval matches) -->
           <label class="mt-3 block font-mono text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
             {{ t('admin.channels.form.defaultPrices') }}
-            <span class="ml-1 font-normal text-gray-400">$/MTok</span>
+            <span class="ml-1 font-normal text-gray-400">{{ priceUnitLabel }}</span>
           </label>
           <div class="mt-1 grid grid-cols-2 gap-2 sm:grid-cols-6">
             <div>
@@ -188,7 +199,7 @@
           <!-- Default per-request price -->
           <label class="mt-3 block font-mono text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
             {{ t('admin.channels.form.defaultPerRequestPrice') }}
-            <span class="ml-1 font-normal text-gray-400">$</span>
+            <span class="ml-1 font-normal text-gray-400">{{ currencyOnlyLabel }}</span>
           </label>
           <div class="mt-1 w-48">
             <input :value="entry.per_request_price" @input="emitField('per_request_price', ($event.target as HTMLInputElement).value)"
@@ -224,7 +235,7 @@
           <!-- Default image price (per-request, same as per_request mode) -->
           <label class="mt-3 block font-mono text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
             {{ entry.billing_mode === 'video' ? t('admin.channels.form.defaultVideoPrice') : t('admin.channels.form.defaultImagePrice') }}
-            <span class="ml-1 font-normal text-gray-400">$</span>
+            <span class="ml-1 font-normal text-gray-400">{{ currencyOnlyLabel }}</span>
           </label>
           <div class="mt-1 w-48">
             <input :value="entry.per_request_price" @input="emitField('per_request_price', ($event.target as HTMLInputElement).value)"
@@ -269,6 +280,7 @@ import type { BillingMode } from '@/api/admin/channels'
 import channelsAPI from '@/api/admin/channels'
 import adminModelsAPI from '@/api/admin/models'
 import type { ModelCatalog } from '@/api/models'
+import { currencySymbol, normalizeDisplayCurrency, type DisplayCurrency } from '@/utils/pricing'
 
 const { t } = useI18n()
 
@@ -301,10 +313,18 @@ const billingModeOptions = computed(() => [
   { value: 'video', label: t('admin.channels.billingMode.video') }
 ])
 
+const currencyOptions: { value: DisplayCurrency; label: string }[] = [
+  { value: 'USD', label: 'USD $' },
+  { value: 'CNY', label: 'CNY ￥' },
+]
+
 const billingModeLabel = computed(() => {
   const opt = billingModeOptions.value.find(o => o.value === props.entry.billing_mode)
   return opt ? opt.label : props.entry.billing_mode
 })
+
+const currencyOnlyLabel = computed(() => currencySymbol(props.entry.display_currency))
+const priceUnitLabel = computed(() => `${currencyOnlyLabel.value}/MTok`)
 
 const modelOptions = computed(() => {
   const selected = new Set(props.entry.models.map(model => model.toLowerCase()))

@@ -168,6 +168,7 @@ type CostBreakdown struct {
 	TotalCost                 float64
 	ActualCost                float64 // 应用倍率后的实际费用
 	BillingMode               string  // 计费模式（"token"/"per_request"/"image"），由 CalculateCostUnified 填充
+	DisplayCurrency           string  // 展示币种快照，默认 USD，不参与计费计算
 	LongContextBillingApplied bool
 }
 
@@ -1087,6 +1088,7 @@ func (s *BillingService) CalculateCostUnified(input CostInput) (*CostBreakdown, 
 		if breakdown.BillingMode == "" {
 			breakdown.BillingMode = string(BillingModeToken)
 		}
+		breakdown.DisplayCurrency = NormalizeDisplayCurrency(resolved.DisplayCurrency)
 	}
 	return breakdown, err
 }
@@ -1314,7 +1316,9 @@ func (s *BillingService) calculateCostInternalWithPolicy(
 		return nil, err
 	}
 
-	return s.computeTokenBreakdown(pricing, tokens, rateMultiplier, serviceTier, longContextBillingEnabled), nil
+	breakdown := s.computeTokenBreakdown(pricing, tokens, rateMultiplier, serviceTier, longContextBillingEnabled)
+	breakdown.DisplayCurrency = DisplayCurrencyUSD
+	return breakdown, nil
 }
 
 func (s *BillingService) applyModelSpecificPricingPolicy(model string, pricing *ModelPricing) *ModelPricing {

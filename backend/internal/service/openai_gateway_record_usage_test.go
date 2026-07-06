@@ -29,7 +29,6 @@ func (s *openAIRecordUsageLogRepoStub) Create(ctx context.Context, log *UsageLog
 	return s.inserted, s.err
 }
 
-
 type openAIRecordUsageBillingRepoStub struct {
 	UsageBillingRepository
 
@@ -2683,6 +2682,57 @@ func TestGatewayServiceCalculateRecordUsageCost_ChannelImageBillingUsesImageCoun
 	require.Equal(t, string(BillingModeImage), cost.BillingMode)
 	require.InDelta(t, 0.5, cost.TotalCost, 1e-12)
 	require.InDelta(t, 0.5, cost.ActualCost, 1e-12)
+}
+
+func TestGatewayServiceCalculateRecordUsageCost_SnapshotsChannelDisplayCurrency(t *testing.T) {
+	groupID := int64(129)
+	price := 0.25
+	cache := newEmptyChannelCache()
+	cache.pricingByGroupModel[channelModelKey{groupID: groupID, model: "gpt-cny"}] = &ChannelModelPricing{
+		BillingMode:     BillingModePerRequest,
+		PerRequestPrice: &price,
+		DisplayCurrency: "CNY",
+	}
+	cache.channelByGroupID[groupID] = &Channel{ID: groupID, Status: StatusActive}
+	cache.loadedAt = time.Now()
+	channelService := &ChannelService{}
+	channelService.cache.Store(cache)
+
+	svc := &GatewayService{
+		billingService: NewBillingService(&config.Config{}, nil),
+		resolver:       NewModelPricingResolver(channelService, NewBillingService(&config.Config{}, nil)),
+	}
+
+	cost := svc.calculateRecordUsageCost(
+		context.Background(),
+		&ForwardResult{Model: "gpt-cny"},
+		&APIKey{GroupID: i64p(groupID), Group: &Group{ID: groupID}},
+		"gpt-cny",
+		1.0,
+		1.0,
+		nil,
+	)
+	require.NotNil(t, cost)
+	require.Equal(t, "CNY", cost.DisplayCurrency)
+
+	log := svc.buildRecordUsageLog(
+		context.Background(),
+		&recordUsageCoreInput{},
+		&ForwardResult{Model: "gpt-cny"},
+		&APIKey{ID: 1, GroupID: i64p(groupID), Group: &Group{ID: groupID}},
+		&User{ID: 2},
+		&Account{ID: 3},
+		nil,
+		"gpt-cny",
+		1.0,
+		1.0,
+		1.0,
+		BillingTypeBalance,
+		false,
+		cost,
+		nil,
+	)
+	require.Equal(t, "CNY", log.DisplayCurrency)
 }
 
 func TestGatewayServiceCalculateRecordUsageCost_ChannelImageBillingUsesSizeTier(t *testing.T) {

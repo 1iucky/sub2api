@@ -365,6 +365,20 @@ func (_c *UsageLogCreate) SetNillableActualCost(v *float64) *UsageLogCreate {
 	return _c
 }
 
+// SetDisplayCurrency sets the "display_currency" field.
+func (_c *UsageLogCreate) SetDisplayCurrency(v string) *UsageLogCreate {
+	_c.mutation.SetDisplayCurrency(v)
+	return _c
+}
+
+// SetNillableDisplayCurrency sets the "display_currency" field if the given value is not nil.
+func (_c *UsageLogCreate) SetNillableDisplayCurrency(v *string) *UsageLogCreate {
+	if v != nil {
+		_c.SetDisplayCurrency(*v)
+	}
+	return _c
+}
+
 // SetRateMultiplier sets the "rate_multiplier" field.
 func (_c *UsageLogCreate) SetRateMultiplier(v float64) *UsageLogCreate {
 	_c.mutation.SetRateMultiplier(v)
@@ -745,6 +759,10 @@ func (_c *UsageLogCreate) defaults() {
 		v := usagelog.DefaultActualCost
 		_c.mutation.SetActualCost(v)
 	}
+	if _, ok := _c.mutation.DisplayCurrency(); !ok {
+		v := usagelog.DefaultDisplayCurrency
+		_c.mutation.SetDisplayCurrency(v)
+	}
 	if _, ok := _c.mutation.RateMultiplier(); !ok {
 		v := usagelog.DefaultRateMultiplier
 		_c.mutation.SetRateMultiplier(v)
@@ -871,6 +889,14 @@ func (_c *UsageLogCreate) check() error {
 	}
 	if _, ok := _c.mutation.ActualCost(); !ok {
 		return &ValidationError{Name: "actual_cost", err: errors.New(`ent: missing required field "UsageLog.actual_cost"`)}
+	}
+	if _, ok := _c.mutation.DisplayCurrency(); !ok {
+		return &ValidationError{Name: "display_currency", err: errors.New(`ent: missing required field "UsageLog.display_currency"`)}
+	}
+	if v, ok := _c.mutation.DisplayCurrency(); ok {
+		if err := usagelog.DisplayCurrencyValidator(v); err != nil {
+			return &ValidationError{Name: "display_currency", err: fmt.Errorf(`ent: validator failed for field "UsageLog.display_currency": %w`, err)}
+		}
 	}
 	if _, ok := _c.mutation.RateMultiplier(); !ok {
 		return &ValidationError{Name: "rate_multiplier", err: errors.New(`ent: missing required field "UsageLog.rate_multiplier"`)}
@@ -1054,6 +1080,10 @@ func (_c *UsageLogCreate) createSpec() (*UsageLog, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.ActualCost(); ok {
 		_spec.SetField(usagelog.FieldActualCost, field.TypeFloat64, value)
 		_node.ActualCost = value
+	}
+	if value, ok := _c.mutation.DisplayCurrency(); ok {
+		_spec.SetField(usagelog.FieldDisplayCurrency, field.TypeString, value)
+		_node.DisplayCurrency = value
 	}
 	if value, ok := _c.mutation.RateMultiplier(); ok {
 		_spec.SetField(usagelog.FieldRateMultiplier, field.TypeFloat64, value)
@@ -1731,6 +1761,18 @@ func (u *UsageLogUpsert) UpdateActualCost() *UsageLogUpsert {
 // AddActualCost adds v to the "actual_cost" field.
 func (u *UsageLogUpsert) AddActualCost(v float64) *UsageLogUpsert {
 	u.Add(usagelog.FieldActualCost, v)
+	return u
+}
+
+// SetDisplayCurrency sets the "display_currency" field.
+func (u *UsageLogUpsert) SetDisplayCurrency(v string) *UsageLogUpsert {
+	u.Set(usagelog.FieldDisplayCurrency, v)
+	return u
+}
+
+// UpdateDisplayCurrency sets the "display_currency" field to the value that was provided on create.
+func (u *UsageLogUpsert) UpdateDisplayCurrency() *UsageLogUpsert {
+	u.SetExcluded(usagelog.FieldDisplayCurrency)
 	return u
 }
 
@@ -2663,6 +2705,20 @@ func (u *UsageLogUpsertOne) AddActualCost(v float64) *UsageLogUpsertOne {
 func (u *UsageLogUpsertOne) UpdateActualCost() *UsageLogUpsertOne {
 	return u.Update(func(s *UsageLogUpsert) {
 		s.UpdateActualCost()
+	})
+}
+
+// SetDisplayCurrency sets the "display_currency" field.
+func (u *UsageLogUpsertOne) SetDisplayCurrency(v string) *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetDisplayCurrency(v)
+	})
+}
+
+// UpdateDisplayCurrency sets the "display_currency" field to the value that was provided on create.
+func (u *UsageLogUpsertOne) UpdateDisplayCurrency() *UsageLogUpsertOne {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateDisplayCurrency()
 	})
 }
 
@@ -3819,6 +3875,20 @@ func (u *UsageLogUpsertBulk) AddActualCost(v float64) *UsageLogUpsertBulk {
 func (u *UsageLogUpsertBulk) UpdateActualCost() *UsageLogUpsertBulk {
 	return u.Update(func(s *UsageLogUpsert) {
 		s.UpdateActualCost()
+	})
+}
+
+// SetDisplayCurrency sets the "display_currency" field.
+func (u *UsageLogUpsertBulk) SetDisplayCurrency(v string) *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.SetDisplayCurrency(v)
+	})
+}
+
+// UpdateDisplayCurrency sets the "display_currency" field to the value that was provided on create.
+func (u *UsageLogUpsertBulk) UpdateDisplayCurrency() *UsageLogUpsertBulk {
+	return u.Update(func(s *UsageLogUpsert) {
+		s.UpdateDisplayCurrency()
 	})
 }
 
