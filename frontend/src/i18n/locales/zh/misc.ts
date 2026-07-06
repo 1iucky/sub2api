@@ -589,7 +589,7 @@ export default {
       dailyRequestLimit: '每日请求限额',
       weeklyRequestLimit: '每周请求限额',
       monthlyRequestLimit: '每月请求限额',
-      requestLimitPlaceholder: '留空 = 不限制',
+      requestLimitPlaceholder: '留空=不限制',
       forSale: '上架状态',
       onSale: '上架',
       offSale: '下架',

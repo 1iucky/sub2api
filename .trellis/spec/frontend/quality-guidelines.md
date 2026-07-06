@@ -32,6 +32,20 @@ Questions to answer:
 
 <!-- Patterns that must always be used -->
 
+### i18n Key Scope Contract
+
+When adding or fixing locale copy, match the exact key path used by the
+component or composable. Similar labels in another namespace do not satisfy the
+contract because vue-i18n returns the raw key when the active locale is missing
+the exact path.
+
+**Required checks**:
+- Search for the consuming key with `rg "namespace.key" frontend/src`.
+- Add/update both `en` and `zh` under the same object path unless the key is
+  intentionally locale-specific.
+- For regression fixes, add a focused locale test that imports the locale
+  objects and asserts the exact path resolves to the expected copy.
+
 ### Region Block Redirect Contract
 
 When page-only region blocking is enforced at the edge, SPA navigation does not
