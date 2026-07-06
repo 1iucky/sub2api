@@ -236,3 +236,36 @@ Fixed Simplified Chinese payment admin request limit labels and added focused lo
 ### Next Steps
 
 - None - task complete
+
+
+## Session 8: Pricing display currency snapshots
+
+**Date**: 2026-07-06
+**Task**: Pricing display currency snapshots
+**Branch**: `custom/theme`
+
+### Summary
+
+Added channel pricing display currency, usage-log currency snapshots, marketplace and usage-record symbol rendering, migrations, and focused verification.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `7e2b7839` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
