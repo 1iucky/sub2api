@@ -53,3 +53,12 @@ describe('AppSidebar header styles', () => {
     expect(sidebarBrandBlockMatch?.[0]).not.toContain('overflow: hidden;')
   })
 })
+
+describe('AppSidebar user navigation', () => {
+  it('includes the model marketplace console entry without dashboard gating', () => {
+    expect(componentSource).toContain("path: '/marketplace'")
+    expect(componentSource).toContain("label: t('nav.modelMarketplace')")
+    expect(componentSource).not.toContain("...(withDashboard ? [{ path: '/marketplace'")
+    expect(componentSource).not.toContain("{ path: '/marketplace', label: t('nav.modelMarketplace'), icon: SparklesIcon, hideInSimpleMode: true }")
+  })
+})

@@ -182,12 +182,23 @@
                 <li>{{ t('redeem.codeRule2') }}</li>
                 <li>
                   {{ t('redeem.codeRule3') }}
-                  <span
-                    v-if="contactInfo"
-                    class="ml-1.5 inline-flex items-center rounded-sm border border-gray-200 bg-gray-100 px-2 py-0.5 font-mono text-xs text-gray-700 dark:border-dark-700 dark:bg-dark-800 dark:text-gray-300"
-                  >
-                    {{ contactInfo }}
-                  </span>
+                  <template v-if="contactInfo">
+                    <a
+                      v-if="customerServiceInviteURL"
+                      :href="customerServiceInviteURL"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="ml-1.5 inline-flex items-center rounded-sm border border-gray-200 bg-gray-100 px-2 py-0.5 font-mono text-xs text-gray-700 transition-colors hover:border-primary-300 hover:text-primary-600 dark:border-dark-700 dark:bg-dark-800 dark:text-gray-300 dark:hover:border-primary-500 dark:hover:text-primary-400"
+                    >
+                      {{ contactInfo }}
+                    </a>
+                    <span
+                      v-else
+                      class="ml-1.5 inline-flex items-center rounded-sm border border-gray-200 bg-gray-100 px-2 py-0.5 font-mono text-xs text-gray-700 dark:border-dark-700 dark:bg-dark-800 dark:text-gray-300"
+                    >
+                      {{ contactInfo }}
+                    </span>
+                  </template>
                 </li>
                 <li>{{ t('redeem.codeRule4') }}</li>
               </ul>
@@ -374,6 +385,7 @@ const errorMessage = ref('')
 const history = ref<RedeemHistoryItem[]>([])
 const loadingHistory = ref(false)
 const contactInfo = ref('')
+const customerServiceInviteURL = ref('')
 
 // Helper functions for history display
 const isBalanceType = (type: string) => {
@@ -479,6 +491,7 @@ onMounted(async () => {
   try {
     const settings = await authAPI.getPublicSettings()
     contactInfo.value = settings.contact_info || ''
+    customerServiceInviteURL.value = settings.customer_service_invite_url?.trim() || ''
   } catch (error) {
     console.error('Failed to load contact info:', error)
   }

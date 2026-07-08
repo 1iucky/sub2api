@@ -23,6 +23,48 @@
 
       <!-- Right: Announcements + Docs + Language + Subscriptions + Balance + User Dropdown -->
       <div class="flex items-center gap-3">
+        <!-- Contact Support -->
+        <div v-if="showContactSupportEntry" ref="contactSupportRef" class="relative">
+          <a
+            v-if="customerServiceInviteURL"
+            data-testid="header-contact-support"
+            :href="customerServiceInviteURL"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex h-9 w-9 items-center justify-center rounded-sm text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-dark-800 dark:hover:text-gray-100"
+            :title="t('common.contactSupport')"
+            :aria-label="t('common.contactSupport')"
+          >
+            <Icon name="chat" size="md" />
+          </a>
+          <button
+            v-else
+            type="button"
+            data-testid="header-contact-support"
+            class="flex h-9 w-9 items-center justify-center rounded-sm text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-dark-800 dark:hover:text-gray-100"
+            :title="t('common.contactSupport')"
+            :aria-label="t('common.contactSupport')"
+            @click.stop="toggleContactSupportPopover"
+          >
+            <Icon name="chat" size="md" />
+          </button>
+
+          <transition name="dropdown">
+            <div
+              v-if="contactSupportPopoverOpen"
+              data-testid="header-contact-support-popover"
+              class="dropdown right-0 mt-2 w-64 p-4"
+            >
+              <div class="mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                {{ t('common.contactSupport') }}
+              </div>
+              <p class="break-words text-sm leading-6 text-gray-600 dark:text-gray-300">
+                {{ contactInfo }}
+              </p>
+            </div>
+          </transition>
+        </div>
+
         <!-- Announcement Bell -->
         <AnnouncementBell v-if="user" />
 
@@ -280,8 +322,12 @@ const { isDark, toggleTheme, syncThemeFromDocument } = useTheme()
 
 const user = computed(() => authStore.user)
 const dropdownOpen = ref(false)
+const contactSupportPopoverOpen = ref(false)
 const dropdownRef = ref<HTMLElement | null>(null)
+const contactSupportRef = ref<HTMLElement | null>(null)
 const contactInfo = computed(() => appStore.contactInfo)
+const customerServiceInviteURL = computed(() => sanitizeUrl(appStore.cachedPublicSettings?.customer_service_invite_url?.trim() || ''))
+const showContactSupportEntry = computed(() => Boolean(user.value && (contactInfo.value || customerServiceInviteURL.value)))
 const docUrl = computed(() => sanitizeUrl(appStore.docUrl))
 const avatarUrl = computed(() => user.value?.avatar_url?.trim() || '')
 const availableBalance = computed(() => Number(user.value?.balance || 0))
@@ -346,9 +392,15 @@ function toggleMobileSidebar() {
 
 function toggleDropdown() {
   dropdownOpen.value = !dropdownOpen.value
+  contactSupportPopoverOpen.value = false
 }
 
 function closeDropdown() {
+  dropdownOpen.value = false
+}
+
+function toggleContactSupportPopover() {
+  contactSupportPopoverOpen.value = !contactSupportPopoverOpen.value
   dropdownOpen.value = false
 }
 
@@ -376,6 +428,9 @@ function formatHeaderMoney(value: number) {
 function handleClickOutside(event: MouseEvent) {
   if (dropdownRef.value && !dropdownRef.value.contains(event.target as Node)) {
     closeDropdown()
+  }
+  if (contactSupportRef.value && !contactSupportRef.value.contains(event.target as Node)) {
+    contactSupportPopoverOpen.value = false
   }
 }
 

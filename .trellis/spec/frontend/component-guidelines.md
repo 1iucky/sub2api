@@ -54,6 +54,30 @@ Use `frontend/src/components/common/Select.vue` for dropdowns that need the proj
 />
 ```
 
+### Pattern: Shared Public and Console Pages
+
+When a public page must also appear inside the authenticated console layout,
+reuse the same view component and pass a small route prop to control only the
+outer page chrome. Do not duplicate the page content into a second component.
+
+**Contract**:
+- The public route keeps the default view behavior.
+- The console route passes a typed prop such as `embedded: true`.
+- The shared view uses that prop only for layout chrome such as a public top
+  navigation bar and console `AppLayout`; filters, cards, API calls, loading states, and drawers stay
+  shared.
+- Add a focused component test that mounts the view with the console prop and
+  asserts public-only chrome is hidden and the console layout slot is used.
+
+**Example**:
+```ts
+{
+  path: '/marketplace',
+  component: () => import('@/views/user/ModelMarketplaceView.vue'),
+  props: { embedded: true },
+}
+```
+
 ---
 
 ## Props Conventions

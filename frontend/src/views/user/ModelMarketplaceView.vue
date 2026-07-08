@@ -1,8 +1,9 @@
 <template>
-  <div class="min-h-screen bg-[#f6f2ea] text-stone-950 dark:bg-[#14120f] dark:text-stone-100">
-    <PublicTopNav />
+  <component :is="embedded ? AppLayout : 'div'">
+    <div :class="pageShellClass">
+      <PublicTopNav v-if="!embedded" />
 
-    <main class="mx-auto max-w-[1440px] px-4 pb-14 pt-10 lg:px-8">
+      <main :class="mainClass">
       <section class="border-b border-stone-300 pb-10 text-center dark:border-stone-800">
         <h1 class="font-mono text-[clamp(32px,6vw,64px)] font-semibold uppercase leading-none tracking-[0.14em] text-stone-950 dark:text-stone-50">
           {{ t('models.marketplaceTitle') }}
@@ -427,8 +428,9 @@
         </aside>
         </div>
       </Transition>
-    </main>
-  </div>
+      </main>
+    </div>
+  </component>
 </template>
 
 <script setup lang="ts">
@@ -437,6 +439,7 @@ import { useI18n } from 'vue-i18n'
 import Icon from '@/components/icons/Icon.vue'
 import ModelIcon from '@/components/common/ModelIcon.vue'
 import Select from '@/components/common/Select.vue'
+import AppLayout from '@/components/layout/AppLayout.vue'
 import PublicTopNav from '@/components/home/PublicTopNav.vue'
 import { listModels, listVendors, type ModelCatalog, type ModelPricingAssociationEntry, type ModelVendor } from '@/api/models'
 import publicChannelMonitorAPI from '@/api/publicChannelMonitor'
@@ -448,9 +451,22 @@ import { useTheme } from '@/composables/useTheme'
 import { dedupeModelsByModelId, matchMonitorsByModelId } from './modelMarketplaceMonitor'
 
 const { t } = useI18n()
+const props = withDefaults(defineProps<{
+  embedded?: boolean
+}>(), {
+  embedded: false,
+})
 const appStore = useAppStore()
 const authStore = useAuthStore()
 const { syncThemeFromDocument } = useTheme()
+const pageShellClass = computed(() => props.embedded
+  ? 'text-stone-950 dark:text-stone-100'
+  : 'min-h-screen bg-[#f6f2ea] text-stone-950 dark:bg-[#14120f] dark:text-stone-100'
+)
+const mainClass = computed(() => props.embedded
+  ? 'mx-auto max-w-[1440px] px-0 pb-8 pt-0'
+  : 'mx-auto max-w-[1440px] px-4 pb-14 pt-10 lg:px-8'
+)
 
 const loading = ref(true)
 const loadingMore = ref(false)
