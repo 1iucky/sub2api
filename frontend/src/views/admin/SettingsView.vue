@@ -6487,6 +6487,24 @@
                 </p>
               </div>
 
+              <!-- Customer Service Invite URL -->
+              <div>
+                <label
+                  class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  {{ t("admin.settings.site.customerServiceInviteURL") }}
+                </label>
+                <input
+                  v-model="form.customer_service_invite_url"
+                  type="url"
+                  class="input font-mono text-sm"
+                  :placeholder="t('admin.settings.site.customerServiceInviteURLPlaceholder')"
+                />
+                <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+                  {{ t("admin.settings.site.customerServiceInviteURLHint") }}
+                </p>
+              </div>
+
               <!-- Doc URL -->
               <div>
                 <label
@@ -9552,6 +9570,7 @@ const form = reactive<SettingsForm>({
   site_subtitle: "Subscription to API Conversion Platform",
   api_base_url: "",
   contact_info: "",
+  customer_service_invite_url: "",
   doc_url: "",
   home_content: "",
   compact_home_enabled: false,
@@ -11184,6 +11203,7 @@ async function saveSettings() {
       site_subtitle: form.site_subtitle,
       api_base_url: form.api_base_url,
       contact_info: form.contact_info,
+      customer_service_invite_url: form.customer_service_invite_url,
       doc_url: form.doc_url,
       home_content: form.home_content,
       compact_home_enabled: form.compact_home_enabled,

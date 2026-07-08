@@ -297,6 +297,19 @@ const routes: RouteRecordRaw[] = [
     }
   },
   {
+    path: '/marketplace',
+    name: 'UserModelMarketplace',
+    component: () => import('@/views/user/ModelMarketplaceView.vue'),
+    props: { embedded: true },
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: false,
+      title: 'Model Marketplace',
+      titleKey: 'models.marketplaceTitle',
+      descriptionKey: 'models.marketplaceDescription'
+    }
+  },
+  {
     path: '/models',
     name: 'ModelMarketplace',
     component: () => import('@/views/user/ModelMarketplaceView.vue'),

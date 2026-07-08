@@ -59,6 +59,13 @@ vi.mock('@/components/home/PublicTopNav.vue', () => ({
   },
 }))
 
+vi.mock('@/components/layout/AppLayout.vue', () => ({
+  default: {
+    name: 'AppLayout',
+    template: '<div data-testid="app-layout"><slot /></div>',
+  },
+}))
+
 const observerInstances: MockIntersectionObserver[] = []
 
 class MockIntersectionObserver {
@@ -111,8 +118,9 @@ function makeModel(id: number) {
   } as const
 }
 
-function mountView() {
+function mountView(props?: Record<string, unknown>) {
   return mount(ModelMarketplaceView, {
+    props,
     global: {
       stubs: {
         PublicTopNav: true,
@@ -175,6 +183,14 @@ describe('ModelMarketplaceView lazy loading', () => {
       },
       expect.objectContaining({ signal: expect.any(AbortSignal) })
     )
+  })
+
+  it('hides the public top navigation when embedded in the console', async () => {
+    const wrapper = mountView({ embedded: true })
+    await flushPromises()
+
+    expect(wrapper.find('[data-testid="app-layout"]').exists()).toBe(true)
+    expect(wrapper.findComponent({ name: 'PublicTopNav' }).exists()).toBe(false)
   })
 
   it('shows the initial marketplace loading state before prerequisite requests finish', async () => {

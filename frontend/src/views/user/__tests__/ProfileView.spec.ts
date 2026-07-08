@@ -62,6 +62,7 @@ describe('ProfileView', () => {
     }
     fetchPublicSettingsMock.mockResolvedValue({
       contact_info: '',
+      customer_service_invite_url: '',
       balance_low_notify_enabled: false,
       balance_low_notify_threshold: 0,
       linuxdo_oauth_enabled: true,
@@ -95,5 +96,40 @@ describe('ProfileView', () => {
     expect(wrapper.get('[data-testid="profile-shell"]').html()).toContain('profile-info-card')
     expect(wrapper.get('[data-testid="profile-shell"]').html()).toContain('profile-password-form')
     expect(wrapper.get('[data-testid="profile-shell"]').html()).toContain('profile-totp-card')
+  })
+
+  it('links contact info to the configured customer service invite URL', async () => {
+    fetchPublicSettingsMock.mockResolvedValue({
+      contact_info: 'QQ: 123456789',
+      customer_service_invite_url: 'https://support.example.com/group',
+      balance_low_notify_enabled: false,
+      balance_low_notify_threshold: 0,
+      linuxdo_oauth_enabled: false,
+      wechat_oauth_enabled: false,
+      wechat_oauth_open_enabled: false,
+      wechat_oauth_mp_enabled: false,
+      oidc_oauth_enabled: false,
+      oidc_oauth_provider_name: 'OIDC'
+    })
+
+    const wrapper = mount(ProfileView, {
+      global: {
+        stubs: {
+          AppLayout: { template: '<div><slot /></div>' },
+          ProfileInfoCard: { template: '<div data-testid="profile-info-card" />' },
+          ProfileBalanceNotifyCard: { template: '<div data-testid="profile-balance-notify-card" />' },
+          ProfilePasswordForm: { template: '<div data-testid="profile-password-form" />' },
+          ProfileTotpCard: { template: '<div data-testid="profile-totp-card" />' },
+          Icon: true
+        }
+      }
+    })
+
+    await flushPromises()
+
+    const contactLink = wrapper.get('a[href="https://support.example.com/group"]')
+    expect(contactLink.text()).toBe('QQ: 123456789')
+    expect(contactLink.attributes('target')).toBe('_blank')
+    expect(contactLink.attributes('rel')).toBe('noopener noreferrer')
   })
 })

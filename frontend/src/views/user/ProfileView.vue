@@ -27,7 +27,21 @@
             <h3 class="text-base font-normal tracking-tight text-gray-900 dark:text-gray-100">
               {{ t('common.contactSupport') }}
             </h3>
-            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">{{ contactInfo }}</p>
+            <a
+              v-if="customerServiceInviteURL"
+              :href="customerServiceInviteURL"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="mt-1 inline-block text-sm text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
+            >
+              {{ contactInfo }}
+            </a>
+            <p
+              v-else
+              class="mt-1 text-sm text-gray-600 dark:text-gray-400"
+            >
+              {{ contactInfo }}
+            </p>
           </div>
         </div>
       </div>
@@ -69,6 +83,7 @@ const authStore = useAuthStore()
 const user = computed(() => authStore.user)
 
 const contactInfo = ref('')
+const customerServiceInviteURL = ref('')
 const balanceLowNotifyEnabled = ref(false)
 const systemDefaultThreshold = ref(0)
 const linuxdoOAuthEnabled = ref(false)
@@ -91,6 +106,7 @@ onMounted(async () => {
         return
       }
       contactInfo.value = settings.contact_info || ''
+      customerServiceInviteURL.value = settings.customer_service_invite_url?.trim() || ''
       balanceLowNotifyEnabled.value = settings.balance_low_notify_enabled ?? false
       systemDefaultThreshold.value = settings.balance_low_notify_threshold ?? 0
       linuxdoOAuthEnabled.value = settings.linuxdo_oauth_enabled ?? false

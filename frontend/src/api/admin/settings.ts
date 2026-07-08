@@ -471,6 +471,7 @@ export interface SystemSettings {
   site_subtitle: string;
   api_base_url: string;
   contact_info: string;
+  customer_service_invite_url: string;
   doc_url: string;
   home_content: string;
   compact_home_enabled: boolean;
@@ -808,6 +809,7 @@ export interface UpdateSettingsRequest {
   site_subtitle?: string;
   api_base_url?: string;
   contact_info?: string;
+  customer_service_invite_url?: string;
   doc_url?: string;
   home_content?: string;
   compact_home_enabled?: boolean;
