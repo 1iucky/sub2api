@@ -269,3 +269,36 @@ Added channel pricing display currency, usage-log currency snapshots, marketplac
 ### Next Steps
 
 - None - task complete
+
+
+## Session 9: Customer support contact and marketplace console
+
+**Date**: 2026-07-08
+**Task**: Customer support contact and marketplace console
+**Branch**: `custom/theme`
+
+### Summary
+
+Added configurable customer service invite links, moved contact support into the console header, linked existing contact displays, and embedded the model marketplace inside the console layout.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `eb96814e` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
