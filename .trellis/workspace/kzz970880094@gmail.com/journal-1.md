@@ -302,3 +302,36 @@ Added configurable customer service invite links, moved contact support into the
 ### Next Steps
 
 - None - task complete
+
+
+## Session 10: Optimize announcement drawer
+
+**Date**: 2026-07-09
+**Task**: Optimize announcement drawer
+**Branch**: `custom/theme`
+
+### Summary
+
+Added categorized announcement storage/API contracts, admin category management, and a right-side console announcement drawer with timeline tabs, orange styling, and expandable Markdown content.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `ff3f7ed9` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
