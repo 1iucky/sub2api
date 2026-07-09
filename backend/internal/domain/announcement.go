@@ -19,6 +19,12 @@ const (
 )
 
 const (
+	AnnouncementCategoryAnnouncement = "announcement"
+	AnnouncementCategoryModelUpdate  = "model_update"
+	AnnouncementCategoryChangelog    = "changelog"
+)
+
+const (
 	AnnouncementConditionTypeSubscription = "subscription"
 	AnnouncementConditionTypeBalance      = "balance"
 )
@@ -205,6 +211,7 @@ type Announcement struct {
 	Content    string
 	Status     string
 	NotifyMode string
+	Category   string
 	Targeting  AnnouncementTargeting
 	StartsAt   *time.Time
 	EndsAt     *time.Time

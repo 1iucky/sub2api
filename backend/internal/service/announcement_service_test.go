@@ -30,7 +30,6 @@ func (s *announcementRepoStub) Update(_ context.Context, a *Announcement) error 
 	return nil
 }
 
-
 func (*announcementRepoStub) Delete(context.Context, int64) error {
 	return nil
 }
@@ -59,6 +58,37 @@ func TestAnnouncementServiceCreateRejectsEqualStartEndTimes(t *testing.T) {
 	require.ErrorIs(t, err, ErrAnnouncementInvalidSchedule)
 }
 
+func TestAnnouncementServiceCreateDefaultsCategory(t *testing.T) {
+	repo := &announcementRepoStub{}
+	svc := NewAnnouncementService(repo, nil, nil, nil)
+
+	created, err := svc.Create(context.Background(), &CreateAnnouncementInput{
+		Title:      "公告",
+		Content:    "内容",
+		Status:     AnnouncementStatusActive,
+		NotifyMode: AnnouncementNotifyModeSilent,
+	})
+
+	require.NoError(t, err)
+	require.Equal(t, AnnouncementCategoryAnnouncement, created.Category)
+	require.Equal(t, AnnouncementCategoryAnnouncement, repo.item.Category)
+}
+
+func TestAnnouncementServiceCreateRejectsInvalidCategory(t *testing.T) {
+	repo := &announcementRepoStub{}
+	svc := NewAnnouncementService(repo, nil, nil, nil)
+
+	_, err := svc.Create(context.Background(), &CreateAnnouncementInput{
+		Title:      "公告",
+		Content:    "内容",
+		Status:     AnnouncementStatusActive,
+		NotifyMode: AnnouncementNotifyModeSilent,
+		Category:   "promotion",
+	})
+
+	require.ErrorIs(t, err, ErrAnnouncementInvalidCategory)
+}
+
 func TestAnnouncementServiceUpdateRejectsEqualStartEndTimes(t *testing.T) {
 	repo := &announcementRepoStub{
 		item: &Announcement{
@@ -67,6 +97,7 @@ func TestAnnouncementServiceUpdateRejectsEqualStartEndTimes(t *testing.T) {
 			Content:    "内容",
 			Status:     AnnouncementStatusActive,
 			NotifyMode: AnnouncementNotifyModePopup,
+			Category:   AnnouncementCategoryAnnouncement,
 		},
 	}
 	svc := NewAnnouncementService(repo, nil, nil, nil)
@@ -79,4 +110,27 @@ func TestAnnouncementServiceUpdateRejectsEqualStartEndTimes(t *testing.T) {
 		EndsAt:   &endsAt,
 	})
 	require.ErrorIs(t, err, ErrAnnouncementInvalidSchedule)
+}
+
+func TestAnnouncementServiceUpdateChangesCategory(t *testing.T) {
+	repo := &announcementRepoStub{
+		item: &Announcement{
+			ID:         1,
+			Title:      "公告",
+			Content:    "内容",
+			Status:     AnnouncementStatusActive,
+			NotifyMode: AnnouncementNotifyModeSilent,
+			Category:   AnnouncementCategoryAnnouncement,
+		},
+	}
+	svc := NewAnnouncementService(repo, nil, nil, nil)
+	category := AnnouncementCategoryModelUpdate
+
+	updated, err := svc.Update(context.Background(), 1, &UpdateAnnouncementInput{
+		Category: &category,
+	})
+
+	require.NoError(t, err)
+	require.Equal(t, AnnouncementCategoryModelUpdate, updated.Category)
+	require.Equal(t, AnnouncementCategoryModelUpdate, repo.item.Category)
 }

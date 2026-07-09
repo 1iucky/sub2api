@@ -106,7 +106,12 @@ export default {
     total: 'announcements',
     emptyDescription: 'There are no system announcements at this time',
     readStatus: 'You have read this announcement',
-    markReadHint: 'Click "Mark as read" to mark this announcement'
+    markReadHint: 'Click "Mark as read" to mark this announcement',
+    categories: {
+      announcement: 'Announcement',
+      modelUpdate: 'Model Updates',
+      changelog: 'Changelog'
+    }
   },
 
   // User Subscriptions Page

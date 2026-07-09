@@ -1,14 +1,12 @@
 <template>
   <div>
-    <!-- 铃铛按钮 -->
     <button
-      @click="openModal"
+      @click="openDrawer"
       class="relative flex h-9 w-9 items-center justify-center rounded-lg text-gray-600 transition-all hover:bg-gray-100 hover:scale-105 dark:text-gray-400 dark:hover:bg-dark-800"
       :class="{ 'text-blue-600 dark:text-blue-400': unreadCount > 0 }"
       :aria-label="t('announcements.title')"
     >
       <Icon name="bell" size="md" />
-      <!-- 未读红点 -->
       <span
         v-if="unreadCount > 0"
         class="absolute right-1 top-1 flex h-2 w-2"
@@ -18,293 +16,169 @@
       </span>
     </button>
 
-    <!-- 公告列表 Modal -->
     <Teleport to="body">
-      <Transition name="modal-fade">
+      <Transition name="drawer">
         <div
-          v-if="isModalOpen"
-          class="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-gradient-to-br from-black/70 via-black/60 to-black/70 p-4 pt-[8vh] backdrop-blur-md"
-          @click="closeModal"
+          v-if="isDrawerOpen"
+          class="fixed inset-0 z-[100] bg-black/45 backdrop-blur-sm"
+          @click="closeDrawer"
         >
-          <div
-            class="w-full max-w-[620px] overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 dark:bg-dark-800 dark:ring-white/10"
+          <aside
+            data-testid="announcement-drawer"
+            class="fixed right-0 top-0 flex h-full w-full max-w-[520px] flex-col border-l border-gray-200 bg-white shadow-2xl dark:border-dark-700 dark:bg-dark-900 sm:w-[520px]"
             @click.stop
           >
-            <!-- Header with Gradient -->
-            <div class="relative overflow-hidden border-b border-gray-100/80 bg-gradient-to-br from-blue-50/50 to-indigo-50/30 px-6 py-5 dark:border-dark-700/50 dark:from-blue-900/10 dark:to-indigo-900/5">
-              <div class="relative z-10 flex items-start justify-between">
-                <div>
+            <header class="border-b border-gray-200 px-5 py-4 dark:border-dark-700">
+              <div class="flex items-start justify-between gap-4">
+                <div class="min-w-0">
                   <div class="flex items-center gap-2">
-                    <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/30">
+                    <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-gray-100 text-gray-700 dark:bg-dark-800 dark:text-gray-200">
                       <Icon name="bell" size="sm" />
+                    </span>
+                    <div>
+                      <h2 class="text-base font-semibold text-gray-900 dark:text-white">
+                        {{ t('announcements.title') }}
+                      </h2>
+                      <p class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+                        <span v-if="unreadCount > 0">{{ unreadCount }} {{ t('announcements.unread') }}</span>
+                        <span v-else>{{ t('announcements.emptyDescription') }}</span>
+                      </p>
                     </div>
-                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-                      {{ t('announcements.title') }}
-                    </h2>
                   </div>
-                  <p v-if="unreadCount > 0" class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                    <span class="font-medium text-blue-600 dark:text-blue-400">{{ unreadCount }}</span>
-                    {{ t('announcements.unread') }}
-                  </p>
                 </div>
+
                 <div class="flex items-center gap-2">
                   <button
                     v-if="unreadCount > 0"
                     @click="markAllAsRead"
                     :disabled="loading"
-                    class="rounded-lg bg-blue-600 px-4 py-2 text-xs font-medium text-white shadow-lg shadow-blue-500/30 transition-all hover:bg-blue-700 hover:shadow-xl disabled:opacity-50 dark:bg-blue-500 dark:hover:bg-blue-600"
+                    class="rounded-lg border border-gray-200 px-3 py-2 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-dark-600 dark:text-gray-200 dark:hover:bg-dark-800"
                   >
                     {{ t('announcements.markAllRead') }}
                   </button>
                   <button
-                    @click="closeModal"
-                    class="flex h-9 w-9 items-center justify-center rounded-lg bg-white/50 text-gray-500 backdrop-blur-sm transition-all hover:bg-white hover:text-gray-700 dark:bg-dark-700/50 dark:text-gray-400 dark:hover:bg-dark-700 dark:hover:text-gray-300"
+                    @click="closeDrawer"
+                    class="flex h-9 w-9 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-dark-800 dark:hover:text-gray-200"
                     :aria-label="t('common.close')"
                   >
                     <Icon name="x" size="sm" />
                   </button>
                 </div>
               </div>
-              <!-- Decorative gradient -->
-              <div class="absolute right-0 top-0 h-full w-48 bg-gradient-to-l from-indigo-100/20 to-transparent dark:from-indigo-900/10"></div>
-            </div>
 
-            <!-- Body -->
-            <div class="max-h-[65vh] overflow-y-auto">
-              <!-- Loading -->
-              <div v-if="loading" class="flex items-center justify-center py-16">
-                <div class="relative">
-                  <div class="h-12 w-12 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600 dark:border-dark-600 dark:border-t-blue-400"></div>
-                  <div class="absolute inset-0 h-12 w-12 animate-pulse rounded-full border-4 border-blue-400/30"></div>
-                </div>
-              </div>
-
-              <!-- Announcements List -->
-              <div v-else-if="announcements.length > 0">
-                <div
-                  v-for="item in announcements"
-                  :key="item.id"
-                  class="group relative flex items-center gap-4 border-b border-gray-100 px-6 py-4 transition-all hover:bg-gray-50 dark:border-dark-700 dark:hover:bg-dark-700/30"
-                  :class="{ 'bg-blue-50/30 dark:bg-blue-900/5': !item.read_at }"
-                  style="min-height: 72px"
-                  @click="openDetail(item)"
-                >
-                  <!-- Status Indicator -->
-                  <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center">
-                    <div
-                      v-if="!item.read_at"
-                      class="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/30"
-                    >
-                      <!-- Pulse ring -->
-                      <span class="absolute inline-flex h-full w-full animate-ping rounded-xl bg-blue-400 opacity-75"></span>
-                      <!-- Icon -->
-                      <svg class="relative z-10 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                    <div
-                      v-else
-                      class="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 text-gray-400 dark:bg-dark-700 dark:text-gray-600"
-                    >
-                      <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                  </div>
-
-                  <!-- Content -->
-                  <div class="flex min-w-0 flex-1 items-center justify-between gap-4">
-                    <div class="min-w-0 flex-1">
-                      <h3 class="truncate text-sm font-medium text-gray-900 dark:text-white">
-                        {{ item.title }}
-                      </h3>
-                      <div class="mt-1 flex items-center gap-2">
-                        <time class="text-xs text-gray-500 dark:text-gray-400">
-                          {{ formatRelativeTime(item.created_at) }}
-                        </time>
-                        <span
-                          v-if="!item.read_at"
-                          class="inline-flex items-center gap-1 rounded-md bg-blue-100 px-1.5 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-900/40 dark:text-blue-300"
-                        >
-                          <span class="relative flex h-1.5 w-1.5">
-                            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-500 opacity-75"></span>
-                            <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-blue-600"></span>
-                          </span>
-                          {{ t('announcements.unread') }}
-                        </span>
-                      </div>
-                    </div>
-
-                    <!-- Arrow -->
-                    <div class="flex-shrink-0">
-                      <svg
-                        class="h-5 w-5 text-gray-400 transition-transform group-hover:translate-x-1 dark:text-gray-600"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        stroke-width="2"
-                      >
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  </div>
-
-                  <!-- Unread indicator bar -->
-                  <div
-                    v-if="!item.read_at"
-                    class="absolute left-0 top-0 h-full w-1 bg-gradient-to-b from-blue-500 to-indigo-600"
-                  ></div>
-                </div>
-              </div>
-
-              <!-- Empty State -->
-              <div v-else class="flex flex-col items-center justify-center py-16">
-                <div class="relative mb-4">
-                  <div class="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-dark-700 dark:to-dark-600">
-                    <Icon name="inbox" size="xl" class="text-gray-400 dark:text-gray-500" />
-                  </div>
-                  <div class="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-green-500 text-white">
-                    <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
-                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                    </svg>
-                  </div>
-                </div>
-                <p class="text-sm font-medium text-gray-900 dark:text-white">{{ t('announcements.empty') }}</p>
-                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ t('announcements.emptyDescription') }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </Transition>
-    </Teleport>
-
-    <!-- 公告详情 Modal -->
-    <Teleport to="body">
-      <Transition name="modal-fade">
-        <div
-          v-if="detailModalOpen && selectedAnnouncement"
-          class="fixed inset-0 z-[110] flex items-start justify-center overflow-y-auto bg-gradient-to-br from-black/70 via-black/60 to-black/70 p-4 pt-[6vh] backdrop-blur-md"
-          @click="closeDetail"
-        >
-          <div
-            class="w-full max-w-[780px] overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 dark:bg-dark-800 dark:ring-white/10"
-            @click.stop
-          >
-            <!-- Header with Decorative Elements -->
-            <div class="relative overflow-hidden border-b border-gray-100 bg-gradient-to-br from-blue-50/80 via-indigo-50/50 to-purple-50/30 px-8 py-6 dark:border-dark-700 dark:from-blue-900/20 dark:via-indigo-900/10 dark:to-purple-900/5">
-              <!-- Decorative background elements -->
-              <div class="absolute right-0 top-0 h-full w-64 bg-gradient-to-l from-indigo-100/30 to-transparent dark:from-indigo-900/20"></div>
-              <div class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-blue-400/20 to-indigo-500/20 blur-3xl"></div>
-              <div class="absolute -left-4 -bottom-4 h-24 w-24 rounded-full bg-gradient-to-tr from-purple-400/20 to-pink-500/20 blur-2xl"></div>
-
-              <div class="relative z-10 flex items-start justify-between gap-4">
-                <div class="flex-1 min-w-0">
-                  <!-- Icon and Category -->
-                  <div class="mb-3 flex items-center gap-2">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/30">
-                      <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                    <div class="flex items-center gap-2">
-                      <span class="rounded-lg bg-blue-100 px-2.5 py-1 text-xs font-medium text-blue-700 dark:bg-blue-900/40 dark:text-blue-300">
-                        {{ t('announcements.title') }}
-                      </span>
-                      <span
-                        v-if="!selectedAnnouncement.read_at"
-                        class="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 px-2.5 py-1 text-xs font-medium text-white shadow-lg shadow-blue-500/30"
-                      >
-                        <span class="relative flex h-2 w-2">
-                          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75"></span>
-                          <span class="relative inline-flex h-2 w-2 rounded-full bg-white"></span>
-                        </span>
-                        {{ t('announcements.unread') }}
-                      </span>
-                    </div>
-                  </div>
-
-                  <!-- Title -->
-                  <h2 class="mb-3 text-2xl font-bold leading-tight text-gray-900 dark:text-white">
-                    {{ selectedAnnouncement.title }}
-                  </h2>
-
-                  <!-- Meta Info -->
-                  <div class="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
-                    <div class="flex items-center gap-1.5">
-                      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      <time>{{ formatRelativeWithDateTime(selectedAnnouncement.created_at) }}</time>
-                    </div>
-                    <div class="flex items-center gap-1.5">
-                      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                      </svg>
-                      <span>{{ selectedAnnouncement.read_at ? t('announcements.read') : t('announcements.unread') }}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Close button -->
+              <div class="mt-4 grid grid-cols-3 gap-2">
                 <button
-                  @click="closeDetail"
-                  class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-white/50 text-gray-500 backdrop-blur-sm transition-all hover:bg-white hover:text-gray-700 hover:shadow-lg dark:bg-dark-700/50 dark:text-gray-400 dark:hover:bg-dark-700 dark:hover:text-gray-300"
-                  :aria-label="t('common.close')"
+                  v-for="category in categoryDefinitions"
+                  :key="category.value"
+                  :data-testid="`announcement-tab-${category.value}`"
+                  @click="activeCategory = category.value"
+                  class="flex min-h-[40px] items-center justify-center gap-1.5 rounded-lg border px-2 py-2 text-xs font-medium transition-colors"
+                  :class="activeCategory === category.value
+                    ? 'border-orange-500 bg-orange-50 text-orange-700 dark:border-orange-500/70 dark:bg-orange-500/10 dark:text-orange-300'
+                    : 'border-gray-200 text-gray-600 hover:border-orange-300 hover:bg-orange-50/40 hover:text-orange-700 dark:border-dark-700 dark:text-gray-300 dark:hover:border-orange-500/40 dark:hover:bg-orange-500/5 dark:hover:text-orange-300'"
                 >
-                  <Icon name="x" size="md" />
+                  <span class="truncate">{{ t(category.labelKey) }}</span>
+                  <span
+                    class="flex min-w-[20px] items-center justify-center rounded-full px-1.5 py-0.5 text-[11px]"
+                    :class="activeCategory === category.value
+                      ? 'bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-200'
+                      : 'bg-gray-100 text-gray-600 dark:bg-dark-700 dark:text-gray-300'"
+                  >
+                    {{ categoryCounts[category.value] }}
+                  </span>
                 </button>
               </div>
-            </div>
+            </header>
 
-            <!-- Body with Enhanced Markdown -->
-            <div class="max-h-[60vh] overflow-y-auto bg-white px-8 py-8 dark:bg-dark-800">
-              <!-- Content with decorative border -->
-              <div class="relative">
-                <!-- Decorative left border -->
-                <div class="absolute left-0 top-0 bottom-0 w-1 rounded-full bg-gradient-to-b from-blue-500 via-indigo-500 to-purple-500"></div>
+            <div class="flex-1 overflow-y-auto px-5 py-5">
+              <div v-if="loading" class="flex h-full min-h-[240px] items-center justify-center">
+                <div class="h-10 w-10 animate-spin rounded-full border-2 border-gray-200 border-t-blue-600 dark:border-dark-700 dark:border-t-blue-400"></div>
+              </div>
 
-                <div class="pl-6">
-                  <div
-                    class="markdown-body prose prose-sm max-w-none dark:prose-invert"
-                    v-html="renderMarkdown(selectedAnnouncement.content)"
-                  ></div>
+              <div
+                v-else-if="selectedCategoryAnnouncements.length > 0"
+                data-testid="announcement-timeline"
+                class="relative space-y-0"
+              >
+                <article
+                  v-for="item in selectedCategoryAnnouncements"
+                  :key="item.id"
+                  class="group relative border-l border-gray-200 pb-8 pl-7 last:border-l-transparent last:pb-0 dark:border-dark-700"
+                >
+                  <button
+                    class="absolute -left-[7px] top-[5px] flex h-3.5 w-3.5 rounded-full border-2 transition-colors"
+                    :class="item.read_at
+                      ? 'border-orange-500 bg-orange-500'
+                      : 'border-orange-500 bg-orange-500 shadow-[0_0_0_4px_rgba(249,115,22,0.18)]'"
+                    :aria-label="item.read_at ? t('announcements.read') : t('announcements.unread')"
+                    @click="markAsRead(item)"
+                  ></button>
+
+                  <div class="mb-2 flex min-h-[24px] items-center gap-2">
+                    <time class="font-mono text-xs text-gray-500 dark:text-gray-500">
+                      {{ formatRelativeWithDateTime(item.created_at) }}
+                    </time>
+                  </div>
+
+                  <button
+                    class="-ml-3 w-[calc(100%+0.75rem)] rounded-lg px-3 py-2 text-left transition-colors hover:bg-gray-50 dark:hover:bg-dark-800/70"
+                    :class="{ 'bg-orange-50/40 dark:bg-orange-500/5': !item.read_at }"
+                    @click="markAsRead(item)"
+                  >
+                    <div class="flex items-start justify-between gap-3">
+                      <div class="min-w-0">
+                        <h3 class="break-words text-base font-bold leading-7 text-gray-900 dark:text-white">
+                          {{ item.title }}
+                        </h3>
+                      </div>
+                      <span
+                        class="flex-shrink-0 rounded-md px-2 py-1 text-[11px] font-medium"
+                        :class="item.read_at
+                          ? 'bg-gray-100 text-gray-500 dark:bg-dark-800 dark:text-gray-400'
+                          : 'bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-300'"
+                      >
+                        {{ item.read_at ? t('announcements.read') : t('announcements.unread') }}
+                      </span>
+                    </div>
+
+                    <div class="relative mt-2">
+                      <div
+                        :data-testid="`announcement-content-${item.id}`"
+                        class="markdown-body overflow-hidden text-[15px] leading-7 text-gray-600 transition-[max-height] duration-300 ease-out dark:text-gray-300"
+                        :class="shouldCollapseAnnouncement(item) && !isAnnouncementExpanded(item.id) ? 'max-h-40' : 'max-h-none'"
+                        v-html="renderMarkdown(item.content)"
+                      ></div>
+                      <div
+                        v-if="shouldCollapseAnnouncement(item) && !isAnnouncementExpanded(item.id)"
+                        class="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-white via-white/90 to-transparent dark:from-dark-900 dark:via-dark-900/90"
+                      ></div>
+                    </div>
+                  </button>
+
+                  <button
+                    v-if="shouldCollapseAnnouncement(item)"
+                    :data-testid="`announcement-toggle-${item.id}`"
+                    class="ml-0 mt-2 inline-flex items-center rounded-md px-2 py-1 text-xs font-medium text-orange-600 transition-colors hover:bg-orange-50 hover:text-orange-700 dark:text-orange-300 dark:hover:bg-orange-500/10"
+                    @click.stop="toggleAnnouncementExpanded(item.id)"
+                  >
+                    {{ isAnnouncementExpanded(item.id) ? t('common.collapse') : t('common.expand') }}
+                  </button>
+                </article>
+              </div>
+
+              <div v-else class="flex h-full min-h-[260px] flex-col items-center justify-center text-center">
+                <div class="flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-gray-400 dark:bg-dark-800 dark:text-gray-500">
+                  <Icon name="inbox" size="lg" />
                 </div>
+                <p class="mt-4 text-sm font-medium text-gray-900 dark:text-white">
+                  {{ t('announcements.empty') }}
+                </p>
+                <p class="mt-1 max-w-[280px] text-xs text-gray-500 dark:text-gray-400">
+                  {{ t('announcements.emptyDescription') }}
+                </p>
               </div>
             </div>
-
-            <!-- Footer with Actions -->
-            <div class="border-t border-gray-100 bg-gray-50/50 px-8 py-5 dark:border-dark-700 dark:bg-dark-900/30">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-                  <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span>{{ selectedAnnouncement.read_at ? t('announcements.readStatus') : t('announcements.markReadHint') }}</span>
-                </div>
-                <div class="flex items-center gap-3">
-                  <button
-                    @click="closeDetail"
-                    class="rounded-xl border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition-all hover:bg-gray-50 hover:shadow dark:border-dark-600 dark:bg-dark-700 dark:text-gray-300 dark:hover:bg-dark-600"
-                  >
-                    {{ t('common.close') }}
-                  </button>
-                  <button
-                    v-if="!selectedAnnouncement.read_at"
-                    @click="markAsReadAndClose(selectedAnnouncement.id)"
-                    class="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2.5 text-sm font-medium text-white shadow-lg shadow-blue-500/30 transition-all hover:shadow-xl hover:scale-105"
-                  >
-                    <span class="flex items-center gap-2">
-                      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
-                      {{ t('announcements.markRead') }}
-                    </span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+          </aside>
         </div>
       </Transition>
     </Teleport>
@@ -319,8 +193,8 @@ import { marked } from 'marked'
 import DOMPurify from 'dompurify'
 import { useAppStore } from '@/stores/app'
 import { useAnnouncementStore } from '@/stores/announcements'
-import { formatRelativeTime, formatRelativeWithDateTime } from '@/utils/format'
-import type { UserAnnouncement } from '@/types'
+import { formatRelativeWithDateTime } from '@/utils/format'
+import type { AnnouncementCategory, UserAnnouncement } from '@/types'
 import Icon from '@/components/icons/Icon.vue'
 import '@/styles/announcement-markdown.css'
 
@@ -328,61 +202,97 @@ const { t } = useI18n()
 const appStore = useAppStore()
 const announcementStore = useAnnouncementStore()
 
-// Configure marked
 marked.setOptions({
   breaks: true,
   gfm: true,
 })
 
-// Use store state (storeToRefs for reactivity)
 const { announcements, loading } = storeToRefs(announcementStore)
 const unreadCount = computed(() => announcementStore.unreadCount)
 
-// Local modal state
-const isModalOpen = ref(false)
-const detailModalOpen = ref(false)
-const selectedAnnouncement = ref<UserAnnouncement | null>(null)
+const categoryDefinitions: Array<{ value: AnnouncementCategory; labelKey: string }> = [
+  { value: 'announcement', labelKey: 'announcements.categories.announcement' },
+  { value: 'model_update', labelKey: 'announcements.categories.modelUpdate' },
+  { value: 'changelog', labelKey: 'announcements.categories.changelog' },
+]
 
-// Methods
+const isDrawerOpen = ref(false)
+const activeCategory = ref<AnnouncementCategory>('announcement')
+const expandedAnnouncementIds = ref<Set<number>>(new Set())
+const COLLAPSIBLE_CONTENT_LENGTH = 360
+
+const categoryCounts = computed<Record<AnnouncementCategory, number>>(() => {
+  return categoryDefinitions.reduce((counts, category) => {
+    counts[category.value] = announcements.value.filter((item) => normalizeCategory(item.category) === category.value).length
+    return counts
+  }, {
+    announcement: 0,
+    model_update: 0,
+    changelog: 0,
+  } as Record<AnnouncementCategory, number>)
+})
+
+const selectedCategoryAnnouncements = computed(() => {
+  return announcements.value
+    .filter((item) => normalizeCategory(item.category) === activeCategory.value)
+    .slice()
+    .sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at))
+})
+
+function normalizeCategory(category?: string): AnnouncementCategory {
+  if (category === 'model_update' || category === 'changelog') {
+    return category
+  }
+  return 'announcement'
+}
+
+function selectDefaultCategory() {
+  const firstCategoryWithData = categoryDefinitions.find((category) => categoryCounts.value[category.value] > 0)
+  activeCategory.value = firstCategoryWithData?.value ?? 'announcement'
+}
+
 function renderMarkdown(content: string): string {
   if (!content) return ''
   const html = marked.parse(content) as string
   return DOMPurify.sanitize(html)
 }
 
-function openModal() {
-  isModalOpen.value = true
+function shouldCollapseAnnouncement(announcement: UserAnnouncement): boolean {
+  return announcement.content.trim().length > COLLAPSIBLE_CONTENT_LENGTH
 }
 
-function closeModal() {
-  isModalOpen.value = false
+function isAnnouncementExpanded(id: number): boolean {
+  return expandedAnnouncementIds.value.has(id)
 }
 
-function openDetail(announcement: UserAnnouncement) {
-  selectedAnnouncement.value = announcement
-  detailModalOpen.value = true
-  if (!announcement.read_at) {
-    markAsRead(announcement.id)
+function toggleAnnouncementExpanded(id: number) {
+  const next = new Set(expandedAnnouncementIds.value)
+  if (next.has(id)) {
+    next.delete(id)
+  } else {
+    next.add(id)
   }
+  expandedAnnouncementIds.value = next
 }
 
-function closeDetail() {
-  detailModalOpen.value = false
-  selectedAnnouncement.value = null
+function openDrawer() {
+  selectDefaultCategory()
+  isDrawerOpen.value = true
 }
 
-async function markAsRead(id: number) {
+function closeDrawer() {
+  isDrawerOpen.value = false
+  expandedAnnouncementIds.value = new Set()
+}
+
+async function markAsRead(announcement: UserAnnouncement) {
+  if (announcement.read_at) return
+
   try {
-    await announcementStore.markAsRead(id)
+    await announcementStore.markAsRead(announcement.id)
   } catch (err: any) {
     appStore.showError(err?.message || t('common.unknownError'))
   }
-}
-
-async function markAsReadAndClose(id: number) {
-  await markAsRead(id)
-  appStore.showSuccess(t('announcements.markedAsRead'))
-  closeDetail()
 }
 
 async function markAllAsRead() {
@@ -395,12 +305,8 @@ async function markAllAsRead() {
 }
 
 function handleEscape(e: KeyboardEvent) {
-  if (e.key === 'Escape') {
-    if (detailModalOpen.value) {
-      closeDetail()
-    } else if (isModalOpen.value) {
-      closeModal()
-    }
+  if (e.key === 'Escape' && isDrawerOpen.value) {
+    closeDrawer()
   }
 }
 
@@ -414,39 +320,34 @@ onBeforeUnmount(() => {
 })
 
 watch(
-  [isModalOpen, detailModalOpen, () => announcementStore.currentPopup],
-  ([modal, detail, popup]) => {
-    document.body.style.overflow = (modal || detail || popup) ? 'hidden' : ''
+  [isDrawerOpen, () => announcementStore.currentPopup],
+  ([drawer, popup]) => {
+    document.body.style.overflow = (drawer || popup) ? 'hidden' : ''
   }
 )
 </script>
 
 <style scoped>
-/* Modal Animations */
-.modal-fade-enter-active {
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+.drawer-enter-active,
+.drawer-leave-active {
+  transition: opacity 0.36s ease;
 }
 
-.modal-fade-leave-active {
-  transition: all 0.2s cubic-bezier(0.4, 0, 1, 1);
+.drawer-enter-active aside,
+.drawer-leave-active aside {
+  transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.modal-fade-enter-from,
-.modal-fade-leave-to {
+.drawer-enter-from,
+.drawer-leave-to {
   opacity: 0;
 }
 
-.modal-fade-enter-from > div {
-  transform: scale(0.94) translateY(-12px);
-  opacity: 0;
+.drawer-enter-from aside,
+.drawer-leave-to aside {
+  transform: translateX(100%);
 }
 
-.modal-fade-leave-to > div {
-  transform: scale(0.96) translateY(-8px);
-  opacity: 0;
-}
-
-/* Scrollbar Styling */
 .overflow-y-auto::-webkit-scrollbar {
   width: 8px;
 }
@@ -456,19 +357,41 @@ watch(
 }
 
 .overflow-y-auto::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #cbd5e1, #94a3b8);
+  background: #cbd5e1;
   border-radius: 4px;
 }
 
 .dark .overflow-y-auto::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #4b5563, #374151);
+  background: #374151;
+}
+</style>
+<style>
+.markdown-body {
+  @apply leading-relaxed;
 }
 
-.overflow-y-auto::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, #94a3b8, #64748b);
+.markdown-body p {
+  @apply mb-3 last:mb-0;
 }
 
-.dark .overflow-y-auto::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, #6b7280, #4b5563);
+.markdown-body a {
+  @apply font-medium text-blue-600 underline decoration-blue-600/30 underline-offset-2 dark:text-blue-400;
+}
+
+.markdown-body ul,
+.markdown-body ol {
+  @apply mb-3 ml-5 space-y-1;
+}
+
+.markdown-body ul {
+  @apply list-disc;
+}
+
+.markdown-body ol {
+  @apply list-decimal;
+}
+
+.markdown-body code {
+  @apply rounded bg-gray-100 px-1 py-0.5 text-[0.9em] dark:bg-dark-800;
 }
 </style>

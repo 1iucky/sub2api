@@ -37,6 +37,7 @@ type CreateAnnouncementInput struct {
 	Content    string
 	Status     string
 	NotifyMode string
+	Category   string
 	Targeting  AnnouncementTargeting
 	StartsAt   *time.Time
 	EndsAt     *time.Time
@@ -48,6 +49,7 @@ type UpdateAnnouncementInput struct {
 	Content    *string
 	Status     *string
 	NotifyMode *string
+	Category   *string
 	Targeting  *AnnouncementTargeting
 	StartsAt   **time.Time
 	EndsAt     **time.Time
@@ -103,6 +105,14 @@ func (s *AnnouncementService) Create(ctx context.Context, input *CreateAnnouncem
 		return nil, ErrAnnouncementInvalidNotifyMode
 	}
 
+	category := strings.TrimSpace(input.Category)
+	if category == "" {
+		category = AnnouncementCategoryAnnouncement
+	}
+	if !isValidAnnouncementCategory(category) {
+		return nil, ErrAnnouncementInvalidCategory
+	}
+
 	if input.StartsAt != nil && input.EndsAt != nil {
 		if !input.StartsAt.Before(*input.EndsAt) {
 			return nil, ErrAnnouncementInvalidSchedule
@@ -114,6 +124,7 @@ func (s *AnnouncementService) Create(ctx context.Context, input *CreateAnnouncem
 		Content:    content,
 		Status:     status,
 		NotifyMode: notifyMode,
+		Category:   category,
 		Targeting:  targeting,
 		StartsAt:   input.StartsAt,
 		EndsAt:     input.EndsAt,
@@ -167,6 +178,14 @@ func (s *AnnouncementService) Update(ctx context.Context, id int64, input *Updat
 			return nil, ErrAnnouncementInvalidNotifyMode
 		}
 		a.NotifyMode = notifyMode
+	}
+
+	if input.Category != nil {
+		category := strings.TrimSpace(*input.Category)
+		if !isValidAnnouncementCategory(category) {
+			return nil, ErrAnnouncementInvalidCategory
+		}
+		a.Category = category
 	}
 
 	if input.Targeting != nil {
@@ -399,6 +418,15 @@ func isValidAnnouncementStatus(status string) bool {
 func isValidAnnouncementNotifyMode(mode string) bool {
 	switch mode {
 	case AnnouncementNotifyModeSilent, AnnouncementNotifyModePopup:
+		return true
+	default:
+		return false
+	}
+}
+
+func isValidAnnouncementCategory(category string) bool {
+	switch category {
+	case AnnouncementCategoryAnnouncement, AnnouncementCategoryModelUpdate, AnnouncementCategoryChangelog:
 		return true
 	default:
 		return false

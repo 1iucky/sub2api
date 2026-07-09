@@ -326,6 +326,7 @@ export interface UpdateSubscriptionRequest {
 
 export type AnnouncementStatus = 'draft' | 'active' | 'archived'
 export type AnnouncementNotifyMode = 'silent' | 'popup'
+export type AnnouncementCategory = 'announcement' | 'model_update' | 'changelog'
 
 export type AnnouncementConditionType = 'subscription' | 'balance'
 
@@ -352,6 +353,7 @@ export interface Announcement {
   content: string
   status: AnnouncementStatus
   notify_mode: AnnouncementNotifyMode
+  category: AnnouncementCategory
   targeting: AnnouncementTargeting
   starts_at?: string
   ends_at?: string
@@ -366,6 +368,7 @@ export interface UserAnnouncement {
   title: string
   content: string
   notify_mode: AnnouncementNotifyMode
+  category: AnnouncementCategory
   starts_at?: string
   ends_at?: string
   read_at?: string
@@ -378,6 +381,7 @@ export interface CreateAnnouncementRequest {
   content: string
   status?: AnnouncementStatus
   notify_mode?: AnnouncementNotifyMode
+  category?: AnnouncementCategory
   targeting: AnnouncementTargeting
   starts_at?: number
   ends_at?: number
@@ -388,6 +392,7 @@ export interface UpdateAnnouncementRequest {
   content?: string
   status?: AnnouncementStatus
   notify_mode?: AnnouncementNotifyMode
+  category?: AnnouncementCategory
   targeting?: AnnouncementTargeting
   starts_at?: number
   ends_at?: number

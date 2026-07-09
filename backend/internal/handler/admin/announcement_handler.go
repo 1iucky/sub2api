@@ -31,6 +31,7 @@ type CreateAnnouncementRequest struct {
 	Content    string                        `json:"content" binding:"required"`
 	Status     string                        `json:"status" binding:"omitempty,oneof=draft active archived"`
 	NotifyMode string                        `json:"notify_mode" binding:"omitempty,oneof=silent popup"`
+	Category   string                        `json:"category" binding:"omitempty,oneof=announcement model_update changelog"`
 	Targeting  service.AnnouncementTargeting `json:"targeting"`
 	StartsAt   *int64                        `json:"starts_at"` // Unix seconds, 0/empty = immediate
 	EndsAt     *int64                        `json:"ends_at"`   // Unix seconds, 0/empty = never
@@ -41,6 +42,7 @@ type UpdateAnnouncementRequest struct {
 	Content    *string                        `json:"content"`
 	Status     *string                        `json:"status" binding:"omitempty,oneof=draft active archived"`
 	NotifyMode *string                        `json:"notify_mode" binding:"omitempty,oneof=silent popup"`
+	Category   *string                        `json:"category" binding:"omitempty,oneof=announcement model_update changelog"`
 	Targeting  *service.AnnouncementTargeting `json:"targeting"`
 	StartsAt   *int64                         `json:"starts_at"` // Unix seconds, 0 = clear
 	EndsAt     *int64                         `json:"ends_at"`   // Unix seconds, 0 = clear
@@ -120,6 +122,7 @@ func (h *AnnouncementHandler) Create(c *gin.Context) {
 		Content:    req.Content,
 		Status:     req.Status,
 		NotifyMode: req.NotifyMode,
+		Category:   req.Category,
 		Targeting:  req.Targeting,
 		ActorID:    &subject.UserID,
 	}
@@ -168,6 +171,7 @@ func (h *AnnouncementHandler) Update(c *gin.Context) {
 		Content:    req.Content,
 		Status:     req.Status,
 		NotifyMode: req.NotifyMode,
+		Category:   req.Category,
 		Targeting:  req.Targeting,
 		ActorID:    &subject.UserID,
 	}

@@ -380,6 +380,7 @@ export default {
       allStatus: '全部状态',
       columns: {
         title: '标题',
+        category: '分类',
         status: '状态',
         notifyMode: '通知方式',
         targeting: '展示条件',
@@ -400,6 +401,7 @@ export default {
         title: '标题',
         content: '内容（支持 Markdown）',
         status: '状态',
+        category: '分类',
         notifyMode: '通知方式',
         notifyModeHint: '弹窗模式会自动弹出通知给用户',
         startsAt: '开始时间',

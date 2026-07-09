@@ -104,7 +104,12 @@ export default {
     total: '条公告',
     emptyDescription: '暂时没有任何系统公告',
     readStatus: '您已阅读此公告',
-    markReadHint: '点击"已读"标记此公告'
+    markReadHint: '点击"已读"标记此公告',
+    categories: {
+      announcement: '公告',
+      modelUpdate: '模型动态',
+      changelog: '更新日志'
+    }
   },
 
   // User Subscriptions Page
