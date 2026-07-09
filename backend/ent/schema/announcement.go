@@ -45,6 +45,10 @@ func (Announcement) Fields() []ent.Field {
 			MaxLen(20).
 			Default(domain.AnnouncementNotifyModeSilent).
 			Comment("通知模式: silent(仅铃铛), popup(弹窗提醒)"),
+		field.String("category").
+			MaxLen(32).
+			Default(domain.AnnouncementCategoryAnnouncement).
+			Comment("公告分类: announcement, model_update, changelog"),
 		field.JSON("targeting", domain.AnnouncementTargeting{}).
 			Optional().
 			SchemaType(map[string]string{dialect.Postgres: "jsonb"}).
@@ -87,6 +91,7 @@ func (Announcement) Edges() []ent.Edge {
 func (Announcement) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("status"),
+		index.Fields("category"),
 		index.Fields("created_at"),
 		index.Fields("starts_at"),
 		index.Fields("ends_at"),

@@ -104,3 +104,71 @@ WHERE id = $1 AND deleted_at IS NULL;
 ```
 
 Keep the row as a tombstone, filter it from user-facing lists, and let only manual upsert restore it.
+
+---
+
+## Scenario: Announcement Category Contract
+
+### 1. Scope / Trigger
+- Trigger: changes to announcement categories, announcement create/update APIs, user announcement responses, or announcement storage.
+- This is cross-layer because category is persisted in `announcements`, validated by service/admin API, serialized to admin and user DTOs, and rendered by frontend admin forms and user notification drawers.
+
+### 2. Signatures
+- DB: `announcements.category VARCHAR(32) NOT NULL DEFAULT 'announcement'`.
+- DB constraint: category must be one of `announcement`, `model_update`, `changelog`.
+- Service constants: expose the same three category values from the announcement service/domain layer.
+- Admin create request: optional `category` string.
+- Admin update request: optional pointer `category` string.
+- Admin/user response DTOs: include `category` string.
+
+### 3. Contracts
+- Empty category on create defaults to `announcement`.
+- Existing rows must remain valid through the migration default.
+- User announcement listing must not add new permission logic for category; it groups only the announcements already visible after existing targeting, schedule, and read-state filtering.
+- Frontend should defensively treat missing or unknown response category as `announcement` during rollout compatibility.
+- Category currently controls presentation grouping and labels only. Do not add billing, permission, or delivery semantics to this field without a new contract.
+
+### 4. Validation & Error Matrix
+- Create with empty category -> persist `announcement`.
+- Create/update with `announcement`, `model_update`, or `changelog` -> accepted.
+- Create/update with any other value -> `ErrAnnouncementInvalidCategory`.
+- API binding with invalid category -> bad request before service mutation.
+- Legacy response with missing category -> frontend displays under `announcement`.
+
+### 5. Good/Base/Bad Cases
+- Good: add a new category by updating constants, service validation, DB check constraint/migration, DTO tests, frontend union type, i18n labels, admin select options, and drawer grouping together.
+- Base: old announcement rows created before the migration appear under the Announcement tab.
+- Bad: adding only a frontend tab without backend validation and DB migration; admins could save values the service rejects or users could receive ungroupable data.
+
+### 6. Tests Required
+- Service create default test asserts omitted category becomes `announcement`.
+- Service invalid category test asserts `ErrAnnouncementInvalidCategory`.
+- Service update test asserts category can change to a valid value.
+- DTO tests assert admin and user announcement responses include category.
+- Frontend component test asserts drawer tabs show category counts based on already-loaded visible announcements and no `all` tab appears.
+- Frontend type-check must pass after response/request type changes.
+
+### 7. Wrong vs Correct
+
+#### Wrong
+```go
+if input.Category != "" {
+    a.Category = input.Category
+}
+```
+
+This stores arbitrary category values and makes frontend grouping depend on unchecked strings.
+
+#### Correct
+```go
+category := strings.TrimSpace(input.Category)
+if category == "" {
+    category = AnnouncementCategoryAnnouncement
+}
+if !isValidAnnouncementCategory(category) {
+    return nil, ErrAnnouncementInvalidCategory
+}
+a.Category = category
+```
+
+Validate at the service boundary, keep the DB constraint aligned, and let the frontend group only known categories.

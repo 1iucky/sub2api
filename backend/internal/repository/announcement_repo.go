@@ -28,6 +28,7 @@ func (r *announcementRepository) Create(ctx context.Context, a *service.Announce
 		SetContent(a.Content).
 		SetStatus(a.Status).
 		SetNotifyMode(a.NotifyMode).
+		SetCategory(a.Category).
 		SetTargeting(a.Targeting)
 
 	if a.StartsAt != nil {
@@ -69,6 +70,7 @@ func (r *announcementRepository) Update(ctx context.Context, a *service.Announce
 		SetContent(a.Content).
 		SetStatus(a.Status).
 		SetNotifyMode(a.NotifyMode).
+		SetCategory(a.Category).
 		SetTargeting(a.Targeting)
 
 	if a.StartsAt != nil {
@@ -233,6 +235,7 @@ func announcementEntityToService(m *dbent.Announcement) *service.Announcement {
 		Content:    m.Content,
 		Status:     m.Status,
 		NotifyMode: m.NotifyMode,
+		Category:   m.Category,
 		Targeting:  m.Targeting,
 		StartsAt:   m.StartsAt,
 		EndsAt:     m.EndsAt,

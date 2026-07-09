@@ -12,6 +12,7 @@ type Announcement struct {
 	Content    string `json:"content"`
 	Status     string `json:"status"`
 	NotifyMode string `json:"notify_mode"`
+	Category   string `json:"category"`
 
 	Targeting service.AnnouncementTargeting `json:"targeting"`
 
@@ -30,6 +31,7 @@ type UserAnnouncement struct {
 	Title      string `json:"title"`
 	Content    string `json:"content"`
 	NotifyMode string `json:"notify_mode"`
+	Category   string `json:"category"`
 
 	StartsAt *time.Time `json:"starts_at,omitempty"`
 	EndsAt   *time.Time `json:"ends_at,omitempty"`
@@ -50,6 +52,7 @@ func AnnouncementFromService(a *service.Announcement) *Announcement {
 		Content:    a.Content,
 		Status:     a.Status,
 		NotifyMode: a.NotifyMode,
+		Category:   a.Category,
 		Targeting:  a.Targeting,
 		StartsAt:   a.StartsAt,
 		EndsAt:     a.EndsAt,
@@ -69,6 +72,7 @@ func UserAnnouncementFromService(a *service.UserAnnouncement) *UserAnnouncement 
 		Title:      a.Announcement.Title,
 		Content:    a.Announcement.Content,
 		NotifyMode: a.Announcement.NotifyMode,
+		Category:   a.Announcement.Category,
 		StartsAt:   a.Announcement.StartsAt,
 		EndsAt:     a.Announcement.EndsAt,
 		ReadAt:     a.ReadAt,

@@ -89,6 +89,12 @@
             </span>
           </template>
 
+          <template #cell-category="{ row }">
+            <span class="badge badge-gray">
+              {{ categoryLabel(row.category) }}
+            </span>
+          </template>
+
           <template #cell-targeting="{ row }">
             <span class="text-sm text-gray-600 dark:text-gray-300">
               {{ targetingSummary(row.targeting) }}
@@ -179,10 +185,14 @@
           <textarea v-model="form.content" rows="6" class="input" required></textarea>
         </div>
 
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
           <div>
             <label class="input-label">{{ t('admin.announcements.form.status') }}</label>
             <Select v-model="form.status" :options="statusOptions" />
+          </div>
+          <div>
+            <label class="input-label">{{ t('admin.announcements.form.category') }}</label>
+            <Select v-model="form.category" :options="categoryOptions" />
           </div>
           <div>
             <label class="input-label">{{ t('admin.announcements.form.notifyMode') }}</label>
@@ -250,7 +260,7 @@ import { useAppStore } from '@/stores/app'
 import { getPersistedPageSize } from '@/composables/usePersistedPageSize'
 import { adminAPI } from '@/api/admin'
 import { formatDateTime, formatDateTimeLocalInput, parseDateTimeLocalInput } from '@/utils/format'
-import type { AdminGroup, Announcement, AnnouncementTargeting } from '@/types'
+import type { AdminGroup, Announcement, AnnouncementCategory, AnnouncementTargeting } from '@/types'
 import type { Column } from '@/components/common/types'
 
 import AppLayout from '@/components/layout/AppLayout.vue'
@@ -307,8 +317,15 @@ const notifyModeOptions = computed(() => [
   { value: 'popup', label: t('admin.announcements.notifyModeLabels.popup') }
 ])
 
+const categoryOptions = computed(() => [
+  { value: 'announcement', label: t('announcements.categories.announcement') },
+  { value: 'model_update', label: t('announcements.categories.modelUpdate') },
+  { value: 'changelog', label: t('announcements.categories.changelog') }
+])
+
 const columns = computed<Column[]>(() => [
   { key: 'title', label: t('admin.announcements.columns.title'), sortable: true },
+  { key: 'category', label: t('admin.announcements.columns.category') },
   { key: 'status', label: t('admin.announcements.columns.status'), sortable: true },
   { key: 'notify_mode', label: t('admin.announcements.columns.notifyMode'), sortable: true },
   { key: 'targeting', label: t('admin.announcements.columns.targeting') },
@@ -322,6 +339,12 @@ const statusLabel = (status: string) => {
   if (status === 'active') return t('admin.announcements.statusLabels.active')
   if (status === 'archived') return t('admin.announcements.statusLabels.archived')
   return status
+}
+
+const categoryLabel = (category: AnnouncementCategory | string) => {
+  if (category === 'model_update') return t('announcements.categories.modelUpdate')
+  if (category === 'changelog') return t('announcements.categories.changelog')
+  return t('announcements.categories.announcement')
 }
 
 const targetingSummary = (targeting: AnnouncementTargeting) => {
@@ -417,6 +440,7 @@ const form = reactive({
   title: '',
   content: '',
   status: 'draft',
+  category: 'announcement' as AnnouncementCategory,
   notify_mode: 'silent',
   starts_at_str: '',
   ends_at_str: '',
@@ -439,6 +463,7 @@ function resetForm() {
   form.title = ''
   form.content = ''
   form.status = 'draft'
+  form.category = 'announcement'
   form.notify_mode = 'silent'
   form.starts_at_str = ''
   form.ends_at_str = ''
@@ -449,6 +474,7 @@ function fillFormFromAnnouncement(a: Announcement) {
   form.title = a.title
   form.content = a.content
   form.status = a.status
+  form.category = a.category || 'announcement'
   form.notify_mode = a.notify_mode || 'silent'
 
   // Backend returns RFC3339 strings
@@ -483,6 +509,7 @@ function buildCreatePayload() {
     title: form.title,
     content: form.content,
     status: form.status as any,
+    category: form.category,
     notify_mode: form.notify_mode as any,
     targeting: form.targeting,
     starts_at: startsAt ?? undefined,
@@ -496,6 +523,7 @@ function buildUpdatePayload(original: Announcement) {
   if (form.title !== original.title) payload.title = form.title
   if (form.content !== original.content) payload.content = form.content
   if (form.status !== original.status) payload.status = form.status
+  if (form.category !== (original.category || 'announcement')) payload.category = form.category
   if (form.notify_mode !== (original.notify_mode || 'silent')) payload.notify_mode = form.notify_mode
 
   // starts_at / ends_at: distinguish unchanged vs clear(0) vs set

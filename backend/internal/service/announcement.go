@@ -21,6 +21,12 @@ const (
 )
 
 const (
+	AnnouncementCategoryAnnouncement = domain.AnnouncementCategoryAnnouncement
+	AnnouncementCategoryModelUpdate  = domain.AnnouncementCategoryModelUpdate
+	AnnouncementCategoryChangelog    = domain.AnnouncementCategoryChangelog
+)
+
+const (
 	AnnouncementConditionTypeSubscription = domain.AnnouncementConditionTypeSubscription
 	AnnouncementConditionTypeBalance      = domain.AnnouncementConditionTypeBalance
 )
@@ -47,6 +53,10 @@ var (
 	ErrAnnouncementInvalidNotifyMode = infraerrors.BadRequest(
 		"ANNOUNCEMENT_NOTIFY_MODE_INVALID",
 		"announcement notify_mode is invalid",
+	)
+	ErrAnnouncementInvalidCategory = infraerrors.BadRequest(
+		"ANNOUNCEMENT_CATEGORY_INVALID",
+		"announcement category is invalid",
 	)
 	ErrAnnouncementInvalidSchedule = infraerrors.BadRequest(
 		"ANNOUNCEMENT_TIME_RANGE_INVALID",

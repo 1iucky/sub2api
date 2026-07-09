@@ -383,6 +383,7 @@ export default {
       allStatus: 'All Status',
       columns: {
         title: 'Title',
+        category: 'Category',
         status: 'Status',
         notifyMode: 'Notify Mode',
         targeting: 'Targeting',
@@ -403,6 +404,7 @@ export default {
         title: 'Title',
         content: 'Content (Markdown supported)',
         status: 'Status',
+        category: 'Category',
         notifyMode: 'Notify Mode',
         notifyModeHint: 'Popup mode will show a popup notification to users',
         startsAt: 'Starts At',
