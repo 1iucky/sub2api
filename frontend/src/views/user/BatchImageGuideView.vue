@@ -37,7 +37,7 @@
 
           <div
             v-if="selectedJobIds.size"
-            class="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-gray-200 bg-white px-3 py-2 shadow-sm dark:border-dark-700 dark:bg-dark-800"
+            class="flex flex-wrap items-center justify-between gap-3 rounded-sm border border-gray-200 bg-white px-3 py-2 shadow-sm dark:border-dark-700 dark:bg-dark-800"
           >
             <span class="text-sm text-gray-600 dark:text-gray-300">
               已选择 <span class="font-medium text-gray-900 dark:text-white">{{ selectedJobIds.size }}</span> 个任务
@@ -99,23 +99,23 @@
 	              <button
 	                v-if="row.child_count > 0 && !row.is_child"
 	                type="button"
-	                class="mt-1 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/30 dark:text-gray-400 dark:hover:bg-dark-700 dark:hover:text-white"
+	                class="mt-1 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-sm text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/30 dark:text-gray-400 dark:hover:bg-dark-700 dark:hover:text-white"
 	                :title="expandedParentIds.has(row.id) ? '收起子任务' : `展开 ${row.child_count} 个子任务`"
 	                @click.stop="toggleChildRows(row.id)"
 	              >
 	                <Icon :name="expandedParentIds.has(row.id) ? 'chevronDown' : 'chevronRight'" size="xs" />
 	              </button>
 	              <span v-else class="w-6 flex-shrink-0" />
-	              <button type="button" class="min-w-0 flex-1 rounded-lg py-1 text-left transition-colors hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/30 dark:hover:bg-dark-700" @click="selectJob(row.id)">
+	              <button type="button" class="min-w-0 flex-1 rounded-sm py-1 text-left transition-colors hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/30 dark:hover:bg-dark-700" @click="selectJob(row.id)">
 	                <span
 	                  class="flex min-w-0 items-center gap-2 text-sm font-medium"
 	                  :class="row.task_name ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400'"
                 >
                   <span class="min-w-0 truncate">{{ row.task_name || defaultTaskName(row.created_at) }}</span>
-                  <span v-if="row.child_count > 0 && !row.is_child" class="flex-shrink-0 rounded-full bg-gray-100 px-2 py-0.5 text-xs font-normal text-gray-600 dark:bg-dark-700 dark:text-gray-300">
+                  <span v-if="row.child_count > 0 && !row.is_child" class="badge badge-gray flex-shrink-0 font-normal">
                     {{ row.child_count }} 子任务
                   </span>
-                  <span v-if="row.is_child" class="flex-shrink-0 rounded-full bg-amber-50 px-2 py-0.5 text-xs font-normal text-amber-700 dark:bg-amber-900/20 dark:text-amber-300">
+                  <span v-if="row.is_child" class="badge badge-warning flex-shrink-0 font-normal">
                     子任务
                   </span>
 	                </span>
@@ -171,7 +171,7 @@
 	            <div class="flex items-center justify-center gap-1">
               <button
                 type="button"
-                class="batch-row-action flex flex-col items-center gap-0.5 rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-primary-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/30 dark:hover:bg-dark-700 dark:hover:text-primary-400"
+                class="batch-row-action flex flex-col items-center gap-0.5 rounded-sm p-1.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-primary-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/30 dark:hover:bg-dark-700 dark:hover:text-primary-400"
                 title="查看详情"
                 @click="selectJob(row.id)"
               >
@@ -180,8 +180,8 @@
               </button>
               <button
                 type="button"
-                class="batch-row-action flex flex-col items-center gap-0.5 rounded-lg p-1.5 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/30"
-                :class="canDownload(row) ? 'text-gray-500 hover:bg-green-50 hover:text-green-600 dark:hover:bg-green-900/20 dark:hover:text-green-400' : 'text-gray-300 dark:text-dark-500'"
+                class="batch-row-action flex flex-col items-center gap-0.5 rounded-sm p-1.5 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/30"
+                :class="canDownload(row) ? 'text-gray-500 hover:bg-gray-100 hover:text-primary-600 dark:hover:bg-dark-700 dark:hover:text-primary-400' : 'text-gray-300 dark:text-dark-500'"
                 :disabled="!canDownload(row) || downloading"
                 title="下载 ZIP"
                 @click="downloadJob(row)"
@@ -196,7 +196,7 @@
               <div v-if="canRetry(row) || canDeleteRecord(row)">
                 <button
                   type="button"
-                  class="batch-row-action flex flex-col items-center gap-0.5 rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/30 dark:hover:bg-dark-700 dark:hover:text-white"
+                  class="batch-row-action flex flex-col items-center gap-0.5 rounded-sm p-1.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/30 dark:hover:bg-dark-700 dark:hover:text-white"
                   :class="{ 'bg-gray-100 text-gray-900 dark:bg-dark-700 dark:text-white': openMoreJobId === row.id }"
                   title="更多操作"
                   @click.stop="toggleMoreMenu(row, $event)"
@@ -269,7 +269,7 @@
     <Teleport to="body">
       <div
         v-if="openMoreJobId"
-        class="fixed z-[9999] w-44 overflow-hidden rounded-xl bg-white py-1 text-sm shadow-lg ring-1 ring-black/5 dark:bg-dark-800 dark:ring-white/10"
+        class="fixed z-[9999] w-44 overflow-hidden rounded-sm bg-white py-1 text-sm shadow-lg ring-1 ring-black/5 dark:bg-dark-800 dark:ring-white/10"
         :style="moreMenuStyle"
         @click.stop
       >
@@ -278,7 +278,7 @@
             <button
               v-if="canRetry(job)"
               type="button"
-              class="flex w-full items-center gap-2 px-3 py-2 text-left text-gray-700 transition-colors hover:bg-amber-50 hover:text-amber-700 disabled:opacity-60 dark:text-gray-200 dark:hover:bg-amber-900/20 dark:hover:text-amber-300"
+              class="flex w-full items-center gap-2 px-3 py-2 text-left text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-900 disabled:opacity-60 dark:text-gray-200 dark:hover:bg-dark-700 dark:hover:text-white"
               :disabled="retryingBatchId === job.id"
               @click="retryFailedJob(job)"
             >
@@ -303,16 +303,16 @@
     <Teleport to="body">
       <div
         v-if="promptPopover.visible"
-        class="batch-prompt-popover fixed z-[9999] rounded-lg border border-gray-200 bg-white p-3 text-sm text-gray-800 shadow-xl ring-1 ring-black/5 dark:border-dark-700 dark:bg-dark-900 dark:text-gray-100 dark:ring-white/10"
+        class="batch-prompt-popover fixed z-[9999] rounded-sm border border-gray-200 bg-white p-3 text-sm text-gray-800 shadow-xl ring-1 ring-black/5 dark:border-dark-700 dark:bg-dark-900 dark:text-gray-100 dark:ring-white/10"
         :style="promptPopover.style"
         @mouseenter="cancelPromptPopoverClose"
         @mouseleave="schedulePromptPopoverClose"
       >
         <div class="mb-2 flex items-center justify-between gap-3">
-          <span class="text-xs font-medium text-gray-500 dark:text-gray-400">完整 Prompt</span>
+          <span class="eyebrow">完整 Prompt</span>
           <button
             type="button"
-            class="rounded-md px-2 py-1 text-xs font-medium text-primary-600 transition-colors hover:bg-primary-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/30 dark:text-primary-300 dark:hover:bg-primary-900/20"
+            class="rounded-sm px-2 py-1 text-xs font-medium text-primary-600 transition-colors hover:bg-primary-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/30 dark:text-primary-300 dark:hover:bg-primary-900/20"
             @click="copyPromptPopover"
           >
             复制
@@ -326,7 +326,7 @@
 
     <BaseDialog :show="!!currentJob" title="任务详情" width="extra-wide" @close="closeDetail">
       <div v-if="currentJob" class="space-y-4">
-        <div class="rounded-lg border border-gray-200 bg-gray-50/70 px-4 py-3 dark:border-dark-700 dark:bg-dark-900/40">
+        <div class="rounded-sm border border-gray-200 bg-gray-50/70 px-4 py-3 dark:border-dark-700 dark:bg-dark-900/40">
           <div class="grid gap-x-6 gap-y-3 sm:grid-cols-2 lg:grid-cols-4">
             <div class="min-w-0 text-center">
               <p class="text-xs text-gray-500 dark:text-gray-400">状态</p>
@@ -365,7 +365,7 @@
           </button>
         </div>
 
-        <div v-if="items.length" class="overflow-x-auto rounded-lg border border-gray-200 bg-white dark:border-dark-700 dark:bg-dark-900">
+        <div v-if="items.length" class="overflow-x-auto rounded-sm border border-gray-200 bg-white dark:border-dark-700 dark:bg-dark-900">
           <table class="w-full min-w-[860px] table-fixed divide-y divide-gray-200 text-sm dark:divide-dark-700">
             <colgroup>
               <col class="w-[18%]" />
@@ -421,7 +421,7 @@
                   </span>
                 </td>
                 <td class="px-3 py-2.5 text-center">
-                  <div class="mx-auto h-12 w-12 overflow-hidden rounded-md border border-gray-200 bg-gray-50 dark:border-dark-700 dark:bg-dark-800">
+                  <div class="mx-auto h-12 w-12 overflow-hidden rounded-sm border border-gray-200 bg-gray-50 dark:border-dark-700 dark:bg-dark-800">
                     <button
                       v-if="itemPreviewUrls[itemPreviewKey(item)] && !previewErrorIds.has(itemPreviewKey(item))"
                       type="button"
@@ -453,7 +453,7 @@
                 </td>
                 <td class="px-3 py-2.5 text-center">
                   <span
-                    class="inline-flex max-w-full items-center justify-center truncate rounded-md px-2.5 py-1 text-xs font-medium leading-5 ring-1 ring-inset"
+                    class="inline-flex max-w-full items-center justify-center truncate rounded-sm px-2.5 py-1 text-xs font-medium leading-5 ring-1 ring-inset"
                     :class="itemResultClass(item)"
                     :title="itemResultLabel(item)"
                   >
@@ -464,7 +464,7 @@
             </tbody>
           </table>
         </div>
-        <div v-else class="rounded-lg border border-dashed border-gray-200 py-10 text-center dark:border-dark-700">
+        <div v-else class="rounded-sm border border-dashed border-gray-200 py-10 text-center dark:border-dark-700">
           <Icon name="refresh" size="lg" class="mx-auto mb-3 text-gray-400" :class="loadingItems ? 'animate-spin' : ''" />
           <p class="text-sm font-medium text-gray-700 dark:text-gray-200">
             {{ loadingItems ? '正在加载明细...' : '暂无明细' }}
@@ -511,14 +511,14 @@
 
     <BaseDialog :show="!!previewImageItem" :title="previewImageItem?.custom_id || '图片预览'" width="extra-wide" :z-index="60" @close="closeImagePreview">
       <div class="space-y-3">
-        <div class="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-100">
+        <div class="rounded-sm border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800 dark:border-amber-700/40 dark:bg-amber-900/20 dark:text-amber-200">
           当前显示的是浏览器本地缓存的压缩缩略图，清晰度会有影响；需要查看原图请下载 ZIP。
         </div>
-        <div class="flex min-h-[420px] items-center justify-center rounded-lg bg-gray-50 p-4 dark:bg-dark-900">
+        <div class="flex min-h-[420px] items-center justify-center rounded-sm bg-gray-50 p-4 dark:bg-dark-900">
           <img
             v-if="previewImageUrl"
             :src="previewImageUrl"
-            class="max-h-[70vh] max-w-full rounded-md object-contain"
+            class="max-h-[70vh] max-w-full rounded-sm object-contain"
             :alt="previewImageItem?.custom_id || ''"
           />
         </div>
@@ -599,11 +599,11 @@
             <label class="input-label mb-0">Prompt</label>
             <span class="text-xs text-gray-500 dark:text-gray-400">已添加 {{ promptRows.length }} 条</span>
           </div>
-          <div class="rounded-lg border border-gray-200 p-3 dark:border-dark-700">
+          <div class="rounded-sm border border-gray-200 p-3 dark:border-dark-700">
             <textarea
               v-model="promptDraft"
               rows="3"
-              class="h-[76px] w-full resize-y rounded-md border border-gray-300 px-3 py-2 text-sm leading-5 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100 dark:border-dark-600 dark:bg-dark-900 dark:text-gray-100 dark:focus:border-primary-500 dark:focus:ring-primary-900/40"
+              class="h-[76px] w-full resize-y rounded-sm border border-gray-300 px-3 py-2 text-sm leading-5 outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100 dark:border-dark-600 dark:bg-dark-900 dark:text-gray-100 dark:focus:border-primary-500 dark:focus:ring-primary-900/40"
               placeholder="粘贴 prompt，添加后进入下方列表"
             />
             <div class="mt-2 grid gap-2 md:grid-cols-[minmax(0,1fr)_112px_132px_112px] md:items-center">
@@ -648,7 +648,7 @@
               <span
                 v-for="(ref, refIndex) in referenceImageDrafts"
                 :key="`${ref.name}-${refIndex}`"
-                class="inline-flex max-w-full items-center gap-1 rounded-md border border-gray-200 bg-gray-50 px-2 py-1 text-xs text-gray-700 dark:border-dark-700 dark:bg-dark-900 dark:text-gray-200"
+                class="inline-flex max-w-full items-center gap-1 rounded-sm border border-gray-200 bg-gray-50 px-2 py-1 text-xs text-gray-700 dark:border-dark-700 dark:bg-dark-900 dark:text-gray-200"
               >
                 <span class="max-w-[180px] truncate">{{ ref.name }}</span>
                 <button type="button" class="text-gray-400 hover:text-red-600" title="移除参考图" @click="removeReferenceImageDraft(refIndex)">
@@ -660,7 +660,7 @@
               每条最多 {{ BATCH_IMAGE_MAX_OUTPUTS_PER_ITEM }} 张，整组最多 {{ BATCH_IMAGE_MAX_OUTPUTS_PER_JOB }} 张；当前模型每条最多 {{ selectedModelReferenceLimit }} 张参考图，参考图按生成张数重复消耗输入 token。
             </p>
           </div>
-          <div v-if="promptRows.length" class="overflow-hidden rounded-lg border border-gray-200 dark:border-dark-700">
+          <div v-if="promptRows.length" class="overflow-hidden rounded-sm border border-gray-200 dark:border-dark-700">
             <div
               v-for="(row, index) in promptRows"
               :key="row.localId"
@@ -679,15 +679,15 @@
               </button>
             </div>
           </div>
-          <div v-else class="rounded-lg border border-dashed border-gray-200 px-3 py-6 text-center text-sm text-gray-500 dark:border-dark-700 dark:text-gray-400">
+          <div v-else class="rounded-sm border border-dashed border-gray-200 px-3 py-6 text-center text-sm text-gray-500 dark:border-dark-700 dark:text-gray-400">
             还没有添加 prompt。
           </div>
         </div>
 
-	        <div class="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm leading-6 text-amber-900 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-100">
+	        <div class="rounded-sm border border-amber-200 bg-amber-50 p-3 text-sm leading-6 text-amber-800 dark:border-amber-700/40 dark:bg-amber-900/20 dark:text-amber-200">
 	          取消任务会请求上游取消；已被系统索引为成功的图片仍会按成功项结算扣费，其余冻结金额会释放。
 	        </div>
-	        <div v-if="submitting" class="rounded-lg border border-sky-200 bg-sky-50 p-3 text-sm leading-6 text-sky-800 dark:border-sky-800 dark:bg-sky-950/30 dark:text-sky-100">
+	        <div v-if="submitting" class="rounded-sm border border-gray-200 bg-gray-50 p-3 text-sm leading-6 text-gray-700 dark:border-dark-700 dark:bg-dark-800 dark:text-gray-200">
 	          正在创建上游批量任务，通常需要几秒，请不要重复提交。
 	        </div>
 	      </form>
@@ -707,7 +707,7 @@
 	      <div class="space-y-5">
 	        <section class="space-y-3">
 	          <h3 class="text-sm font-semibold text-gray-900 dark:text-white">当前界面如何使用</h3>
-	          <div class="rounded-lg border border-gray-200 bg-gray-50 p-3 text-sm leading-6 text-gray-700 dark:border-dark-700 dark:bg-dark-900/50 dark:text-gray-200">
+	          <div class="rounded-sm border border-gray-200 bg-gray-50 p-3 text-sm leading-6 text-gray-700 dark:border-dark-700 dark:bg-dark-900/50 dark:text-gray-200">
 	            <p>1. 选择已开启批量生图的 Gemini API Key，模型列表会按该 Key 所属分组可用模型展示。</p>
 	            <p>2. 任务名称可以留空，提交时会自动使用当前时间；Prompt 需要一条条添加到列表里，每条 Prompt 可附参考图，也可以设置重复生成张数。</p>
 	            <p>3. 提交后任务会先排队，明细会展示已提交的 Prompt；图片预览默认不加载，点击明细里的预览按钮才会加载单张图。</p>
@@ -1019,7 +1019,7 @@ const endpointBase = computed(() => {
   const configured = appStore.apiBaseUrl?.trim()
   if (configured) return configured.replace(/\/+$/, '')
   if (typeof window !== 'undefined') return window.location.origin.replace(/\/+$/, '')
-  return '<你的 Sub2API API 端点>'
+  return '<你的 SiliconBase API 端点>'
 })
 
 const selectedModelReferenceLimit = computed(() => referenceImageLimitForModel(form.model))

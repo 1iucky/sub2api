@@ -16,18 +16,18 @@
 
     <!-- Table -->
     <div class="overflow-x-auto">
-      <table class="w-full min-w-max divide-y divide-gray-200 dark:divide-dark-700">
-        <thead class="bg-gray-50 dark:bg-dark-800">
+      <table class="w-full min-w-max divide-y divide-gray-100 dark:divide-dark-800">
+        <thead class="bg-gray-50 dark:bg-dark-900">
           <tr>
-            <th class="w-16 px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-dark-400 sm:px-6">#</th>
-            <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-dark-400">
+            <th class="w-16 px-4 py-3 text-left font-mono text-xs font-medium uppercase tracking-wide text-gray-600 dark:text-dark-300 sm:px-6">#</th>
+            <th class="px-4 py-3 text-left font-mono text-xs font-medium uppercase tracking-wide text-gray-600 dark:text-dark-300">
               {{ t('admin.usage.tokenRanking.columns.user') }}
             </th>
             <th
               v-for="col in sortableColumns"
               :key="col.key"
-              class="cursor-pointer select-none whitespace-nowrap px-4 py-3 text-right text-xs font-medium uppercase tracking-wider transition-colors hover:bg-gray-100 dark:hover:bg-dark-700"
-              :class="sortBy === col.key ? 'text-primary-600 dark:text-primary-400' : 'text-gray-500 dark:text-dark-400'"
+              class="cursor-pointer select-none whitespace-nowrap px-4 py-3 text-right font-mono text-xs font-medium uppercase tracking-wide transition-colors hover:bg-gray-100 dark:hover:bg-dark-800"
+              :class="sortBy === col.key ? 'text-primary-600 dark:text-primary-400' : 'text-gray-600 dark:text-dark-300'"
               @click="setSort(col.key)"
             >
               {{ t(col.label) }}
@@ -35,7 +35,7 @@
             </th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-200 bg-white dark:divide-dark-700 dark:bg-dark-900">
+        <tbody class="divide-y divide-gray-100 bg-white dark:divide-dark-800 dark:bg-dark-900">
           <tr v-if="loading">
             <td :colspan="sortableColumns.length + 2" class="py-12 text-center">
               <LoadingSpinner />
@@ -50,7 +50,7 @@
             v-for="(item, index) in items"
             v-else
             :key="item.user_id"
-            class="cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-dark-700/40"
+            class="cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-dark-800/30"
             :title="t('admin.usage.tokenRanking.rowHint')"
             @click="$emit('select-user', item.user_id, item.email)"
           >
@@ -71,7 +71,7 @@
             <td class="whitespace-nowrap px-4 py-3 text-right text-sm tabular-nums text-gray-500 dark:text-gray-400">{{ fmtTokens(item.output_tokens) }}</td>
             <td class="whitespace-nowrap px-4 py-3 text-right text-sm tabular-nums text-gray-500 dark:text-gray-400">{{ fmtTokens(item.cache_tokens) }}</td>
             <td class="whitespace-nowrap px-4 py-3 text-right text-sm font-medium tabular-nums text-gray-900 dark:text-gray-100">{{ fmtTokens(item.total_tokens) }}</td>
-            <td class="whitespace-nowrap px-4 py-3 text-right text-sm font-medium tabular-nums text-green-600 dark:text-green-400">${{ fmtCost(item.actual_cost) }}</td>
+            <td class="whitespace-nowrap px-4 py-3 text-right text-sm font-medium tabular-nums text-primary-600 dark:text-primary-400">${{ fmtCost(item.actual_cost) }}</td>
           </tr>
         </tbody>
       </table>
@@ -116,11 +116,11 @@ const limitOptions = [
   { value: 200, label: 'Top 200' },
 ]
 
-// 前三名金/银/铜徽章
+// 前三名徽章：首名品牌描边，其余中性描边（factory 风格：bordered chip 而非 pastel 填充）
 const RANK_BADGE_CLASSES = [
-  'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400',
-  'bg-gray-200 text-gray-600 dark:bg-gray-500/20 dark:text-gray-300',
-  'bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-400',
+  'border border-primary-500 text-primary-600 dark:border-primary-500 dark:text-primary-400',
+  'border border-gray-300 text-gray-600 dark:border-dark-600 dark:text-gray-300',
+  'border border-gray-300 text-gray-500 dark:border-dark-600 dark:text-gray-400',
 ]
 
 const items = ref<UserBreakdownItem[]>([])

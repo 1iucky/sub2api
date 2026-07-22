@@ -71,8 +71,8 @@
           <!-- New Users Today -->
           <div class="card p-4">
             <div class="flex items-center gap-3">
-              <div class="rounded-md bg-emerald-100 p-2 dark:bg-emerald-900/30">
-                <Icon name="userPlus" size="md" class="text-emerald-600 dark:text-emerald-400" :stroke-width="2" />
+              <div class="rounded-md bg-gray-100 p-2 dark:bg-dark-700/40">
+                <Icon name="userPlus" size="md" class="text-gray-700 dark:text-gray-300" :stroke-width="2" />
               </div>
               <div>
                 <p class="eyebrow">{{ t('admin.dashboard.users') }}</p>
@@ -92,8 +92,8 @@
           <!-- Today Tokens -->
           <div class="card p-4">
             <div class="flex items-center gap-3">
-              <div class="rounded-md bg-amber-100 p-2 dark:bg-amber-900/30">
-                <Icon name="cube" size="md" class="text-amber-600 dark:text-amber-400" :stroke-width="2" />
+              <div class="rounded-md bg-gray-100 p-2 dark:bg-dark-700/40">
+                <Icon name="cube" size="md" class="text-gray-700 dark:text-gray-300" :stroke-width="2" />
               </div>
               <div>
                 <p class="eyebrow">{{ t('admin.dashboard.todayTokens') }}</p>
@@ -203,10 +203,10 @@
             <button
               v-if="canUseBatchImage"
               type="button"
-              class="group flex items-center gap-3 rounded-lg bg-gray-50 p-3 text-left transition-colors hover:bg-sky-50 dark:bg-dark-800/50 dark:hover:bg-sky-900/20"
+              class="group flex items-center gap-3 rounded-sm border border-gray-200 bg-gray-50 p-3 text-left transition-colors hover:border-primary-500 hover:bg-gray-100 dark:border-dark-700 dark:bg-dark-800/50 dark:hover:border-primary-500 dark:hover:bg-dark-700"
               @click="router.push('/batch-image')"
             >
-              <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-sky-100 text-sky-600 dark:bg-sky-900/30 dark:text-sky-400">
+              <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-sm border border-gray-200 text-primary-500 dark:border-dark-700 dark:text-primary-400">
                 <Icon name="sparkles" size="md" :stroke-width="2" />
               </span>
               <span class="min-w-0 flex-1">
@@ -217,14 +217,14 @@
                   {{ t('admin.dashboard.batchImageDesc') }}
                 </span>
               </span>
-              <Icon name="chevronRight" size="sm" class="text-gray-400 group-hover:text-sky-500" />
+              <Icon name="chevronRight" size="sm" class="text-gray-400 group-hover:text-primary-500" />
             </button>
             <button
               type="button"
-              class="group flex items-center gap-3 rounded-lg bg-gray-50 p-3 text-left transition-colors hover:bg-emerald-50 dark:bg-dark-800/50 dark:hover:bg-emerald-900/20"
+              class="group flex items-center gap-3 rounded-sm border border-gray-200 bg-gray-50 p-3 text-left transition-colors hover:border-primary-500 hover:bg-gray-100 dark:border-dark-700 dark:bg-dark-800/50 dark:hover:border-primary-500 dark:hover:bg-dark-700"
               @click="router.push('/admin/groups')"
             >
-              <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400">
+              <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-sm border border-gray-200 text-primary-500 dark:border-dark-700 dark:text-primary-400">
                 <Icon name="grid" size="md" :stroke-width="2" />
               </span>
               <span class="min-w-0 flex-1">
@@ -235,7 +235,7 @@
                   {{ t('admin.dashboard.groupPricingDesc') }}
                 </span>
               </span>
-              <Icon name="chevronRight" size="sm" class="text-gray-400 group-hover:text-emerald-500" />
+              <Icon name="chevronRight" size="sm" class="text-gray-400 group-hover:text-primary-500" />
             </button>
           </div>
         </div>

@@ -1,0 +1,2 @@
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "Verification gates for style/i18n/test adaptation"}
+{"file": ".trellis/spec/frontend/component-guidelines.md", "reason": "Check restyled files against factory component conventions"}

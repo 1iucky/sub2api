@@ -3,7 +3,7 @@
     <div class="flex flex-wrap items-center gap-1.5">
       <button
         type="button"
-        class="inline-flex items-center gap-0.5 rounded px-1.5 py-0.5 text-[10px] font-medium text-cyan-700 transition-colors hover:bg-cyan-50 disabled:cursor-not-allowed disabled:opacity-50 dark:text-cyan-300 dark:hover:bg-cyan-900/30"
+        class="inline-flex items-center gap-0.5 rounded-sm px-1.5 py-0.5 text-[10px] font-medium text-primary-600 transition-colors hover:bg-primary-50 disabled:cursor-not-allowed disabled:opacity-50 dark:text-primary-400 dark:hover:bg-primary-900/30"
         :disabled="loading"
         :title="t('admin.accounts.usageWindow.grokProbeTooltip')"
         @click="handleProbe"
@@ -27,7 +27,7 @@
 
       <button
         type="button"
-        class="inline-flex cursor-not-allowed items-center gap-0.5 rounded px-1.5 py-0.5 text-[10px] font-medium text-gray-400 opacity-70 dark:text-gray-500"
+        class="inline-flex cursor-not-allowed items-center gap-0.5 rounded-sm px-1.5 py-0.5 text-[10px] font-medium text-gray-400 opacity-70 dark:text-gray-500"
         disabled
         :title="t('admin.accounts.usageWindow.grokResetUnsupportedTooltip')"
       >
