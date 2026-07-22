@@ -54,7 +54,8 @@ vi.mock('@/api/setup', () => ({
 }))
 
 vi.mock('@/router/title', () => ({
-  resolveDocumentTitle: vi.fn((title: unknown) => String(title || 'Sub2API')),
+  resolveDocumentTitle: vi.fn((title: unknown) => String(title || 'SiliconBase')),
+  resolveRouteDocumentTitle: vi.fn(() => 'SiliconBase'),
 }))
 
 describe('unsupported region route', () => {
