@@ -23,6 +23,8 @@ export default {
       gateway: '网关',
       pools: '账号池',
       docs: '文档',
+      status: '状态',
+      models: '模型集市',
       openMenu: '打开菜单',
       closeMenu: '关闭菜单'
     },
@@ -172,7 +174,11 @@ export default {
         changelog: '更新日志',
         modelMarketplace: '模型集市',
         privacy: '隐私',
-        terms: '条款'
+        terms: '条款',
+        serviceTerms: '服务条款',
+        usagePolicy: '使用政策',
+        supportedCountries: '支持的国家和地区',
+        serviceSpecificTerms: '服务特定条款'
       },
       copyright: '© 2026 SiliconBase. 保留所有权利。'
     },

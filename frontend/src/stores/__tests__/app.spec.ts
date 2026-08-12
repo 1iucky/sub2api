@@ -321,6 +321,15 @@ describe('useAppStore', () => {
   // --- 公开设置 ---
 
   describe('公开设置加载', () => {
+    it('站点名称为空时回退为 Sub2API', async () => {
+      vi.mocked(getPublicSettings).mockResolvedValue(createPublicSettings({ site_name: '   ' }))
+      const store = useAppStore()
+
+      await store.fetchPublicSettings(true)
+
+      expect(store.siteName).toBe('Sub2API')
+    })
+
     it('并发调用复用并等待同一个请求，包括 force 调用', async () => {
       const deferred = createDeferred<PublicSettings>()
       vi.mocked(getPublicSettings).mockReturnValue(deferred.promise)

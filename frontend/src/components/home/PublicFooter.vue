@@ -7,7 +7,7 @@
             <span class="block h-6 w-6 overflow-hidden rounded-sm">
               <img :src="resolvedSiteLogo || '/logo.svg'" alt="" class="h-full w-full object-contain" />
             </span>
-            <span class="font-mono text-[13px] uppercase tracking-[0.14em] text-gray-900 dark:text-gray-100">SiliconBase</span>
+            <span class="font-mono text-[13px] uppercase tracking-[0.14em] text-gray-900 dark:text-gray-100">{{ resolvedSiteName }}</span>
           </div>
           <p class="max-w-[36ch] font-mono text-[12px] uppercase tracking-[0.12em] text-gray-500 dark:text-dark-400">
             {{ t('home.footer2.tagline') }}
@@ -69,6 +69,7 @@ const appStore = useAppStore()
 
 const resolvedDocUrl = computed(() => props.docUrl || appStore.cachedPublicSettings?.doc_url || appStore.docUrl || '')
 const resolvedSiteLogo = computed(() => props.siteLogo || appStore.cachedPublicSettings?.site_logo || appStore.siteLogo || '')
+const resolvedSiteName = computed(() => appStore.cachedPublicSettings?.site_name?.trim() || appStore.siteName.trim() || 'Sub2API')
 </script>
 
 <style scoped>

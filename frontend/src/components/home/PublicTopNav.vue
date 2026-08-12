@@ -15,10 +15,10 @@
           <img :src="siteLogo || '/logo.svg'" alt="" class="h-full w-full object-contain" />
         </span>
         <span class="font-mono text-[13px] uppercase tracking-[0.14em] text-gray-900 transition-colors duration-200 group-hover:text-primary-500 dark:text-gray-100">
-          <span class="sr-only">SiliconBase</span>
+          <span class="sr-only">{{ siteName }}</span>
           <span aria-hidden="true">
             <span
-              v-for="(ch, i) in 'SiliconBase'"
+              v-for="(ch, i) in siteName"
               :key="i"
               class="brand-hover__letter"
               :style="{ '--brand-i': i }"
@@ -102,7 +102,7 @@
       <div class="absolute inset-0 bg-dark-950/60 backdrop-blur-sm" @click="mobileOpen = false"></div>
       <aside class="sf-drawer-panel absolute left-0 top-0 flex h-full w-[280px] max-w-[80vw] flex-col border-r border-gray-200 bg-white pt-4 dark:border-dark-800 dark:bg-dark-950">
         <div class="flex items-center justify-between px-5 pb-4">
-          <span class="font-mono text-[13px] uppercase tracking-[0.14em] text-gray-900 dark:text-gray-100">SiliconBase</span>
+          <span class="font-mono text-[13px] uppercase tracking-[0.14em] text-gray-900 dark:text-gray-100">{{ siteName }}</span>
           <button
             @click="mobileOpen = false"
             class="rounded-sm p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-dark-400 dark:hover:bg-dark-800 dark:hover:text-white"
@@ -164,7 +164,7 @@ const { brandClass, onEnter, onLeave } = useBrandHover()
 const { isDark, toggleTheme } = useTheme()
 
 const mobileOpen = ref(false)
-const siteName = computed(() => appStore.cachedPublicSettings?.site_name || appStore.siteName || 'SiliconBase')
+const siteName = computed(() => appStore.cachedPublicSettings?.site_name?.trim() || appStore.siteName.trim() || 'Sub2API')
 const siteLogo = computed(() => appStore.cachedPublicSettings?.site_logo || appStore.siteLogo || '')
 const docUrl = computed(() => appStore.cachedPublicSettings?.doc_url || appStore.docUrl || '')
 const isAuthenticated = computed(() => authStore.isAuthenticated)

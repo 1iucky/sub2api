@@ -52,10 +52,10 @@
           <span
             class="font-mono text-[13px] uppercase tracking-[0.14em] text-gray-900 transition-colors duration-200 group-hover:text-primary-500 dark:text-gray-100"
           >
-            <span class="sr-only">SiliconBase</span>
+            <span class="sr-only">{{ siteName }}</span>
             <span aria-hidden="true">
               <span
-                v-for="(ch, i) in 'SiliconBase'"
+                v-for="(ch, i) in siteName"
                 :key="i"
                 class="brand-hover__letter"
                 :style="{ '--brand-i': i }"
@@ -152,7 +152,7 @@
           <div class="flex items-center justify-between px-5 pb-4">
             <span
               class="font-mono text-[13px] uppercase tracking-[0.14em] text-gray-900 dark:text-gray-100"
-            >SiliconBase</span>
+            >{{ siteName }}</span>
             <button
               @click="mobileOpen = false"
               class="rounded-sm p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-dark-400 dark:hover:bg-dark-800 dark:hover:text-white"
@@ -540,7 +540,7 @@ const appStore = useAppStore()
 const { brandClass, onEnter, onLeave } = useBrandHover()
 
 // Site settings - directly from appStore (already initialized from injected config)
-const siteName = computed(() => appStore.cachedPublicSettings?.site_name || appStore.siteName || 'SiliconBase')
+const siteName = computed(() => appStore.cachedPublicSettings?.site_name?.trim() || appStore.siteName.trim() || 'Sub2API')
 const siteLogo = computed(() => sanitizeUrl(appStore.cachedPublicSettings?.site_logo || appStore.siteLogo || '', { allowRelative: true, allowDataUrl: true }))
 const docUrl = computed(() => sanitizeUrl(appStore.cachedPublicSettings?.doc_url || appStore.docUrl || ''))
 const homeContent = computed(() => appStore.cachedPublicSettings?.home_content || '')
