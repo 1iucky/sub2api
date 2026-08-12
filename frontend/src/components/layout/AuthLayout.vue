@@ -36,13 +36,12 @@
             <img :src="siteLogo || '/logo.svg'" alt="Logo" class="h-full w-full object-contain" />
           </div>
           <h1
-            v-if="displaySiteName"
             class="mb-2 text-2xl font-normal tracking-tight text-gray-900 dark:text-gray-100"
           >
-            <span class="sr-only">{{ displaySiteName }}</span>
+            <span class="sr-only">{{ siteName }}</span>
             <span aria-hidden="true">
               <span
-                v-for="(ch, i) in displaySiteName"
+                v-for="(ch, i) in siteName"
                 :key="i"
                 class="brand-hover__letter"
                 :style="{ '--brand-i': i }"
@@ -90,11 +89,7 @@ const appStore = useAppStore()
 // ComputedRef object to `:class` instead of its value (animation never fires).
 const { brandClass, onEnter, onLeave } = useBrandHover()
 
-const siteName = computed(() => appStore.siteName || 'SiliconBase')
-const displaySiteName = computed(() => {
-  const configuredName = appStore.cachedPublicSettings?.site_name?.trim() || ''
-  return configuredName && configuredName !== 'SiliconBase' ? configuredName : ''
-})
+const siteName = computed(() => appStore.siteName.trim() || 'Sub2API')
 const siteLogo = computed(() => sanitizeUrl(appStore.siteLogo || '', { allowRelative: true, allowDataUrl: true }))
 const siteSubtitle = computed(() => appStore.cachedPublicSettings?.site_subtitle || 'Subscription to API Conversion Platform')
 const settingsLoaded = computed(() => appStore.publicSettingsLoaded)

@@ -23,6 +23,8 @@ export default {
       gateway: 'Gateway',
       pools: 'Pools',
       docs: 'Docs',
+      status: 'Status',
+      models: 'Model Marketplace',
       openMenu: 'Open menu',
       closeMenu: 'Close menu'
     },
@@ -172,7 +174,11 @@ export default {
         changelog: 'Changelog',
         modelMarketplace: 'Model Marketplace',
         privacy: 'Privacy',
-        terms: 'Terms'
+        terms: 'Terms',
+        serviceTerms: 'Service Terms',
+        usagePolicy: 'Usage Policy',
+        supportedCountries: 'Supported Countries and Regions',
+        serviceSpecificTerms: 'Service-Specific Terms'
       },
       copyright: '© 2026 SiliconBase. All rights reserved.'
     },
