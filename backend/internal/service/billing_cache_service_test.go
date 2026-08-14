@@ -96,6 +96,10 @@ func (b *billingCacheWorkerStub) BatchGetUserPlatformQuotaCache(ctx context.Cont
 	return nil, nil
 }
 
+func (b *billingCacheWorkerStub) CheckAndIncrementSubscriptionRequestUsage(ctx context.Context, userID, groupID int64, count int64) (int, error) {
+	return -1, nil
+}
+
 func TestBillingCacheServiceQueueHighLoad(t *testing.T) {
 	cache := &billingCacheWorkerStub{}
 	svc := NewBillingCacheService(cache, nil, nil, nil, nil, nil, &config.Config{}, nil)

@@ -110,6 +110,7 @@ func (r *openAIAccountRepoStub) Update(ctx context.Context, account *Account) er
 	return nil
 }
 
+
 // openAIOAuthServiceStub implements OpenAIOAuthService methods for testing
 type openAIOAuthServiceStub struct {
 	tokenInfo     *OpenAITokenInfo

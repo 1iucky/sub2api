@@ -69,6 +69,23 @@ func (UserSubscription) Fields() []ent.Field {
 			SchemaType(map[string]string{dialect.Postgres: "decimal(20,10)"}).
 			Default(0),
 
+		// Plan 实时引用：用于读取当前 plan 的请求次数限额
+		field.Int64("plan_id").
+			Optional().
+			Nillable().
+			Comment("Subscription plan id used for live request limits"),
+
+		// 请求次数用量跟踪（与 USD 共享 window_start）
+		field.Int64("daily_usage_requests").
+			Default(0).
+			Comment("Request count consumed in current daily window"),
+		field.Int64("weekly_usage_requests").
+			Default(0).
+			Comment("Request count consumed in current weekly window"),
+		field.Int64("monthly_usage_requests").
+			Default(0).
+			Comment("Request count consumed in current monthly window"),
+
 		field.Int64("assigned_by").
 			Optional().
 			Nillable(),
@@ -99,6 +116,10 @@ func (UserSubscription) Edges() []ent.Edge {
 			Field("assigned_by").
 			Unique(),
 		edge.To("usage_logs", UsageLog.Type),
+		edge.From("plan", SubscriptionPlan.Type).
+			Ref("subscriptions").
+			Field("plan_id").
+			Unique(),
 	}
 }
 

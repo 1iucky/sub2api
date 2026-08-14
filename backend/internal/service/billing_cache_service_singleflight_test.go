@@ -95,6 +95,10 @@ func (s *billingCacheMissStub) BatchGetUserPlatformQuotaCache(ctx context.Contex
 	return nil, nil
 }
 
+func (s *billingCacheMissStub) CheckAndIncrementSubscriptionRequestUsage(ctx context.Context, userID, groupID int64, count int64) (int, error) {
+	return -1, nil
+}
+
 type balanceLoadUserRepoStub struct {
 	mockUserRepo
 	calls   atomic.Int64
@@ -121,6 +125,7 @@ func (s *balanceLoadUserRepoStub) ListUserAuthIdentities(context.Context, int64)
 func (s *balanceLoadUserRepoStub) UnbindUserAuthProvider(context.Context, int64, string) error {
 	return nil
 }
+
 
 func TestBillingCacheServiceGetUserBalance_Singleflight(t *testing.T) {
 	cache := &billingCacheMissStub{}

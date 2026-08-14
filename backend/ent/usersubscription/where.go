@@ -125,6 +125,26 @@ func MonthlyUsageUsd(v float64) predicate.UserSubscription {
 	return predicate.UserSubscription(sql.FieldEQ(FieldMonthlyUsageUsd, v))
 }
 
+// PlanID applies equality check predicate on the "plan_id" field. It's identical to PlanIDEQ.
+func PlanID(v int64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldEQ(FieldPlanID, v))
+}
+
+// DailyUsageRequests applies equality check predicate on the "daily_usage_requests" field. It's identical to DailyUsageRequestsEQ.
+func DailyUsageRequests(v int64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldEQ(FieldDailyUsageRequests, v))
+}
+
+// WeeklyUsageRequests applies equality check predicate on the "weekly_usage_requests" field. It's identical to WeeklyUsageRequestsEQ.
+func WeeklyUsageRequests(v int64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldEQ(FieldWeeklyUsageRequests, v))
+}
+
+// MonthlyUsageRequests applies equality check predicate on the "monthly_usage_requests" field. It's identical to MonthlyUsageRequestsEQ.
+func MonthlyUsageRequests(v int64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldEQ(FieldMonthlyUsageRequests, v))
+}
+
 // AssignedBy applies equality check predicate on the "assigned_by" field. It's identical to AssignedByEQ.
 func AssignedBy(v int64) predicate.UserSubscription {
 	return predicate.UserSubscription(sql.FieldEQ(FieldAssignedBy, v))
@@ -725,6 +745,156 @@ func MonthlyUsageUsdLTE(v float64) predicate.UserSubscription {
 	return predicate.UserSubscription(sql.FieldLTE(FieldMonthlyUsageUsd, v))
 }
 
+// PlanIDEQ applies the EQ predicate on the "plan_id" field.
+func PlanIDEQ(v int64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldEQ(FieldPlanID, v))
+}
+
+// PlanIDNEQ applies the NEQ predicate on the "plan_id" field.
+func PlanIDNEQ(v int64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldNEQ(FieldPlanID, v))
+}
+
+// PlanIDIn applies the In predicate on the "plan_id" field.
+func PlanIDIn(vs ...int64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldIn(FieldPlanID, vs...))
+}
+
+// PlanIDNotIn applies the NotIn predicate on the "plan_id" field.
+func PlanIDNotIn(vs ...int64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldNotIn(FieldPlanID, vs...))
+}
+
+// PlanIDIsNil applies the IsNil predicate on the "plan_id" field.
+func PlanIDIsNil() predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldIsNull(FieldPlanID))
+}
+
+// PlanIDNotNil applies the NotNil predicate on the "plan_id" field.
+func PlanIDNotNil() predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldNotNull(FieldPlanID))
+}
+
+// DailyUsageRequestsEQ applies the EQ predicate on the "daily_usage_requests" field.
+func DailyUsageRequestsEQ(v int64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldEQ(FieldDailyUsageRequests, v))
+}
+
+// DailyUsageRequestsNEQ applies the NEQ predicate on the "daily_usage_requests" field.
+func DailyUsageRequestsNEQ(v int64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldNEQ(FieldDailyUsageRequests, v))
+}
+
+// DailyUsageRequestsIn applies the In predicate on the "daily_usage_requests" field.
+func DailyUsageRequestsIn(vs ...int64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldIn(FieldDailyUsageRequests, vs...))
+}
+
+// DailyUsageRequestsNotIn applies the NotIn predicate on the "daily_usage_requests" field.
+func DailyUsageRequestsNotIn(vs ...int64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldNotIn(FieldDailyUsageRequests, vs...))
+}
+
+// DailyUsageRequestsGT applies the GT predicate on the "daily_usage_requests" field.
+func DailyUsageRequestsGT(v int64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldGT(FieldDailyUsageRequests, v))
+}
+
+// DailyUsageRequestsGTE applies the GTE predicate on the "daily_usage_requests" field.
+func DailyUsageRequestsGTE(v int64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldGTE(FieldDailyUsageRequests, v))
+}
+
+// DailyUsageRequestsLT applies the LT predicate on the "daily_usage_requests" field.
+func DailyUsageRequestsLT(v int64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldLT(FieldDailyUsageRequests, v))
+}
+
+// DailyUsageRequestsLTE applies the LTE predicate on the "daily_usage_requests" field.
+func DailyUsageRequestsLTE(v int64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldLTE(FieldDailyUsageRequests, v))
+}
+
+// WeeklyUsageRequestsEQ applies the EQ predicate on the "weekly_usage_requests" field.
+func WeeklyUsageRequestsEQ(v int64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldEQ(FieldWeeklyUsageRequests, v))
+}
+
+// WeeklyUsageRequestsNEQ applies the NEQ predicate on the "weekly_usage_requests" field.
+func WeeklyUsageRequestsNEQ(v int64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldNEQ(FieldWeeklyUsageRequests, v))
+}
+
+// WeeklyUsageRequestsIn applies the In predicate on the "weekly_usage_requests" field.
+func WeeklyUsageRequestsIn(vs ...int64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldIn(FieldWeeklyUsageRequests, vs...))
+}
+
+// WeeklyUsageRequestsNotIn applies the NotIn predicate on the "weekly_usage_requests" field.
+func WeeklyUsageRequestsNotIn(vs ...int64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldNotIn(FieldWeeklyUsageRequests, vs...))
+}
+
+// WeeklyUsageRequestsGT applies the GT predicate on the "weekly_usage_requests" field.
+func WeeklyUsageRequestsGT(v int64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldGT(FieldWeeklyUsageRequests, v))
+}
+
+// WeeklyUsageRequestsGTE applies the GTE predicate on the "weekly_usage_requests" field.
+func WeeklyUsageRequestsGTE(v int64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldGTE(FieldWeeklyUsageRequests, v))
+}
+
+// WeeklyUsageRequestsLT applies the LT predicate on the "weekly_usage_requests" field.
+func WeeklyUsageRequestsLT(v int64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldLT(FieldWeeklyUsageRequests, v))
+}
+
+// WeeklyUsageRequestsLTE applies the LTE predicate on the "weekly_usage_requests" field.
+func WeeklyUsageRequestsLTE(v int64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldLTE(FieldWeeklyUsageRequests, v))
+}
+
+// MonthlyUsageRequestsEQ applies the EQ predicate on the "monthly_usage_requests" field.
+func MonthlyUsageRequestsEQ(v int64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldEQ(FieldMonthlyUsageRequests, v))
+}
+
+// MonthlyUsageRequestsNEQ applies the NEQ predicate on the "monthly_usage_requests" field.
+func MonthlyUsageRequestsNEQ(v int64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldNEQ(FieldMonthlyUsageRequests, v))
+}
+
+// MonthlyUsageRequestsIn applies the In predicate on the "monthly_usage_requests" field.
+func MonthlyUsageRequestsIn(vs ...int64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldIn(FieldMonthlyUsageRequests, vs...))
+}
+
+// MonthlyUsageRequestsNotIn applies the NotIn predicate on the "monthly_usage_requests" field.
+func MonthlyUsageRequestsNotIn(vs ...int64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldNotIn(FieldMonthlyUsageRequests, vs...))
+}
+
+// MonthlyUsageRequestsGT applies the GT predicate on the "monthly_usage_requests" field.
+func MonthlyUsageRequestsGT(v int64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldGT(FieldMonthlyUsageRequests, v))
+}
+
+// MonthlyUsageRequestsGTE applies the GTE predicate on the "monthly_usage_requests" field.
+func MonthlyUsageRequestsGTE(v int64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldGTE(FieldMonthlyUsageRequests, v))
+}
+
+// MonthlyUsageRequestsLT applies the LT predicate on the "monthly_usage_requests" field.
+func MonthlyUsageRequestsLT(v int64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldLT(FieldMonthlyUsageRequests, v))
+}
+
+// MonthlyUsageRequestsLTE applies the LTE predicate on the "monthly_usage_requests" field.
+func MonthlyUsageRequestsLTE(v int64) predicate.UserSubscription {
+	return predicate.UserSubscription(sql.FieldLTE(FieldMonthlyUsageRequests, v))
+}
+
 // AssignedByEQ applies the EQ predicate on the "assigned_by" field.
 func AssignedByEQ(v int64) predicate.UserSubscription {
 	return predicate.UserSubscription(sql.FieldEQ(FieldAssignedBy, v))
@@ -954,6 +1124,29 @@ func HasUsageLogs() predicate.UserSubscription {
 func HasUsageLogsWith(preds ...predicate.UsageLog) predicate.UserSubscription {
 	return predicate.UserSubscription(func(s *sql.Selector) {
 		step := newUsageLogsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasPlan applies the HasEdge predicate on the "plan" edge.
+func HasPlan() predicate.UserSubscription {
+	return predicate.UserSubscription(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, PlanTable, PlanColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasPlanWith applies the HasEdge predicate on the "plan" edge with a given conditions (other predicates).
+func HasPlanWith(preds ...predicate.SubscriptionPlan) predicate.UserSubscription {
+	return predicate.UserSubscription(func(s *sql.Selector) {
+		step := newPlanStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

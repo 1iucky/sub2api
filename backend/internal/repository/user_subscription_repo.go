@@ -38,6 +38,10 @@ func (r *userSubscriptionRepository) Create(ctx context.Context, sub *service.Us
 		SetDailyUsageUsd(sub.DailyUsageUSD).
 		SetWeeklyUsageUsd(sub.WeeklyUsageUSD).
 		SetMonthlyUsageUsd(sub.MonthlyUsageUSD).
+		SetNillablePlanID(sub.PlanID).
+		SetDailyUsageRequests(sub.DailyUsageRequests).
+		SetWeeklyUsageRequests(sub.WeeklyUsageRequests).
+		SetMonthlyUsageRequests(sub.MonthlyUsageRequests).
 		SetNillableAssignedBy(sub.AssignedBy)
 
 	if sub.StartsAt.IsZero() {
@@ -67,6 +71,7 @@ func (r *userSubscriptionRepository) GetByID(ctx context.Context, id int64) (*se
 		Where(usersubscription.IDEQ(id)).
 		WithUser().
 		WithGroup().
+		WithPlan().
 		WithAssignedByUser().
 		Only(ctx)
 	if err != nil {
@@ -107,6 +112,7 @@ func (r *userSubscriptionRepository) GetByUserIDAndGroupID(ctx context.Context, 
 	m, err := client.UserSubscription.Query().
 		Where(usersubscription.UserIDEQ(userID), usersubscription.GroupIDEQ(groupID)).
 		WithGroup().
+		WithPlan().
 		Only(ctx)
 	if err != nil {
 		return nil, translatePersistenceError(err, service.ErrSubscriptionNotFound, nil)
@@ -124,6 +130,7 @@ func (r *userSubscriptionRepository) GetActiveByUserIDAndGroupID(ctx context.Con
 			usersubscription.ExpiresAtGT(time.Now()),
 		).
 		WithGroup().
+		WithPlan().
 		Only(ctx)
 	if err != nil {
 		return nil, translatePersistenceError(err, service.ErrSubscriptionNotFound, nil)
@@ -149,6 +156,10 @@ func (r *userSubscriptionRepository) Update(ctx context.Context, sub *service.Us
 		SetDailyUsageUsd(sub.DailyUsageUSD).
 		SetWeeklyUsageUsd(sub.WeeklyUsageUSD).
 		SetMonthlyUsageUsd(sub.MonthlyUsageUSD).
+		SetNillablePlanID(sub.PlanID).
+		SetDailyUsageRequests(sub.DailyUsageRequests).
+		SetWeeklyUsageRequests(sub.WeeklyUsageRequests).
+		SetMonthlyUsageRequests(sub.MonthlyUsageRequests).
 		SetNillableAssignedBy(sub.AssignedBy).
 		SetAssignedAt(sub.AssignedAt).
 		SetNotes(sub.Notes)
@@ -158,6 +169,18 @@ func (r *userSubscriptionRepository) Update(ctx context.Context, sub *service.Us
 		applyUserSubscriptionEntityToService(sub, updated)
 		return nil
 	}
+	return translatePersistenceError(err, service.ErrSubscriptionNotFound, service.ErrSubscriptionAlreadyExists)
+}
+
+func (r *userSubscriptionRepository) UpdatePlanID(ctx context.Context, subscriptionID int64, planID *int64) error {
+	client := clientFromContext(ctx, r.client)
+	builder := client.UserSubscription.UpdateOneID(subscriptionID).
+		ClearPlanID()
+	if planID != nil {
+		builder = client.UserSubscription.UpdateOneID(subscriptionID).
+			SetPlanID(*planID)
+	}
+	_, err := builder.Save(ctx)
 	return translatePersistenceError(err, service.ErrSubscriptionNotFound, service.ErrSubscriptionAlreadyExists)
 }
 
@@ -187,6 +210,7 @@ func (r *userSubscriptionRepository) ListByUserID(ctx context.Context, userID in
 	subs, err := client.UserSubscription.Query().
 		Where(usersubscription.UserIDEQ(userID)).
 		WithGroup().
+		WithPlan().
 		Order(dbent.Desc(usersubscription.FieldCreatedAt)).
 		All(ctx)
 	if err != nil {
@@ -204,6 +228,7 @@ func (r *userSubscriptionRepository) ListActiveByUserID(ctx context.Context, use
 			usersubscription.ExpiresAtGT(time.Now()),
 		).
 		WithGroup().
+		WithPlan().
 		Order(dbent.Desc(usersubscription.FieldCreatedAt)).
 		All(ctx)
 	if err != nil {
@@ -224,6 +249,7 @@ func (r *userSubscriptionRepository) ListByGroupID(ctx context.Context, groupID 
 	subs, err := q.
 		WithUser().
 		WithGroup().
+		WithPlan().
 		Order(dbent.Desc(usersubscription.FieldCreatedAt)).
 		Offset(params.Offset()).
 		Limit(params.Limit()).
@@ -294,7 +320,7 @@ func (r *userSubscriptionRepository) List(ctx context.Context, params pagination
 	}
 
 	if !includeSoftDeleted {
-		q = q.WithUser().WithGroup().WithAssignedByUser()
+		q = q.WithUser().WithGroup().WithPlan().WithAssignedByUser()
 	}
 
 	// Determine sort field
@@ -410,6 +436,7 @@ func (r *userSubscriptionRepository) ResetDailyUsage(ctx context.Context, id int
 	}
 	n, err := query.
 		SetDailyUsageUsd(0).
+		SetDailyUsageRequests(0).
 		SetDailyWindowStart(newWindowStart).
 		Save(ctx)
 	return r.translateConditionalWindowReset(ctx, client, id, n, err)
@@ -425,6 +452,7 @@ func (r *userSubscriptionRepository) ResetWeeklyUsage(ctx context.Context, id in
 	}
 	n, err := query.
 		SetWeeklyUsageUsd(0).
+		SetWeeklyUsageRequests(0).
 		SetWeeklyWindowStart(newWindowStart).
 		Save(ctx)
 	return r.translateConditionalWindowReset(ctx, client, id, n, err)
@@ -440,6 +468,7 @@ func (r *userSubscriptionRepository) ResetMonthlyUsage(ctx context.Context, id i
 	}
 	n, err := query.
 		SetMonthlyUsageUsd(0).
+		SetMonthlyUsageRequests(0).
 		SetMonthlyWindowStart(newWindowStart).
 		Save(ctx)
 	return r.translateConditionalWindowReset(ctx, client, id, n, err)
@@ -500,6 +529,94 @@ func (r *userSubscriptionRepository) IncrementUsage(ctx context.Context, id int6
 
 	// affected == 0：订阅不存在或已删除
 	return service.ErrSubscriptionNotFound
+}
+
+// IncrementRequestUsage 原子性地累加订阅请求次数。
+func (r *userSubscriptionRepository) IncrementRequestUsage(ctx context.Context, id int64, count int64) error {
+	const updateSQL = `
+		UPDATE user_subscriptions us
+		SET
+			daily_usage_requests = us.daily_usage_requests + $1,
+			weekly_usage_requests = us.weekly_usage_requests + $1,
+			monthly_usage_requests = us.monthly_usage_requests + $1,
+			updated_at = NOW()
+		FROM groups g
+		WHERE us.id = $2
+			AND us.deleted_at IS NULL
+			AND us.group_id = g.id
+			AND g.deleted_at IS NULL
+	`
+
+	client := clientFromContext(ctx, r.client)
+	result, err := client.ExecContext(ctx, updateSQL, count, id)
+	if err != nil {
+		return err
+	}
+
+	affected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if affected > 0 {
+		return nil
+	}
+
+	return service.ErrSubscriptionNotFound
+}
+
+// ListActiveRefsByPlanID 查询引用指定 plan 的活跃订阅引用，用于 plan 更新后缓存失效。
+func (r *userSubscriptionRepository) ListActiveRefsByPlanID(ctx context.Context, planID int64) ([]service.SubscriptionRef, error) {
+	const querySQL = `
+		SELECT id, user_id, group_id
+		FROM user_subscriptions
+		WHERE plan_id = $1
+			AND deleted_at IS NULL
+			AND status = 'active'
+			AND expires_at > NOW()
+	`
+
+	client := clientFromContext(ctx, r.client)
+	rows, err := client.QueryContext(ctx, querySQL, planID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var refs []service.SubscriptionRef
+	for rows.Next() {
+		var ref service.SubscriptionRef
+		if err := rows.Scan(&ref.ID, &ref.UserID, &ref.GroupID); err != nil {
+			return nil, err
+		}
+		refs = append(refs, ref)
+	}
+	return refs, rows.Err()
+}
+
+// CountActiveByPlanID 统计引用指定 plan 的活跃订阅数，用于 plan 删除保护。
+func (r *userSubscriptionRepository) CountActiveByPlanID(ctx context.Context, planID int64) (int64, error) {
+	client := clientFromContext(ctx, r.client)
+	count, err := client.UserSubscription.Query().
+		Where(
+			usersubscription.PlanIDEQ(planID),
+			usersubscription.DeletedAtIsNil(),
+			usersubscription.StatusEQ(service.SubscriptionStatusActive),
+			usersubscription.ExpiresAtGT(time.Now()),
+		).
+		Count(ctx)
+	return int64(count), err
+}
+
+func (r *userSubscriptionRepository) CountByPlanID(ctx context.Context, planID int64) (int64, error) {
+	client := clientFromContext(ctx, r.client)
+	count, err := client.UserSubscription.Query().
+		Where(
+			usersubscription.PlanIDEQ(planID),
+			usersubscription.DeletedAtIsNil(),
+		).
+		Count(ctx)
+	return int64(count), err
 }
 
 func (r *userSubscriptionRepository) BatchUpdateExpiredStatus(ctx context.Context) (int64, error) {
@@ -641,24 +758,28 @@ func userSubscriptionEntityToServiceWithStatusMapping(m *dbent.UserSubscription,
 		status = service.SubscriptionStatusRevoked
 	}
 	out := &service.UserSubscription{
-		ID:                 m.ID,
-		UserID:             m.UserID,
-		GroupID:            m.GroupID,
-		StartsAt:           m.StartsAt,
-		ExpiresAt:          m.ExpiresAt,
-		Status:             status,
-		DailyWindowStart:   m.DailyWindowStart,
-		WeeklyWindowStart:  m.WeeklyWindowStart,
-		MonthlyWindowStart: m.MonthlyWindowStart,
-		DailyUsageUSD:      m.DailyUsageUsd,
-		WeeklyUsageUSD:     m.WeeklyUsageUsd,
-		MonthlyUsageUSD:    m.MonthlyUsageUsd,
-		AssignedBy:         m.AssignedBy,
-		AssignedAt:         m.AssignedAt,
-		Notes:              derefString(m.Notes),
-		CreatedAt:          m.CreatedAt,
-		UpdatedAt:          m.UpdatedAt,
-		DeletedAt:          m.DeletedAt,
+		ID:                   m.ID,
+		UserID:               m.UserID,
+		GroupID:              m.GroupID,
+		StartsAt:             m.StartsAt,
+		ExpiresAt:            m.ExpiresAt,
+		Status:               status,
+		DailyWindowStart:     m.DailyWindowStart,
+		WeeklyWindowStart:    m.WeeklyWindowStart,
+		MonthlyWindowStart:   m.MonthlyWindowStart,
+		DailyUsageUSD:        m.DailyUsageUsd,
+		WeeklyUsageUSD:       m.WeeklyUsageUsd,
+		MonthlyUsageUSD:      m.MonthlyUsageUsd,
+		PlanID:               m.PlanID,
+		DailyUsageRequests:   m.DailyUsageRequests,
+		WeeklyUsageRequests:  m.WeeklyUsageRequests,
+		MonthlyUsageRequests: m.MonthlyUsageRequests,
+		AssignedBy:           m.AssignedBy,
+		AssignedAt:           m.AssignedAt,
+		Notes:                derefString(m.Notes),
+		CreatedAt:            m.CreatedAt,
+		UpdatedAt:            m.UpdatedAt,
+		DeletedAt:            m.DeletedAt,
 	}
 	if m.Edges.User != nil {
 		out.User = userEntityToService(m.Edges.User)
@@ -668,6 +789,15 @@ func userSubscriptionEntityToServiceWithStatusMapping(m *dbent.UserSubscription,
 	}
 	if m.Edges.AssignedByUser != nil {
 		out.AssignedByUser = userEntityToService(m.Edges.AssignedByUser)
+	}
+	if m.Edges.Plan != nil {
+		out.Plan = &service.SubscriptionPlanLimitData{
+			ID:                  m.Edges.Plan.ID,
+			DailyRequestLimit:   m.Edges.Plan.DailyRequestLimit,
+			WeeklyRequestLimit:  m.Edges.Plan.WeeklyRequestLimit,
+			MonthlyRequestLimit: m.Edges.Plan.MonthlyRequestLimit,
+			UpdatedAt:           m.Edges.Plan.UpdatedAt,
+		}
 	}
 	return out
 }

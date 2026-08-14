@@ -39,7 +39,14 @@ var (
 	ErrWeeklyLimitExceeded         = infraerrors.TooManyRequests("WEEKLY_LIMIT_EXCEEDED", "weekly usage limit exceeded")
 	ErrMonthlyLimitExceeded        = infraerrors.TooManyRequests("MONTHLY_LIMIT_EXCEEDED", "monthly usage limit exceeded")
 	ErrSubscriptionNilInput        = infraerrors.BadRequest("SUBSCRIPTION_NIL_INPUT", "subscription input cannot be nil")
+
+	// Request count limit errors (from SubscriptionPlan)
+	ErrDailyRequestLimitExceeded   = infraerrors.TooManyRequests("DAILY_REQUEST_LIMIT_EXCEEDED", "daily request count limit exceeded")
+	ErrWeeklyRequestLimitExceeded  = infraerrors.TooManyRequests("WEEKLY_REQUEST_LIMIT_EXCEEDED", "weekly request count limit exceeded")
+	ErrMonthlyRequestLimitExceeded = infraerrors.TooManyRequests("MONTHLY_REQUEST_LIMIT_EXCEEDED", "monthly request count limit exceeded")
 	ErrAdjustWouldExpire           = infraerrors.BadRequest("ADJUST_WOULD_EXPIRE", "adjustment would result in expired subscription (remaining days must be > 0)")
+	ErrPlanNotFound                = infraerrors.BadRequest("PLAN_NOT_FOUND", "subscription plan not found")
+	ErrPlanGroupMismatch           = infraerrors.BadRequest("PLAN_GROUP_MISMATCH", "subscription plan does not belong to the specified group")
 )
 
 // SubscriptionService 订阅服务
@@ -190,6 +197,25 @@ func (s *SubscriptionService) invalidateSubscriptionCaches(userID, groupID int64
 	return nil
 }
 
+// InvalidateSubscriptionsByPlan proactively invalidates L1 + Redis caches for all
+// active subscriptions referencing the given plan. Called after plan config changes
+// to ensure live limits take effect immediately.
+func (s *SubscriptionService) InvalidateSubscriptionsByPlan(ctx context.Context, planID int64) {
+	refs, err := s.userSubRepo.ListActiveRefsByPlanID(ctx, planID)
+	if err != nil {
+		log.Printf("Warning: ListActiveRefsByPlanID failed for plan %d: %v", planID, err)
+		return
+	}
+	for _, ref := range refs {
+		s.InvalidateSubCache(ref.UserID, ref.GroupID)
+		if s.billingCacheService != nil {
+			if err := s.billingCacheService.InvalidateSubscription(ctx, ref.UserID, ref.GroupID); err != nil {
+				log.Printf("Warning: invalidate Redis cache failed for user %d group %d: %v", ref.UserID, ref.GroupID, err)
+			}
+		}
+	}
+}
+
 // AssignSubscriptionInput 分配订阅输入
 type AssignSubscriptionInput struct {
 	UserID       int64
@@ -197,15 +223,37 @@ type AssignSubscriptionInput struct {
 	ValidityDays int
 	AssignedBy   int64
 	Notes        string
+	PlanID       *int64 // Optional: link to SubscriptionPlan for live request limits
 }
 
 // AssignSubscription 分配订阅给用户（不允许重复分配）
 func (s *SubscriptionService) AssignSubscription(ctx context.Context, input *AssignSubscriptionInput) (*UserSubscription, error) {
+	// Validate plan_id if provided: plan must exist and belong to the same group
+	if input.PlanID != nil {
+		if err := s.validatePlanForGroup(ctx, *input.PlanID, input.GroupID); err != nil {
+			return nil, err
+		}
+	}
 	sub, _, err := s.assignSubscriptionWithReuse(ctx, input)
 	if err != nil {
 		return nil, err
 	}
 	return sub, nil
+}
+
+// validatePlanForGroup validates that a subscription plan exists and belongs to the specified group.
+func (s *SubscriptionService) validatePlanForGroup(ctx context.Context, planID, groupID int64) error {
+	if s.entClient == nil {
+		return nil // skip validation when ent client is not available (tests)
+	}
+	plan, err := s.entClient.SubscriptionPlan.Get(ctx, planID)
+	if err != nil {
+		return ErrPlanNotFound
+	}
+	if plan.GroupID != groupID {
+		return ErrPlanGroupMismatch
+	}
+	return nil
 }
 
 // AssignOrExtendSubscription 分配或续期订阅（用于兑换码等场景）
@@ -228,6 +276,13 @@ func (s *SubscriptionService) assignOrExtendSubscription(ctx context.Context, in
 		return nil, false, ErrGroupNotSubscriptionType
 	}
 
+	// Validate plan_id if provided
+	if input.PlanID != nil {
+		if err := s.validatePlanForGroup(ctx, *input.PlanID, input.GroupID); err != nil {
+			return nil, false, err
+		}
+	}
+
 	// 查询是否已有订阅
 	existingSub, err := s.userSubRepo.GetByUserIDAndGroupID(ctx, input.UserID, input.GroupID)
 	if err != nil {
@@ -245,7 +300,7 @@ func (s *SubscriptionService) assignOrExtendSubscription(ctx context.Context, in
 
 	// 已有订阅，执行续期（在事务中完成所有更新）
 	if existingSub != nil {
-		if err := s.updateExistingSubscriptionTerm(ctx, existingSub.ID, validityDays, input.Notes, false); err != nil {
+		if err := s.updateExistingSubscriptionTerm(ctx, existingSub.ID, validityDays, input.Notes, false, input.PlanID); err != nil {
 			return nil, false, err
 		}
 
@@ -293,6 +348,7 @@ func (s *SubscriptionService) updateExistingSubscriptionTerm(
 	validityDays int,
 	notes string,
 	assignmentSemantics bool,
+	planID *int64,
 ) error {
 	return s.withSubscriptionUpdateTx(ctx, func(txCtx context.Context) error {
 		existingSub, err := s.userSubRepo.GetByIDForUpdate(txCtx, subscriptionID)
@@ -325,6 +381,9 @@ func (s *SubscriptionService) updateExistingSubscriptionTerm(
 
 		if isExpired {
 			renewed := renewedSubscriptionTerm(existingSub, notes, now, newExpiresAt)
+			if planID != nil {
+				renewed.PlanID = planID
+			}
 			if err := s.userSubRepo.Update(txCtx, renewed); err != nil {
 				return fmt.Errorf("renew expired subscription: %w", err)
 			}
@@ -334,6 +393,13 @@ func (s *SubscriptionService) updateExistingSubscriptionTerm(
 		// 更新过期时间
 		if err := s.userSubRepo.ExtendExpiry(txCtx, existingSub.ID, newExpiresAt); err != nil {
 			return fmt.Errorf("extend subscription: %w", err)
+		}
+
+		// Update plan_id if a new plan is specified (e.g. purchasing a different plan).
+		if planID != nil {
+			if err := s.userSubRepo.UpdatePlanID(txCtx, existingSub.ID, planID); err != nil {
+				return fmt.Errorf("update subscription plan: %w", err)
+			}
 		}
 
 		// 如果订阅被暂停，恢复为 active 状态
@@ -393,6 +459,9 @@ func renewedSubscriptionTerm(existingSub *UserSubscription, notes string, starts
 	renewed.DailyUsageUSD = 0
 	renewed.WeeklyUsageUSD = 0
 	renewed.MonthlyUsageUSD = 0
+	renewed.DailyUsageRequests = 0
+	renewed.WeeklyUsageRequests = 0
+	renewed.MonthlyUsageRequests = 0
 	renewed.Notes = appendSubscriptionNotes(existingSub.Notes, notes)
 	return &renewed
 }
@@ -431,6 +500,7 @@ func (s *SubscriptionService) createSubscription(ctx context.Context, input *Ass
 		Status:     SubscriptionStatusActive,
 		AssignedAt: now,
 		Notes:      input.Notes,
+		PlanID:     input.PlanID,
 		CreatedAt:  now,
 		UpdatedAt:  now,
 	}
@@ -527,7 +597,7 @@ func (s *SubscriptionService) assignSubscriptionWithReuse(ctx context.Context, i
 		if sub.Status == SubscriptionStatusExpired ||
 			(sub.Status != SubscriptionStatusSuspended && !sub.ExpiresAt.After(now)) {
 			validityDays := normalizeAssignValidityDays(input.ValidityDays)
-			if err := s.updateExistingSubscriptionTerm(ctx, sub.ID, validityDays, input.Notes, true); err != nil {
+			if err := s.updateExistingSubscriptionTerm(ctx, sub.ID, validityDays, input.Notes, true, input.PlanID); err != nil {
 				return nil, false, err
 			}
 			s.maybeInvalidateAssignmentCaches(input.UserID, input.GroupID, false)
@@ -820,16 +890,19 @@ func normalizeExpiredWindowsAt(subs []UserSubscription, now time.Time) {
 		if sub.canAutomaticallyResetDailyAt(now) {
 			sub.DailyWindowStart = nil
 			sub.DailyUsageUSD = 0
+			sub.DailyUsageRequests = 0
 		}
 		// 周窗口过期：清零展示数据
 		if sub.canAutomaticallyResetWeeklyAt(now) {
 			sub.WeeklyWindowStart = nil
 			sub.WeeklyUsageUSD = 0
+			sub.WeeklyUsageRequests = 0
 		}
 		// 月窗口过期：清零展示数据
 		if sub.canAutomaticallyResetMonthlyAt(now) {
 			sub.MonthlyWindowStart = nil
 			sub.MonthlyUsageUSD = 0
+			sub.MonthlyUsageRequests = 0
 		}
 	}
 }
@@ -979,6 +1052,21 @@ func (s *SubscriptionService) CheckUsageLimits(ctx context.Context, sub *UserSub
 	if !sub.CheckMonthlyLimit(group, additionalCost) {
 		return ErrMonthlyLimitExceeded
 	}
+
+	// Check request count limits from plan
+	dailyLimit, weeklyLimit, monthlyLimit := limitsFromSubscriptionPlan(sub)
+	if isPlanNotLoadedSentinel(dailyLimit) || isPlanNotLoadedSentinel(weeklyLimit) || isPlanNotLoadedSentinel(monthlyLimit) {
+		return ErrBillingServiceUnavailable
+	}
+	if !sub.CheckDailyRequestLimit(dailyLimit, 1) {
+		return ErrDailyRequestLimitExceeded
+	}
+	if !sub.CheckWeeklyRequestLimit(weeklyLimit, 1) {
+		return ErrWeeklyRequestLimitExceeded
+	}
+	if !sub.CheckMonthlyRequestLimit(monthlyLimit, 1) {
+		return ErrMonthlyRequestLimitExceeded
+	}
 	return nil
 }
 
@@ -1002,14 +1090,17 @@ func (s *SubscriptionService) ValidateAndCheckLimits(sub *UserSubscription, grou
 	//    调用方随后同步推进 DB 窗口，并用回读快照重新校验。
 	if sub.canAutomaticallyResetDailyAt(now) {
 		sub.DailyUsageUSD = 0
+		sub.DailyUsageRequests = 0
 		needsMaintenance = true
 	}
 	if sub.canAutomaticallyResetWeeklyAt(now) {
 		sub.WeeklyUsageUSD = 0
+		sub.WeeklyUsageRequests = 0
 		needsMaintenance = true
 	}
 	if sub.canAutomaticallyResetMonthlyAt(now) {
 		sub.MonthlyUsageUSD = 0
+		sub.MonthlyUsageRequests = 0
 		needsMaintenance = true
 	}
 	if !sub.IsWindowActivated() {
@@ -1025,6 +1116,15 @@ func (s *SubscriptionService) ValidateAndCheckLimits(sub *UserSubscription, grou
 	}
 	if !sub.CheckMonthlyLimit(group, 0) {
 		return needsMaintenance, ErrMonthlyLimitExceeded
+	}
+
+	// Request count limits are NOT checked here (non-atomic local check
+	// can pass multiple concurrent requests). They are enforced exclusively
+	// by BillingCacheService.CheckBillingEligibility via atomic Redis Lua.
+	// Only guard against Plan not being loaded (data integrity check).
+	dailyReqLimit, weeklyReqLimit, monthlyReqLimit := limitsFromSubscriptionPlan(sub)
+	if isPlanNotLoadedSentinel(dailyReqLimit) || isPlanNotLoadedSentinel(weeklyReqLimit) || isPlanNotLoadedSentinel(monthlyReqLimit) {
+		return needsMaintenance, ErrBillingServiceUnavailable
 	}
 
 	return needsMaintenance, nil
@@ -1097,6 +1197,11 @@ type UsageWindowProgress struct {
 	WindowStart     time.Time `json:"window_start"`
 	ResetsAt        time.Time `json:"resets_at"`
 	ResetsInSeconds int64     `json:"resets_in_seconds"`
+
+	// Request count progress (from SubscriptionPlan)
+	RequestLimit     *int64 `json:"request_limit,omitempty"`
+	RequestUsed      int64  `json:"request_used"`
+	RequestRemaining *int64 `json:"request_remaining,omitempty"`
 }
 
 // GetSubscriptionProgress 获取订阅使用进度
@@ -1199,6 +1304,36 @@ func (s *SubscriptionService) calculateProgress(sub *UserSubscription, group *Gr
 		if progress.Monthly.ResetsInSeconds < 0 {
 			progress.Monthly.ResetsInSeconds = 0
 		}
+	}
+
+	// Populate request count progress from plan
+	dailyLimit, weeklyLimit, monthlyLimit := limitsFromSubscriptionPlan(sub)
+	if progress.Daily != nil && dailyLimit != nil {
+		progress.Daily.RequestLimit = dailyLimit
+		progress.Daily.RequestUsed = sub.DailyUsageRequests
+		remaining := *dailyLimit - sub.DailyUsageRequests
+		if remaining < 0 {
+			remaining = 0
+		}
+		progress.Daily.RequestRemaining = &remaining
+	}
+	if progress.Weekly != nil && weeklyLimit != nil {
+		progress.Weekly.RequestLimit = weeklyLimit
+		progress.Weekly.RequestUsed = sub.WeeklyUsageRequests
+		remaining := *weeklyLimit - sub.WeeklyUsageRequests
+		if remaining < 0 {
+			remaining = 0
+		}
+		progress.Weekly.RequestRemaining = &remaining
+	}
+	if progress.Monthly != nil && monthlyLimit != nil {
+		progress.Monthly.RequestLimit = monthlyLimit
+		progress.Monthly.RequestUsed = sub.MonthlyUsageRequests
+		remaining := *monthlyLimit - sub.MonthlyUsageRequests
+		if remaining < 0 {
+			remaining = 0
+		}
+		progress.Monthly.RequestRemaining = &remaining
 	}
 
 	return progress

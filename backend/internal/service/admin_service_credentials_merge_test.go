@@ -25,6 +25,7 @@ func (r *updateAccountCredsRepoStub) Update(ctx context.Context, account *Accoun
 	return nil
 }
 
+
 func TestUpdateAccount_PreservesSensitiveCredsWhenIncomingOmits(t *testing.T) {
 	accountID := int64(202)
 	repo := &updateAccountCredsRepoStub{

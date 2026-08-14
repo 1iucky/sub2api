@@ -43,6 +43,14 @@ const (
 	FieldWeeklyUsageUsd = "weekly_usage_usd"
 	// FieldMonthlyUsageUsd holds the string denoting the monthly_usage_usd field in the database.
 	FieldMonthlyUsageUsd = "monthly_usage_usd"
+	// FieldPlanID holds the string denoting the plan_id field in the database.
+	FieldPlanID = "plan_id"
+	// FieldDailyUsageRequests holds the string denoting the daily_usage_requests field in the database.
+	FieldDailyUsageRequests = "daily_usage_requests"
+	// FieldWeeklyUsageRequests holds the string denoting the weekly_usage_requests field in the database.
+	FieldWeeklyUsageRequests = "weekly_usage_requests"
+	// FieldMonthlyUsageRequests holds the string denoting the monthly_usage_requests field in the database.
+	FieldMonthlyUsageRequests = "monthly_usage_requests"
 	// FieldAssignedBy holds the string denoting the assigned_by field in the database.
 	FieldAssignedBy = "assigned_by"
 	// FieldAssignedAt holds the string denoting the assigned_at field in the database.
@@ -57,6 +65,8 @@ const (
 	EdgeAssignedByUser = "assigned_by_user"
 	// EdgeUsageLogs holds the string denoting the usage_logs edge name in mutations.
 	EdgeUsageLogs = "usage_logs"
+	// EdgePlan holds the string denoting the plan edge name in mutations.
+	EdgePlan = "plan"
 	// Table holds the table name of the usersubscription in the database.
 	Table = "user_subscriptions"
 	// UserTable is the table that holds the user relation/edge.
@@ -87,6 +97,13 @@ const (
 	UsageLogsInverseTable = "usage_logs"
 	// UsageLogsColumn is the table column denoting the usage_logs relation/edge.
 	UsageLogsColumn = "subscription_id"
+	// PlanTable is the table that holds the plan relation/edge.
+	PlanTable = "user_subscriptions"
+	// PlanInverseTable is the table name for the SubscriptionPlan entity.
+	// It exists in this package in order to avoid circular dependency with the "subscriptionplan" package.
+	PlanInverseTable = "subscription_plans"
+	// PlanColumn is the table column denoting the plan relation/edge.
+	PlanColumn = "plan_id"
 )
 
 // Columns holds all SQL columns for usersubscription fields.
@@ -106,6 +123,10 @@ var Columns = []string{
 	FieldDailyUsageUsd,
 	FieldWeeklyUsageUsd,
 	FieldMonthlyUsageUsd,
+	FieldPlanID,
+	FieldDailyUsageRequests,
+	FieldWeeklyUsageRequests,
+	FieldMonthlyUsageRequests,
 	FieldAssignedBy,
 	FieldAssignedAt,
 	FieldNotes,
@@ -145,6 +166,12 @@ var (
 	DefaultWeeklyUsageUsd float64
 	// DefaultMonthlyUsageUsd holds the default value on creation for the "monthly_usage_usd" field.
 	DefaultMonthlyUsageUsd float64
+	// DefaultDailyUsageRequests holds the default value on creation for the "daily_usage_requests" field.
+	DefaultDailyUsageRequests int64
+	// DefaultWeeklyUsageRequests holds the default value on creation for the "weekly_usage_requests" field.
+	DefaultWeeklyUsageRequests int64
+	// DefaultMonthlyUsageRequests holds the default value on creation for the "monthly_usage_requests" field.
+	DefaultMonthlyUsageRequests int64
 	// DefaultAssignedAt holds the default value on creation for the "assigned_at" field.
 	DefaultAssignedAt func() time.Time
 )
@@ -227,6 +254,26 @@ func ByMonthlyUsageUsd(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldMonthlyUsageUsd, opts...).ToFunc()
 }
 
+// ByPlanID orders the results by the plan_id field.
+func ByPlanID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPlanID, opts...).ToFunc()
+}
+
+// ByDailyUsageRequests orders the results by the daily_usage_requests field.
+func ByDailyUsageRequests(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDailyUsageRequests, opts...).ToFunc()
+}
+
+// ByWeeklyUsageRequests orders the results by the weekly_usage_requests field.
+func ByWeeklyUsageRequests(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldWeeklyUsageRequests, opts...).ToFunc()
+}
+
+// ByMonthlyUsageRequests orders the results by the monthly_usage_requests field.
+func ByMonthlyUsageRequests(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldMonthlyUsageRequests, opts...).ToFunc()
+}
+
 // ByAssignedBy orders the results by the assigned_by field.
 func ByAssignedBy(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAssignedBy, opts...).ToFunc()
@@ -276,6 +323,13 @@ func ByUsageLogs(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newUsageLogsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
+
+// ByPlanField orders the results by plan field.
+func ByPlanField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newPlanStep(), sql.OrderByField(field, opts...))
+	}
+}
 func newUserStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -302,5 +356,12 @@ func newUsageLogsStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(UsageLogsInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, UsageLogsTable, UsageLogsColumn),
+	)
+}
+func newPlanStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(PlanInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, PlanTable, PlanColumn),
 	)
 }

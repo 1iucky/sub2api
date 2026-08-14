@@ -133,6 +133,7 @@ func (m *mockErrorPassthroughRepo) Delete(ctx context.Context, id int64) error {
 	return nil
 }
 
+
 // newTestService 创建测试用的服务实例
 func newTestService(rules []*model.ErrorPassthroughRule) *ErrorPassthroughService {
 	repo := &mockErrorPassthroughRepo{rules: rules}

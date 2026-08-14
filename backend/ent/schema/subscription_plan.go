@@ -7,6 +7,7 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
 )
@@ -61,6 +62,21 @@ func (SubscriptionPlan) Fields() []ent.Field {
 			Default(true),
 		field.Int("sort_order").
 			Default(0),
+
+		// 请求次数限额（null = 不限制, 0 = 禁止所有请求, >0 = 具体限额）
+		field.Int64("daily_request_limit").
+			Optional().
+			Nillable().
+			Comment("Daily request count limit (null = unlimited, 0 = deny all)"),
+		field.Int64("weekly_request_limit").
+			Optional().
+			Nillable().
+			Comment("Weekly request count limit (null = unlimited, 0 = deny all)"),
+		field.Int64("monthly_request_limit").
+			Optional().
+			Nillable().
+			Comment("Monthly request count limit (null = unlimited, 0 = deny all)"),
+
 		field.Time("created_at").
 			Immutable().
 			Default(time.Now).
@@ -76,5 +92,11 @@ func (SubscriptionPlan) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("group_id"),
 		index.Fields("for_sale"),
+	}
+}
+
+func (SubscriptionPlan) Edges() []ent.Edge {
+	return []ent.Edge{
+		edge.To("subscriptions", UserSubscription.Type),
 	}
 }

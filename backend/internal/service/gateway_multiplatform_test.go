@@ -353,6 +353,7 @@ func (m *mockGroupRepoForGateway) UpdateSortOrders(ctx context.Context, updates 
 	return nil
 }
 
+
 func ptr[T any](v T) *T {
 	return &v
 }

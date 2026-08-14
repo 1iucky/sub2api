@@ -68,6 +68,16 @@ func validatePlanPatch(req UpdatePlanRequest) error {
 	if req.OriginalPrice != nil && *req.OriginalPrice < 0 {
 		return infraerrors.BadRequest("PLAN_ORIGINAL_PRICE_INVALID", "original price must be >= 0")
 	}
+	// Validate request count limits (three-state: not provided = skip)
+	if req.DailyRequestLimit.Set && req.DailyRequestLimit.Value != nil && *req.DailyRequestLimit.Value < 0 {
+		return infraerrors.BadRequest("PLAN_DAILY_REQUEST_LIMIT_INVALID", "daily request limit must be >= 0")
+	}
+	if req.WeeklyRequestLimit.Set && req.WeeklyRequestLimit.Value != nil && *req.WeeklyRequestLimit.Value < 0 {
+		return infraerrors.BadRequest("PLAN_WEEKLY_REQUEST_LIMIT_INVALID", "weekly request limit must be >= 0")
+	}
+	if req.MonthlyRequestLimit.Set && req.MonthlyRequestLimit.Value != nil && *req.MonthlyRequestLimit.Value < 0 {
+		return infraerrors.BadRequest("PLAN_MONTHLY_REQUEST_LIMIT_INVALID", "monthly request limit must be >= 0")
+	}
 	return nil
 }
 
@@ -148,6 +158,15 @@ func (s *PaymentConfigService) CreatePlan(ctx context.Context, req CreatePlanReq
 	if req.OriginalPrice != nil {
 		b.SetOriginalPrice(*req.OriginalPrice)
 	}
+	if req.DailyRequestLimit != nil {
+		b.SetNillableDailyRequestLimit(req.DailyRequestLimit)
+	}
+	if req.WeeklyRequestLimit != nil {
+		b.SetNillableWeeklyRequestLimit(req.WeeklyRequestLimit)
+	}
+	if req.MonthlyRequestLimit != nil {
+		b.SetNillableMonthlyRequestLimit(req.MonthlyRequestLimit)
+	}
 	return b.Save(ctx)
 }
 
@@ -199,7 +218,37 @@ func (s *PaymentConfigService) UpdatePlan(ctx context.Context, id int64, req Upd
 	if req.SortOrder != nil {
 		u.SetSortOrder(*req.SortOrder)
 	}
-	return u.Save(ctx)
+	// Three-state request limit handling: Set=true, Value=nil → clear; Value=non-nil → set
+	if req.DailyRequestLimit.Set {
+		if req.DailyRequestLimit.Value != nil {
+			u.SetDailyRequestLimit(*req.DailyRequestLimit.Value)
+		} else {
+			u.ClearDailyRequestLimit()
+		}
+	}
+	if req.WeeklyRequestLimit.Set {
+		if req.WeeklyRequestLimit.Value != nil {
+			u.SetWeeklyRequestLimit(*req.WeeklyRequestLimit.Value)
+		} else {
+			u.ClearWeeklyRequestLimit()
+		}
+	}
+	if req.MonthlyRequestLimit.Set {
+		if req.MonthlyRequestLimit.Value != nil {
+			u.SetMonthlyRequestLimit(*req.MonthlyRequestLimit.Value)
+		} else {
+			u.ClearMonthlyRequestLimit()
+		}
+	}
+	result, err := u.Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+	// Proactively invalidate subscription caches referencing this plan
+	if s.subscriptionSvc != nil {
+		s.subscriptionSvc.InvalidateSubscriptionsByPlan(ctx, id)
+	}
+	return result, nil
 }
 
 func (s *PaymentConfigService) DeletePlan(ctx context.Context, id int64) error {
@@ -210,6 +259,17 @@ func (s *PaymentConfigService) DeletePlan(ctx context.Context, id int64) error {
 	if count > 0 {
 		return infraerrors.Conflict("PENDING_ORDERS",
 			fmt.Sprintf("this plan has %d in-progress orders and cannot be deleted — wait for orders to complete first", count))
+	}
+	// Check for any non-deleted subscriptions referencing this plan
+	if s.userSubRepo != nil {
+		refCount, err := s.userSubRepo.CountByPlanID(ctx, id)
+		if err != nil {
+			return fmt.Errorf("check referencing subscriptions: %w", err)
+		}
+		if refCount > 0 {
+			return infraerrors.Conflict("REFERENCING_SUBSCRIPTIONS",
+				fmt.Sprintf("this plan is referenced by %d subscription(s) and cannot be deleted", refCount))
+		}
 	}
 	return s.entClient.SubscriptionPlan.DeleteOneID(id).Exec(ctx)
 }

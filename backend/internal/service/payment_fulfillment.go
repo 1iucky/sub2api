@@ -545,6 +545,7 @@ func (s *PaymentService) ensurePaymentSubscriptionAssigned(ctx context.Context, 
 				ValidityDays: days,
 				AssignedBy:   0,
 				Notes:        orderNote,
+				PlanID:       o.PlanID,
 			}, true); err != nil {
 				return fmt.Errorf("assign subscription: %w", err)
 			}

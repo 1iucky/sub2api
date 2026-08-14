@@ -41,6 +41,7 @@ func (p *paymentResumeLookupProvider) Refund(context.Context, payment.RefundRequ
 	panic("unexpected call")
 }
 
+
 func TestGetPublicOrderByResumeTokenReturnsMatchingOrder(t *testing.T) {
 	ctx := context.Background()
 	client := newPaymentConfigServiceTestClient(t)

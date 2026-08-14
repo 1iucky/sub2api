@@ -26,6 +26,7 @@ func (r *updateAccountOveragesRepoStub) Update(ctx context.Context, account *Acc
 	return nil
 }
 
+
 func TestUpdateAccount_DisableOveragesClearsAICreditsKey(t *testing.T) {
 	accountID := int64(101)
 	repo := &updateAccountOveragesRepoStub{

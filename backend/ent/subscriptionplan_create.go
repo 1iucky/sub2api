@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/Wei-Shaw/sub2api/ent/subscriptionplan"
+	"github.com/Wei-Shaw/sub2api/ent/usersubscription"
 )
 
 // SubscriptionPlanCreate is the builder for creating a SubscriptionPlan entity.
@@ -166,6 +167,48 @@ func (_c *SubscriptionPlanCreate) SetNillableSortOrder(v *int) *SubscriptionPlan
 	return _c
 }
 
+// SetDailyRequestLimit sets the "daily_request_limit" field.
+func (_c *SubscriptionPlanCreate) SetDailyRequestLimit(v int64) *SubscriptionPlanCreate {
+	_c.mutation.SetDailyRequestLimit(v)
+	return _c
+}
+
+// SetNillableDailyRequestLimit sets the "daily_request_limit" field if the given value is not nil.
+func (_c *SubscriptionPlanCreate) SetNillableDailyRequestLimit(v *int64) *SubscriptionPlanCreate {
+	if v != nil {
+		_c.SetDailyRequestLimit(*v)
+	}
+	return _c
+}
+
+// SetWeeklyRequestLimit sets the "weekly_request_limit" field.
+func (_c *SubscriptionPlanCreate) SetWeeklyRequestLimit(v int64) *SubscriptionPlanCreate {
+	_c.mutation.SetWeeklyRequestLimit(v)
+	return _c
+}
+
+// SetNillableWeeklyRequestLimit sets the "weekly_request_limit" field if the given value is not nil.
+func (_c *SubscriptionPlanCreate) SetNillableWeeklyRequestLimit(v *int64) *SubscriptionPlanCreate {
+	if v != nil {
+		_c.SetWeeklyRequestLimit(*v)
+	}
+	return _c
+}
+
+// SetMonthlyRequestLimit sets the "monthly_request_limit" field.
+func (_c *SubscriptionPlanCreate) SetMonthlyRequestLimit(v int64) *SubscriptionPlanCreate {
+	_c.mutation.SetMonthlyRequestLimit(v)
+	return _c
+}
+
+// SetNillableMonthlyRequestLimit sets the "monthly_request_limit" field if the given value is not nil.
+func (_c *SubscriptionPlanCreate) SetNillableMonthlyRequestLimit(v *int64) *SubscriptionPlanCreate {
+	if v != nil {
+		_c.SetMonthlyRequestLimit(*v)
+	}
+	return _c
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (_c *SubscriptionPlanCreate) SetCreatedAt(v time.Time) *SubscriptionPlanCreate {
 	_c.mutation.SetCreatedAt(v)
@@ -192,6 +235,21 @@ func (_c *SubscriptionPlanCreate) SetNillableUpdatedAt(v *time.Time) *Subscripti
 		_c.SetUpdatedAt(*v)
 	}
 	return _c
+}
+
+// AddSubscriptionIDs adds the "subscriptions" edge to the UserSubscription entity by IDs.
+func (_c *SubscriptionPlanCreate) AddSubscriptionIDs(ids ...int64) *SubscriptionPlanCreate {
+	_c.mutation.AddSubscriptionIDs(ids...)
+	return _c
+}
+
+// AddSubscriptions adds the "subscriptions" edges to the UserSubscription entity.
+func (_c *SubscriptionPlanCreate) AddSubscriptions(v ...*UserSubscription) *SubscriptionPlanCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddSubscriptionIDs(ids...)
 }
 
 // Mutation returns the SubscriptionPlanMutation object of the builder.
@@ -407,6 +465,18 @@ func (_c *SubscriptionPlanCreate) createSpec() (*SubscriptionPlan, *sqlgraph.Cre
 		_spec.SetField(subscriptionplan.FieldSortOrder, field.TypeInt, value)
 		_node.SortOrder = value
 	}
+	if value, ok := _c.mutation.DailyRequestLimit(); ok {
+		_spec.SetField(subscriptionplan.FieldDailyRequestLimit, field.TypeInt64, value)
+		_node.DailyRequestLimit = &value
+	}
+	if value, ok := _c.mutation.WeeklyRequestLimit(); ok {
+		_spec.SetField(subscriptionplan.FieldWeeklyRequestLimit, field.TypeInt64, value)
+		_node.WeeklyRequestLimit = &value
+	}
+	if value, ok := _c.mutation.MonthlyRequestLimit(); ok {
+		_spec.SetField(subscriptionplan.FieldMonthlyRequestLimit, field.TypeInt64, value)
+		_node.MonthlyRequestLimit = &value
+	}
 	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(subscriptionplan.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
@@ -414,6 +484,22 @@ func (_c *SubscriptionPlanCreate) createSpec() (*SubscriptionPlan, *sqlgraph.Cre
 	if value, ok := _c.mutation.UpdatedAt(); ok {
 		_spec.SetField(subscriptionplan.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
+	}
+	if nodes := _c.mutation.SubscriptionsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   subscriptionplan.SubscriptionsTable,
+			Columns: []string{subscriptionplan.SubscriptionsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(usersubscription.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }
@@ -644,6 +730,78 @@ func (u *SubscriptionPlanUpsert) UpdateSortOrder() *SubscriptionPlanUpsert {
 // AddSortOrder adds v to the "sort_order" field.
 func (u *SubscriptionPlanUpsert) AddSortOrder(v int) *SubscriptionPlanUpsert {
 	u.Add(subscriptionplan.FieldSortOrder, v)
+	return u
+}
+
+// SetDailyRequestLimit sets the "daily_request_limit" field.
+func (u *SubscriptionPlanUpsert) SetDailyRequestLimit(v int64) *SubscriptionPlanUpsert {
+	u.Set(subscriptionplan.FieldDailyRequestLimit, v)
+	return u
+}
+
+// UpdateDailyRequestLimit sets the "daily_request_limit" field to the value that was provided on create.
+func (u *SubscriptionPlanUpsert) UpdateDailyRequestLimit() *SubscriptionPlanUpsert {
+	u.SetExcluded(subscriptionplan.FieldDailyRequestLimit)
+	return u
+}
+
+// AddDailyRequestLimit adds v to the "daily_request_limit" field.
+func (u *SubscriptionPlanUpsert) AddDailyRequestLimit(v int64) *SubscriptionPlanUpsert {
+	u.Add(subscriptionplan.FieldDailyRequestLimit, v)
+	return u
+}
+
+// ClearDailyRequestLimit clears the value of the "daily_request_limit" field.
+func (u *SubscriptionPlanUpsert) ClearDailyRequestLimit() *SubscriptionPlanUpsert {
+	u.SetNull(subscriptionplan.FieldDailyRequestLimit)
+	return u
+}
+
+// SetWeeklyRequestLimit sets the "weekly_request_limit" field.
+func (u *SubscriptionPlanUpsert) SetWeeklyRequestLimit(v int64) *SubscriptionPlanUpsert {
+	u.Set(subscriptionplan.FieldWeeklyRequestLimit, v)
+	return u
+}
+
+// UpdateWeeklyRequestLimit sets the "weekly_request_limit" field to the value that was provided on create.
+func (u *SubscriptionPlanUpsert) UpdateWeeklyRequestLimit() *SubscriptionPlanUpsert {
+	u.SetExcluded(subscriptionplan.FieldWeeklyRequestLimit)
+	return u
+}
+
+// AddWeeklyRequestLimit adds v to the "weekly_request_limit" field.
+func (u *SubscriptionPlanUpsert) AddWeeklyRequestLimit(v int64) *SubscriptionPlanUpsert {
+	u.Add(subscriptionplan.FieldWeeklyRequestLimit, v)
+	return u
+}
+
+// ClearWeeklyRequestLimit clears the value of the "weekly_request_limit" field.
+func (u *SubscriptionPlanUpsert) ClearWeeklyRequestLimit() *SubscriptionPlanUpsert {
+	u.SetNull(subscriptionplan.FieldWeeklyRequestLimit)
+	return u
+}
+
+// SetMonthlyRequestLimit sets the "monthly_request_limit" field.
+func (u *SubscriptionPlanUpsert) SetMonthlyRequestLimit(v int64) *SubscriptionPlanUpsert {
+	u.Set(subscriptionplan.FieldMonthlyRequestLimit, v)
+	return u
+}
+
+// UpdateMonthlyRequestLimit sets the "monthly_request_limit" field to the value that was provided on create.
+func (u *SubscriptionPlanUpsert) UpdateMonthlyRequestLimit() *SubscriptionPlanUpsert {
+	u.SetExcluded(subscriptionplan.FieldMonthlyRequestLimit)
+	return u
+}
+
+// AddMonthlyRequestLimit adds v to the "monthly_request_limit" field.
+func (u *SubscriptionPlanUpsert) AddMonthlyRequestLimit(v int64) *SubscriptionPlanUpsert {
+	u.Add(subscriptionplan.FieldMonthlyRequestLimit, v)
+	return u
+}
+
+// ClearMonthlyRequestLimit clears the value of the "monthly_request_limit" field.
+func (u *SubscriptionPlanUpsert) ClearMonthlyRequestLimit() *SubscriptionPlanUpsert {
+	u.SetNull(subscriptionplan.FieldMonthlyRequestLimit)
 	return u
 }
 
@@ -911,6 +1069,90 @@ func (u *SubscriptionPlanUpsertOne) AddSortOrder(v int) *SubscriptionPlanUpsertO
 func (u *SubscriptionPlanUpsertOne) UpdateSortOrder() *SubscriptionPlanUpsertOne {
 	return u.Update(func(s *SubscriptionPlanUpsert) {
 		s.UpdateSortOrder()
+	})
+}
+
+// SetDailyRequestLimit sets the "daily_request_limit" field.
+func (u *SubscriptionPlanUpsertOne) SetDailyRequestLimit(v int64) *SubscriptionPlanUpsertOne {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.SetDailyRequestLimit(v)
+	})
+}
+
+// AddDailyRequestLimit adds v to the "daily_request_limit" field.
+func (u *SubscriptionPlanUpsertOne) AddDailyRequestLimit(v int64) *SubscriptionPlanUpsertOne {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.AddDailyRequestLimit(v)
+	})
+}
+
+// UpdateDailyRequestLimit sets the "daily_request_limit" field to the value that was provided on create.
+func (u *SubscriptionPlanUpsertOne) UpdateDailyRequestLimit() *SubscriptionPlanUpsertOne {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.UpdateDailyRequestLimit()
+	})
+}
+
+// ClearDailyRequestLimit clears the value of the "daily_request_limit" field.
+func (u *SubscriptionPlanUpsertOne) ClearDailyRequestLimit() *SubscriptionPlanUpsertOne {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.ClearDailyRequestLimit()
+	})
+}
+
+// SetWeeklyRequestLimit sets the "weekly_request_limit" field.
+func (u *SubscriptionPlanUpsertOne) SetWeeklyRequestLimit(v int64) *SubscriptionPlanUpsertOne {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.SetWeeklyRequestLimit(v)
+	})
+}
+
+// AddWeeklyRequestLimit adds v to the "weekly_request_limit" field.
+func (u *SubscriptionPlanUpsertOne) AddWeeklyRequestLimit(v int64) *SubscriptionPlanUpsertOne {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.AddWeeklyRequestLimit(v)
+	})
+}
+
+// UpdateWeeklyRequestLimit sets the "weekly_request_limit" field to the value that was provided on create.
+func (u *SubscriptionPlanUpsertOne) UpdateWeeklyRequestLimit() *SubscriptionPlanUpsertOne {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.UpdateWeeklyRequestLimit()
+	})
+}
+
+// ClearWeeklyRequestLimit clears the value of the "weekly_request_limit" field.
+func (u *SubscriptionPlanUpsertOne) ClearWeeklyRequestLimit() *SubscriptionPlanUpsertOne {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.ClearWeeklyRequestLimit()
+	})
+}
+
+// SetMonthlyRequestLimit sets the "monthly_request_limit" field.
+func (u *SubscriptionPlanUpsertOne) SetMonthlyRequestLimit(v int64) *SubscriptionPlanUpsertOne {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.SetMonthlyRequestLimit(v)
+	})
+}
+
+// AddMonthlyRequestLimit adds v to the "monthly_request_limit" field.
+func (u *SubscriptionPlanUpsertOne) AddMonthlyRequestLimit(v int64) *SubscriptionPlanUpsertOne {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.AddMonthlyRequestLimit(v)
+	})
+}
+
+// UpdateMonthlyRequestLimit sets the "monthly_request_limit" field to the value that was provided on create.
+func (u *SubscriptionPlanUpsertOne) UpdateMonthlyRequestLimit() *SubscriptionPlanUpsertOne {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.UpdateMonthlyRequestLimit()
+	})
+}
+
+// ClearMonthlyRequestLimit clears the value of the "monthly_request_limit" field.
+func (u *SubscriptionPlanUpsertOne) ClearMonthlyRequestLimit() *SubscriptionPlanUpsertOne {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.ClearMonthlyRequestLimit()
 	})
 }
 
@@ -1346,6 +1588,90 @@ func (u *SubscriptionPlanUpsertBulk) AddSortOrder(v int) *SubscriptionPlanUpsert
 func (u *SubscriptionPlanUpsertBulk) UpdateSortOrder() *SubscriptionPlanUpsertBulk {
 	return u.Update(func(s *SubscriptionPlanUpsert) {
 		s.UpdateSortOrder()
+	})
+}
+
+// SetDailyRequestLimit sets the "daily_request_limit" field.
+func (u *SubscriptionPlanUpsertBulk) SetDailyRequestLimit(v int64) *SubscriptionPlanUpsertBulk {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.SetDailyRequestLimit(v)
+	})
+}
+
+// AddDailyRequestLimit adds v to the "daily_request_limit" field.
+func (u *SubscriptionPlanUpsertBulk) AddDailyRequestLimit(v int64) *SubscriptionPlanUpsertBulk {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.AddDailyRequestLimit(v)
+	})
+}
+
+// UpdateDailyRequestLimit sets the "daily_request_limit" field to the value that was provided on create.
+func (u *SubscriptionPlanUpsertBulk) UpdateDailyRequestLimit() *SubscriptionPlanUpsertBulk {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.UpdateDailyRequestLimit()
+	})
+}
+
+// ClearDailyRequestLimit clears the value of the "daily_request_limit" field.
+func (u *SubscriptionPlanUpsertBulk) ClearDailyRequestLimit() *SubscriptionPlanUpsertBulk {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.ClearDailyRequestLimit()
+	})
+}
+
+// SetWeeklyRequestLimit sets the "weekly_request_limit" field.
+func (u *SubscriptionPlanUpsertBulk) SetWeeklyRequestLimit(v int64) *SubscriptionPlanUpsertBulk {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.SetWeeklyRequestLimit(v)
+	})
+}
+
+// AddWeeklyRequestLimit adds v to the "weekly_request_limit" field.
+func (u *SubscriptionPlanUpsertBulk) AddWeeklyRequestLimit(v int64) *SubscriptionPlanUpsertBulk {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.AddWeeklyRequestLimit(v)
+	})
+}
+
+// UpdateWeeklyRequestLimit sets the "weekly_request_limit" field to the value that was provided on create.
+func (u *SubscriptionPlanUpsertBulk) UpdateWeeklyRequestLimit() *SubscriptionPlanUpsertBulk {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.UpdateWeeklyRequestLimit()
+	})
+}
+
+// ClearWeeklyRequestLimit clears the value of the "weekly_request_limit" field.
+func (u *SubscriptionPlanUpsertBulk) ClearWeeklyRequestLimit() *SubscriptionPlanUpsertBulk {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.ClearWeeklyRequestLimit()
+	})
+}
+
+// SetMonthlyRequestLimit sets the "monthly_request_limit" field.
+func (u *SubscriptionPlanUpsertBulk) SetMonthlyRequestLimit(v int64) *SubscriptionPlanUpsertBulk {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.SetMonthlyRequestLimit(v)
+	})
+}
+
+// AddMonthlyRequestLimit adds v to the "monthly_request_limit" field.
+func (u *SubscriptionPlanUpsertBulk) AddMonthlyRequestLimit(v int64) *SubscriptionPlanUpsertBulk {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.AddMonthlyRequestLimit(v)
+	})
+}
+
+// UpdateMonthlyRequestLimit sets the "monthly_request_limit" field to the value that was provided on create.
+func (u *SubscriptionPlanUpsertBulk) UpdateMonthlyRequestLimit() *SubscriptionPlanUpsertBulk {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.UpdateMonthlyRequestLimit()
+	})
+}
+
+// ClearMonthlyRequestLimit clears the value of the "monthly_request_limit" field.
+func (u *SubscriptionPlanUpsertBulk) ClearMonthlyRequestLimit() *SubscriptionPlanUpsertBulk {
+	return u.Update(func(s *SubscriptionPlanUpsert) {
+		s.ClearMonthlyRequestLimit()
 	})
 }
 

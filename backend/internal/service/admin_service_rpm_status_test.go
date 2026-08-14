@@ -19,6 +19,7 @@ func (s *rpmStatusUserRepoStub) GetByID(_ context.Context, _ int64) (*User, erro
 	return s.user, nil
 }
 
+
 type rpmStatusAPIKeyRepoStub struct {
 	APIKeyRepository
 	keys []APIKey
@@ -36,6 +37,7 @@ type rpmStatusGroupRepoStub struct {
 func (s *rpmStatusGroupRepoStub) GetByIDLite(_ context.Context, id int64) (*Group, error) {
 	return s.groups[id], nil
 }
+
 
 type rpmStatusRateRepoStub struct {
 	UserGroupRateRepository

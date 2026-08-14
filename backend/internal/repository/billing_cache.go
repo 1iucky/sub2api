@@ -56,6 +56,16 @@ const (
 	subFieldWeeklyUsage  = "weekly_usage"
 	subFieldMonthlyUsage = "monthly_usage"
 	subFieldVersion      = "version"
+
+	// Subscription request count fields
+	subFieldPlanID               = "plan_id"
+	subFieldDailyUsageRequests   = "daily_usage_requests"
+	subFieldWeeklyUsageRequests  = "weekly_usage_requests"
+	subFieldMonthlyUsageRequests = "monthly_usage_requests"
+	subFieldDailyRequestLimit    = "daily_request_limit"
+	subFieldWeeklyRequestLimit   = "weekly_request_limit"
+	subFieldMonthlyRequestLimit  = "monthly_request_limit"
+	subFieldPlanVersion          = "plan_version"
 )
 
 // billingRateLimitKey generates the Redis key for API key rate limit cache.
@@ -134,6 +144,61 @@ var (
 		redis.call('EXPIRE', KEYS[1], ARGV[2])
 		return 1
 	`)
+
+	// checkAndIncrSubRequestScript atomically checks subscription request count limits
+	// and increments usage counters in a single Redis call.
+	//
+	// KEYS[1] = subscription hash key
+	// ARGV[1] = count (number of requests to pre-check and increment)
+	// ARGV[2] = ttl_seconds
+	//
+	// Returns:
+	//   1  = allowed (counters incremented)
+	//   -1 = cache miss (key does not exist)
+	//   10 = daily request limit exceeded
+	//   11 = weekly request limit exceeded
+	//   12 = monthly request limit exceeded
+	checkAndIncrSubRequestScript = redis.NewScript(`
+			local exists = redis.call('EXISTS', KEYS[1])
+			if exists == 0 then
+				return -1
+			end
+			local count = tonumber(ARGV[1])
+
+			-- Check daily request limit
+			local daily_limit = redis.call('HGET', KEYS[1], 'daily_request_limit')
+			if daily_limit ~= false then
+				local daily_usage = tonumber(redis.call('HGET', KEYS[1], 'daily_usage_requests') or 0)
+				if daily_usage + count > tonumber(daily_limit) then
+					return 10
+				end
+			end
+
+			-- Check weekly request limit
+			local weekly_limit = redis.call('HGET', KEYS[1], 'weekly_request_limit')
+			if weekly_limit ~= false then
+				local weekly_usage = tonumber(redis.call('HGET', KEYS[1], 'weekly_usage_requests') or 0)
+				if weekly_usage + count > tonumber(weekly_limit) then
+					return 11
+				end
+			end
+
+			-- Check monthly request limit
+			local monthly_limit = redis.call('HGET', KEYS[1], 'monthly_request_limit')
+			if monthly_limit ~= false then
+				local monthly_usage = tonumber(redis.call('HGET', KEYS[1], 'monthly_usage_requests') or 0)
+				if monthly_usage + count > tonumber(monthly_limit) then
+					return 12
+				end
+			end
+
+			-- All checks passed: increment counters
+			redis.call('HINCRBY', KEYS[1], 'daily_usage_requests', count)
+			redis.call('HINCRBY', KEYS[1], 'weekly_usage_requests', count)
+			redis.call('HINCRBY', KEYS[1], 'monthly_usage_requests', count)
+			redis.call('EXPIRE', KEYS[1], ARGV[2])
+			return 1
+		`)
 )
 
 type billingCache struct {
@@ -216,6 +281,47 @@ func (c *billingCache) parseSubscriptionCache(data map[string]string) (*service.
 		result.Version, _ = strconv.ParseInt(versionStr, 10, 64)
 	}
 
+	// Plan request count fields
+	if planIDStr, ok := data[subFieldPlanID]; ok && planIDStr != "" {
+		planID, err := strconv.ParseInt(planIDStr, 10, 64)
+		if err == nil {
+			result.PlanID = &planID
+		}
+	}
+
+	if v, ok := data[subFieldDailyUsageRequests]; ok {
+		result.DailyUsageRequests, _ = strconv.ParseInt(v, 10, 64)
+	}
+	if v, ok := data[subFieldWeeklyUsageRequests]; ok {
+		result.WeeklyUsageRequests, _ = strconv.ParseInt(v, 10, 64)
+	}
+	if v, ok := data[subFieldMonthlyUsageRequests]; ok {
+		result.MonthlyUsageRequests, _ = strconv.ParseInt(v, 10, 64)
+	}
+
+	if v, ok := data[subFieldDailyRequestLimit]; ok && v != "" {
+		lim, err := strconv.ParseInt(v, 10, 64)
+		if err == nil {
+			result.DailyRequestLimit = &lim
+		}
+	}
+	if v, ok := data[subFieldWeeklyRequestLimit]; ok && v != "" {
+		lim, err := strconv.ParseInt(v, 10, 64)
+		if err == nil {
+			result.WeeklyRequestLimit = &lim
+		}
+	}
+	if v, ok := data[subFieldMonthlyRequestLimit]; ok && v != "" {
+		lim, err := strconv.ParseInt(v, 10, 64)
+		if err == nil {
+			result.MonthlyRequestLimit = &lim
+		}
+	}
+
+	if v, ok := data[subFieldPlanVersion]; ok {
+		result.PlanVersion, _ = strconv.ParseInt(v, 10, 64)
+	}
+
 	return result, nil
 }
 
@@ -235,7 +341,27 @@ func (c *billingCache) SetSubscriptionCache(ctx context.Context, userID, groupID
 		subFieldVersion:      data.Version,
 	}
 
+	// Plan request count fields
+	if data.PlanID != nil {
+		fields[subFieldPlanID] = *data.PlanID
+	}
+	fields[subFieldDailyUsageRequests] = data.DailyUsageRequests
+	fields[subFieldWeeklyUsageRequests] = data.WeeklyUsageRequests
+	fields[subFieldMonthlyUsageRequests] = data.MonthlyUsageRequests
+	if data.DailyRequestLimit != nil {
+		fields[subFieldDailyRequestLimit] = *data.DailyRequestLimit
+	}
+	if data.WeeklyRequestLimit != nil {
+		fields[subFieldWeeklyRequestLimit] = *data.WeeklyRequestLimit
+	}
+	if data.MonthlyRequestLimit != nil {
+		fields[subFieldMonthlyRequestLimit] = *data.MonthlyRequestLimit
+	}
+	fields[subFieldPlanVersion] = data.PlanVersion
+
+	// DEL + HSET pattern: avoid stale limit fields from previous plan config
 	pipe := c.rdb.Pipeline()
+	pipe.Del(ctx, key)
 	pipe.HSet(ctx, key, fields)
 	pipe.Expire(ctx, key, jitteredTTL())
 	_, err := pipe.Exec(ctx)
@@ -250,6 +376,19 @@ func (c *billingCache) UpdateSubscriptionUsage(ctx context.Context, userID, grou
 		return err
 	}
 	return nil
+}
+
+func (c *billingCache) CheckAndIncrementSubscriptionRequestUsage(ctx context.Context, userID, groupID int64, count int64) (int, error) {
+	key := billingSubKey(userID, groupID)
+	result, err := checkAndIncrSubRequestScript.Run(ctx, c.rdb, []string{key}, count, int(jitteredTTL().Seconds())).Int()
+	if err != nil {
+		if errors.Is(err, redis.Nil) {
+			return -1, nil
+		}
+		log.Printf("Warning: check and increment subscription request usage failed for user %d group %d: %v", userID, groupID, err)
+		return -1, err
+	}
+	return result, nil
 }
 
 func (c *billingCache) InvalidateSubscriptionCache(ctx context.Context, userID, groupID int64) error {
