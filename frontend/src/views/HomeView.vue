@@ -84,6 +84,7 @@
   <!-- Default Home Page (v2 — factory.ai motion rebuild) -->
   <div
     v-else
+    data-testid="default-home"
     class="relative flex min-h-screen flex-col overflow-x-hidden bg-gray-50 dark:bg-dark-950"
   >
     <!-- Backdrop: Factory-inspired ambient grid, confined to the first
