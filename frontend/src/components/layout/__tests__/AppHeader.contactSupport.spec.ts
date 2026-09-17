@@ -24,4 +24,9 @@ describe('AppHeader contact support entry', () => {
     expect(componentSource).toContain('contactInfo')
     expect(componentSource).not.toContain('customerServiceInviteURL')
   })
+
+  it('does not expose the original project GitHub link in the user menu', () => {
+    expect(componentSource).not.toContain('github.com/Wei-Shaw/sub2api')
+    expect(componentSource).not.toContain("t('nav.github')")
+  })
 })
