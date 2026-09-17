@@ -1060,7 +1060,7 @@ describe("admin SettingsView payment visible method controls", () => {
     );
   });
 
-  it("links payment guidance to README sections instead of removed payment docs", async () => {
+  it("links payment guidance to local documentation instead of upstream GitHub", async () => {
     const wrapper = mountView();
 
     await flushPromises();
@@ -1073,14 +1073,12 @@ describe("admin SettingsView payment visible method controls", () => {
       );
 
     expect(paymentLinks).toHaveLength(2);
-    expect(paymentLinks[0]?.attributes("href")).toBe(
-      "https://github.com/Wei-Shaw/sub2api/blob/main/docs/PAYMENT_CN.md",
-    );
+    expect(paymentLinks[0]?.attributes("href")).toBe("/legal/payment-guide");
     expect(paymentLinks[1]?.attributes("href")).toBe(
-      "https://github.com/Wei-Shaw/sub2api/blob/main/docs/PAYMENT_CN.md#支持的支付方式",
+      "/legal/payment-guide#支持的支付方式",
     );
     for (const link of paymentLinks) {
-      expect(link.attributes("href")).toContain("docs/PAYMENT");
+      expect(link.attributes("href")).not.toContain("github.com/Wei-Shaw/sub2api");
     }
   });
 
