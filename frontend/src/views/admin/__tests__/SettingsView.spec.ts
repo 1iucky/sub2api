@@ -1082,6 +1082,22 @@ describe("admin SettingsView payment visible method controls", () => {
     }
   });
 
+  it("uses the configured site name as the default payment product prefix", async () => {
+    getSettings.mockResolvedValueOnce({
+      ...baseSettingsResponse,
+      site_name: "SiliconBase",
+      payment_enabled: true,
+      payment_product_name_prefix: "",
+    });
+    const wrapper = mountView();
+
+    await flushPromises();
+    await openPaymentTab(wrapper);
+
+    expect(wrapper.text()).toContain("SiliconBase 100 CNY");
+    expect(wrapper.text()).not.toContain("Sub2API 100 CNY");
+  });
+
   it("does not submit legacy visible payment method settings", async () => {
     const wrapper = mountView();
 
