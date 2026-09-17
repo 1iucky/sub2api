@@ -14,6 +14,13 @@ export default {
     login: 'Login',
     getStarted: 'Get Started',
     goToDashboard: 'Go to Dashboard',
+    nav: {
+      docs: 'Docs',
+      status: 'Status',
+      models: 'Model Marketplace',
+      openMenu: 'Open menu',
+      closeMenu: 'Close menu'
+    },
     // User-focused value proposition
     heroSubtitle: 'One Key, All AI Models',
     heroDescription: 'No need to manage multiple subscriptions. Access Claude, GPT, Gemini and more with a single API key',
@@ -111,6 +118,17 @@ export default {
     },
     footer: {
       allRightsReserved: 'All rights reserved.'
+    },
+    footer2: {
+      columns: {
+        legal: 'Legal'
+      },
+      links: {
+        serviceTerms: 'Service Terms',
+        usagePolicy: 'Usage Policy',
+        supportedCountries: 'Supported Countries and Regions',
+        serviceSpecificTerms: 'Service-Specific Terms'
+      }
     }
   },
 
