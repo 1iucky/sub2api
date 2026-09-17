@@ -214,6 +214,23 @@ describe('KeyUsageView daily detail', () => {
     wrapper.unmount()
   })
 
+  it('does not expose the original project GitHub link in the public footer', () => {
+    const wrapper = mount(KeyUsageView, {
+      global: {
+        stubs: {
+          RouterLink: { template: '<a><slot /></a>' },
+          LocaleSwitcher: true,
+          Icon: true,
+        },
+      },
+    })
+
+    const footerLinks = wrapper.findAll('footer a')
+    expect(footerLinks.some(link => link.attributes('href') === 'https://github.com/Wei-Shaw/sub2api')).toBe(false)
+
+    wrapper.unmount()
+  })
+
   it('queries the current local calendar date near midnight', async () => {
     vi.useFakeTimers()
     vi.setSystemTime(new Date(2026, 6, 13, 0, 30))
