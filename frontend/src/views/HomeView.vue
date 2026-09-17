@@ -109,11 +109,30 @@
       :class="navScrolled ? 'border-gray-200/70 bg-white/80 backdrop-blur-md dark:border-dark-800/70 dark:bg-dark-950/80' : 'border-transparent'"
     >
       <nav class="mx-auto flex h-14 max-w-[1920px] items-center justify-between px-4 lg:px-9" aria-label="Main">
-        <router-link to="/home" class="group flex min-w-0 items-center gap-2.5" :aria-label="siteName">
-          <span class="block h-6 w-6 shrink-0 overflow-hidden rounded-sm">
+        <router-link
+          to="/home"
+          class="brand-hover group flex min-w-0 items-center gap-2.5"
+          :class="brandClass"
+          :aria-label="siteName"
+          @mouseenter="onEnter"
+          @mouseleave="onLeave"
+          @focusin="onEnter"
+          @focusout="onLeave"
+        >
+          <span class="brand-hover__logo block h-6 w-6 shrink-0 overflow-hidden rounded-sm">
             <img :src="siteLogo || '/logo.svg'" alt="" class="h-full w-full object-contain" />
           </span>
-          <span class="min-w-0 truncate font-mono text-[13px] uppercase tracking-[0.14em] text-gray-900 transition-colors duration-200 group-hover:text-primary-500 dark:text-gray-100">{{ siteName }}</span>
+          <span class="min-w-0 truncate font-mono text-[13px] uppercase tracking-[0.14em] text-gray-900 transition-colors duration-200 group-hover:text-primary-500 dark:text-gray-100">
+            <span class="sr-only">{{ siteName }}</span>
+            <span aria-hidden="true">
+              <span
+                v-for="(ch, i) in siteName"
+                :key="i"
+                class="brand-hover__letter"
+                :style="{ '--brand-i': i }"
+              >{{ ch }}</span>
+            </span>
+          </span>
         </router-link>
 
         <div class="hidden items-center gap-6 md:flex">
@@ -313,6 +332,7 @@ import LocaleSwitcher from '@/components/common/LocaleSwitcher.vue'
 import Icon from '@/components/icons/Icon.vue'
 import { sanitizeUrl } from '@/utils/url'
 import { FeatureFlags, isFeatureFlagEnabled } from '@/utils/featureFlags'
+import { useBrandHover } from '@/composables/useBrandHover'
 import GatewayDashboard from '@/components/home/GatewayDashboard.vue'
 import PoolingChart from '@/components/home/PoolingChart.vue'
 import RoutingDiagram from '@/components/home/RoutingDiagram.vue'
@@ -322,6 +342,7 @@ const { t } = useI18n()
 
 const authStore = useAuthStore()
 const appStore = useAppStore()
+const { brandClass, onEnter, onLeave } = useBrandHover()
 
 // Site settings - directly from appStore (already initialized from injected config)
 const siteName = computed(() => appStore.cachedPublicSettings?.site_name?.trim() || appStore.siteName.trim() || 'Sub2API')

@@ -7,11 +7,19 @@
     ]"
   >
     <!-- Logo/Brand -->
-    <div class="sidebar-header" :class="{ 'sidebar-header-collapsed': sidebarCollapsed }">
+    <div
+      class="brand-hover sidebar-header"
+      :class="[brandClass, { 'sidebar-header-collapsed': sidebarCollapsed }]"
+      :aria-label="siteName"
+      @mouseenter="onEnter"
+      @mouseleave="onLeave"
+      @focusin="onEnter"
+      @focusout="onLeave"
+    >
       <!-- Custom Logo or Default Logo -->
       <router-link
         :to="homePath"
-        class="sidebar-logo flex h-9 w-9 items-center justify-center overflow-hidden rounded-xl shadow-glow transition-opacity hover:opacity-80"
+        class="brand-hover__logo sidebar-logo flex h-9 w-9 items-center justify-center overflow-hidden rounded-md border border-gray-200 bg-white p-1 dark:border-dark-700 dark:bg-dark-900"
         @click="handleMenuItemClick(homePath)"
       >
         <img v-if="settingsLoaded" :src="siteLogo || '/logo.svg'" alt="Logo" class="h-full w-full object-contain" />
@@ -19,10 +27,18 @@
       <div class="sidebar-brand" :class="{ 'sidebar-brand-collapsed': sidebarCollapsed }" :aria-hidden="sidebarCollapsed ? 'true' : 'false'">
         <router-link
           :to="homePath"
-          class="sidebar-brand-title text-lg font-bold text-gray-900 transition-colors hover:text-primary-600 dark:text-white dark:hover:text-primary-400"
+          class="sidebar-brand-title text-base font-medium tracking-tight text-gray-900 dark:text-gray-100"
           @click="handleMenuItemClick(homePath)"
         >
-          {{ siteName }}
+          <span class="sr-only">{{ siteName }}</span>
+          <span aria-hidden="true">
+            <span
+              v-for="(ch, i) in siteName"
+              :key="i"
+              class="brand-hover__letter"
+              :style="{ '--brand-i': i }"
+            >{{ ch }}</span>
+          </span>
         </router-link>
       </div>
     </div>
@@ -196,6 +212,7 @@ import { sanitizeUrl } from '@/utils/url'
 import { FeatureFlags, makeSidebarFlag } from '@/utils/featureFlags'
 import { resolveSiteBillingMode } from '@/utils/siteBillingMode'
 import { useBatchImageAccess } from '@/composables/useBatchImageAccess'
+import { useBrandHover } from '@/composables/useBrandHover'
 
 interface NavItem {
   path: string
@@ -250,6 +267,7 @@ const sidebarNavRef = ref<HTMLElement | null>(null)
 const isDark = ref(document.documentElement.classList.contains('dark'))
 
 const homePath = computed(() => (isAdmin.value ? '/admin/dashboard' : '/dashboard'))
+const { brandClass, onEnter, onLeave } = useBrandHover()
 
 // Per-group expand/collapse overrides. A group with no entry follows the
 // automatic behavior (expanded while the active route is one of its children);
