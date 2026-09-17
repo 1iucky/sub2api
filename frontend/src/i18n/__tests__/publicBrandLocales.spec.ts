@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest'
 
 import enLanding from '../locales/en/landing'
 import zhLanding from '../locales/zh/landing'
+import enMisc from '../locales/en/misc'
+import zhMisc from '../locales/zh/misc'
 
 describe('public navigation and legal locales', () => {
   it('defines matching Chinese and English navigation labels', () => {
@@ -36,5 +38,21 @@ describe('public navigation and legal locales', () => {
     expect(zhLanding.home.cta2.button).toBe('免费开始')
     expect(zhLanding.home.footer2.columns.resources).toBe('资源')
     expect(zhLanding.home.footer2.links.models).toBe('模型集市')
+  })
+
+  it('uses the personalized brand on user-facing setup and onboarding copy', () => {
+    expect(enLanding.setup.title).toBe('SiliconBase Setup')
+    expect(enLanding.setup.description).toBe('Configure your SiliconBase instance')
+    expect(zhLanding.setup.title).toBe('SiliconBase 安装向导')
+    expect(zhLanding.setup.description).toBe('配置您的 SiliconBase 实例')
+
+    expect(enMisc.onboarding.admin.welcome.title).toBe('👋 Welcome to SiliconBase')
+    expect(enMisc.onboarding.admin.welcome.description).not.toContain('Sub2API')
+    expect(enMisc.onboarding.user.welcome.title).toBe('👋 Welcome to SiliconBase')
+    expect(enMisc.onboarding.user.welcome.description).not.toContain('Sub2API')
+    expect(zhMisc.onboarding.admin.welcome.title).toBe('👋 欢迎使用 SiliconBase')
+    expect(zhMisc.onboarding.admin.welcome.description).not.toContain('Sub2API')
+    expect(zhMisc.onboarding.user.welcome.title).toBe('👋 欢迎使用 SiliconBase')
+    expect(zhMisc.onboarding.user.welcome.description).not.toContain('Sub2API')
   })
 })

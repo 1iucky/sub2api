@@ -213,6 +213,7 @@ import { FeatureFlags, makeSidebarFlag } from '@/utils/featureFlags'
 import { resolveSiteBillingMode } from '@/utils/siteBillingMode'
 import { useBatchImageAccess } from '@/composables/useBatchImageAccess'
 import { useBrandHover } from '@/composables/useBrandHover'
+import { normalizeSiteName } from '@/constants/branding'
 
 interface NavItem {
   path: string
@@ -276,7 +277,7 @@ const { brandClass, onEnter, onLeave } = useBrandHover()
 const groupExpandOverrides = ref<Map<string, boolean>>(new Map())
 
 // Site settings from appStore (cached, no flicker)
-const siteName = computed(() => appStore.siteName.trim() || 'Sub2API')
+const siteName = computed(() => normalizeSiteName(appStore.siteName))
 const siteLogo = computed(() => sanitizeUrl(appStore.siteLogo || '', { allowRelative: true, allowDataUrl: true }))
 const settingsLoaded = computed(() => appStore.publicSettingsLoaded)
 

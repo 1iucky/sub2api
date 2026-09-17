@@ -73,11 +73,12 @@ import { useAppStore } from '@/stores'
 import LocaleSwitcher from '@/components/common/LocaleSwitcher.vue'
 import { useBrandHover } from '@/composables/useBrandHover'
 import { sanitizeUrl } from '@/utils/url'
+import { normalizeSiteName } from '@/constants/branding'
 
 const appStore = useAppStore()
 const { brandClass, onEnter, onLeave } = useBrandHover()
 
-const siteName = computed(() => appStore.siteName.trim() || 'Sub2API')
+const siteName = computed(() => normalizeSiteName(appStore.siteName))
 const siteLogo = computed(() => sanitizeUrl(appStore.siteLogo || '', { allowRelative: true, allowDataUrl: true }))
 const siteSubtitle = computed(() => appStore.cachedPublicSettings?.site_subtitle || 'Subscription to API Conversion Platform')
 const settingsLoaded = computed(() => appStore.publicSettingsLoaded)

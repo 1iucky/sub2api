@@ -7,6 +7,7 @@ import { useAppStore } from '@/stores/app'
 import { updateFavicon } from '@/utils/branding'
 import { isIOSDevice } from '@/utils/device'
 import { vReveal } from '@/composables/useInView'
+import { UPSTREAM_DEFAULT_SITE_NAME } from '@/constants/branding'
 import './style.css'
 import './styles/theme-override.css'
 
@@ -47,7 +48,7 @@ async function bootstrap() {
   appStore.initFromInjectedConfig()
 
   // Set document title immediately after config is loaded
-  if (appStore.siteName && appStore.siteName !== 'Sub2API') {
+  if (appStore.siteName && appStore.siteName !== UPSTREAM_DEFAULT_SITE_NAME) {
     document.title = `${appStore.siteName} - AI API Gateway`
   }
   updateFavicon(appStore.siteLogo)

@@ -63,7 +63,7 @@ describe('AppSidebar header styles', () => {
   })
 
   it('shows only the configured brand name without a version badge', () => {
-    expect(componentSource).toContain("const siteName = computed(() => appStore.siteName.trim() || 'Sub2API')")
+    expect(componentSource).toContain('const siteName = computed(() => normalizeSiteName(appStore.siteName))')
     expect(componentSource).not.toContain("import VersionBadge from '@/components/common/VersionBadge.vue'")
     expect(componentSource).not.toContain('<VersionBadge')
     expect(componentSource).not.toContain('const siteVersion = computed')

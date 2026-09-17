@@ -337,6 +337,7 @@ import GatewayDashboard from '@/components/home/GatewayDashboard.vue'
 import PoolingChart from '@/components/home/PoolingChart.vue'
 import RoutingDiagram from '@/components/home/RoutingDiagram.vue'
 import BillingSparkline from '@/components/home/BillingSparkline.vue'
+import { normalizeSiteName } from '@/constants/branding'
 
 const { t } = useI18n()
 
@@ -345,7 +346,7 @@ const appStore = useAppStore()
 const { brandClass, onEnter, onLeave } = useBrandHover()
 
 // Site settings - directly from appStore (already initialized from injected config)
-const siteName = computed(() => appStore.cachedPublicSettings?.site_name?.trim() || appStore.siteName.trim() || 'Sub2API')
+const siteName = computed(() => normalizeSiteName(appStore.cachedPublicSettings?.site_name || appStore.siteName))
 const siteLogo = computed(() => sanitizeUrl(appStore.cachedPublicSettings?.site_logo || appStore.siteLogo || '', { allowRelative: true, allowDataUrl: true }))
 const siteSubtitle = computed(() => appStore.cachedPublicSettings?.site_subtitle || 'AI API Gateway Platform')
 const docUrl = computed(() => sanitizeUrl(appStore.cachedPublicSettings?.doc_url || appStore.docUrl || ''))

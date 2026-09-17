@@ -43,6 +43,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useAppStore } from '@/stores'
 import Icon from '@/components/icons/Icon.vue'
 import type { PublicSettings } from '@/types'
+import { normalizeSiteName } from '@/constants/branding'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -50,7 +51,7 @@ const router = useRouter()
 const appStore = useAppStore()
 const loadedSettings = ref<PublicSettings | null>(appStore.cachedPublicSettings)
 
-const siteName = computed(() => loadedSettings.value?.site_name?.trim() || appStore.cachedPublicSettings?.site_name?.trim() || appStore.siteName.trim() || 'Sub2API')
+const siteName = computed(() => normalizeSiteName(loadedSettings.value?.site_name || appStore.cachedPublicSettings?.site_name || appStore.siteName))
 const siteLogo = computed(() => loadedSettings.value?.site_logo || appStore.cachedPublicSettings?.site_logo || appStore.siteLogo || '/logo.svg')
 const host = computed(() => window.location.host || '-')
 const sourceIP = computed(() => queryText('ip') || '-')

@@ -100,6 +100,7 @@ import { getLocale } from '@/i18n'
 import { sanitizeUrl } from '@/utils/url'
 import { useAppStore } from '@/stores/app'
 import type { LoginAgreementDocument } from '@/types'
+import { normalizeSiteName } from '@/constants/branding'
 import zhAdminCompliance from '../../../../docs/legal/admin-compliance.zh.md?raw'
 import enAdminCompliance from '../../../../docs/legal/admin-compliance.en.md?raw'
 import zhPaymentGuide from '../../../../docs/PAYMENT_CN.md?raw'
@@ -123,7 +124,7 @@ const documentId = computed(() => String(route.params.documentId || ''))
 const isAdminComplianceDocument = computed(() => documentId.value === 'admin-compliance')
 const isPaymentGuideDocument = computed(() => documentId.value === 'payment-guide')
 const documents = computed(() => settings.value?.login_agreement_documents ?? [])
-const siteName = computed(() => settings.value?.site_name || 'Sub2API')
+const siteName = computed(() => normalizeSiteName(settings.value?.site_name))
 const siteLogo = computed(() => sanitizeUrl(settings.value?.site_logo || '', {
   allowRelative: true,
   allowDataUrl: true,

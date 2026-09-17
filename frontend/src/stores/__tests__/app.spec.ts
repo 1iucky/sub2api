@@ -417,6 +417,24 @@ describe('useAppStore', () => {
       expect(store.publicSettingsLoaded).toBe(true)
     })
 
+    it('公开设置未配置站点名时，前端回退到个性化默认品牌名', async () => {
+      vi.mocked(getPublicSettings).mockResolvedValueOnce(createPublicSettings({ site_name: '   ' }))
+      const store = useAppStore()
+
+      await store.fetchPublicSettings()
+
+      expect(store.siteName).toBe('SiliconBase')
+    })
+
+    it('公开设置返回上游默认站点名时，前端仍回退到个性化默认品牌名', async () => {
+      vi.mocked(getPublicSettings).mockResolvedValueOnce(createPublicSettings({ site_name: 'Sub2API' }))
+      const store = useAppStore()
+
+      await store.fetchPublicSettings()
+
+      expect(store.siteName).toBe('SiliconBase')
+    })
+
     it('无注入配置时返回 false', () => {
       const store = useAppStore()
       const result = store.initFromInjectedConfig()
