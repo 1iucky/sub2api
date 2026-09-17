@@ -41,13 +41,22 @@
             <Icon name="book" size="md" />
           </a>
           <router-link
+            v-if="showChannelMonitorEntry"
+            to="/monitor"
+            class="flex h-10 shrink-0 items-center gap-1.5 rounded-lg px-2.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-dark-400 dark:hover:bg-dark-800 dark:hover:text-white"
+            :title="t('home.nav.status')"
+          >
+            <Icon name="chart" size="md" />
+            <span class="hidden sm:inline">{{ t('home.nav.status') }}</span>
+          </router-link>
+          <router-link
             v-if="showModelPlazaEntry"
             to="/model-plaza"
             class="flex h-10 shrink-0 items-center gap-1.5 rounded-lg px-2.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-dark-400 dark:hover:bg-dark-800 dark:hover:text-white"
-            :title="t('nav.modelPlaza')"
+            :title="t('home.nav.models')"
           >
             <Icon name="grid" size="md" />
-            <span class="hidden sm:inline">{{ t('nav.modelPlaza') }}</span>
+            <span class="hidden sm:inline">{{ t('home.nav.models') }}</span>
           </router-link>
           <button
             class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 dark:text-dark-400 dark:hover:bg-dark-800"
@@ -141,15 +150,26 @@
             <Icon name="book" size="md" />
           </a>
 
+          <!-- Channel Status Link -->
+          <router-link
+            v-if="showChannelMonitorEntry"
+            to="/monitor"
+            class="inline-flex items-center gap-1.5 rounded-lg p-2 text-sm text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:text-dark-400 dark:hover:bg-dark-800 dark:hover:text-white"
+            :title="t('home.nav.status')"
+          >
+            <Icon name="chart" size="md" />
+            <span class="hidden sm:inline">{{ t('home.nav.status') }}</span>
+          </router-link>
+
           <!-- Model Plaza Link -->
           <router-link
             v-if="showModelPlazaEntry"
             to="/model-plaza"
             class="inline-flex items-center gap-1.5 rounded-lg p-2 text-sm text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:text-dark-400 dark:hover:bg-dark-800 dark:hover:text-white"
-            :title="t('nav.modelPlaza')"
+            :title="t('home.nav.models')"
           >
             <Icon name="grid" size="md" />
-            <span class="hidden sm:inline">{{ t('nav.modelPlaza') }}</span>
+            <span class="hidden sm:inline">{{ t('home.nav.models') }}</span>
           </router-link>
 
           <!-- Theme Toggle -->
@@ -515,6 +535,7 @@ const docUrl = computed(() => sanitizeUrl(appStore.cachedPublicSettings?.doc_url
 const homeContent = computed(() => appStore.cachedPublicSettings?.home_content || '')
 const hasHomeContent = computed(() => homeContent.value.trim().length > 0)
 const compactHomeEnabled = computed(() => appStore.cachedPublicSettings?.compact_home_enabled === true)
+const showChannelMonitorEntry = computed(() => isFeatureFlagEnabled(FeatureFlags.channelMonitor))
 const modelPlazaEnabled = computed(() => isFeatureFlagEnabled(FeatureFlags.modelPlaza))
 
 // Check if homeContent is a URL (for iframe display)
