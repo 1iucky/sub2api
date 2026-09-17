@@ -12,10 +12,13 @@
 !deploy/DOCKER.md
 docs/
 # admin-compliance gate (LegalDocumentView.vue) build-time imports
-# docs/legal/*.md?raw into the frontend bundle; keep that subtree in the
-# Docker build context even though docs/ is otherwise excluded.
+# docs/legal/*.md?raw and the local payment guides into the frontend
+# bundle; keep only those docs in the Docker build context even though
+# docs/ is otherwise excluded.
 !docs/legal/
 !docs/legal/*.md
+!docs/PAYMENT.md
+!docs/PAYMENT_CN.md
 
 # IDE
 .idea/
