@@ -23,6 +23,35 @@
 
       <!-- Right: Announcements + Docs + Language + Subscriptions + Balance + User Dropdown -->
       <div class="flex min-w-0 items-center gap-1 sm:gap-3">
+        <!-- Contact Support -->
+        <div v-if="showContactSupportEntry" ref="contactSupportRef" class="relative shrink-0">
+          <button
+            type="button"
+            data-testid="header-contact-support"
+            class="flex h-9 w-9 items-center justify-center rounded-lg text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900 dark:text-dark-400 dark:hover:bg-dark-800 dark:hover:text-white"
+            :title="t('common.contactSupport')"
+            :aria-label="t('common.contactSupport')"
+            @click.stop="toggleContactSupportPopover"
+          >
+            <Icon name="chat" size="md" />
+          </button>
+
+          <transition name="dropdown">
+            <div
+              v-if="contactSupportPopoverOpen"
+              data-testid="header-contact-support-popover"
+              class="dropdown right-0 mt-2 w-64 p-4"
+            >
+              <div class="mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                {{ t('common.contactSupport') }}
+              </div>
+              <p class="break-words text-sm leading-6 text-gray-600 dark:text-gray-300">
+                {{ contactInfo }}
+              </p>
+            </div>
+          </transition>
+        </div>
+
         <!-- Announcement Bell -->
         <AnnouncementBell v-if="user" />
 
@@ -274,8 +303,11 @@ const onboardingStore = useOnboardingStore()
 
 const user = computed(() => authStore.user)
 const dropdownOpen = ref(false)
+const contactSupportPopoverOpen = ref(false)
 const dropdownRef = ref<HTMLElement | null>(null)
+const contactSupportRef = ref<HTMLElement | null>(null)
 const contactInfo = computed(() => appStore.contactInfo)
+const showContactSupportEntry = computed(() => Boolean(user.value && contactInfo.value))
 const docUrl = computed(() => sanitizeUrl(appStore.docUrl))
 const modelPlazaEnabled = computed(() => isFeatureFlagEnabled(FeatureFlags.modelPlaza))
 const avatarUrl = computed(() => user.value?.avatar_url?.trim() || '')
@@ -355,6 +387,17 @@ function closeDropdown() {
   dropdownOpen.value = false
 }
 
+function toggleContactSupportPopover() {
+  contactSupportPopoverOpen.value = !contactSupportPopoverOpen.value
+  if (contactSupportPopoverOpen.value) {
+    closeDropdown()
+  }
+}
+
+function closeContactSupportPopover() {
+  contactSupportPopoverOpen.value = false
+}
+
 async function handleLogout() {
   closeDropdown()
   try {
@@ -377,8 +420,12 @@ function formatHeaderMoney(value: number) {
 }
 
 function handleClickOutside(event: MouseEvent) {
-  if (dropdownRef.value && !dropdownRef.value.contains(event.target as Node)) {
+  const target = event.target as Node
+  if (dropdownRef.value && !dropdownRef.value.contains(target)) {
     closeDropdown()
+  }
+  if (contactSupportRef.value && !contactSupportRef.value.contains(target)) {
+    closeContactSupportPopover()
   }
 }
 
