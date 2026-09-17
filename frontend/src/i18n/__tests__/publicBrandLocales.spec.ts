@@ -4,6 +4,14 @@ import enLanding from '../locales/en/landing'
 import zhLanding from '../locales/zh/landing'
 import enMisc from '../locales/en/misc'
 import zhMisc from '../locales/zh/misc'
+import enAdminAccounts from '../locales/en/admin/accounts'
+import enAdminOverview from '../locales/en/admin/overview'
+import enAdminPlugins from '../locales/en/admin/plugins'
+import enAdminSettings from '../locales/en/admin/settings'
+import zhAdminAccounts from '../locales/zh/admin/accounts'
+import zhAdminOverview from '../locales/zh/admin/overview'
+import zhAdminPlugins from '../locales/zh/admin/plugins'
+import zhAdminSettings from '../locales/zh/admin/settings'
 
 describe('public navigation and legal locales', () => {
   it('defines matching Chinese and English navigation labels', () => {
@@ -54,5 +62,47 @@ describe('public navigation and legal locales', () => {
     expect(zhMisc.onboarding.admin.welcome.description).not.toContain('Sub2API')
     expect(zhMisc.onboarding.user.welcome.title).toBe('👋 欢迎使用 SiliconBase')
     expect(zhMisc.onboarding.user.welcome.description).not.toContain('Sub2API')
+  })
+
+  it('does not expose the upstream project brand in generic admin UI copy', () => {
+    const uiCopy = [
+      ['en.plugins.runtimeNotice', enAdminPlugins.plugins.runtimeNotice],
+      ['en.plugins.emptyHint', enAdminPlugins.plugins.emptyHint],
+      ['en.plugins.currentVersion', enAdminPlugins.plugins.currentVersion],
+      ['en.plugins.confirmDisable', enAdminPlugins.plugins.confirmDisable],
+      ['en.plugins.confirmUntested', enAdminPlugins.plugins.confirmUntested],
+      ['en.settings.linuxdo.description', enAdminSettings.settings.linuxdo.description],
+      ['en.settings.dingtalk.description', enAdminSettings.settings.dingtalk.description],
+      ['en.settings.scheduling.accountSchedulingThresholdsDescription', enAdminSettings.settings.scheduling.accountSchedulingThresholdsDescription],
+      ['en.settings.upstreamBillingProbe.description', enAdminSettings.settings.upstreamBillingProbe.description],
+      ['en.settings.payment.easypayCustomMethodsHint', enAdminSettings.settings.payment.easypayCustomMethodsHint],
+      ['en.settings.openaiFastPolicy.userIdsHint', enAdminSettings.settings.openaiFastPolicy.userIdsHint],
+      ['en.accounts.upstreamBilling.trustWarning', enAdminAccounts.accounts.upstreamBilling.trustWarning],
+      ['en.accounts.grok.ttsTextPlaceholder', enAdminAccounts.accounts.grok.ttsTextPlaceholder],
+      ['en.accounts.grok.ttsTextDefault', enAdminAccounts.accounts.grok.ttsTextDefault],
+      ['en.overview.groups.openaiLive.hint', enAdminOverview.groups.openaiLive.hint],
+      ['en.overview.groups.openaiLive.unsupportedMessage', enAdminOverview.groups.openaiLive.unsupportedMessage],
+      ['zh.plugins.runtimeNotice', zhAdminPlugins.plugins.runtimeNotice],
+      ['zh.plugins.emptyHint', zhAdminPlugins.plugins.emptyHint],
+      ['zh.plugins.currentVersion', zhAdminPlugins.plugins.currentVersion],
+      ['zh.plugins.confirmDisable', zhAdminPlugins.plugins.confirmDisable],
+      ['zh.plugins.confirmUntested', zhAdminPlugins.plugins.confirmUntested],
+      ['zh.settings.linuxdo.description', zhAdminSettings.settings.linuxdo.description],
+      ['zh.settings.dingtalk.description', zhAdminSettings.settings.dingtalk.description],
+      ['zh.settings.scheduling.accountSchedulingThresholdsDescription', zhAdminSettings.settings.scheduling.accountSchedulingThresholdsDescription],
+      ['zh.settings.upstreamBillingProbe.description', zhAdminSettings.settings.upstreamBillingProbe.description],
+      ['zh.settings.payment.easypayCustomMethodsHint', zhAdminSettings.settings.payment.easypayCustomMethodsHint],
+      ['zh.settings.openaiFastPolicy.userIdsHint', zhAdminSettings.settings.openaiFastPolicy.userIdsHint],
+      ['zh.accounts.upstreamBilling.trustWarning', zhAdminAccounts.accounts.upstreamBilling.trustWarning],
+      ['zh.accounts.grok.ttsTextPlaceholder', zhAdminAccounts.accounts.grok.ttsTextPlaceholder],
+      ['zh.accounts.grok.ttsTextDefault', zhAdminAccounts.accounts.grok.ttsTextDefault],
+      ['zh.overview.groups.openaiLive.hint', zhAdminOverview.groups.openaiLive.hint],
+      ['zh.overview.groups.openaiLive.unsupportedMessage', zhAdminOverview.groups.openaiLive.unsupportedMessage]
+    ] as const
+
+    for (const [label, copy] of uiCopy) {
+      expect(typeof copy, label).toBe('string')
+      expect(copy, label).not.toContain('Sub2API')
+    }
   })
 })
