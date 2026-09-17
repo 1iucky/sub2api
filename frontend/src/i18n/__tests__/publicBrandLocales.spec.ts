@@ -21,4 +21,20 @@ describe('public navigation and legal locales', () => {
     expect(zhLanding.home.footer2.links.supportedCountries).toBe('支持的国家和地区')
     expect(zhLanding.home.footer2.links.serviceSpecificTerms).toBe('服务特定条款')
   })
+
+  it('defines the Factory homepage locale groups in both languages', () => {
+    expect(enLanding.home.hero2.title).toBe('One gateway for every AI subscription.')
+    expect(enLanding.home.marquee2.label).toBe('Compatible with')
+    expect(enLanding.home.bento2.cards.pooling.title).toBe('Multi-upstream pooling')
+    expect(enLanding.home.cta2.button).toBe('Start free')
+    expect(enLanding.home.footer2.columns.resources).toBe('Resources')
+    expect(enLanding.home.footer2.links.models).toBe('Model Marketplace')
+
+    expect(zhLanding.home.hero2.title).toBe('一个网关，接入所有 AI 订阅。')
+    expect(zhLanding.home.marquee2.label).toBe('兼容')
+    expect(zhLanding.home.bento2.cards.pooling.title).toBe('多上游账号池')
+    expect(zhLanding.home.cta2.button).toBe('免费开始')
+    expect(zhLanding.home.footer2.columns.resources).toBe('资源')
+    expect(zhLanding.home.footer2.links.models).toBe('模型集市')
+  })
 })

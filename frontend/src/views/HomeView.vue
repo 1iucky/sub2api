@@ -99,414 +99,206 @@
     </footer>
   </div>
 
-  <!-- Default Home Page -->
-  <div
-    v-else
-    class="relative flex min-h-screen flex-col overflow-hidden bg-gradient-to-br from-gray-50 via-primary-50/30 to-gray-100 dark:from-dark-950 dark:via-dark-900 dark:to-dark-950"
-  >
-    <!-- Background Decorations -->
-    <div class="pointer-events-none absolute inset-0 overflow-hidden">
-      <div
-        class="absolute -right-40 -top-40 h-96 w-96 rounded-full bg-primary-400/20 blur-3xl"
-      ></div>
-      <div
-        class="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-primary-500/15 blur-3xl"
-      ></div>
-      <div
-        class="absolute left-1/3 top-1/4 h-72 w-72 rounded-full bg-primary-300/10 blur-3xl"
-      ></div>
-      <div
-        class="absolute bottom-1/4 right-1/4 h-64 w-64 rounded-full bg-primary-400/10 blur-3xl"
-      ></div>
-      <div
-        class="absolute inset-0 bg-[linear-gradient(rgba(20,184,166,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(20,184,166,0.03)_1px,transparent_1px)] bg-[size:64px_64px]"
-      ></div>
-    </div>
+  <!-- Default Home Page: Factory visual system, preserving upstream entries. -->
+  <div v-else class="relative flex min-h-screen flex-col overflow-x-hidden bg-gray-50 dark:bg-dark-950">
+    <div class="pointer-events-none absolute inset-0 bg-blueprint"></div>
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(at_40%_12%,rgba(239,111,46,0.10)_0px,transparent_55%),radial-gradient(at_85%_0%,rgba(209,80,16,0.06)_0px,transparent_50%)]"></div>
 
-    <!-- Header -->
-    <header class="relative z-20 px-6 py-4">
-      <nav class="mx-auto flex max-w-6xl items-center justify-between">
-        <!-- Logo -->
-        <div class="flex items-center">
-          <div class="h-10 w-10 overflow-hidden rounded-xl shadow-md">
-            <img :src="siteLogo || '/logo.svg'" alt="Logo" class="h-full w-full object-contain" />
-          </div>
-        </div>
+    <header
+      class="sf-nav fixed inset-x-0 top-0 z-50 border-b border-transparent transition-colors duration-200"
+      :class="navScrolled ? 'border-gray-200/70 bg-white/80 backdrop-blur-md dark:border-dark-800/70 dark:bg-dark-950/80' : 'border-transparent'"
+    >
+      <nav class="mx-auto flex h-14 max-w-[1920px] items-center justify-between px-4 lg:px-9" aria-label="Main">
+        <router-link to="/home" class="group flex min-w-0 items-center gap-2.5" :aria-label="siteName">
+          <span class="block h-6 w-6 shrink-0 overflow-hidden rounded-sm">
+            <img :src="siteLogo || '/logo.svg'" alt="" class="h-full w-full object-contain" />
+          </span>
+          <span class="min-w-0 truncate font-mono text-[13px] uppercase tracking-[0.14em] text-gray-900 transition-colors duration-200 group-hover:text-primary-500 dark:text-gray-100">{{ siteName }}</span>
+        </router-link>
 
-        <!-- Nav Actions -->
-        <div class="flex items-center gap-3">
-          <!-- Language Switcher -->
+        <div class="hidden items-center gap-6 md:flex">
+          <a v-if="docUrl" :href="docUrl" target="_blank" rel="noopener noreferrer" class="font-mono text-[12px] uppercase tracking-[0.14em] text-gray-500 transition-colors duration-200 hover:text-primary-500 dark:text-dark-400">{{ t('home.nav.docs') }}</a>
+          <router-link v-if="showChannelMonitorEntry" to="/monitor" class="font-mono text-[12px] uppercase tracking-[0.14em] text-gray-500 transition-colors duration-200 hover:text-primary-500 dark:text-dark-400">{{ t('home.nav.status') }}</router-link>
+          <router-link v-if="showModelPlazaEntry" to="/model-plaza" class="font-mono text-[12px] uppercase tracking-[0.14em] text-gray-500 transition-colors duration-200 hover:text-primary-500 dark:text-dark-400">{{ t('home.nav.models') }}</router-link>
           <LocaleSwitcher />
-
-          <!-- Doc Link -->
-          <a
-            v-if="docUrl"
-            :href="docUrl"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="rounded-lg p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:text-dark-400 dark:hover:bg-dark-800 dark:hover:text-white"
-            :title="t('home.viewDocs')"
-          >
-            <Icon name="book" size="md" />
-          </a>
-
-          <!-- Channel Status Link -->
-          <router-link
-            v-if="showChannelMonitorEntry"
-            to="/monitor"
-            class="inline-flex items-center gap-1.5 rounded-lg p-2 text-sm text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:text-dark-400 dark:hover:bg-dark-800 dark:hover:text-white"
-            :title="t('home.nav.status')"
-          >
-            <Icon name="chart" size="md" />
-            <span class="hidden sm:inline">{{ t('home.nav.status') }}</span>
-          </router-link>
-
-          <!-- Model Plaza Link -->
-          <router-link
-            v-if="showModelPlazaEntry"
-            to="/model-plaza"
-            class="inline-flex items-center gap-1.5 rounded-lg p-2 text-sm text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:text-dark-400 dark:hover:bg-dark-800 dark:hover:text-white"
-            :title="t('home.nav.models')"
-          >
-            <Icon name="grid" size="md" />
-            <span class="hidden sm:inline">{{ t('home.nav.models') }}</span>
-          </router-link>
-
-          <!-- Theme Toggle -->
           <button
             @click="toggleTheme"
-            class="rounded-lg p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:text-dark-400 dark:hover:bg-dark-800 dark:hover:text-white"
+            class="rounded-sm p-1.5 text-gray-500 transition-colors duration-150 hover:bg-gray-100 hover:text-gray-900 dark:text-dark-400 dark:hover:bg-dark-800 dark:hover:text-white"
             :title="isDark ? t('home.switchToLight') : t('home.switchToDark')"
+            :aria-label="isDark ? t('home.switchToLight') : t('home.switchToDark')"
           >
             <Icon v-if="isDark" name="sun" size="md" />
             <Icon v-else name="moon" size="md" />
           </button>
+          <router-link
+            :to="isAuthenticated ? dashboardPath : '/login'"
+            class="sf-btn group relative inline-flex h-[31px] items-center justify-center overflow-clip rounded-sm border border-dark-800 bg-dark-950 px-3.5 font-mono text-[12px] uppercase tracking-[0.12em] text-white transition-colors duration-150 hover:border-primary-500 hover:text-primary-500 dark:border-dark-700 dark:bg-dark-900 dark:text-gray-100"
+          >
+            <span v-if="isAuthenticated" class="mr-1.5 flex h-4 w-4 items-center justify-center rounded-sm bg-primary-500 text-[9px] font-semibold text-white">{{ userInitial || '·' }}</span>
+            <span>{{ isAuthenticated ? t('home.dashboard') : t('home.login') }}</span>
+          </router-link>
+        </div>
 
-          <!-- Login / Dashboard Button -->
-          <router-link
-            v-if="isAuthenticated"
-            :to="dashboardPath"
-            class="inline-flex items-center gap-1.5 rounded-full bg-gray-900 py-1 pl-1 pr-2.5 transition-colors hover:bg-gray-800 dark:bg-gray-800 dark:hover:bg-gray-700"
+        <div class="flex items-center gap-2 md:hidden">
+          <LocaleSwitcher />
+          <button
+            @click="toggleTheme"
+            class="rounded-sm p-1.5 text-gray-500 transition-colors duration-150 hover:bg-gray-100 hover:text-gray-900 dark:text-dark-400 dark:hover:bg-dark-800 dark:hover:text-white"
+            :aria-label="isDark ? t('home.switchToLight') : t('home.switchToDark')"
           >
-            <span
-              class="flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-primary-400 to-primary-600 text-[10px] font-semibold text-white"
-            >
-              {{ userInitial }}
-            </span>
-            <span class="text-xs font-medium text-white">{{ t('home.dashboard') }}</span>
-            <svg
-              class="h-3 w-3 text-gray-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"
-              />
-            </svg>
-          </router-link>
-          <router-link
-            v-else
-            to="/login"
-            class="inline-flex items-center rounded-full bg-gray-900 px-3 py-1 text-xs font-medium text-white transition-colors hover:bg-gray-800 dark:bg-gray-800 dark:hover:bg-gray-700"
+            <Icon v-if="isDark" name="sun" size="md" />
+            <Icon v-else name="moon" size="md" />
+          </button>
+          <button
+            @click="mobileOpen = true"
+            class="rounded-sm p-1.5 text-gray-700 transition-colors duration-150 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-dark-800"
+            :aria-label="t('home.nav.openMenu')"
+            :aria-expanded="mobileOpen"
           >
-            {{ t('home.login') }}
-          </router-link>
+            <Icon name="menu" size="md" />
+          </button>
         </div>
       </nav>
     </header>
 
-    <!-- Main Content -->
-    <main class="relative z-10 flex-1 px-6 py-16">
-      <div class="mx-auto max-w-6xl">
-        <!-- Hero Section - Left/Right Layout -->
-        <div class="mb-12 flex flex-col items-center justify-between gap-12 lg:flex-row lg:gap-16">
-          <!-- Left: Text Content -->
-          <div class="flex-1 text-center lg:text-left">
-            <h1
-              class="mb-4 text-4xl font-bold text-gray-900 dark:text-white md:text-5xl lg:text-6xl"
-            >
-              {{ siteName }}
-            </h1>
-            <p class="mb-8 text-lg text-gray-600 dark:text-dark-300 md:text-xl">
-              {{ siteSubtitle }}
-            </p>
+    <Transition name="sf-drawer">
+      <div v-if="mobileOpen" class="fixed inset-0 z-[70] md:hidden" :aria-hidden="!mobileOpen">
+        <div class="absolute inset-0 bg-dark-950/60 backdrop-blur-sm" @click="mobileOpen = false"></div>
+        <aside class="sf-drawer-panel absolute left-0 top-0 flex h-full w-[280px] max-w-[80vw] flex-col border-r border-gray-200 bg-white pt-4 dark:border-dark-800 dark:bg-dark-950">
+          <div class="flex items-center justify-between px-5 pb-4">
+            <span class="min-w-0 truncate font-mono text-[13px] uppercase tracking-[0.14em] text-gray-900 dark:text-gray-100">{{ siteName }}</span>
+            <button @click="mobileOpen = false" class="rounded-sm p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-dark-400 dark:hover:bg-dark-800 dark:hover:text-white" :aria-label="t('home.nav.closeMenu')">
+              <Icon name="x" size="md" />
+            </button>
+          </div>
+          <nav class="flex flex-col gap-1 px-3" aria-label="Mobile">
+            <a v-if="docUrl" :href="docUrl" target="_blank" rel="noopener noreferrer" class="rounded-sm px-3 py-2 font-mono text-[12px] uppercase tracking-[0.12em] text-gray-600 transition-colors duration-150 hover:bg-gray-100 hover:text-gray-900 dark:text-dark-300 dark:hover:bg-dark-800 dark:hover:text-white">{{ t('home.nav.docs') }}</a>
+            <router-link v-if="showChannelMonitorEntry" to="/monitor" class="rounded-sm px-3 py-2 font-mono text-[12px] uppercase tracking-[0.12em] text-gray-600 transition-colors duration-150 hover:bg-gray-100 hover:text-gray-900 dark:text-dark-300 dark:hover:bg-dark-800 dark:hover:text-white" @click="mobileOpen = false">{{ t('home.nav.status') }}</router-link>
+            <router-link v-if="showModelPlazaEntry" to="/model-plaza" class="rounded-sm px-3 py-2 font-mono text-[12px] uppercase tracking-[0.12em] text-gray-600 transition-colors duration-150 hover:bg-gray-100 hover:text-gray-900 dark:text-dark-300 dark:hover:bg-dark-800 dark:hover:text-white" @click="mobileOpen = false">{{ t('home.nav.models') }}</router-link>
+            <router-link :to="isAuthenticated ? dashboardPath : '/login'" class="mt-2 inline-flex items-center justify-center rounded-sm border border-dark-800 bg-dark-950 px-3 py-2 font-mono text-[12px] uppercase tracking-[0.12em] text-white dark:border-dark-700 dark:bg-dark-900" @click="mobileOpen = false">{{ isAuthenticated ? t('home.dashboard') : t('home.login') }}</router-link>
+          </nav>
+        </aside>
+      </div>
+    </Transition>
 
-            <!-- CTA Button -->
-            <div>
-              <router-link
-                :to="isAuthenticated ? dashboardPath : '/login'"
-                class="btn btn-primary px-8 py-3 text-base shadow-lg shadow-primary-500/30"
-              >
-                {{ isAuthenticated ? t('home.goToDashboard') : t('home.getStarted') }}
-                <Icon name="arrowRight" size="md" class="ml-2" :stroke-width="2" />
-              </router-link>
-            </div>
-          </div>
-
-          <!-- Right: Terminal Animation -->
-          <div class="flex flex-1 justify-center lg:justify-end">
-            <div class="terminal-container">
-              <div class="terminal-window">
-                <!-- Window header -->
-                <div class="terminal-header">
-                  <div class="terminal-buttons">
-                    <span class="btn-close"></span>
-                    <span class="btn-minimize"></span>
-                    <span class="btn-maximize"></span>
-                  </div>
-                  <span class="terminal-title">terminal</span>
-                </div>
-                <!-- Terminal content -->
-                <div class="terminal-body">
-                  <div class="code-line line-1">
-                    <span class="code-prompt">$</span>
-                    <span class="code-cmd">curl</span>
-                    <span class="code-flag">-X POST</span>
-                    <span class="code-url">/v1/messages</span>
-                  </div>
-                  <div class="code-line line-2">
-                    <span class="code-comment"># Routing to upstream...</span>
-                  </div>
-                  <div class="code-line line-3">
-                    <span class="code-success">200 OK</span>
-                    <span class="code-response">{ "content": "Hello!" }</span>
-                  </div>
-                  <div class="code-line line-4">
-                    <span class="code-prompt">$</span>
-                    <span class="cursor"></span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Feature Tags - Centered -->
-        <div class="mb-12 flex flex-wrap items-center justify-center gap-4 md:gap-6">
-          <div
-            class="inline-flex items-center gap-2.5 rounded-full border border-gray-200/50 bg-white/80 px-5 py-2.5 shadow-sm backdrop-blur-sm dark:border-dark-700/50 dark:bg-dark-800/80"
-          >
-            <Icon name="swap" size="sm" class="text-primary-500" />
-            <span class="text-sm font-medium text-gray-700 dark:text-dark-200">{{
-              t('home.tags.subscriptionToApi')
-            }}</span>
-          </div>
-          <div
-            class="inline-flex items-center gap-2.5 rounded-full border border-gray-200/50 bg-white/80 px-5 py-2.5 shadow-sm backdrop-blur-sm dark:border-dark-700/50 dark:bg-dark-800/80"
-          >
-            <Icon name="shield" size="sm" class="text-primary-500" />
-            <span class="text-sm font-medium text-gray-700 dark:text-dark-200">{{
-              t('home.tags.stickySession')
-            }}</span>
-          </div>
-          <div
-            class="inline-flex items-center gap-2.5 rounded-full border border-gray-200/50 bg-white/80 px-5 py-2.5 shadow-sm backdrop-blur-sm dark:border-dark-700/50 dark:bg-dark-800/80"
-          >
-            <Icon name="chart" size="sm" class="text-primary-500" />
-            <span class="text-sm font-medium text-gray-700 dark:text-dark-200">{{
-              t('home.tags.realtimeBilling')
-            }}</span>
-          </div>
-        </div>
-
-        <!-- Features Grid -->
-        <div class="mb-12 grid gap-6 md:grid-cols-3">
-          <!-- Feature 1: Unified Gateway -->
-          <div
-            class="group rounded-2xl border border-gray-200/50 bg-white/60 p-6 backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:shadow-primary-500/10 dark:border-dark-700/50 dark:bg-dark-800/60"
-          >
-            <div
-              class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg shadow-blue-500/30 transition-transform group-hover:scale-110"
-            >
-              <Icon name="server" size="lg" class="text-white" />
-            </div>
-            <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
-              {{ t('home.features.unifiedGateway') }}
-            </h3>
-            <p class="text-sm leading-relaxed text-gray-600 dark:text-dark-400">
-              {{ t('home.features.unifiedGatewayDesc') }}
-            </p>
-          </div>
-
-          <!-- Feature 2: Account Pool -->
-          <div
-            class="group rounded-2xl border border-gray-200/50 bg-white/60 p-6 backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:shadow-primary-500/10 dark:border-dark-700/50 dark:bg-dark-800/60"
-          >
-            <div
-              class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 shadow-lg shadow-primary-500/30 transition-transform group-hover:scale-110"
-            >
-              <svg
-                class="h-6 w-6 text-white"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                stroke-width="1.5"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"
-                />
-              </svg>
-            </div>
-            <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
-              {{ t('home.features.multiAccount') }}
-            </h3>
-            <p class="text-sm leading-relaxed text-gray-600 dark:text-dark-400">
-              {{ t('home.features.multiAccountDesc') }}
-            </p>
-          </div>
-
-          <!-- Feature 3: Billing & Quota -->
-          <div
-            class="group rounded-2xl border border-gray-200/50 bg-white/60 p-6 backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:shadow-primary-500/10 dark:border-dark-700/50 dark:bg-dark-800/60"
-          >
-            <div
-              class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 shadow-lg shadow-purple-500/30 transition-transform group-hover:scale-110"
-            >
-              <svg
-                class="h-6 w-6 text-white"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                stroke-width="1.5"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z"
-                />
-              </svg>
-            </div>
-            <h3 class="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
-              {{ t('home.features.balanceQuota') }}
-            </h3>
-            <p class="text-sm leading-relaxed text-gray-600 dark:text-dark-400">
-              {{ t('home.features.balanceQuotaDesc') }}
-            </p>
-          </div>
-        </div>
-
-        <!-- Supported Providers -->
-        <div class="mb-8 text-center">
-          <h2 class="mb-3 text-2xl font-bold text-gray-900 dark:text-white">
-            {{ t('home.providers.title') }}
-          </h2>
-          <p class="text-sm text-gray-600 dark:text-dark-400">
-            {{ t('home.providers.description') }}
+    <section class="relative z-10 mx-auto w-full max-w-[1920px] px-4 pb-16 pt-28 lg:px-9 lg:pb-24 lg:pt-36">
+      <div class="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-6">
+        <div class="lg:col-span-5 lg:self-center">
+          <p data-home-hero-intro :style="{ '--sf-delay': '0ms' }" class="eyebrow mb-5">{{ t('home.hero2.eyebrow') }}</p>
+          <h1 data-home-hero-intro :style="{ '--sf-delay': '120ms' }" class="mb-6 max-w-[14ch] text-[clamp(40px,7vw,72px)] font-normal leading-[100%] tracking-[-0.04em] text-gray-900 lg:tracking-[-0.06em] dark:text-white">
+            {{ t('home.hero2.title') }}
+          </h1>
+          <p data-home-hero-intro :style="{ '--sf-delay': '240ms' }" class="mb-9 max-w-[46ch] font-mono text-[14px] leading-[150%] tracking-[-0.01em] text-gray-600 lg:text-[16px] dark:text-dark-300">
+            {{ siteSubtitle || t('home.hero2.subhead') }}
           </p>
+          <div data-home-hero-intro :style="{ '--sf-delay': '360ms' }" class="flex flex-wrap items-center gap-3">
+            <router-link :to="isAuthenticated ? dashboardPath : '/login'" class="sf-btn group relative inline-flex h-[40px] items-center justify-center overflow-clip rounded-sm border border-dark-800 bg-dark-950 px-5 font-mono text-[13px] uppercase tracking-[0.12em] text-white transition-colors duration-150 hover:border-primary-500 hover:text-primary-500 dark:border-dark-700 dark:bg-dark-900 dark:text-gray-100">
+              <span class="relative z-10 flex items-center gap-2">
+                {{ isAuthenticated ? t('home.goToDashboard') : t('home.hero2.ctaPrimary') }}
+                <Icon name="arrowRight" size="sm" :stroke-width="2" />
+              </span>
+            </router-link>
+            <router-link v-if="showModelPlazaEntry" to="/model-plaza" class="sf-btn group relative inline-flex h-[40px] items-center justify-center overflow-clip rounded-sm border border-gray-300 bg-transparent px-5 font-mono text-[13px] uppercase tracking-[0.12em] text-gray-700 transition-colors duration-150 hover:border-primary-500 hover:text-primary-500 dark:border-dark-700 dark:text-gray-200">
+              <span class="relative z-10 flex items-center gap-2">
+                {{ t('home.nav.models') }}
+                <Icon name="arrowRight" size="sm" :stroke-width="2" />
+              </span>
+            </router-link>
+          </div>
         </div>
 
-        <div class="mb-16 flex flex-wrap items-center justify-center gap-4">
-          <!-- Claude - Supported -->
-          <div
-            class="flex items-center gap-2 rounded-xl border border-primary-200 bg-white/60 px-5 py-3 ring-1 ring-primary-500/20 backdrop-blur-sm dark:border-primary-800 dark:bg-dark-800/60"
-          >
-            <div
-              class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-orange-400 to-orange-500"
-            >
-              <span class="text-xs font-bold text-white">C</span>
-            </div>
-            <span class="text-sm font-medium text-gray-700 dark:text-dark-200">{{ t('home.providers.claude') }}</span>
-            <span
-              class="rounded bg-primary-100 px-1.5 py-0.5 text-[10px] font-medium text-primary-600 dark:bg-primary-900/30 dark:text-primary-400"
-              >{{ t('home.providers.supported') }}</span
-            >
-          </div>
-          <!-- GPT - Supported -->
-          <div
-            class="flex items-center gap-2 rounded-xl border border-primary-200 bg-white/60 px-5 py-3 ring-1 ring-primary-500/20 backdrop-blur-sm dark:border-primary-800 dark:bg-dark-800/60"
-          >
-            <div
-              class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-green-500 to-green-600"
-            >
-              <span class="text-xs font-bold text-white">G</span>
-            </div>
-            <span class="text-sm font-medium text-gray-700 dark:text-dark-200">GPT</span>
-            <span
-              class="rounded bg-primary-100 px-1.5 py-0.5 text-[10px] font-medium text-primary-600 dark:bg-primary-900/30 dark:text-primary-400"
-              >{{ t('home.providers.supported') }}</span
-            >
-          </div>
-          <!-- Gemini - Supported -->
-          <div
-            class="flex items-center gap-2 rounded-xl border border-primary-200 bg-white/60 px-5 py-3 ring-1 ring-primary-500/20 backdrop-blur-sm dark:border-primary-800 dark:bg-dark-800/60"
-          >
-            <div
-              class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-blue-600"
-            >
-              <span class="text-xs font-bold text-white">G</span>
-            </div>
-            <span class="text-sm font-medium text-gray-700 dark:text-dark-200">{{ t('home.providers.gemini') }}</span>
-            <span
-              class="rounded bg-primary-100 px-1.5 py-0.5 text-[10px] font-medium text-primary-600 dark:bg-primary-900/30 dark:text-primary-400"
-              >{{ t('home.providers.supported') }}</span
-            >
-          </div>
-          <!-- Antigravity - Supported -->
-          <div
-            class="flex items-center gap-2 rounded-xl border border-primary-200 bg-white/60 px-5 py-3 ring-1 ring-primary-500/20 backdrop-blur-sm dark:border-primary-800 dark:bg-dark-800/60"
-          >
-            <div
-              class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-rose-500 to-pink-600"
-            >
-              <span class="text-xs font-bold text-white">A</span>
-            </div>
-            <span class="text-sm font-medium text-gray-700 dark:text-dark-200">{{ t('home.providers.antigravity') }}</span>
-            <span
-              class="rounded bg-primary-100 px-1.5 py-0.5 text-[10px] font-medium text-primary-600 dark:bg-primary-900/30 dark:text-primary-400"
-              >{{ t('home.providers.supported') }}</span
-            >
-          </div>
-          <!-- More - Coming Soon -->
-          <div
-            class="flex items-center gap-2 rounded-xl border border-gray-200/50 bg-white/40 px-5 py-3 opacity-60 backdrop-blur-sm dark:border-dark-700/50 dark:bg-dark-800/40"
-          >
-            <div
-              class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-gray-500 to-gray-600"
-            >
-              <span class="text-xs font-bold text-white">+</span>
-            </div>
-            <span class="text-sm font-medium text-gray-700 dark:text-dark-200">{{ t('home.providers.more') }}</span>
-            <span
-              class="rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium text-gray-500 dark:bg-dark-700 dark:text-dark-400"
-              >{{ t('home.providers.soon') }}</span
-            >
+        <div class="lg:col-span-7">
+          <div data-hero-demo class="sf-dashboard-frame relative w-full overflow-hidden rounded-[16px] border border-gray-200 bg-white shadow-[0_45px_120px_rgba(0,0,0,0.18)] lg:-mr-16 dark:border-dark-800 dark:bg-dark-900 dark:shadow-[0_45px_120px_rgba(0,0,0,0.55)]">
+            <GatewayDashboard :t="t" />
           </div>
         </div>
       </div>
-    </main>
+    </section>
 
-    <!-- Footer -->
-    <footer class="relative z-10 border-t border-gray-200/50 px-6 py-8 dark:border-dark-800/50">
-      <div
-        class="mx-auto flex max-w-6xl flex-col items-center justify-center gap-4 text-center sm:flex-row sm:text-left"
-      >
-        <p class="text-sm text-gray-500 dark:text-dark-400">
-          &copy; {{ currentYear }} {{ siteName }}. {{ t('home.footer.allRightsReserved') }}
-        </p>
-        <div class="flex items-center gap-4">
-          <a
-            v-if="docUrl"
-            :href="docUrl"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-dark-400 dark:hover:text-white"
-          >
-            {{ t('home.docs') }}
-          </a>
-          <a
-            :href="githubUrl"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-dark-400 dark:hover:text-white"
-          >
-            GitHub
-          </a>
+    <section class="relative z-10 overflow-hidden border-y border-dashed border-gray-200 py-6 dark:border-dark-800">
+      <div class="mx-auto mb-4 flex max-w-[1920px] items-center gap-3 px-4 lg:px-9">
+        <span class="eyebrow whitespace-nowrap">{{ t('home.marquee2.label') }}</span>
+        <span class="h-px flex-1 bg-gray-200 dark:bg-dark-800"></span>
+      </div>
+      <div class="sf-marquee relative overflow-hidden">
+        <div class="sf-marquee-track flex w-max items-center gap-12 pr-12">
+          <template v-for="n in 2" :key="n">
+            <span v-for="(item, idx) in marqueeItems" :key="`${n}-${idx}`" class="group inline-flex items-center gap-2 whitespace-nowrap font-mono text-[14px] uppercase tracking-[-0.01em] text-gray-400 transition-colors duration-200 hover:text-primary-500 dark:text-dark-400">
+              <span class="inline-block h-1.5 w-1.5 rounded-full bg-primary-500/60 group-hover:bg-primary-500"></span>
+              {{ item }}
+            </span>
+          </template>
+        </div>
+        <div class="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-gray-50 to-transparent dark:from-dark-950"></div>
+        <div class="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-gray-50 to-transparent dark:from-dark-950"></div>
+      </div>
+    </section>
+
+    <section class="relative z-10 mx-auto w-full max-w-[1920px] px-4 py-20 lg:px-9 lg:py-28">
+      <div class="mb-10 flex flex-col gap-3">
+        <p class="eyebrow">{{ t('home.bento2.eyebrow') }}</p>
+        <h2 class="max-w-[20ch] text-[clamp(28px,4vw,44px)] font-normal leading-[110%] tracking-[-0.03em] text-gray-900 lg:tracking-[-0.04em] dark:text-white">{{ t('home.bento2.title') }}</h2>
+      </div>
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <article v-reveal :style="{ '--sf-delay': '0ms' }" class="group relative flex flex-col gap-5 rounded-lg border border-gray-200 bg-white p-8 transition-colors duration-150 hover:border-gray-300 dark:border-dark-800 dark:bg-dark-900 dark:hover:border-dark-700">
+          <div class="flex items-center gap-3"><span class="font-mono text-[13px] text-primary-500">01</span><span class="h-px flex-1 bg-gray-200 dark:bg-dark-800"></span></div>
+          <PoolingChart />
+          <h3 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">{{ t('home.bento2.cards.pooling.title') }}</h3>
+          <p class="text-sm leading-relaxed text-gray-600 dark:text-dark-300">{{ t('home.bento2.cards.pooling.desc') }}</p>
+        </article>
+        <article v-reveal :style="{ '--sf-delay': '120ms' }" class="group relative flex flex-col gap-5 rounded-lg border border-gray-200 bg-white p-8 transition-colors duration-150 hover:border-gray-300 dark:border-dark-800 dark:bg-dark-900 dark:hover:border-dark-700">
+          <div class="flex items-center gap-3"><span class="font-mono text-[13px] text-primary-500">02</span><span class="h-px flex-1 bg-gray-200 dark:bg-dark-800"></span></div>
+          <RoutingDiagram />
+          <h3 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">{{ t('home.bento2.cards.routing.title') }}</h3>
+          <p class="text-sm leading-relaxed text-gray-600 dark:text-dark-300">{{ t('home.bento2.cards.routing.desc') }}</p>
+        </article>
+        <article v-reveal :style="{ '--sf-delay': '240ms' }" class="group relative flex flex-col gap-5 rounded-lg border border-gray-200 bg-white p-8 transition-colors duration-150 hover:border-gray-300 dark:border-dark-800 dark:bg-dark-900 dark:hover:border-dark-700">
+          <div class="flex items-center gap-3"><span class="font-mono text-[13px] text-primary-500">03</span><span class="h-px flex-1 bg-gray-200 dark:bg-dark-800"></span></div>
+          <BillingSparkline />
+          <h3 class="text-lg font-normal tracking-tight text-gray-900 dark:text-white">{{ t('home.bento2.cards.billing.title') }}</h3>
+          <p class="text-sm leading-relaxed text-gray-600 dark:text-dark-300">{{ t('home.bento2.cards.billing.desc') }}</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="relative z-10 mx-auto w-full max-w-[1920px] px-4 py-16 lg:px-9 lg:py-24">
+      <div v-reveal class="flex flex-col items-start gap-5 border-t border-dashed border-gray-200 pt-12 dark:border-dark-800">
+        <p class="eyebrow">{{ t('home.cta2.eyebrow') }}</p>
+        <h2 class="max-w-[24ch] text-[clamp(28px,4vw,48px)] font-normal leading-[110%] tracking-[-0.03em] text-gray-900 lg:tracking-[-0.04em] dark:text-white">{{ t('home.cta2.title') }}</h2>
+        <p class="max-w-[60ch] font-mono text-[14px] leading-[150%] text-gray-600 dark:text-dark-300">{{ t('home.cta2.note') }}</p>
+        <router-link :to="isAuthenticated ? dashboardPath : '/login'" class="sf-btn group relative mt-2 inline-flex h-[44px] items-center justify-center overflow-clip rounded-sm border border-dark-800 bg-dark-950 px-6 font-mono text-[13px] uppercase tracking-[0.12em] text-white transition-colors duration-150 hover:border-primary-500 hover:text-primary-500 dark:border-dark-700 dark:bg-dark-900 dark:text-gray-100">
+          <span class="relative z-10 flex items-center gap-2">{{ t('home.cta2.button') }}<Icon name="arrowRight" size="sm" :stroke-width="2" /></span>
+        </router-link>
+      </div>
+    </section>
+
+    <footer class="relative z-10 mx-auto w-full max-w-[1920px] px-4 pb-10 lg:px-9">
+      <div class="rounded-lg border border-gray-200 bg-white px-6 py-10 dark:border-dark-800 dark:bg-dark-900 lg:px-10 lg:py-12">
+        <div class="grid grid-cols-2 gap-8 lg:grid-cols-12 lg:gap-6">
+          <div class="col-span-2 flex flex-col gap-3 lg:col-span-4">
+            <div class="flex min-w-0 items-center gap-2.5">
+              <span class="block h-6 w-6 shrink-0 overflow-hidden rounded-sm"><img :src="siteLogo || '/logo.svg'" alt="" class="h-full w-full object-contain" /></span>
+              <span class="min-w-0 truncate font-mono text-[13px] uppercase tracking-[0.14em] text-gray-900 dark:text-gray-100">{{ siteName }}</span>
+            </div>
+            <p class="max-w-[36ch] font-mono text-[12px] uppercase tracking-[0.12em] text-gray-500 dark:text-dark-400">{{ t('home.footer2.tagline') }}</p>
+          </div>
+          <div class="flex flex-col gap-3 lg:col-span-3 lg:col-start-7">
+            <p class="eyebrow">{{ t('home.footer2.columns.resources') }}</p>
+            <a v-if="docUrl" :href="docUrl" target="_blank" rel="noopener noreferrer" class="font-mono text-[13px] tracking-[-0.01em] text-gray-600 transition-colors duration-200 hover:text-primary-500 dark:text-dark-300">{{ t('home.footer2.links.docs') }}</a>
+            <router-link v-if="showChannelMonitorEntry" to="/monitor" class="font-mono text-[13px] tracking-[-0.01em] text-gray-600 transition-colors duration-200 hover:text-primary-500 dark:text-dark-300">{{ t('home.footer2.links.status') }}</router-link>
+            <router-link v-if="showModelPlazaEntry" to="/model-plaza" class="font-mono text-[13px] tracking-[-0.01em] text-gray-600 transition-colors duration-200 hover:text-primary-500 dark:text-dark-300">{{ t('home.footer2.links.models') }}</router-link>
+          </div>
+          <div class="flex flex-col gap-3 lg:col-span-3">
+            <p class="eyebrow">{{ t('home.footer2.columns.legal') }}</p>
+            <router-link to="/legal/service-terms" class="font-mono text-[13px] tracking-[-0.01em] text-gray-600 transition-colors duration-200 hover:text-primary-500 dark:text-dark-300">{{ t('home.footer2.links.serviceTerms') }}</router-link>
+            <router-link to="/legal/usage-policy" class="font-mono text-[13px] tracking-[-0.01em] text-gray-600 transition-colors duration-200 hover:text-primary-500 dark:text-dark-300">{{ t('home.footer2.links.usagePolicy') }}</router-link>
+            <router-link to="/legal/supported-countries" class="font-mono text-[13px] tracking-[-0.01em] text-gray-600 transition-colors duration-200 hover:text-primary-500 dark:text-dark-300">{{ t('home.footer2.links.supportedCountries') }}</router-link>
+            <router-link to="/legal/service-specific-terms" class="font-mono text-[13px] tracking-[-0.01em] text-gray-600 transition-colors duration-200 hover:text-primary-500 dark:text-dark-300">{{ t('home.footer2.links.serviceSpecificTerms') }}</router-link>
+          </div>
+        </div>
+        <div class="mt-10 flex flex-col items-start justify-between gap-3 border-t border-dashed border-gray-200 pt-6 dark:border-dark-800 md:flex-row md:items-center">
+          <p class="font-mono text-[11px] uppercase tracking-[0.12em] text-gray-500 dark:text-dark-400">&copy; {{ currentYear }} {{ siteName }}</p>
+          <p class="font-mono text-[11px] uppercase tracking-[0.12em] text-gray-400 dark:text-dark-400">{{ t('home.footer2.domain') }}</p>
         </div>
       </div>
     </footer>
@@ -514,13 +306,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore, useAppStore } from '@/stores'
 import LocaleSwitcher from '@/components/common/LocaleSwitcher.vue'
 import Icon from '@/components/icons/Icon.vue'
 import { sanitizeUrl } from '@/utils/url'
 import { FeatureFlags, isFeatureFlagEnabled } from '@/utils/featureFlags'
+import GatewayDashboard from '@/components/home/GatewayDashboard.vue'
+import PoolingChart from '@/components/home/PoolingChart.vue'
+import RoutingDiagram from '@/components/home/RoutingDiagram.vue'
+import BillingSparkline from '@/components/home/BillingSparkline.vue'
 
 const { t } = useI18n()
 
@@ -547,9 +343,6 @@ const isHomeContentUrl = computed(() => {
 // Theme
 const isDark = ref(document.documentElement.classList.contains('dark'))
 
-// GitHub URL
-const githubUrl = 'https://github.com/Wei-Shaw/sub2api'
-
 // Auth state
 const isAuthenticated = computed(() => authStore.isAuthenticated)
 const modelPlazaRequiresAuth = computed(
@@ -568,6 +361,19 @@ const userInitial = computed(() => {
 
 // Current year for footer
 const currentYear = computed(() => new Date().getFullYear())
+const marqueeItems = computed(() => {
+  const value = t('home.marquee2.items')
+  return value === 'home.marquee2.items'
+    ? ['Claude', 'GPT', 'Gemini', 'Antigravity', 'OpenAI', 'Grok']
+    : value.split('·').map((item) => item.trim()).filter(Boolean)
+})
+
+const mobileOpen = ref(false)
+const navScrolled = ref(false)
+
+function handleScroll() {
+  navScrolled.value = window.scrollY > 8
+}
 
 // Toggle theme
 function toggleTheme() {
@@ -598,168 +404,43 @@ onMounted(() => {
   if (!appStore.publicSettingsLoaded) {
     appStore.fetchPublicSettings()
   }
+
+  handleScroll()
+  window.addEventListener('scroll', handleScroll, { passive: true })
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', handleScroll)
 })
 </script>
 
 <style scoped>
-/* Terminal Container */
-.terminal-container {
-  position: relative;
-  display: inline-block;
+.sf-drawer-enter-active,
+.sf-drawer-leave-active {
+  transition: opacity 0.2s ease-in-out;
 }
 
-/* Terminal Window */
-.terminal-window {
-  width: 420px;
-  background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
-  border-radius: 14px;
-  box-shadow:
-    0 25px 50px -12px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  overflow: hidden;
-  transform: perspective(1000px) rotateX(2deg) rotateY(-2deg);
-  transition: transform 0.3s ease;
-}
-
-.terminal-window:hover {
-  transform: perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(-4px);
-}
-
-/* Terminal Header */
-.terminal-header {
-  display: flex;
-  align-items: center;
-  padding: 12px 16px;
-  background: rgba(30, 41, 59, 0.8);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.terminal-buttons {
-  display: flex;
-  gap: 8px;
-}
-
-.terminal-buttons span {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-}
-
-.btn-close {
-  background: #ef4444;
-}
-.btn-minimize {
-  background: #eab308;
-}
-.btn-maximize {
-  background: #22c55e;
-}
-
-.terminal-title {
-  flex: 1;
-  text-align: center;
-  font-size: 12px;
-  font-family: ui-monospace, monospace;
-  color: #64748b;
-  margin-right: 52px;
-}
-
-/* Terminal Body */
-.terminal-body {
-  padding: 20px 24px;
-  font-family: ui-monospace, 'Fira Code', monospace;
-  font-size: 14px;
-  line-height: 2;
-}
-
-.code-line {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
+.sf-drawer-enter-from,
+.sf-drawer-leave-to {
   opacity: 0;
-  animation: line-appear 0.5s ease forwards;
 }
 
-.line-1 {
-  animation-delay: 0.3s;
-}
-.line-2 {
-  animation-delay: 1s;
-}
-.line-3 {
-  animation-delay: 1.8s;
-}
-.line-4 {
-  animation-delay: 2.5s;
+.sf-drawer-enter-active .sf-drawer-panel,
+.sf-drawer-leave-active .sf-drawer-panel {
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-@keyframes line-appear {
-  from {
-    opacity: 0;
-    transform: translateY(5px);
+.sf-drawer-enter-from .sf-drawer-panel,
+.sf-drawer-leave-to .sf-drawer-panel {
+  transform: translateX(-100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-drawer-enter-active,
+  .sf-drawer-leave-active,
+  .sf-drawer-enter-active .sf-drawer-panel,
+  .sf-drawer-leave-active .sf-drawer-panel {
+    transition: none;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.code-prompt {
-  color: #22c55e;
-  font-weight: bold;
-}
-.code-cmd {
-  color: #38bdf8;
-}
-.code-flag {
-  color: #a78bfa;
-}
-.code-url {
-  color: #14b8a6;
-}
-.code-comment {
-  color: #64748b;
-  font-style: italic;
-}
-.code-success {
-  color: #22c55e;
-  background: rgba(34, 197, 94, 0.15);
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-weight: 600;
-}
-.code-response {
-  color: #fbbf24;
-}
-
-/* Blinking Cursor */
-.cursor {
-  display: inline-block;
-  width: 8px;
-  height: 16px;
-  background: #22c55e;
-  animation: blink 1s step-end infinite;
-}
-
-@keyframes blink {
-  0%,
-  50% {
-    opacity: 1;
-  }
-  51%,
-  100% {
-    opacity: 0;
-  }
-}
-
-/* Dark mode adjustments */
-:deep(.dark) .terminal-window {
-  box-shadow:
-    0 25px 50px -12px rgba(0, 0, 0, 0.6),
-    0 0 0 1px rgba(20, 184, 166, 0.2),
-    0 0 40px rgba(20, 184, 166, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 </style>

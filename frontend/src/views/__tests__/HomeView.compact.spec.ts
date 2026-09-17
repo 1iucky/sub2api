@@ -46,6 +46,9 @@ function mountHome(settings: Record<string, unknown> = {}) {
 
   return mount(HomeView, {
     global: {
+      directives: {
+        reveal: {},
+      },
       stubs: {
         RouterLink: RouterLinkStub,
         LocaleSwitcher: { template: '<div data-testid="locale-switcher" />' },
@@ -119,7 +122,8 @@ describe('HomeView compact mode', () => {
     const wrapper = mountHome(settings)
 
     expect(wrapper.find('[data-testid="compact-home"]').exists()).toBe(false)
-    expect(wrapper.find('.terminal-container').exists()).toBe(true)
+    expect(wrapper.find('.sf-dashboard-frame').exists()).toBe(true)
+    expect(wrapper.text()).toContain('home.hero2.title')
   })
 
   it('links unauthenticated visitors to login', () => {

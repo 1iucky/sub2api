@@ -6,7 +6,9 @@ import i18n, { initI18n } from './i18n'
 import { useAppStore } from '@/stores/app'
 import { updateFavicon } from '@/utils/branding'
 import { isIOSDevice } from '@/utils/device'
+import { vReveal } from '@/composables/useInView'
 import './style.css'
+import './styles/theme-override.css'
 
 function initIOSViewportZoomFix() {
   // iOS Safari 在输入框字号小于 16px 时聚焦会自动放大页面，且失焦后不会恢复。
@@ -54,6 +56,9 @@ async function bootstrap() {
 
   app.use(router)
   app.use(i18n)
+
+  // Factory-style reveal directive for marketing surfaces.
+  app.directive('reveal', vReveal)
 
   // 等待路由器完成初始导航后再挂载，避免竞态条件导致的空白渲染
   await router.isReady()
