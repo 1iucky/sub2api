@@ -181,6 +181,8 @@ export default {
     channels: '渠道管理',
     availableChannels: '可用渠道',
     modelPlaza: '模型广场',
+    modelMarketplace: '模型集市',
+    modelManagement: '模型管理',
     subscriptions: '订阅管理',
     accounts: '账号管理',
     plugins: '插件管理',

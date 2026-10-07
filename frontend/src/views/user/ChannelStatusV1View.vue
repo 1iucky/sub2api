@@ -1,5 +1,5 @@
 <template>
-  <AppLayout>
+  <component :is="isPublic ? 'div' : AppLayout">
     <MonitorHero
       :overall-status="overallStatus"
       :interval-seconds="DEFAULT_INTERVAL_SECONDS"
@@ -23,9 +23,10 @@
       :show="showDetail"
       :monitor-id="detailTarget?.id ?? null"
       :title="detailTitle"
+      :is-public="isPublic"
       @close="closeDetail"
     />
-  </AppLayout>
+  </component>
 </template>
 
 <script setup lang="ts">
@@ -39,6 +40,10 @@ import {
   type UserMonitorView,
   type UserMonitorDetail,
 } from '@/api/channelMonitor'
+import {
+  list as listPublicChannelMonitorViews,
+  status as fetchPublicChannelMonitorDetail,
+} from '@/api/publicChannelMonitor'
 import AppLayout from '@/components/layout/AppLayout.vue'
 import MonitorHero, {
   type MonitorWindow,
@@ -51,6 +56,13 @@ import { useAutoRefresh } from '@/composables/useAutoRefresh'
 
 const { t } = useI18n()
 const appStore = useAppStore()
+
+// isPublic renders the same console channel-status content on the standalone
+// /status page: no AppLayout chrome, data via the unauthenticated public API.
+const props = withDefaults(defineProps<{ isPublic?: boolean }>(), { isPublic: false })
+const isPublic = props.isPublic
+const listViews = isPublic ? listPublicChannelMonitorViews : listChannelMonitorViews
+const fetchDetail = isPublic ? fetchPublicChannelMonitorDetail : fetchChannelMonitorDetail
 
 // ── State ──
 const items = ref<UserMonitorView[]>([])
@@ -92,7 +104,7 @@ async function reload(silent = false) {
   abortController = ctrl
   if (!silent) loading.value = true
   try {
-    const res = await listChannelMonitorViews({ signal: ctrl.signal })
+    const res = await listViews({ signal: ctrl.signal })
     if (ctrl.signal.aborted || abortController !== ctrl) return
     items.value = res.items || []
   } catch (err: unknown) {
@@ -120,7 +132,7 @@ async function manualReload() {
 async function loadDetail(id: number, force = false) {
   if (!force && detailCache[id]) return
   try {
-    detailCache[id] = await fetchChannelMonitorDetail(id)
+    detailCache[id] = await fetchDetail(id)
   } catch (err: unknown) {
     appStore.showError(extractApiErrorMessage(err, t('channelStatus.detailLoadError')))
   }

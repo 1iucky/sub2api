@@ -30,3 +30,12 @@ describe('AppHeader contact support entry', () => {
     expect(componentSource).not.toContain("t('nav.github')")
   })
 })
+
+describe('AppHeader personalized controls', () => {
+  it('renders the top-bar theme control beside the locale switcher', () => {
+    expect(componentSource).toContain('<!-- Theme Toggle -->')
+    expect(componentSource).toContain("const { isDark, toggleTheme } = useTheme()")
+    expect(componentSource).toContain("t('nav.lightMode')")
+    expect(componentSource).toContain("t('nav.darkMode')")
+  })
+})

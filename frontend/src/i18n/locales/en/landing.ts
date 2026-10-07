@@ -54,7 +54,59 @@ export default {
     },
     marquee2: {
       label: 'Compatible with',
-      items: 'Claude · OpenAI · Gemini · Bedrock · Antigravity'
+      items: 'Claude · OpenAI · Gemini · Bedrock · Antigravity',
+      providersLabel: 'Compatible providers',
+      toolsLabel: 'Supported tools'
+    },
+    defining2: {
+      title: 'Defining your API Gateway Factory',
+      cards: {
+        models: {
+          index: '01',
+          title: 'Model independence',
+          axes: {
+            coding: 'CODING',
+            reasoning: 'REASONING',
+            speed: 'SPEED',
+            cost: 'COST',
+            context: 'CONTEXT',
+            tools: 'TOOLS'
+          },
+          legend: {
+            primary: 'MODEL A',
+            backup: 'MODEL B',
+            third: 'MODEL C',
+            best: 'Best of all'
+          }
+        },
+        runtime: {
+          index: '02',
+          title: 'Sovereign routing',
+          rows: {
+            saas: { title: 'SaaS', desc: 'Managed gateway, zero ops' },
+            hybrid: { title: 'Hybrid', desc: 'Your accounts, our control plane' },
+            selfHosted: { title: 'Self-hosted', desc: 'Run beside your own services' },
+            isolated: { title: 'Isolated', desc: 'Private networks and proxies' }
+          },
+          note: 'OpenAI · Claude · Gemini · Bedrock — route where your workloads already live'
+        },
+        workflow: {
+          index: '03',
+          title: 'Across the SDLC',
+          center: 'SHARED CONTEXT',
+          nodes: {
+            plan: 'Plan',
+            execute: 'Execute',
+            validate: 'Validate',
+            ship: 'Ship',
+            monitor: 'Monitor',
+            automate: 'Automate',
+            signal: 'Signal',
+            triage: 'Triage'
+          },
+          note: 'Not just coding. Every stage strengthens every other.'
+        }
+      }
     },
     bento2: {
       eyebrow: 'WHAT THE GATEWAY DOES',
@@ -192,6 +244,7 @@ export default {
         docs: 'Docs',
         status: 'Status',
         models: 'Model Marketplace',
+        modelMarketplace: 'Model Marketplace',
         serviceTerms: 'Service Terms',
         usagePolicy: 'Usage Policy',
         supportedCountries: 'Supported Countries and Regions',

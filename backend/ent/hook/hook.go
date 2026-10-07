@@ -237,6 +237,30 @@ func (f IdentityAdoptionDecisionFunc) Mutate(ctx context.Context, m ent.Mutation
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.IdentityAdoptionDecisionMutation", m)
 }
 
+// The ModelCatalogFunc type is an adapter to allow the use of ordinary
+// function as ModelCatalog mutator.
+type ModelCatalogFunc func(context.Context, *ent.ModelCatalogMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ModelCatalogFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.ModelCatalogMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ModelCatalogMutation", m)
+}
+
+// The ModelVendorFunc type is an adapter to allow the use of ordinary
+// function as ModelVendor mutator.
+type ModelVendorFunc func(context.Context, *ent.ModelVendorMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ModelVendorFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.ModelVendorMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ModelVendorMutation", m)
+}
+
 // The PaymentAuditLogFunc type is an adapter to allow the use of ordinary
 // function as PaymentAuditLog mutator.
 type PaymentAuditLogFunc func(context.Context, *ent.PaymentAuditLogMutation) (ent.Value, error)

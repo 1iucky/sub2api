@@ -195,6 +195,28 @@ const routes: RouteRecordRaw[] = [
       titleKey: 'modelPlaza.title'
     }
   },
+  {
+    path: '/models',
+    name: 'ModelMarketplace',
+    component: () => import('@/views/user/ModelMarketplaceView.vue'),
+    meta: {
+      requiresAuth: false,
+      title: 'Model Marketplace',
+      titleKey: 'models.marketplaceTitle',
+      descriptionKey: 'models.marketplaceDescription'
+    }
+  },
+  {
+    path: '/status',
+    name: 'PublicStatus',
+    component: () => import('@/views/StatusView.vue'),
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: false,
+      title: 'Channel Status',
+      titleKey: 'channelStatus.title'
+    }
+  },
 
   // ==================== User Routes ====================
   {
@@ -509,6 +531,31 @@ const routes: RouteRecordRaw[] = [
       requiresAdmin: false,
       title: 'Channel Status',
       titleKey: 'nav.channelStatus'
+    }
+  },
+  {
+    path: '/marketplace',
+    name: 'UserModelMarketplace',
+    component: () => import('@/views/user/ModelMarketplaceView.vue'),
+    props: { embedded: true },
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: false,
+      title: 'Model Marketplace',
+      titleKey: 'models.marketplaceTitle',
+      descriptionKey: 'models.marketplaceDescription'
+    }
+  },
+  {
+    path: '/admin/models',
+    name: 'AdminModels',
+    component: () => import('@/views/admin/ModelCatalogView.vue'),
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true,
+      title: 'Model Management',
+      titleKey: 'admin.models.title',
+      descriptionKey: 'admin.models.description'
     }
   },
   {

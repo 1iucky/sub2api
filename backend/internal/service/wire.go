@@ -42,6 +42,25 @@ func ProvidePricingService(cfg *config.Config, remoteClient PricingRemoteClient)
 	return svc, nil
 }
 
+// ProvideModelCatalogService creates ModelCatalogService and warms the catalog
+// from the remote pricing dataset without blocking application start.
+func ProvideModelCatalogService(repo ModelCatalogRepository, cfg *config.Config) *ModelCatalogService {
+	svc := NewModelCatalogService(repo, cfg)
+	go func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+		defer cancel()
+		result, err := svc.SyncFromPricing(ctx)
+		if err != nil {
+			logger.LegacyPrintf("service.model_catalog", "Warning: initial model catalog sync failed: %v", err)
+			return
+		}
+		if result.Total > 0 {
+			logger.LegacyPrintf("service.model_catalog", "Initial model catalog sync complete: total=%d created=%d updated=%d", result.Total, result.Created, result.Updated)
+		}
+	}()
+	return svc
+}
+
 // ProvideUpdateService creates UpdateService with BuildInfo
 func ProvideUpdateService(cache UpdateCache, githubClient GitHubReleaseClient, buildInfo BuildInfo) *UpdateService {
 	return NewUpdateService(cache, githubClient, buildInfo.Version, buildInfo.BuildType)
@@ -838,6 +857,7 @@ var ProviderSet = wire.NewSet(
 	NewUsageService,
 	NewDashboardService,
 	ProvidePricingService,
+	ProvideModelCatalogService,
 	NewBillingService,
 	ProvideBillingCacheService,
 	NewAnnouncementService,

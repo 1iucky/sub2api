@@ -19,6 +19,14 @@ describe('AppSidebar custom SVG styles', () => {
   })
 })
 
+describe('AppSidebar theme ownership', () => {
+  it('does not render a theme control in the bottom section', () => {
+    expect(componentSource).not.toContain('<!-- Theme Toggle -->')
+    expect(componentSource).not.toContain('function toggleTheme()')
+    expect(componentSource).not.toContain('const isDark = ref(')
+  })
+})
+
 describe('AppSidebar scroll position persistence', () => {
   it('binds a template ref to the sidebar nav element', () => {
     expect(componentSource).toContain('ref="sidebarNavRef"')

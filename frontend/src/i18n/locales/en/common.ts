@@ -181,6 +181,8 @@ export default {
     channels: 'Channels',
     availableChannels: 'Available Channels',
     modelPlaza: 'Model Plaza',
+    modelMarketplace: 'Model Marketplace',
+    modelManagement: 'Model Management',
     subscriptions: 'Subscriptions',
     accounts: 'Accounts',
     plugins: 'Plugins',

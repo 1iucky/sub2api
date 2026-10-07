@@ -23,7 +23,7 @@ describe('channel monitor V2 query serialization', () => {
       data: { coverage: {}, group_by: 'platform_group', items: [] },
     })
 
-    await getMatrix({ range: '24h', platforms: ['openai'], groupIds: [7], models: [] }, 'platform_group', true)
+    await getMatrix({ range: '24h', platforms: ['openai'], groupIds: [7], models: [] }, 'platform_group', 'admin')
 
     expect(get).toHaveBeenCalledWith('/admin/channel-monitor-v2/matrix', expect.objectContaining({
       params: {

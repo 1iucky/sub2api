@@ -3,13 +3,19 @@
     v-if="iconInfo"
     :width="size"
     :height="size"
-    viewBox="0 0 24 24"
+    :viewBox="iconInfo.viewBox || '0 0 24 24'"
     xmlns="http://www.w3.org/2000/svg"
     class="model-icon"
     fill="currentColor"
     fill-rule="evenodd"
   >
-    <path v-for="(p, idx) in iconInfo.paths" :key="idx" :d="p" :fill="iconInfo.color" />
+    <path
+      v-for="(p, idx) in iconInfo.paths"
+      :key="idx"
+      :d="typeof p === 'string' ? p : p.d"
+      :fill="getIconPathFill(p)"
+      :clip-rule="typeof p === 'string' ? undefined : p.clipRule"
+    />
   </svg>
   <span v-else class="model-icon-fallback" :style="{ width: size, height: size, fontSize: `calc(${size} * 0.5)` }">
     {{ fallbackText }}
@@ -18,17 +24,28 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useTheme } from '@/composables/useTheme'
 
 const props = withDefaults(defineProps<{
   model: string
+  iconKey?: string
   size?: string
 }>(), {
   size: '18px'
 })
 
+const { isDark } = useTheme()
+
+interface IconPath {
+  d: string
+  fill?: string
+  clipRule?: string
+}
+
 interface IconData {
   color: string
-  paths: string[]
+  paths: (string | IconPath)[]
+  viewBox?: string
 }
 
 // SVG paths extracted from @lobehub/icons Mono.js files
@@ -44,6 +61,20 @@ const iconData: Record<string, IconData> = {
   gemini: {
     color: '#4285F4',
     paths: ['M20.616 10.835a14.147 14.147 0 01-4.45-3.001 14.111 14.111 0 01-3.678-6.452.503.503 0 00-.975 0 14.134 14.134 0 01-3.679 6.452 14.155 14.155 0 01-4.45 3.001c-.65.28-1.318.505-2.002.678a.502.502 0 000 .975c.684.172 1.35.397 2.002.677a14.147 14.147 0 014.45 3.001 14.112 14.112 0 013.679 6.453.502.502 0 00.975 0c.172-.685.397-1.351.677-2.003a14.145 14.145 0 013.001-4.45 14.113 14.113 0 016.453-3.678.503.503 0 000-.975 13.245 13.245 0 01-2.003-.678z']
+  },
+  // Personalized additions: vendor icons used by the model catalog/marketplace.
+  // Keys are looked up via the explicit `iconKey` prop before name-pattern matching.
+  xiaomimimo: {
+    color: 'currentColor',
+    paths: ['M.958 15.936a.459.459 0 01.459.44v2.729a.46.46 0 01-.918 0v-2.729a.459.459 0 01.459-.44zm4.814-2.035a.46.46 0 01.553.45v4.754a.458.458 0 11-.918 0V15.48L3.74 17.202a.462.462 0 01-.655.016.462.462 0 01-.065-.082L.628 14.67a.459.459 0 01.658-.637l2.124 2.187 2.127-2.188a.46.46 0 01.235-.13zm2.068.004a.46.46 0 01.458.445v4.755a.46.46 0 01-.458.458.459.459 0 01-.458-.458V14.35a.459.459 0 01.458-.445zm1.973 2.014a.46.46 0 01.46.457v2.729a.46.46 0 01-.784.324.46.46 0 01-.134-.324v-2.729a.46.46 0 01.458-.458zm.002-2.045a.458.458 0 01.328.157l2.127 2.19 2.125-2.19a.459.459 0 01.784.318v4.756a.46.46 0 01-.455.458.46.46 0 01-.458-.458V15.48l-1.667 1.723a.46.46 0 01-.65.008l-.005-.005c0-.002-.002-.002-.004-.003l-2.455-2.534a.46.46 0 01-.008-.667.461.461 0 01.338-.128zm6.797 1.206a.46.46 0 01.53.651A1.966 1.966 0 0019.81 18.4a.462.462 0 01.623.18.46.46 0 01-.181.624 2.863 2.863 0 01-1.38.353l-.142-.004a2.88 2.88 0 01-2.393-4.263.461.461 0 01.274-.21zm.864-.931a2.884 2.884 0 013.915 3.914.46.46 0 01-.402.24l-.057-.004a.458.458 0 01-.164-.055.46.46 0 01-.182-.622 1.967 1.967 0 00-2.669-2.67.459.459 0 11-.441-.803zM9.59 6.368c1.481 0 1.696 1.202 1.696 1.654v2.648h-.917v-.432c-.26.346-.792.535-1.36.535-.133 0-1.289-.03-1.384-1.136-.082-.932.675-1.61 2.053-1.61h.691c0-.563-.367-.886-.983-.886-.44.013-.864.174-1.2.458l-.36-.664c.484-.379 1.012-.567 1.764-.567zm4.427.1c1.263 0 2.082.97 2.083 2.15 0 1.181-.824 2.154-2.083 2.154-1.26 0-2.084-.972-2.084-2.152 0-1.18.82-2.153 2.084-2.153zm6.801.015c.68 0 1.202.465 1.197 1.548v2.642H21.1V8.29c0-.312-.002-.98-.63-.98s-.628.667-.628.838v2.524h-.89V8.148c0-.17-.001-.838-.63-.838-.628 0-.628.668-.628.98v2.383h-.917v-4.03h.917V7a1.22 1.22 0 01.947-.516c.398 0 .76.193.982.686a1.321 1.321 0 011.195-.686zm-18.093.872l1.457-1.772H5.32L3.311 8.07l2.14 2.602H4.24L2.725 8.796 1.21 10.672H0L2.138 8.07.13 5.583h1.138l1.458 1.772zm4.149 3.317h-.916V6.644h.916v4.028zm16.99 0h-.916V6.644h.916v4.028zM9.925 8.71c-1.055 0-1.359.412-1.326.742.032.329.324.537.757.537a1.013 1.013 0 001.014-.968l.002-.31h-.447zM14.018 7.3c-.663 0-1.184.487-1.184 1.32 0 .832.52 1.32 1.184 1.32.662 0 1.182-.49 1.182-1.32 0-.832-.52-1.32-1.182-1.32zM6.417 5.001a.568.568 0 01.587.582.588.588 0 01-1.175 0A.57.57 0 016.417 5zm16.991 0a.57.57 0 01.592.582.588.588 0 01-1.174 0 .57.57 0 01.357-.542.572.572 0 01.225-.04z']
+  },
+  baichuan: {
+    color: 'currentColor',
+    paths: ['M7.333 2h-3.2l-2 4.333V17.8L0 22h5.2l2.028-4.2L7.333 2zm7.334 0h-5.2v20h5.2V2zM16.8 7.733H22V22h-5.2V7.733zM22 2h-5.2v4.133H22V2z']
+  },
+  bedrock: {
+    color: 'currentColor',
+    paths: ['M13.05 15.513h3.08c.214 0 .389.177.389.394v1.82a1.704 1.704 0 011.296 1.661c0 .943-.755 1.708-1.685 1.708-.931 0-1.686-.765-1.686-1.708 0-.807.554-1.484 1.297-1.662v-1.425h-2.69v4.663a.395.395 0 01-.188.338l-2.69 1.641a.385.385 0 01-.405-.002l-4.926-3.086a.395.395 0 01-.185-.336V16.3L2.196 14.87A.395.395 0 012 14.555L2 14.528V9.406c0-.14.073-.27.192-.34l2.465-1.462V4.448c0-.129.062-.249.165-.322l.021-.014L9.77 1.058a.385.385 0 01.407 0l2.69 1.675a.395.395 0 01.185.336V7.6h3.856V5.683a1.704 1.704 0 01-1.296-1.662c0-.943.755-1.708 1.685-1.708.931 0 1.685.765 1.685 1.708 0 .807-.553 1.484-1.296 1.662v2.311a.391.391 0 01-.389.394h-4.245v1.806h6.624a1.69 1.69 0 011.64-1.313c.93 0 1.685.764 1.685 1.707 0 .943-.754 1.708-1.685 1.708a1.69 1.69 0 01-1.64-1.314H13.05v1.937h4.953l.915 1.18a1.66 1.66 0 01.84-.227c.931 0 1.685.764 1.685 1.707 0 .943-.754 1.708-1.685 1.708-.93 0-1.685-.765-1.685-1.708 0-.346.102-.668.276-.937l-.724-.935H13.05v1.806zM9.973 1.856L7.93 3.122V6.09h-.778V3.604L5.435 4.669v2.945l2.11 1.36L9.712 7.61V5.334h.778V7.83c0 .136-.07.263-.184.335L7.963 9.638v2.081l1.422 1.009-.446.646-1.406-.998-1.53 1.005-.423-.66 1.605-1.055v-1.99L5.038 8.29l-2.26 1.34v1.676l1.972-1.189.398.677-2.37 1.429V14.3l2.166 1.258 2.27-1.368.397.677-2.176 1.311V19.3l1.876 1.175 2.365-1.426.398.678-2.017 1.216 1.918 1.201 2.298-1.403v-5.78l-4.758 2.893-.4-.675 5.158-3.136V3.289L9.972 1.856zM16.13 18.47a.913.913 0 00-.908.92c0 .507.406.918.908.918a.913.913 0 00.907-.919.913.913 0 00-.907-.92zm3.63-3.81a.913.913 0 00-.908.92c0 .508.406.92.907.92a.913.913 0 00.908-.92.913.913 0 00-.908-.92zm1.555-4.99a.913.913 0 00-.908.92c0 .507.407.918.908.918a.913.913 0 00.907-.919.913.913 0 00-.907-.92zM17.296 3.1a.913.913 0 00-.907.92c0 .508.406.92.907.92a.913.913 0 00.908-.92.913.913 0 00-.908-.92z']
   },
   zhipu: {
     color: '#3859FF',
@@ -159,7 +190,23 @@ const iconData: Record<string, IconData> = {
 
 const fallbackText = computed(() => props.model.charAt(0).toUpperCase())
 
+// Aliases from catalog-synced icon keys (backend iconKeyForProvider) to iconData entries.
+const iconKeyAliases: Record<string, string> = {
+  mimo: 'xiaomimimo',
+  aws: 'bedrock',
+}
+
+const explicitIconKey = computed(() => {
+  const key = normalizeIconLookupKey(props.iconKey)
+  if (!key) return ''
+  if (iconData[key]) return key
+  const aliased = iconKeyAliases[key]
+  return aliased && iconData[aliased] ? aliased : ''
+})
+
 const iconKey = computed(() => {
+  if (explicitIconKey.value) return explicitIconKey.value
+
   const modelLower = props.model.toLowerCase()
 
   // OpenAI models
@@ -255,10 +302,59 @@ const iconKey = computed(() => {
   // Coze
   if (modelLower.includes('coze')) return 'coze'
 
+  // Xiaomi MiMo
+  if (modelLower.includes('mimo')) return 'xiaomimimo'
+
+  // Baichuan
+  if (modelLower.includes('baichuan')) return 'baichuan'
+
+  // AWS Bedrock
+  if (modelLower.includes('bedrock')) return 'bedrock'
+
   return null
 })
 
 const iconInfo = computed(() => iconKey.value ? iconData[iconKey.value] : null)
+
+// Theme-aware fill: pure-black/near-black brand icons (openai, moonshot, ...)
+// are invisible on dark surfaces, so render them as currentColor in dark mode.
+function getIconPathFill(path: string | IconPath) {
+  const fill = typeof path === 'string' ? iconInfo.value?.color : (path.fill || iconInfo.value?.color)
+  if (!fill || fill === 'currentColor') return fill || 'currentColor'
+  return isDark.value && isLowContrastDarkColor(fill) ? 'currentColor' : fill
+}
+
+function isLowContrastDarkColor(color: string) {
+  const normalized = color.trim()
+  const hex = normalized.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i)?.[1]
+  if (!hex) return false
+
+  const fullHex = hex.length === 3
+    ? hex.split('').map((char) => `${char}${char}`).join('')
+    : hex
+  const red = Number.parseInt(fullHex.slice(0, 2), 16) / 255
+  const green = Number.parseInt(fullHex.slice(2, 4), 16) / 255
+  const blue = Number.parseInt(fullHex.slice(4, 6), 16) / 255
+
+  const toLinear = (channel: number) =>
+    channel <= 0.03928 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4
+  const luminance = 0.2126 * toLinear(red) + 0.7152 * toLinear(green) + 0.0722 * toLinear(blue)
+  return luminance < 0.08
+}
+
+// Normalizes lobehub-style keys ("@lobehub/icons:bedrock-color", "Bedrock.Color")
+// to a plain lookup key ("bedrock.color").
+function normalizeIconLookupKey(value?: string) {
+  const trimmed = (value || '').trim()
+  if (!trimmed) return ''
+  const cleaned = trimmed
+    .replace(/^@lobehub\/icons[:/]/i, '')
+    .replace(/^lobe(?:hub)?[:/]/i, '')
+  const [namePart, variantPart] = cleaned.split('.')
+  const name = namePart.replace(/[^a-z0-9]/gi, '').toLowerCase()
+  const variant = variantPart?.match(/^[a-z]+/i)?.[0]?.toLowerCase()
+  return variant ? `${name}.${variant}` : name
+}
 </script>
 
 <style scoped>

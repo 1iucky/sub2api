@@ -80,6 +80,17 @@
         <!-- Language Switcher -->
         <LocaleSwitcher />
 
+        <!-- Theme Toggle -->
+        <button
+          @click="toggleTheme"
+          class="flex h-9 w-9 items-center justify-center rounded-sm text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900 dark:text-dark-400 dark:hover:bg-dark-800 dark:hover:text-gray-100"
+          :title="isDark ? t('nav.lightMode') : t('nav.darkMode')"
+          :aria-label="isDark ? t('nav.lightMode') : t('nav.darkMode')"
+        >
+          <Icon v-if="isDark" name="sun" size="sm" class="text-amber-500" />
+          <Icon v-else name="moon" size="sm" />
+        </button>
+
         <!-- Subscription Progress (for users with active subscriptions; not mounted at all when the feature is off) -->
         <SubscriptionProgressMini v-if="user && subscriptionFeatureEnabled" />
 
@@ -274,6 +285,7 @@ import { sanitizeUrl } from '@/utils/url'
 import { FeatureFlags, isFeatureFlagEnabled } from '@/utils/featureFlags'
 import { resolveRouteMetaKeys } from '@/router/title'
 import { resolveSiteBillingMode } from '@/utils/siteBillingMode'
+import { useTheme } from '@/composables/useTheme'
 
 const router = useRouter()
 const route = useRoute()
@@ -282,6 +294,7 @@ const appStore = useAppStore()
 const authStore = useAuthStore()
 const adminSettingsStore = useAdminSettingsStore()
 const onboardingStore = useOnboardingStore()
+const { isDark, toggleTheme } = useTheme()
 
 const user = computed(() => authStore.user)
 const dropdownOpen = ref(false)
