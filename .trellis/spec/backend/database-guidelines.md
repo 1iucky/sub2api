@@ -34,17 +34,17 @@ Questions to answer:
 
 - `backend/migrations/*.sql` is an embed FS; every `*.sql` file auto-loads at boot (`migrations/migrations.go`).
 - **Checksum validation**: applied files are hashed. NEVER edit a migration that has shipped — add a new file instead.
-- Numbering is prefix-based (`239_model_catalog.sql`); multiple files may share a number (`154a_...` exists). New files must sort AFTER the current max on the target branch.
+- Migration identity is the full filename (`schema_migrations.filename`), not the numeric prefix. Multiple distinct filenames may share a prefix. New migrations should sort after the current maximum; published migrations must keep their names and contents.
 
 ### Convention: personalized-feature migrations on this fork
 
 This branch replays personalized features onto `upstream/main`. When porting a feature whose migrations occupy slots already used upstream:
 
 1. Find HEAD's max prefix: `ls backend/migrations | tail`.
-2. Renumber the ported files above it (e.g. REF `152_model_catalog.sql` + `154_...sql` became `239_` / `240_` when HEAD was at 238).
+2. For migrations that have never shipped on THIS fork, assign filenames after the maximum (e.g. REF `152_model_catalog.sql` + `154_...sql` became `239_` / `240_` when HEAD was at 238).
 3. Merge multi-step REF migrations only when the intermediate state never shipped on THIS branch (final-state DDL is enough).
 
-**Why**: slot numbers are not namespaced; a same-numbered file with different content fails checksum validation on databases that already applied the upstream file.
+**Why**: checksum validation applies to the full filename. Distinct upstream/fork filenames with the same prefix do not collide. Renaming a published migration instead makes it appear unapplied and replays its SQL, which can rerun data cleanup. Preserve published fork `239_model_catalog.sql` / `240_model_catalog_vendor_soft_delete_platform_cleanup.sql` alongside upstream's distinct `239_` / `240_` files.
 
 ### Convention: Ent schema + raw-SQL repository coexistence
 
