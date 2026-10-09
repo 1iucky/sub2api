@@ -224,9 +224,12 @@ async function markAsRead(announcement: UserAnnouncement) {
   if (announcement.read_at) return
 
   try {
-    await announcementStore.markAsRead(announcement.id)
+    const marked = await announcementStore.markAsRead(announcement.id)
+    if (!marked) appStore.showError(t('common.unknownError'))
+    return marked
   } catch (err: any) {
     appStore.showError(err?.message || t('common.unknownError'))
+    return false
   }
 }
 
