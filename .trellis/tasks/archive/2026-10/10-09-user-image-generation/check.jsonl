@@ -1,0 +1,12 @@
+{"file": ".trellis/spec/backend/index.md", "reason": "Backend package guidance"}
+{"file": ".trellis/spec/backend/database-guidelines.md", "reason": "Ent transactions and migration preservation rules"}
+{"file": ".trellis/spec/frontend/index.md", "reason": "Frontend package guidance"}
+{"file": ".trellis/spec/frontend/component-guidelines.md", "reason": "Preserve existing theme and unrelated homepage work"}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "JWT versus API Key boundaries, capabilities, ownership and billing contracts"}
+{"file": ".trellis/spec/guides/code-reuse-thinking-guide.md", "reason": "Reuse gateway, Key creation, image readers and UI primitives"}
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "Backend quality guidance"}
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "Frontend quality guidance"}
+{"file": ".trellis/tasks/10-09-user-image-generation/research/findings.md", "reason": "Verified manual Key form, gateway execution and billing IDs, persistent history, storage/cleanup, licenses and preserved dirty work"}
+{"file": ".trellis/tasks/10-09-user-image-generation/prd.md", "reason": "Converged manual-Key and persistent-history requirements; expired images only are deleted, all metadata retained"}
+{"file": ".trellis/tasks/10-09-user-image-generation/design.md", "reason": "Final planned API, ownership, shared runner, stable asset and image-only cleanup contracts; awaiting implementation approval"}
+{"file": ".trellis/spec/backend/image-studio.md", "reason": "Implemented cross-layer contract: billing ownership, leases, readonly storage and image-only cleanup"}

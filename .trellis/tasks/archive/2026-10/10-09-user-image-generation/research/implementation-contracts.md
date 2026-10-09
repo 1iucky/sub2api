@@ -1,0 +1,18 @@
+# Coordinated implementation contracts
+
+User approved implementation, image-only expiration cleanup, and minimizing upstream merge conflicts. Worktree: /Users/liuliang/.codex/worktrees/user-image-generation/sub2api, branch codex/user-image-generation. All workers edit ONLY this worktree. No commits by workers; root owns final commit. Shared files belong to backend worker (Wire/handlers/routes) or frontend worker (router/sidebar/i18n/KeysView); storage worker owns Ent generation and new storage/history/repository/cleanup files. Publish signatures early to one another.
+
+## HTTP DTO alignment
+Admin GET/PUT /api/v1/admin/settings/image-studio uses normal envelope and settings fields enabled, group_ids, default_group_id, cleanup:{enabled,image_retention_days,schedule,timezone}. May expose last_cleanup alongside settings without changing PUT payload. Defaults false/empty, cleanup30 days, 0 3 * * *, Asia/Shanghai.
+JWT GET /api/v1/user/image-studio/config: enabled,default_group_id,groups[{id,name,platform,models[{model_id,display_name,platform,binding_id,group_id,fields[{key,label_key,kind,options,default,min,max}],request_defaults,billing_preview?}]}],execution_timeout_seconds,storage_available,cleanup:{enabled,image_retention_days}.
+APIKey POST /v1/images/generations/studio: normal Images JSON payload plus X-Image-Studio-Submission-ID UUID header. Returns raw202 {history_id,submission_id,status,poll_url}. APIKey owned user/Key/group are derived server-side. Always existing gateway middleware/full Images handler, no new billing path.
+JWT GET /api/v1/user/image-studio/history: page,page_size,created_from,created_to,group_id,model_id,status,prompt_query,submission_id; returns envelope {items,total,page,page_size}. JWT detail /history/:id.
+History id is UUID string. Fields: id,user_id,api_key_id,group_id,group_name,key_name,platform,model_id,prompt,parameters,submission_id,correlation_id,usage_request_id,status(processing/succeeded/failed/unknown),error_code,error_message,created_at,completed_at,actual_cost(nullable number),billing_status(pending/confirmed),assets[].
+Asset fields: id UUID,generation_id,index,status(pending/available/storage_failed/deleting/deleted),mime_type,byte_size,saved_at,deleted_at. content endpoint /history/:id/images/:asset_id/content?download=1. JWT only, no frontend URL or path input.
+Status/time fields serialized with standard Go JSON times. No Key plaintext/base64/signedURL stored. Cleaned records retain all fields, downloadable false via asset status. Actual cost comes ONLY from original usage logs, pending is never0.
+
+## Backend team handshake
+Storage worker publishes concrete types/interface in service/image_studio_history.go early, and NewImageStudioHistoryService(repo,store,...); backend worker calls shared service for CreateSubmission/Complete/Fail/Get/List/Content and cost updates. Agree exact signatures by messages BEFORE depending on them. Settings and capability types belong backend worker. Cleanup may depend on a narrow interface implemented by ImageStudioService or callback for policy; backend worker wires and starts/stops it. Storage worker defines feature ProviderSet in a NEW file if useful, backend worker integrates only small wire provider/bind additions.
+
+## Conflict boundary
+Standalone feature schemas have no edges to upstream User/Group/APIKey; add named migration after current maximum, never mutate shipped SQL. Avoid expanding existing huge setting DTOs and public service interfaces. New route registration helpers preferable, gateway core patch narrow. Must preserve public sync/async semantics, original billing/usage and Key form behavior.

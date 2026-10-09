@@ -55,6 +55,20 @@ feature-gate semantics as the router/sidebar. Channel Monitor uses the
 `FeatureFlags.channelMonitor` opt-out contract, while Model Plaza uses
 `FeatureFlags.modelPlaza` plus `model_plaza_require_auth` visibility.
 
+### Homepage Gateway Dashboard
+
+`GatewayDashboard.vue` has a solid theme-aware panel (`fill-white
+dark:fill-dark-900`), not an SVG grid backdrop. Keep the homepage's outer
+`bg-factory-surface-grid` texture independent of this panel.
+
+Preserve the personalized Claude/OpenAI/Gemini mini charts when replaying
+upstream changes: distinct curve colors, `/min` SVG `tspan` labels, growth
+percentages, time ticks, and focusable data points with tooltips and crosshairs.
+The `sf-mini-chart-*` styles in `theme-override.css` provide hover and
+`:focus-visible` states. Verify both states in a browser; mounted component
+tests cannot validate CSS visibility. Cover chart data/geometry and the absence
+of a panel grid in the focused GatewayDashboard regression suite.
+
 ---
 
 ## Accessibility
