@@ -185,6 +185,14 @@
     ".trellis/scripts/hooks/linear_sync.py": "e09cc4ce4699aada908808718698f33f705a3edf55c4dcf8f777ad892f80ca79",
     ".trellis/scripts/init_developer.py": "f9e6c0d882406e81c8cd6b1c5abb204b0befc0069ff89cf650cd536a80f8c60e",
     ".trellis/scripts/task.py": "152d7298db25b86756583faaba763eacd8611c0070e8f1c176b8257d687102b9",
-    ".trellis/workflow.md": "c694bb7901d48f224ccad940178cff81e28dda46e6e5b24bad67c83970d67808"
+    ".trellis/workflow.md": "c694bb7901d48f224ccad940178cff81e28dda46e6e5b24bad67c83970d67808",
+    ".trellis/.runtime/sessions/codex_01a11ff3-8601-7453-9602-7f0e6a80fc85.json": "c3e15d6576c2c434f4b4dab0c2c938ee85afdf51309a93bdde6ce9c6b60ca6ee",
+    ".trellis/.runtime/update-check-claude_79bdcfe5-fd8d-4e38-9328-0d5219360b89.marker": "77c2ca150b61c7330da139378ffd3940d093f1bd74a1294689345d27e15b5124",
+    ".trellis/.runtime/update-check-codex_01a0c2e8-c9d4-7c10-86df-3515315f0574.marker": "77c2ca150b61c7330da139378ffd3940d093f1bd74a1294689345d27e15b5124",
+    ".trellis/.runtime/update-check-codex_01a0ccde-755b-7081-a549-d8437b973aa8.marker": "77c2ca150b61c7330da139378ffd3940d093f1bd74a1294689345d27e15b5124",
+    ".trellis/.runtime/update-check-codex_01a11468-0e21-7e70-8eec-01dc5ea05676.marker": "77c2ca150b61c7330da139378ffd3940d093f1bd74a1294689345d27e15b5124",
+    ".trellis/.runtime/update-check-codex_01a11e35-fb98-7431-8ed7-3c5618db42bf.marker": "77c2ca150b61c7330da139378ffd3940d093f1bd74a1294689345d27e15b5124",
+    ".trellis/.runtime/update-check-codex_01a11ff3-8601-7453-9602-7f0e6a80fc85.marker": "77c2ca150b61c7330da139378ffd3940d093f1bd74a1294689345d27e15b5124",
+    ".trellis/.runtime/update-check-codex_01a15de0-4509-7d21-9dc3-978d50b048cb.marker": "77c2ca150b61c7330da139378ffd3940d093f1bd74a1294689345d27e15b5124"
   }
 }

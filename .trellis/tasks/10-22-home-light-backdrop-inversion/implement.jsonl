@@ -1,0 +1,3 @@
+{"file":".trellis/spec/frontend/index.md","reason":"Frontend specification entry point; currently placeholder guidance."}
+{"file":"frontend/src/styles/theme-override.css","reason":"Actual light/dark backdrop definitions and bottom fade."}
+{"file":"frontend/src/views/HomeView.vue","reason":"Backdrop caller, theme controls, and viewport boundaries."}

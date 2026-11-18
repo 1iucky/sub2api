@@ -1,0 +1,15 @@
+{
+  "darkComputedStylesUnchanged": true,
+  "themeToggleAndPersistence": true,
+  "mobileOverflow": false,
+  "pageErrors": [],
+  "preview": "Local frontend with mock public branding settings; no backend integration",
+  "screenshots": [
+    "dark-unchanged-desktop.png",
+    "debug.png",
+    "light-after-desktop.png",
+    "light-after-mobile.png",
+    "light-before-desktop.png",
+    "light-before-mobile.png"
+  ]
+}

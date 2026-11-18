@@ -1,0 +1,455 @@
+[
+  {
+    "case": "baseline",
+    "model": "gpt-image-2.5",
+    "size": "1024x1024",
+    "quality": "low",
+    "output_format": "png",
+    "gateway": "https://siliconbase.link",
+    "started_utc": "2026-10-13T08:34:30Z",
+    "request": {
+      "model": "gpt-image-2.5",
+      "prompt": "A single red ceramic cup centered on a plain pale gray background, studio product photograph, no text.",
+      "size": "1024x1024",
+      "quality": "low",
+      "n": 1,
+      "output_format": "png"
+    },
+    "error": "HTTP 404: {\"error\":{\"code\":\"model_not_found\",\"message\":\"Model \\\"gpt-image-2.5\\\" is not available for this group\",\"type\":\"invalid_request_error\"}}",
+    "elapsed_seconds": 1.49
+  },
+  {
+    "case": "flare_1k_png_low",
+    "model": "gpt-image-2.5-flare",
+    "size": "1024x1024",
+    "quality": "low",
+    "output_format": "png",
+    "gateway": "https://siliconbase.link",
+    "started_utc": "2026-10-13T08:35:41Z",
+    "request": {
+      "model": "gpt-image-2.5-flare",
+      "prompt": "A single red ceramic cup centered on a plain pale gray background, studio product photograph, no text.",
+      "size": "1024x1024",
+      "quality": "low",
+      "n": 1,
+      "output_format": "png"
+    },
+    "http": [
+      {
+        "status": 200,
+        "headers": {
+          "x-request-id": "e98af7ec-2a17-4294-9178-175f16432a38",
+          "content-type": "application/json",
+          "server": "cloudflare"
+        }
+      }
+    ],
+    "response_metadata": {
+      "size": "1376x1143",
+      "quality": "low",
+      "output_format": "png",
+      "usage": {
+        "input_tokens": 26,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 26
+        },
+        "output_tokens": 429,
+        "output_tokens_details": {
+          "image_tokens": 429,
+          "text_tokens": 0
+        },
+        "total_tokens": 455
+      },
+      "created": 1791880560
+    },
+    "image_metadata": [
+      {
+        "model": "gpt-image-2.5-flare",
+        "size": "1376x1143"
+      }
+    ],
+    "exit_code": 0,
+    "actual_pixels": [
+      1376,
+      1143
+    ],
+    "actual_format": "PNG",
+    "file": "/tmp/shengtu-resolution-20261013/flare_1k_png_low.png",
+    "bytes": 1672283,
+    "elapsed_seconds": 23.07,
+    "sha256": "03eeb331284cc5c8c81ce6f66a1676f7a2431a0738f9a14af5acd7d47efd7931"
+  },
+  {
+    "case": "flare_4k_jpeg_low",
+    "model": "gpt-image-2.5-flare",
+    "size": "3840x2160",
+    "quality": "low",
+    "output_format": "jpeg",
+    "gateway": "https://siliconbase.link",
+    "started_utc": "2026-10-13T08:37:27Z",
+    "request": {
+      "model": "gpt-image-2.5-flare",
+      "prompt": "A single red ceramic cup centered on a plain pale gray background, studio product photograph, no text.",
+      "size": "3840x2160",
+      "quality": "low",
+      "n": 1,
+      "output_format": "jpeg"
+    },
+    "http": [
+      {
+        "status": 200,
+        "headers": {
+          "x-request-id": "030e1095-0807-4a01-87b9-44dd701fb6c1",
+          "content-type": "application/json",
+          "server": "cloudflare"
+        }
+      }
+    ],
+    "response_metadata": {
+      "size": "1254x1254",
+      "quality": "low",
+      "output_format": "png",
+      "usage": {
+        "input_tokens": 26,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 26
+        },
+        "output_tokens": 515,
+        "output_tokens_details": {
+          "image_tokens": 515,
+          "text_tokens": 0
+        },
+        "total_tokens": 541
+      },
+      "created": 1791880665
+    },
+    "image_metadata": [
+      {
+        "model": "gpt-image-2.5-flare",
+        "size": "1254x1254"
+      }
+    ],
+    "exit_code": 0,
+    "actual_pixels": [
+      1254,
+      1254
+    ],
+    "actual_format": "PNG",
+    "file": "/tmp/shengtu-resolution-20261013/flare_4k_jpeg_low.jpeg",
+    "bytes": 1667193,
+    "elapsed_seconds": 25.45,
+    "sha256": "8d656f15e1443c5342114bc9853b0836ae3784ddb5bfce9908d9f26879213fdc"
+  },
+  {
+    "case": "flare_4k_png_high",
+    "model": "gpt-image-2.5-flare",
+    "size": "3840x2160",
+    "quality": "high",
+    "output_format": "png",
+    "gateway": "https://siliconbase.link",
+    "started_utc": "2026-10-13T08:36:33Z",
+    "request": {
+      "model": "gpt-image-2.5-flare",
+      "prompt": "A single red ceramic cup centered on a plain pale gray background, studio product photograph, no text.",
+      "size": "3840x2160",
+      "quality": "high",
+      "n": 1,
+      "output_format": "png"
+    },
+    "http": [
+      {
+        "status": 200,
+        "headers": {
+          "x-request-id": "f45219f1-dc38-4f1f-80e6-3b546e12b67d",
+          "content-type": "application/json",
+          "server": "cloudflare"
+        }
+      }
+    ],
+    "response_metadata": {
+      "size": "1370x1148",
+      "quality": "medium",
+      "output_format": "png",
+      "usage": {
+        "input_tokens": 26,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 26
+        },
+        "output_tokens": 772,
+        "output_tokens_details": {
+          "image_tokens": 772,
+          "text_tokens": 0
+        },
+        "total_tokens": 798
+      },
+      "created": 1791880615
+    },
+    "image_metadata": [
+      {
+        "model": "gpt-image-2.5-flare",
+        "size": "1370x1148"
+      }
+    ],
+    "exit_code": 0,
+    "actual_pixels": [
+      1370,
+      1148
+    ],
+    "actual_format": "PNG",
+    "file": "/tmp/shengtu-resolution-20261013/flare_4k_png_high.png",
+    "bytes": 1643550,
+    "elapsed_seconds": 41.53,
+    "sha256": "789d55186a6fb08c4c12a536b9e652040eca8a7a5e75fcaa39183658add2c08d"
+  },
+  {
+    "case": "flare_4k_png_low",
+    "model": "gpt-image-2.5-flare",
+    "size": "3840x2160",
+    "quality": "low",
+    "output_format": "png",
+    "gateway": "https://siliconbase.link",
+    "started_utc": "2026-10-13T08:35:41Z",
+    "request": {
+      "model": "gpt-image-2.5-flare",
+      "prompt": "A single red ceramic cup centered on a plain pale gray background, studio product photograph, no text.",
+      "size": "3840x2160",
+      "quality": "low",
+      "n": 1,
+      "output_format": "png"
+    },
+    "http": [
+      {
+        "status": 200,
+        "headers": {
+          "x-request-id": "344d313c-e257-4ca6-b1b7-25a755bd80ab",
+          "content-type": "application/json",
+          "server": "cloudflare"
+        }
+      }
+    ],
+    "response_metadata": {
+      "size": "1312x1199",
+      "quality": "medium",
+      "output_format": "png",
+      "usage": {
+        "input_tokens": 26,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 26
+        },
+        "output_tokens": 829,
+        "output_tokens_details": {
+          "image_tokens": 829,
+          "text_tokens": 0
+        },
+        "total_tokens": 855
+      },
+      "created": 1791880563
+    },
+    "image_metadata": [
+      {
+        "model": "gpt-image-2.5-flare",
+        "size": "1312x1199"
+      }
+    ],
+    "exit_code": 0,
+    "actual_pixels": [
+      1312,
+      1199
+    ],
+    "actual_format": "PNG",
+    "file": "/tmp/shengtu-resolution-20261013/flare_4k_png_low.png",
+    "bytes": 1621067,
+    "elapsed_seconds": 27.75,
+    "sha256": "01431c0d71fb2c11ca9f41ffa04d085b4578d406ab97dc836ac88d6d313f4565"
+  },
+  {
+    "case": "flare_4k_webp_low",
+    "model": "gpt-image-2.5-flare",
+    "size": "3840x2160",
+    "quality": "low",
+    "output_format": "webp",
+    "gateway": "https://siliconbase.link",
+    "started_utc": "2026-10-13T08:37:27Z",
+    "request": {
+      "model": "gpt-image-2.5-flare",
+      "prompt": "A single red ceramic cup centered on a plain pale gray background, studio product photograph, no text.",
+      "size": "3840x2160",
+      "quality": "low",
+      "n": 1,
+      "output_format": "webp"
+    },
+    "http": [
+      {
+        "status": 200,
+        "headers": {
+          "x-request-id": "312d13ea-fb09-474b-8e48-498248b106a2",
+          "content-type": "application/json",
+          "server": "cloudflare"
+        }
+      }
+    ],
+    "response_metadata": {
+      "size": "1254x1254",
+      "quality": "low",
+      "output_format": "png",
+      "usage": {
+        "input_tokens": 26,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 26
+        },
+        "output_tokens": 515,
+        "output_tokens_details": {
+          "image_tokens": 515,
+          "text_tokens": 0
+        },
+        "total_tokens": 541
+      },
+      "created": 1791880680
+    },
+    "image_metadata": [
+      {
+        "model": "gpt-image-2.5-flare",
+        "size": "1254x1254"
+      }
+    ],
+    "exit_code": 0,
+    "actual_pixels": [
+      1254,
+      1254
+    ],
+    "actual_format": "PNG",
+    "file": "/tmp/shengtu-resolution-20261013/flare_4k_webp_low.webp",
+    "bytes": 1663304,
+    "elapsed_seconds": 35.88,
+    "sha256": "f207ecb0aecf739620d14ab2aee3f9ead63029254bf3468d0e8cfca4313c4532"
+  },
+  {
+    "case": "sunburst_4k_png_low",
+    "model": "gpt-image-2.5-sunburst",
+    "size": "3840x2160",
+    "quality": "low",
+    "output_format": "png",
+    "gateway": "https://siliconbase.link",
+    "started_utc": "2026-10-13T08:36:33Z",
+    "request": {
+      "model": "gpt-image-2.5-sunburst",
+      "prompt": "A single red ceramic cup centered on a plain pale gray background, studio product photograph, no text.",
+      "size": "3840x2160",
+      "quality": "low",
+      "n": 1,
+      "output_format": "png"
+    },
+    "http": [
+      {
+        "status": 200,
+        "headers": {
+          "x-request-id": "a51bc989-9100-43d7-ba70-c9e6f87144b6",
+          "content-type": "application/json",
+          "server": "cloudflare"
+        }
+      }
+    ],
+    "response_metadata": {
+      "size": "1254x1254",
+      "quality": "low",
+      "output_format": "png",
+      "usage": {
+        "input_tokens": 26,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 26
+        },
+        "output_tokens": 515,
+        "output_tokens_details": {
+          "image_tokens": 515,
+          "text_tokens": 0
+        },
+        "total_tokens": 541
+      },
+      "created": 1791880611
+    },
+    "image_metadata": [
+      {
+        "model": "gpt-image-2.5-sunburst",
+        "size": "1254x1254"
+      }
+    ],
+    "exit_code": 0,
+    "actual_pixels": [
+      1254,
+      1254
+    ],
+    "actual_format": "PNG",
+    "file": "/tmp/shengtu-resolution-20261013/sunburst_4k_png_low.png",
+    "bytes": 1693391,
+    "elapsed_seconds": 27.02,
+    "sha256": "391bcde41edd969832adc08b99493650c138dcdeb73172501544d7199be41317"
+  },
+  {
+    "case": "flare_1536x1024_png_low",
+    "model": "gpt-image-2.5-flare",
+    "size": "1536x1024",
+    "quality": "low",
+    "output_format": "png",
+    "gateway": "https://siliconbase.link",
+    "started_utc": "2026-10-13T08:54:56Z",
+    "request": {
+      "model": "gpt-image-2.5-flare",
+      "prompt": "A single red ceramic cup centered on a plain pale gray background, studio product photograph, no text.",
+      "size": "1536x1024",
+      "quality": "low",
+      "n": 1,
+      "output_format": "png"
+    },
+    "http": [
+      {
+        "status": 200,
+        "headers": {
+          "x-request-id": "7b0f8765-cb68-4f65-ad21-d4342219fe84",
+          "content-type": "application/json",
+          "server": "cloudflare"
+        }
+      }
+    ],
+    "response_metadata": {
+      "size": "1254x1254",
+      "quality": "low",
+      "output_format": "png",
+      "usage": {
+        "input_tokens": 26,
+        "input_tokens_details": {
+          "image_tokens": 0,
+          "text_tokens": 26
+        },
+        "output_tokens": 515,
+        "output_tokens_details": {
+          "image_tokens": 515,
+          "text_tokens": 0
+        },
+        "total_tokens": 541
+      },
+      "created": 1791881714
+    },
+    "image_metadata": [
+      {
+        "model": "gpt-image-2.5-flare",
+        "size": "1254x1254"
+      }
+    ],
+    "exit_code": 0,
+    "actual_pixels": [
+      1254,
+      1254
+    ],
+    "actual_format": "PNG",
+    "file": "/tmp/shengtu-resolution-20261013/flare_1536x1024_png_low.png",
+    "bytes": 1688454,
+    "elapsed_seconds": 24.83,
+    "sha256": "2a23b887ce816515549b26fbbceb2877c94102c4663b47b218bf477b13d3bd51"
+  }
+]

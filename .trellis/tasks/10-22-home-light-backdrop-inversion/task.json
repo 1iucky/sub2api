@@ -1,7 +1,7 @@
 {
-  "id": "replay-model-marketplace-catalog",
-  "name": "replay-model-marketplace-catalog",
-  "title": "Replay model marketplace and admin model catalog",
+  "id": "home-light-backdrop-inversion",
+  "name": "home-light-backdrop-inversion",
+  "title": "首页浅色背景明暗翻转",
   "description": "",
   "status": "in_progress",
   "dev_type": null,
@@ -10,7 +10,7 @@
   "priority": "P2",
   "creator": "liuliang",
   "assignee": "liuliang",
-  "createdAt": "2026-09-29",
+  "createdAt": "2026-10-22",
   "completedAt": null,
   "branch": null,
   "base_branch": "main",
@@ -19,7 +19,7 @@
   "pr_url": null,
   "subtasks": [],
   "children": [],
-  "parent": "09-21-repair-personalized-upstream-merge-ui",
+  "parent": null,
   "relatedFiles": [],
   "notes": "",
   "meta": {}

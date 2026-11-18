@@ -49,27 +49,26 @@
   background-size: 28px 28px;
 }
 
-/* Shared Factory surface backdrop. This approximates the current Factory.ai
-   surface without copying their image assets: near-black / warm-white base,
-   dense gray-white micro dots, sparse precision lines, brown-black edge
-   blending, and a low-contrast metallic sheen. There is intentionally no
-   orange color wash here. */
+/* Shared Factory surface backdrop. Light mode pairs a warm-white base with
+   soft white edge illumination, light micro dots, sparse precision lines,
+   and a restrained neutral sheen. Dark mode retains its near-black base
+   and brown-black edge blending. There is no orange color wash. */
 .bg-factory-surface-grid,
 .bg-factory-home-grid {
   background-color: #f3f2ee;
   background-image:
-    linear-gradient(to right, rgba(31, 29, 28, 0.16) 0%, rgba(31, 29, 28, 0.07) 15%, transparent 38%),
-    linear-gradient(to left, rgba(31, 29, 28, 0.15) 0%, rgba(31, 29, 28, 0.065) 15%, transparent 38%),
-    linear-gradient(to bottom, rgba(31, 29, 28, 0.18) 0%, rgba(31, 29, 28, 0.075) 18%, transparent 44%),
-    radial-gradient(ellipse at 0% 28%, rgba(74, 67, 57, 0.1), transparent 36%),
-    radial-gradient(ellipse at 100% 28%, rgba(74, 67, 57, 0.09), transparent 36%),
-    radial-gradient(ellipse at 50% 0%, rgba(74, 67, 57, 0.08), transparent 38%),
-    radial-gradient(circle at 1px 1px, rgba(31, 29, 28, 0.11) 1px, transparent 1.28px),
-    linear-gradient(to right, rgba(31, 29, 28, 0.032) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(31, 29, 28, 0.032) 1px, transparent 1px),
-    linear-gradient(116deg, transparent 0%, rgba(31, 29, 28, 0.022) 34%, rgba(255, 255, 255, 0.46) 50%, rgba(31, 29, 28, 0.02) 66%, transparent 100%),
-    radial-gradient(ellipse at 68% 18%, rgba(255, 255, 255, 0.56), transparent 42%),
-    radial-gradient(ellipse at 42% 66%, rgba(31, 29, 28, 0.045), transparent 54%);
+    linear-gradient(to right, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0.14) 15%, transparent 38%),
+    linear-gradient(to left, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.13) 15%, transparent 38%),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.36) 0%, rgba(255, 255, 255, 0.15) 18%, transparent 44%),
+    radial-gradient(ellipse at 0% 28%, rgba(255, 255, 255, 0.2), transparent 36%),
+    radial-gradient(ellipse at 100% 28%, rgba(255, 255, 255, 0.18), transparent 36%),
+    radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.16), transparent 38%),
+    radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.8) 1px, transparent 1.28px),
+    linear-gradient(to right, rgba(255, 255, 255, 0.5) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 1px, transparent 1px),
+    linear-gradient(116deg, transparent 0%, rgba(255, 255, 255, 0.12) 34%, rgba(31, 29, 28, 0.018) 50%, rgba(255, 255, 255, 0.1) 66%, transparent 100%),
+    radial-gradient(ellipse at 68% 18%, rgba(31, 29, 28, 0.02), transparent 42%),
+    radial-gradient(ellipse at 42% 66%, rgba(255, 255, 255, 0.2), transparent 54%);
   background-position:
     center,
     center,
