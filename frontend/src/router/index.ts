@@ -167,6 +167,16 @@ const routes: RouteRecordRaw[] = [
     }
   },
   {
+    path: '/unsupported-region',
+    name: 'UnsupportedRegion',
+    component: () => import('@/views/public/UnsupportedRegionView.vue'),
+    meta: {
+      requiresAuth: false,
+      title: 'Unsupported Region',
+      titleKey: 'unsupportedRegion.pageTitle'
+    }
+  },
+  {
     path: '/legal/:documentId',
     name: 'LegalDocument',
     component: () => import('@/views/public/LegalDocumentView.vue'),
@@ -183,6 +193,28 @@ const routes: RouteRecordRaw[] = [
       requiresAuth: false,
       title: 'Model Plaza',
       titleKey: 'modelPlaza.title'
+    }
+  },
+  {
+    path: '/models',
+    name: 'ModelMarketplace',
+    component: () => import('@/views/user/ModelMarketplaceView.vue'),
+    meta: {
+      requiresAuth: false,
+      title: 'Model Marketplace',
+      titleKey: 'models.marketplaceTitle',
+      descriptionKey: 'models.marketplaceDescription'
+    }
+  },
+  {
+    path: '/status',
+    name: 'PublicStatus',
+    component: () => import('@/views/StatusView.vue'),
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: false,
+      title: 'Channel Status',
+      titleKey: 'channelStatus.title'
     }
   },
 
@@ -525,6 +557,31 @@ const routes: RouteRecordRaw[] = [
     }
   },
   {
+    path: '/marketplace',
+    name: 'UserModelMarketplace',
+    component: () => import('@/views/user/ModelMarketplaceView.vue'),
+    props: { embedded: true },
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: false,
+      title: 'Model Marketplace',
+      titleKey: 'models.marketplaceTitle',
+      descriptionKey: 'models.marketplaceDescription'
+    }
+  },
+  {
+    path: '/admin/models',
+    name: 'AdminModels',
+    component: () => import('@/views/admin/ModelCatalogView.vue'),
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true,
+      title: 'Model Management',
+      titleKey: 'admin.models.title',
+      descriptionKey: 'admin.models.description'
+    }
+  },
+  {
     path: '/admin/subscriptions',
     name: 'AdminSubscriptions',
     component: () => import('@/views/admin/SubscriptionsView.vue'),
@@ -774,7 +831,7 @@ let authInitialized = false
 const navigationLoading = useNavigationLoadingState()
 // 延迟初始化预加载，传入 router 实例
 let routePrefetch: ReturnType<typeof useRoutePrefetch> | null = null
-const BACKEND_MODE_ALLOWED_PATHS = ['/login', '/key-usage', '/setup', '/payment/result', '/payment/airwallex', '/legal']
+const BACKEND_MODE_ALLOWED_PATHS = ['/login', '/key-usage', '/setup', '/payment/result', '/payment/airwallex', '/legal', '/unsupported-region']
 const BACKEND_MODE_CALLBACK_PATHS = [
   '/auth/callback',
   '/auth/linuxdo/callback',

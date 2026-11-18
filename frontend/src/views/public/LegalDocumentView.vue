@@ -100,8 +100,11 @@ import { getLocale } from '@/i18n'
 import { sanitizeUrl } from '@/utils/url'
 import { useAppStore } from '@/stores/app'
 import type { LoginAgreementDocument } from '@/types'
+import { normalizeSiteName } from '@/constants/branding'
 import zhAdminCompliance from '../../../../docs/legal/admin-compliance.zh.md?raw'
 import enAdminCompliance from '../../../../docs/legal/admin-compliance.en.md?raw'
+import zhPaymentGuide from '../../../../docs/PAYMENT_CN.md?raw'
+import enPaymentGuide from '../../../../docs/PAYMENT.md?raw'
 
 type LegalDocumentIcon = 'document' | 'shield' | 'globe' | 'cog'
 
@@ -119,17 +122,24 @@ marked.setOptions({
 
 const documentId = computed(() => String(route.params.documentId || ''))
 const isAdminComplianceDocument = computed(() => documentId.value === 'admin-compliance')
+const isPaymentGuideDocument = computed(() => documentId.value === 'payment-guide')
 const documents = computed(() => settings.value?.login_agreement_documents ?? [])
-const siteName = computed(() => settings.value?.site_name || 'Sub2API')
+const siteName = computed(() => normalizeSiteName(settings.value?.site_name))
 const siteLogo = computed(() => sanitizeUrl(settings.value?.site_logo || '', {
   allowRelative: true,
   allowDataUrl: true,
 }))
 const updatedAt = computed(() =>
-  isAdminComplianceDocument.value ? '' : settings.value?.login_agreement_updated_at || ''
+  isAdminComplianceDocument.value || isPaymentGuideDocument.value
+    ? ''
+    : settings.value?.login_agreement_updated_at || ''
 )
 const documentTypeLabel = computed(() =>
-  isAdminComplianceDocument.value ? t('legal.adminCompliance') : t('legal.loginAgreement')
+  isAdminComplianceDocument.value
+    ? t('legal.adminCompliance')
+    : isPaymentGuideDocument.value
+      ? t('legal.paymentGuide')
+      : t('legal.loginAgreement')
 )
 
 const currentDocument = computed<LoginAgreementDocument | null>(() => {
@@ -138,6 +148,13 @@ const currentDocument = computed<LoginAgreementDocument | null>(() => {
       id: 'admin-compliance',
       title: t('adminCompliance.title'),
       content_md: getLocale() === 'zh' ? zhAdminCompliance : enAdminCompliance
+    }
+  }
+  if (isPaymentGuideDocument.value) {
+    return {
+      id: 'payment-guide',
+      title: getLocale() === 'zh' ? '支付系统配置指南' : 'Payment System Configuration Guide',
+      content_md: getLocale() === 'zh' ? zhPaymentGuide : enPaymentGuide
     }
   }
   const id = documentId.value

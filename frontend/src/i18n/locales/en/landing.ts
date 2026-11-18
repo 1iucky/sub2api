@@ -14,6 +14,127 @@ export default {
     login: 'Login',
     getStarted: 'Get Started',
     goToDashboard: 'Go to Dashboard',
+    nav: {
+      docs: 'Docs',
+      status: 'Status',
+      models: 'Model Marketplace',
+      openMenu: 'Open menu',
+      closeMenu: 'Close menu'
+    },
+    hero2: {
+      eyebrow: 'AI API GATEWAY',
+      title: 'One gateway for every AI subscription.',
+      subhead:
+        'Route Claude, OpenAI, Gemini, Bedrock and Antigravity through a single API key. Pool accounts, balance load, meter usage — at the gateway.',
+      ctaPrimary: 'Get API key',
+      ctaSecondary: 'Read the docs',
+      demo: {
+        title: 'gateway — live',
+        sidebarGateway: 'Gateway',
+        sidebarPools: 'Pools',
+        sidebarKeys: 'Keys',
+        sidebarSettings: 'Settings',
+        kpiRpm: 'RPM',
+        kpiRpmValue: '1.2k',
+        kpiP95: 'P95',
+        kpiP95Value: '240ms',
+        kpiUptime: 'Uptime',
+        kpiUptimeValue: '99.9%',
+        kpiKeys: 'Keys',
+        kpiKeysValue: '348',
+        health: 'health',
+        streamTitle: 'request stream',
+        streamRoute: 'route',
+        streamUpstream: 'upstream',
+        streamStatus: '200 ok',
+        sparkClaude: 'claude',
+        sparkOpenai: 'openai',
+        sparkGemini: 'gemini'
+      }
+    },
+    marquee2: {
+      label: 'Compatible with',
+      items: 'Claude · OpenAI · Gemini · Bedrock · Antigravity',
+      providersLabel: 'Compatible providers',
+      toolsLabel: 'Supported tools'
+    },
+    defining2: {
+      title: 'Defining your API Gateway Factory',
+      cards: {
+        models: {
+          index: '01',
+          title: 'Model independence',
+          axes: {
+            coding: 'CODING',
+            reasoning: 'REASONING',
+            speed: 'SPEED',
+            cost: 'COST',
+            context: 'CONTEXT',
+            tools: 'TOOLS'
+          },
+          legend: {
+            primary: 'MODEL A',
+            backup: 'MODEL B',
+            third: 'MODEL C',
+            best: 'Best of all'
+          }
+        },
+        runtime: {
+          index: '02',
+          title: 'Sovereign routing',
+          rows: {
+            saas: { title: 'SaaS', desc: 'Managed gateway, zero ops' },
+            hybrid: { title: 'Hybrid', desc: 'Your accounts, our control plane' },
+            selfHosted: { title: 'Self-hosted', desc: 'Run beside your own services' },
+            isolated: { title: 'Isolated', desc: 'Private networks and proxies' }
+          },
+          note: 'OpenAI · Claude · Gemini · Bedrock — route where your workloads already live'
+        },
+        workflow: {
+          index: '03',
+          title: 'Across the SDLC',
+          center: 'SHARED CONTEXT',
+          nodes: {
+            plan: 'Plan',
+            execute: 'Execute',
+            validate: 'Validate',
+            ship: 'Ship',
+            monitor: 'Monitor',
+            automate: 'Automate',
+            signal: 'Signal',
+            triage: 'Triage'
+          },
+          note: 'Not just coding. Every stage strengthens every other.'
+        }
+      }
+    },
+    bento2: {
+      eyebrow: 'WHAT THE GATEWAY DOES',
+      title: 'Defining your gateway',
+      cards: {
+        pooling: {
+          index: '01',
+          title: 'Multi-upstream pooling',
+          desc: 'Aggregate Claude, OpenAI and Gemini accounts behind one key. Sticky sessions, per-account RPM and concurrency limits, automatic failover.'
+        },
+        routing: {
+          index: '02',
+          title: 'Sticky sessions & load balancing',
+          desc: 'Pin a session to an account, distribute traffic across the pool, and keep latency flat as you scale keys and teams.'
+        },
+        billing: {
+          index: '03',
+          title: 'Quotas & metered billing',
+          desc: 'Per-key usage is metered in real time with configurable quotas and spend limits. Team consumption stays observable and bounded.'
+        }
+      }
+    },
+    cta2: {
+      eyebrow: 'SHIP WITHOUT MANAGING QUOTAS',
+      title: 'Ship AI features without managing quotas.',
+      button: 'Start free',
+      note: 'No credit card to try. Pool your first upstream in minutes.'
+    },
     // User-focused value proposition
     heroSubtitle: 'One Key, All AI Models',
     heroDescription: 'No need to manage multiple subscriptions. Access Claude, GPT, Gemini and more with a single API key',
@@ -111,6 +232,24 @@ export default {
     },
     footer: {
       allRightsReserved: 'All rights reserved.'
+    },
+    footer2: {
+      tagline: 'Operated as a configurable AI gateway',
+      domain: 'AI API gateway',
+      columns: {
+        resources: 'Resources',
+        legal: 'Legal'
+      },
+      links: {
+        docs: 'Docs',
+        status: 'Status',
+        models: 'Model Marketplace',
+        modelMarketplace: 'Model Marketplace',
+        serviceTerms: 'Service Terms',
+        usagePolicy: 'Usage Policy',
+        supportedCountries: 'Supported Countries and Regions',
+        serviceSpecificTerms: 'Service-Specific Terms'
+      }
     }
   },
 
@@ -192,8 +331,8 @@ export default {
 
   // Setup Wizard
   setup: {
-    title: 'Sub2API Setup',
-    description: 'Configure your Sub2API instance',
+    title: 'SiliconBase Setup',
+    description: 'Configure your SiliconBase instance',
     database: {
       title: 'Database Configuration',
       description: 'Connect to your PostgreSQL database',

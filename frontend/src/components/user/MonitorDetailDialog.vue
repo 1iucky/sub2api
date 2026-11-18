@@ -68,6 +68,7 @@ import {
   status as fetchChannelMonitorDetail,
   type UserMonitorDetail,
 } from '@/api/channelMonitor'
+import { status as fetchPublicChannelMonitorDetail } from '@/api/publicChannelMonitor'
 import BaseDialog from '@/components/common/BaseDialog.vue'
 import { useChannelMonitorFormat } from '@/composables/useChannelMonitorFormat'
 
@@ -75,6 +76,7 @@ const props = defineProps<{
   show: boolean
   monitorId: number | null
   title: string
+  isPublic?: boolean
 }>()
 
 defineEmits<{
@@ -94,7 +96,9 @@ async function load(id: number) {
   detail.value = null
   loading.value = true
   try {
-    const result = await fetchChannelMonitorDetail(id)
+    const result = props.isPublic
+      ? await fetchPublicChannelMonitorDetail(id)
+      : await fetchChannelMonitorDetail(id)
     if (version === requestVersion) detail.value = result
   } catch (err: unknown) {
     if (version !== requestVersion) return

@@ -1,0 +1,5 @@
+{"file": ".trellis/tasks/09-29-replay-model-marketplace-catalog/research/collision-surface.md", "reason": "Verified no-conflict zones and must-not-touch files (utils/pricing.ts, pricing_service.go, channel.go) — check against final diff"}
+{"file": ".trellis/tasks/09-29-replay-model-marketplace-catalog/research/coupling-analysis.md", "reason": "Audit list of forbidden symbols (display_currency, NormalizeDisplayCurrency, GroupRepository) for the grep audit"}
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "Backend quality gate expectations (depguard layering, lint, tests)"}
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "Frontend quality gate expectations (typecheck, lint, vitest, build)"}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "Cross-layer data-flow verification for DB→repo→service→handler→route→frontend chain"}

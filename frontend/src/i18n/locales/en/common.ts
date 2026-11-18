@@ -142,6 +142,7 @@ export default {
     empty: 'No content',
     loginAgreement: 'Login Agreement',
     adminCompliance: 'Deployment and Operation Compliance Commitment',
+    paymentGuide: 'Payment Configuration Guide',
     loginAgreementPrompt: {
       checkboxPrefix: 'I have read and agree to ',
       documentSeparator: ', ',
@@ -180,6 +181,8 @@ export default {
     channels: 'Channels',
     availableChannels: 'Available Channels',
     modelPlaza: 'Model Plaza',
+    modelMarketplace: 'Model Marketplace',
+    modelManagement: 'Model Management',
     subscriptions: 'Subscriptions',
     accounts: 'Accounts',
     plugins: 'Plugins',
@@ -455,6 +458,17 @@ export default {
     verifyFailed: 'Verification failed, please try again',
     notEnabled: 'This operation requires two-factor authentication. Please enable TOTP in your profile first.',
     adminApiKeyForbidden: 'Admin API keys cannot perform this operation. Use a two-factor verified admin session.'
+  },
+
+  unsupportedRegion: {
+    pageTitle: 'Unsupported Region',
+    subtitle: 'AI API Gateway',
+    title: 'This region is not supported',
+    description: '{site} is not available from your current access region. If your network exit location has changed, retry the check.',
+    accessInfo: 'Access source: {host} · {location} · requested path: {path}',
+    retryHint: 'Use the button below to return to the site home page and let the gateway check your source IP region again.',
+    retry: 'Retry check',
+    unknownLocation: 'Unknown location'
   },
 
   // Dashboard

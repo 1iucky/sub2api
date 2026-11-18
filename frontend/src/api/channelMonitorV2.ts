@@ -235,30 +235,38 @@ const requestConfig = (filter: MonitorFilter, signal?: AbortSignal, extraParams:
   signal,
 })
 
-function base(admin: boolean) { return admin ? '/admin/channel-monitor-v2' : '/channel-monitor-v2' }
+/** Data scope: user (authed, group-restricted), admin (full), public (anonymous /status page). */
+export type MonitorScope = 'user' | 'admin' | 'public'
 
-export async function getDimensions(filter: MonitorFilter, admin = false, signal?: AbortSignal) {
-  const { data } = await apiClient.get<MonitorDimensions>(`${base(admin)}/dimensions`, requestConfig(filter, signal))
+function base(scope: MonitorScope) {
+  if (scope === 'admin') return '/admin/channel-monitor-v2'
+  if (scope === 'public') return '/public/channel-monitor-v2'
+  return '/channel-monitor-v2'
+}
+
+export async function getDimensions(filter: MonitorFilter, scope: MonitorScope = 'user', signal?: AbortSignal) {
+  const { data } = await apiClient.get<MonitorDimensions>(`${base(scope)}/dimensions`, requestConfig(filter, signal))
   return data
 }
-export async function getSnapshot(filter: MonitorFilter, admin = false, signal?: AbortSignal) {
-  const { data } = await apiClient.get<MonitorSnapshot>(`${base(admin)}/snapshot`, requestConfig(filter, signal))
+export async function getSnapshot(filter: MonitorFilter, scope: MonitorScope = 'user', signal?: AbortSignal) {
+  const { data } = await apiClient.get<MonitorSnapshot>(`${base(scope)}/snapshot`, requestConfig(filter, signal))
   return data
 }
-export async function getMatrix(filter: MonitorFilter, groupBy: MonitorMatrixGroupBy, admin = false, signal?: AbortSignal) {
-  const { data } = await apiClient.get<MonitorMatrixResponse>(`${base(admin)}/matrix`, requestConfig(filter, signal, { group_by: groupBy }))
+export async function getMatrix(filter: MonitorFilter, groupBy: MonitorMatrixGroupBy, scope: MonitorScope = 'user', signal?: AbortSignal) {
+  const { data } = await apiClient.get<MonitorMatrixResponse>(`${base(scope)}/matrix`, requestConfig(filter, signal, { group_by: groupBy }))
   return data
 }
-export async function getModels(filter: MonitorFilter, admin = false, signal?: AbortSignal) {
-  const { data } = await apiClient.get<{ coverage: MonitorCoverage; items: MonitorModelRow[] }>(`${base(admin)}/models`, requestConfig(filter, signal))
+export async function getModels(filter: MonitorFilter, scope: MonitorScope = 'user', signal?: AbortSignal) {
+  const { data } = await apiClient.get<{ coverage: MonitorCoverage; items: MonitorModelRow[] }>(`${base(scope)}/models`, requestConfig(filter, signal))
   return data
 }
-export async function getErrors(filter: MonitorFilter, admin = false, signal?: AbortSignal) {
-  const { data } = await apiClient.get<{ coverage: MonitorCoverage; items: MonitorErrorRow[] }>(`${base(admin)}/errors`, requestConfig(filter, signal))
+export async function getErrors(filter: MonitorFilter, scope: MonitorScope = 'user', signal?: AbortSignal) {
+  const { data } = await apiClient.get<{ coverage: MonitorCoverage; items: MonitorErrorRow[] }>(`${base(scope)}/errors`, requestConfig(filter, signal))
   return data
 }
-export async function getUsers(filter: MonitorFilter, admin = false, signal?: AbortSignal) {
-  const { data } = await apiClient.get<{ coverage: MonitorCoverage; items: MonitorUserRow[] }>(`${base(admin)}/users`, requestConfig(filter, signal))
+// User ranking requires an auth subject (is_self) and is not exposed publicly.
+export async function getUsers(filter: MonitorFilter, scope: Exclude<MonitorScope, 'public'> = 'user', signal?: AbortSignal) {
+  const { data } = await apiClient.get<{ coverage: MonitorCoverage; items: MonitorUserRow[] }>(`${base(scope)}/users`, requestConfig(filter, signal))
   return data
 }
 export async function getConfig() {

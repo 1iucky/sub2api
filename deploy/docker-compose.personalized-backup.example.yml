@@ -1,0 +1,30 @@
+# Personalized deployment notes preserved during upstream replay.
+#
+# This file is intentionally NOT an override for deploy/docker-compose.yml.
+# The upstream compose file remains authoritative. Use this file only as a
+# reminder of local deployment differences that existed before the replay.
+#
+# Original personalized commit: 88594f24c
+#
+# Preserved local differences:
+# - The local development deployment used a locally built image tag:
+#     sub2api:dev
+#   instead of the upstream release image:
+#     weishaw/sub2api:latest
+# - The local development deployment did not include the upstream
+#   ENABLE_SERVER_TIMING environment toggle.
+#
+# If you need to run a local image without changing upstream's canonical
+# compose file, prefer an explicit one-off override created outside versioned
+# deployment defaults, for example:
+#
+#   docker compose -f deploy/docker-compose.yml \
+#     -f deploy/docker-compose.override.yml up -d
+#
+# Keep deploy/docker-compose.override.yml uncommitted.
+
+x-personalized-compose-backup:
+  source_commit: 88594f24c
+  local_image: sub2api:dev
+  upstream_image: weishaw/sub2api:latest
+  note: "Reference only; do not use as a compose override."

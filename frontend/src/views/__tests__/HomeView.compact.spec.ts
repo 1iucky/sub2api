@@ -46,6 +46,9 @@ function mountHome(settings: Record<string, unknown> = {}) {
 
   return mount(HomeView, {
     global: {
+      directives: {
+        reveal: {},
+      },
       stubs: {
         RouterLink: RouterLinkStub,
         LocaleSwitcher: { template: '<div data-testid="locale-switcher" />' },
@@ -56,13 +59,24 @@ function mountHome(settings: Record<string, unknown> = {}) {
 }
 
 function compactDestination(wrapper: ReturnType<typeof mountHome>) {
-  return wrapper.get('[data-testid="compact-home"]').findComponent(RouterLinkStub).props('to')
+  return wrapper
+    .get('[data-testid="compact-home"]')
+    .findAllComponents(RouterLinkStub)
+    .map((link) => link.props('to'))
+    .find((to) => ['/login', '/dashboard', '/admin/dashboard'].includes(String(to)))
 }
 
 function modelPlazaDestination(wrapper: ReturnType<typeof mountHome>) {
   return wrapper
     .findAllComponents(RouterLinkStub)
     .find((link) => link.props('to') === '/model-plaza')
+    ?.props('to')
+}
+
+function statusDestination(wrapper: ReturnType<typeof mountHome>) {
+  return wrapper
+    .findAllComponents(RouterLinkStub)
+    .find((link) => link.props('to') === '/status')
     ?.props('to')
 }
 
@@ -108,7 +122,17 @@ describe('HomeView compact mode', () => {
     const wrapper = mountHome(settings)
 
     expect(wrapper.find('[data-testid="compact-home"]').exists()).toBe(false)
-    expect(wrapper.find('.terminal-container').exists()).toBe(true)
+    expect(wrapper.find('.sf-dashboard-frame').exists()).toBe(true)
+    expect(wrapper.text()).toContain('home.hero2.title')
+  })
+
+  it('restores the personalized default-home sections', () => {
+    const wrapper = mountHome()
+
+    expect(wrapper.find('[data-testid="default-home"]').exists()).toBe(true)
+    expect(wrapper.find('.sf-defining-card').exists()).toBe(true)
+    expect(wrapper.find('.sf-logo-pill').exists()).toBe(true)
+    expect(wrapper.find('.sf-sdlc-orbit').exists()).toBe(true)
   })
 
   it('links unauthenticated visitors to login', () => {
@@ -180,5 +204,50 @@ describe('HomeView compact mode', () => {
     })
 
     expect(modelPlazaDestination(wrapper)).toBeUndefined()
+  })
+
+  it('hides the default home model plaza link when the feature is disabled', () => {
+    const wrapper = mountHome({
+      model_plaza_enabled: false,
+      model_plaza_require_auth: false,
+    })
+
+    expect(modelPlazaDestination(wrapper)).toBeUndefined()
+  })
+
+  it('links the compact home status entry to the upstream channel monitor route', () => {
+    const wrapper = mountHome({
+      compact_home_enabled: true,
+      channel_monitor_enabled: true,
+    })
+
+    expect(statusDestination(wrapper)).toBe('/status')
+    expect(wrapper.text()).toContain('home.nav.status')
+  })
+
+  it('links the default home status entry to the upstream channel monitor route', () => {
+    const wrapper = mountHome({
+      channel_monitor_enabled: true,
+    })
+
+    expect(statusDestination(wrapper)).toBe('/status')
+    expect(wrapper.text()).toContain('home.nav.status')
+  })
+
+  it('hides the home status entry when channel monitor is disabled', () => {
+    const wrapper = mountHome({
+      compact_home_enabled: true,
+      channel_monitor_enabled: false,
+    })
+
+    expect(statusDestination(wrapper)).toBeUndefined()
+  })
+
+  it('hides the default home status entry when channel monitor is disabled', () => {
+    const wrapper = mountHome({
+      channel_monitor_enabled: false,
+    })
+
+    expect(statusDestination(wrapper)).toBeUndefined()
   })
 })

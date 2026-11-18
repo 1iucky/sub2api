@@ -6,19 +6,30 @@
     >
       <slot name="icon">
         <component v-if="icon" :is="icon" class="empty-state-icon h-10 w-10" aria-hidden="true" />
-        <svg
-          v-else
-          class="empty-state-icon h-10 w-10"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+        <!-- Factory-style empty-state glyph: blueprint grid, empty node slot, and one signal dot. -->
+        <svg v-else class="empty-state-icon h-10 w-10" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+          <g stroke="currentColor" stroke-width="0.6" opacity="0.35">
+            <path d="M8 0v40M16 0v40M24 0v40M32 0v40" />
+            <path d="M0 8h40M0 16h40M0 24h40M0 32h40" />
+          </g>
+          <rect
+            x="11.5"
+            y="11.5"
+            width="17"
+            height="17"
+            rx="2"
+            stroke="currentColor"
+            stroke-width="1.1"
+            stroke-dasharray="2.5 2.5"
           />
+          <path
+            d="M20 16.5v7M16.5 20h7"
+            stroke="currentColor"
+            stroke-width="1"
+            stroke-linecap="round"
+            opacity="0.7"
+          />
+          <circle cx="20" cy="20" r="1.8" fill="#ef6f2e" />
         </svg>
       </slot>
     </div>

@@ -1,10 +1,14 @@
 import { enableAutoUnmount, flushPromises, mount } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import MonitorDetailDialog from '../MonitorDetailDialog.vue'
-const mocks = vi.hoisted(() => ({ status: vi.fn(), showError: vi.fn() }))
+const mocks = vi.hoisted(() => ({ status: vi.fn(), publicStatus: vi.fn(), showError: vi.fn() }))
 vi.mock('@/api/channelMonitor', () => ({ status: mocks.status }))
+vi.mock('@/api/publicChannelMonitor', () => ({ status: mocks.publicStatus }))
 vi.mock('@/stores/app', () => ({ useAppStore: () => mocks }))
-vi.mock('vue-i18n', () => ({ useI18n: () => ({ t: (key: string) => key }) }))
+vi.mock('vue-i18n', async () => {
+  const actual = await vi.importActual<typeof import('vue-i18n')>('vue-i18n')
+  return { ...actual, useI18n: () => ({ t: (key: string) => key }) }
+})
 enableAutoUnmount(afterEach)
 beforeEach(() => vi.clearAllMocks())
 function deferred() {
@@ -19,6 +23,15 @@ function open() {
     global: { stubs: { BaseDialog: { props: ['show'], template: '<div v-if="show"><slot /></div>' } } } })
 }
 describe('monitor detail request ownership', () => {
+  it('loads public monitor details without using the authenticated endpoint', async () => {
+    mocks.publicStatus.mockResolvedValueOnce(detail('public-model'))
+    const w = mount(MonitorDetailDialog, { props: { show: true, monitorId: 1, title: 'Monitor', isPublic: true },
+      global: { stubs: { BaseDialog: { props: ['show'], template: '<div v-if="show"><slot /></div>' } } } })
+    await flushPromises()
+    expect(w.text()).toContain('public-model')
+    expect(mocks.publicStatus).toHaveBeenCalledWith(1)
+    expect(mocks.status).not.toHaveBeenCalled()
+  })
   it('keeps the new monitor response when the old response arrives last', async () => {
     const old = deferred()
     mocks.status.mockReturnValueOnce(old.promise).mockResolvedValueOnce(detail('new-model'))

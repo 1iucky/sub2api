@@ -119,8 +119,8 @@ https://pay.example.com/pay?user_id=123&token=<jwt>&theme=light&lang=zh&ui_mode=
 - 重试保持相同 `code`，并使用新的 `Idempotency-Key`
 
 ### 6) `doc_url` 配置建议
-- 查看链接：`https://github.com/Wei-Shaw/sub2api/blob/main/docs/ADMIN_PAYMENT_INTEGRATION_API.md`
-- 下载链接：`https://raw.githubusercontent.com/Wei-Shaw/sub2api/main/docs/ADMIN_PAYMENT_INTEGRATION_API.md`
+- 建议将本文档发布到当前部署方自有文档站点，或在支付系统后台填写部署方维护的文档地址。
+- 如果仅需要用户侧支付说明，可优先使用系统内置的本地支付指南页面，避免跳转到上游开源项目仓库。
 
 ---
 
@@ -239,5 +239,5 @@ https://pay.example.com/pay?user_id=123&token=<jwt>&theme=light&lang=zh&ui_mode=
 - Keep the same `code` for retry, and use a new `Idempotency-Key`
 
 ### 6) Recommended `doc_url`
-- View URL: `https://github.com/Wei-Shaw/sub2api/blob/main/docs/ADMIN_PAYMENT_INTEGRATION_API.md`
-- Download URL: `https://raw.githubusercontent.com/Wei-Shaw/sub2api/main/docs/ADMIN_PAYMENT_INTEGRATION_API.md`
+- Host this document on the operator's own documentation site, or configure the payment system with the operator-maintained documentation URL.
+- If only user-facing payment guidance is needed, prefer the built-in local payment guide page to avoid sending users to the upstream open-source repository.

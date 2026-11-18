@@ -1,5 +1,5 @@
 <template>
-  <AppLayout>
+  <component :is="isPublic ? 'div' : AppLayout">
     <div class="space-y-6 pb-12">
       <!-- Ops-style elevated shell: title toolbar + filters (mirrors OpsDashboardHeader) -->
       <section
@@ -454,7 +454,7 @@
         </div>
       </section>
     </div>
-  </AppLayout>
+  </component>
 </template>
 
 <script setup lang="ts">
@@ -505,16 +505,21 @@ type Tab = 'models' | 'errors' | 'users'
 type HealthMode = 'overall' | 'success' | 'ttft' | 'cache'
 type TrendView = 'pulse' | 'line'
 
+const props = withDefaults(defineProps<{ isPublic?: boolean }>(), { isPublic: false })
+const isPublic = props.isPublic
+
 const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
 const appStore = useAppStore()
 const { t, te, locale } = useI18n()
 const isAdmin = computed(() => authStore.isAdmin)
-/** Admins always see RPM/TPM; users honor the hide-throughput system setting. */
-const showThroughput = computed(() => isAdmin.value || !isChannelMonitorThroughputHidden())
-/** Admins always see ranking; users honor the hide-user-ranking system setting. */
-const showUserRanking = computed(() => isAdmin.value || !isChannelMonitorUserRankingHidden())
+/** Public status page uses the anonymous endpoints; console uses user/admin scope. */
+const scope = computed<api.MonitorScope>(() => (isPublic ? 'public' : isAdmin.value ? 'admin' : 'user'))
+/** Admins always see RPM/TPM; public/regular users honor the hide-throughput system setting. */
+const showThroughput = computed(() => (!isPublic && isAdmin.value) || !isChannelMonitorThroughputHidden())
+/** Admins always see ranking; users honor the hide-user-ranking system setting; never shown publicly. */
+const showUserRanking = computed(() => !isPublic && (isAdmin.value || !isChannelMonitorUserRankingHidden()))
 
 const ranges = computed(() => [
   { value: '90m' as MonitorRange, label: t('channelMonitorV2.ranges.90m') },
@@ -711,15 +716,15 @@ async function loadDimensions(signal?: AbortSignal, id = sequence) {
     groupIds: [],
     models: [],
   }
-  const next = await api.getDimensions(rangeOnly, isAdmin.value, signal)
+  const next = await api.getDimensions(rangeOnly, scope.value, signal)
   if (id !== sequence) return
   dimensions.value = next
 }
 
 async function loadMetrics(signal?: AbortSignal, id = sequence) {
   const [nextSnapshot, nextMatrix] = await Promise.all([
-    api.getSnapshot(filter.value, isAdmin.value, signal),
-    api.getMatrix(filter.value, matrixGroupBy.value, isAdmin.value, signal),
+    api.getSnapshot(filter.value, scope.value, signal),
+    api.getMatrix(filter.value, matrixGroupBy.value, scope.value, signal),
   ])
   if (id !== sequence) return
   snapshot.value = nextSnapshot
@@ -780,11 +785,11 @@ async function loadTab(signal?: AbortSignal, id = sequence) {
   tabLoading.value = true
   try {
     if (activeTab.value === 'models') {
-      modelRows.value = (await api.getModels(filter.value, isAdmin.value, signal)).items || []
+      modelRows.value = (await api.getModels(filter.value, scope.value, signal)).items || []
     } else if (activeTab.value === 'errors') {
-      errorRows.value = (await api.getErrors(filter.value, isAdmin.value, signal)).items || []
+      errorRows.value = (await api.getErrors(filter.value, scope.value, signal)).items || []
     } else if (showUserRanking.value) {
-      userRows.value = (await api.getUsers(filter.value, isAdmin.value, signal)).items || []
+      userRows.value = (await api.getUsers(filter.value, isAdmin.value ? 'admin' : 'user', signal)).items || []
     } else {
       userRows.value = []
     }

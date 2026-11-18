@@ -19,24 +19,25 @@ beforeEach(() => {
 afterEach(() => { vi.restoreAllMocks(); document.body.style.overflow = '' })
 
 describe('announcement read confirmation', () => {
-  it('keeps a failed read confirmation open and only reports success after retry', async () => {
+  it('keeps a failed announcement unread in the drawer and allows retry', async () => {
     markRead.mockRejectedValue(new Error('offline'))
     const wrapper = mount(AnnouncementBell, { global: { stubs: { Teleport: true, Transition: true, Icon: true } } })
     await wrapper.get('button').trigger('click')
-    await wrapper.get('.group.relative').trigger('click')
-    await flushPromises()
-    const confirm = () => wrapper.findAll('button').find(button => button.text() === 'announcements.markRead')!
+    const confirm = () => wrapper.get('button[aria-label="announcements.unread"]')
     await confirm().trigger('click')
     await flushPromises()
-    expect(markRead).toHaveBeenCalledTimes(2)
+    expect(markRead).toHaveBeenCalledTimes(1)
     expect(showSuccess).not.toHaveBeenCalled()
     expect(showError).toHaveBeenCalled()
+    expect(useAnnouncementStore().unreadCount).toBe(1)
+    expect(wrapper.find('[data-testid="announcement-drawer"]').exists()).toBe(true)
     expect(wrapper.find('.markdown-body').exists()).toBe(true)
     markRead.mockResolvedValue(undefined)
     await confirm().trigger('click')
     await flushPromises()
-    expect(showSuccess).toHaveBeenCalledWith('announcements.markedAsRead')
-    expect(wrapper.find('.markdown-body').exists()).toBe(false)
+    expect(markRead).toHaveBeenCalledTimes(2)
+    expect(wrapper.find('.markdown-body').exists()).toBe(true)
+    expect(wrapper.find('button[aria-label="announcements.read"]').exists()).toBe(true)
     expect(useAnnouncementStore().unreadCount).toBe(0)
   })
 })

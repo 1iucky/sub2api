@@ -61,8 +61,11 @@ func TestAdminComplianceStatusRequiresAckWhenMissing(t *testing.T) {
 	require.NoError(t, err)
 	require.True(t, status.Required)
 	require.Equal(t, AdminComplianceVersion, status.Version)
-	require.Equal(t, AdminComplianceAckPhraseZH, status.AckPhraseZH)
+	require.Equal(t, "我已阅读、理解并同意本系统部署与运营合规承诺", status.AckPhraseZH)
+	require.Equal(t, "I have read, understood, and agree to this system's Deployment and Operation Compliance Commitment", status.AckPhraseEN)
 	require.Equal(t, AdminComplianceDocumentPathZH, status.DocumentPathZH)
+	require.Equal(t, "/legal/admin-compliance", status.DocumentURLZH)
+	require.Equal(t, "/legal/admin-compliance", status.DocumentURLEN)
 }
 
 func TestAcceptAdminComplianceRejectsWrongPhrase(t *testing.T) {

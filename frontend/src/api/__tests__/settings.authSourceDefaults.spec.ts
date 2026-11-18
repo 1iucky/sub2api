@@ -241,6 +241,7 @@ describe("normalizePlatformQuotasMap", () => {
     expect(result.gemini).toEqual({ daily: null, weekly: null, monthly: null });
     expect(result.antigravity).toEqual({ daily: null, weekly: null, monthly: null });
     expect(result.grok).toEqual({ daily: null, weekly: null, monthly: null });
+    expect(result.typesafe).toEqual({ daily: null, weekly: null, monthly: null });
     expect(result.kimi).toEqual({ daily: null, weekly: null, monthly: null });
     expect(result.opencode_go).toEqual({ daily: null, weekly: null, monthly: null });
   });

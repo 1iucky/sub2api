@@ -142,6 +142,7 @@ export default {
     empty: '暂无正文内容',
     loginAgreement: '登录条款',
     adminCompliance: '部署与运营合规承诺',
+    paymentGuide: '支付配置指南',
     loginAgreementPrompt: {
       checkboxPrefix: '我已阅读并同意',
       documentSeparator: '、',
@@ -180,6 +181,8 @@ export default {
     channels: '渠道管理',
     availableChannels: '可用渠道',
     modelPlaza: '模型广场',
+    modelMarketplace: '模型集市',
+    modelManagement: '模型管理',
     subscriptions: '订阅管理',
     accounts: '账号管理',
     plugins: '插件管理',
@@ -454,6 +457,17 @@ export default {
     verifyFailed: '验证失败，请重试',
     notEnabled: '此操作需要开启二次验证，请先在个人资料中启用 TOTP。',
     adminApiKeyForbidden: '管理 API Key 无法执行此操作，请使用已通过二次验证的管理员会话。'
+  },
+
+  unsupportedRegion: {
+    pageTitle: '区域暂不支持',
+    subtitle: 'AI API 网关',
+    title: '当前区域暂不支持访问',
+    description: '{site} 暂未向当前访问地区提供服务。如你的网络出口地区发生变化，可重新尝试访问。',
+    accessInfo: '访问源：{host} · {location} · 请求路径：{path}',
+    retryHint: '点击下方按钮将返回站点首页，并由网关重新校验访问源 IP 归属地。',
+    retry: '重新检测',
+    unknownLocation: '未知地区'
   },
 
   // Dashboard

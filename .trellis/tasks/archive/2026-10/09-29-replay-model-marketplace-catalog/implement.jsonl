@@ -1,0 +1,7 @@
+{"file": ".trellis/tasks/09-29-replay-model-marketplace-catalog/research/feature-inventory.md", "reason": "Complete REF file inventory with HEAD-existence flags — the port's shopping list"}
+{"file": ".trellis/tasks/09-29-replay-model-marketplace-catalog/research/coupling-analysis.md", "reason": "Dependency matrix: which REF symbols break on HEAD and ent schema field/index details for the port"}
+{"file": ".trellis/tasks/09-29-replay-model-marketplace-catalog/research/decoupling-options.md", "reason": "Chosen decoupling options B2/A1/D1/E1/F1/G1 with behavior deltas — implementation constraints"}
+{"file": ".trellis/spec/backend/directory-structure.md", "reason": "Backend layering conventions (handler→service→repository) the new catalog slice must follow"}
+{"file": ".trellis/spec/backend/database-guidelines.md", "reason": "Migration and raw-SQL conventions for model_catalog_repo.go and migrations 239/240"}
+{"file": ".trellis/spec/frontend/directory-structure.md", "reason": "Frontend placement conventions for views/api/components/locales"}
+{"file": ".trellis/spec/frontend/type-safety.md", "reason": "TS typing conventions for ported api modules and views"}

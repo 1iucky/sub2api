@@ -190,6 +190,81 @@ func (h *ChannelMonitorV2Handler) users(c *gin.Context, admin bool) {
 	response.Success(c, result)
 }
 
+// Public* variants serve the anonymous /status page: no auth subject and no
+// per-user group restriction, but the same non-admin redaction as regular
+// users (dimensions stripped, throughput hidden per system settings).
+// The users-ranking endpoint is intentionally not exposed publicly.
+func (h *ChannelMonitorV2Handler) PublicDimensions(c *gin.Context) {
+	filter, ok := h.parseFilter(c)
+	if !ok {
+		return
+	}
+	result, err := h.service.Dimensions(c.Request.Context(), filter)
+	if err != nil {
+		response.ErrorFrom(c, err)
+		return
+	}
+	service.RedactChannelMonitorV2Dimensions(result)
+	response.Success(c, result)
+}
+
+func (h *ChannelMonitorV2Handler) PublicSnapshot(c *gin.Context) {
+	filter, ok := h.parseFilter(c)
+	if !ok {
+		return
+	}
+	result, err := h.service.Snapshot(c.Request.Context(), filter, false)
+	if err != nil {
+		response.ErrorFrom(c, err)
+		return
+	}
+	response.Success(c, result)
+}
+
+func (h *ChannelMonitorV2Handler) PublicModels(c *gin.Context) {
+	filter, ok := h.parseFilter(c)
+	if !ok {
+		return
+	}
+	result, err := h.service.Models(c.Request.Context(), filter, false)
+	if err != nil {
+		response.ErrorFrom(c, err)
+		return
+	}
+	response.Success(c, result)
+}
+
+func (h *ChannelMonitorV2Handler) PublicMatrix(c *gin.Context) {
+	filter, ok := h.parseFilter(c)
+	if !ok {
+		return
+	}
+	groupBy, err := service.ParseChannelMonitorV2GroupBy(c.Query("group_by"))
+	if err != nil {
+		response.BadRequest(c, err.Error())
+		return
+	}
+	result, err := h.service.Matrix(c.Request.Context(), filter, groupBy, false)
+	if err != nil {
+		response.ErrorFrom(c, err)
+		return
+	}
+	response.Success(c, result)
+}
+
+func (h *ChannelMonitorV2Handler) PublicErrors(c *gin.Context) {
+	filter, ok := h.parseFilter(c)
+	if !ok {
+		return
+	}
+	result, err := h.service.ErrorsForViewer(c.Request.Context(), filter, false)
+	if err != nil {
+		response.ErrorFrom(c, err)
+		return
+	}
+	response.Success(c, result)
+}
+
 func (h *ChannelMonitorV2Handler) scopeFilter(c *gin.Context, filter *service.ChannelMonitorV2Filter, admin bool) bool {
 	if admin {
 		return true

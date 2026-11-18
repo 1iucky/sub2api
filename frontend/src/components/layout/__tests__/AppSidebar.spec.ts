@@ -19,6 +19,14 @@ describe('AppSidebar custom SVG styles', () => {
   })
 })
 
+describe('AppSidebar theme ownership', () => {
+  it('does not render a theme control in the bottom section', () => {
+    expect(componentSource).not.toContain('<!-- Theme Toggle -->')
+    expect(componentSource).not.toContain('function toggleTheme()')
+    expect(componentSource).not.toContain('const isDark = ref(')
+  })
+})
+
 describe('AppSidebar scroll position persistence', () => {
   it('binds a template ref to the sidebar nav element', () => {
     expect(componentSource).toContain('ref="sidebarNavRef"')
@@ -52,7 +60,7 @@ describe('AppSidebar collapsible groups', () => {
 })
 
 describe('AppSidebar header styles', () => {
-  it('does not clip the version badge dropdown', () => {
+  it('does not clip the brand header', () => {
     const sidebarHeaderBlockMatch = styleSource.match(/\.sidebar-header\s*\{[\s\S]*?\n {2}\}/)
     const sidebarBrandBlockMatch = componentSource.match(/\.sidebar-brand\s*\{[\s\S]*?\n\}/)
 
@@ -60,6 +68,13 @@ describe('AppSidebar header styles', () => {
     expect(sidebarBrandBlockMatch).not.toBeNull()
     expect(sidebarHeaderBlockMatch?.[0]).not.toContain('@apply overflow-hidden;')
     expect(sidebarBrandBlockMatch?.[0]).not.toContain('overflow: hidden;')
+  })
+
+  it('shows only the configured brand name without a version badge', () => {
+    expect(componentSource).toContain('const siteName = computed(() => normalizeSiteName(appStore.siteName))')
+    expect(componentSource).not.toContain("import VersionBadge from '@/components/common/VersionBadge.vue'")
+    expect(componentSource).not.toContain('<VersionBadge')
+    expect(componentSource).not.toContain('const siteVersion = computed')
   })
 })
 

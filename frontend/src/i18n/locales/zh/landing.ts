@@ -14,6 +14,127 @@ export default {
     login: '登录',
     getStarted: '立即开始',
     goToDashboard: '进入控制台',
+    nav: {
+      docs: '文档',
+      status: '状态',
+      models: '模型集市',
+      openMenu: '打开菜单',
+      closeMenu: '关闭菜单'
+    },
+    hero2: {
+      eyebrow: 'AI API 网关',
+      title: '一个网关，接入所有 AI 订阅。',
+      subhead:
+        '用一个 API 密钥路由 Claude、OpenAI、Gemini、Bedrock 与 Antigravity。账号池化、负载均衡、用量计量——都在网关层完成。',
+      ctaPrimary: '获取 API 密钥',
+      ctaSecondary: '阅读文档',
+      demo: {
+        title: 'gateway — 实时',
+        sidebarGateway: '网关',
+        sidebarPools: '账号池',
+        sidebarKeys: '密钥',
+        sidebarSettings: '设置',
+        kpiRpm: 'RPM',
+        kpiRpmValue: '1.2k',
+        kpiP95: 'P95',
+        kpiP95Value: '240ms',
+        kpiUptime: '可用率',
+        kpiUptimeValue: '99.9%',
+        kpiKeys: '密钥',
+        kpiKeysValue: '348',
+        health: '健康度',
+        streamTitle: '请求流',
+        streamRoute: '路由',
+        streamUpstream: '上游',
+        streamStatus: '200 ok',
+        sparkClaude: 'claude',
+        sparkOpenai: 'openai',
+        sparkGemini: 'gemini'
+      }
+    },
+    marquee2: {
+      label: '兼容',
+      items: 'Claude · OpenAI · Gemini · Bedrock · Antigravity',
+      providersLabel: '兼容模型服务',
+      toolsLabel: '支持工具生态'
+    },
+    defining2: {
+      title: '定义你的 API 网关工厂',
+      cards: {
+        models: {
+          index: '01',
+          title: '模型独立性',
+          axes: {
+            coding: '编码',
+            reasoning: '推理',
+            speed: '速度',
+            cost: '成本',
+            context: '上下文',
+            tools: '工具'
+          },
+          legend: {
+            primary: 'MODEL A',
+            backup: 'MODEL B',
+            third: 'MODEL C',
+            best: 'Best of all'
+          }
+        },
+        runtime: {
+          index: '02',
+          title: '主权路由',
+          rows: {
+            saas: { title: 'SaaS', desc: '托管网关，免运维' },
+            hybrid: { title: '混合部署', desc: '你的账号，我们的控制面' },
+            selfHosted: { title: '自托管', desc: '部署在你的服务旁边' },
+            isolated: { title: '隔离网络', desc: '私有网络与代理接入' }
+          },
+          note: 'OpenAI · Claude · Gemini · Bedrock — 路由到你的工作负载所在之处'
+        },
+        workflow: {
+          index: '03',
+          title: '覆盖完整 SDLC',
+          center: '共享上下文',
+          nodes: {
+            plan: '计划',
+            execute: '执行',
+            validate: '验证',
+            ship: '发布',
+            monitor: '监控',
+            automate: '自动化',
+            signal: '信号',
+            triage: '分诊'
+          },
+          note: '不只是编码。每个阶段都会强化其他阶段。'
+        }
+      }
+    },
+    bento2: {
+      eyebrow: '网关承担的工作',
+      title: '定义你的网关',
+      cards: {
+        pooling: {
+          index: '01',
+          title: '多上游账号池',
+          desc: '将 Claude、OpenAI、Gemini 账号聚合在一个密钥之后。会话保持、按账号的 RPM 与并发上限，出错自动切换。'
+        },
+        routing: {
+          index: '02',
+          title: '会话保持与负载均衡',
+          desc: '将请求绑定到指定账号，跨账号池分发流量，并在密钥与团队扩张时把延迟压平。'
+        },
+        billing: {
+          index: '03',
+          title: '配额与按量计费',
+          desc: '按密钥实时计量使用量，可配置配额与消费上限，让团队用量始终可观测、可约束。'
+        }
+      }
+    },
+    cta2: {
+      eyebrow: '无需自己管理配额即可上线',
+      title: '无需为配额分心，专注上线 AI 能力。',
+      button: '免费开始',
+      note: '试用无需信用卡，几分钟即可接入第一个上游。'
+    },
     // 新增：面向用户的价值主张
     heroSubtitle: '一个密钥，畅用多个 AI 模型',
     heroDescription: '无需管理多个订阅账号，一站式接入 Claude、GPT、Gemini 等主流 AI 服务',
@@ -111,6 +232,24 @@ export default {
     },
     footer: {
       allRightsReserved: '保留所有权利。'
+    },
+    footer2: {
+      tagline: '可配置的 AI API 网关',
+      domain: 'AI API 网关',
+      columns: {
+        resources: '资源',
+        legal: '法律'
+      },
+      links: {
+        docs: '文档',
+        status: '状态',
+        models: '模型集市',
+        modelMarketplace: '模型集市',
+        serviceTerms: '服务条款',
+        usagePolicy: '使用政策',
+        supportedCountries: '支持的国家和地区',
+        serviceSpecificTerms: '服务特定条款'
+      }
     }
   },
 
@@ -192,8 +331,8 @@ export default {
 
   // Setup Wizard
   setup: {
-    title: 'Sub2API 安装向导',
-    description: '配置您的 Sub2API 实例',
+    title: 'SiliconBase 安装向导',
+    description: '配置您的 SiliconBase 实例',
     database: {
       title: '数据库配置',
       description: '连接到您的 PostgreSQL 数据库',
