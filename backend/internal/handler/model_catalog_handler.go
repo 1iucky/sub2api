@@ -35,6 +35,7 @@ func (h *ModelCatalogHandler) List(c *gin.Context) {
 		Platform:        strings.TrimSpace(c.Query("platform")),
 		Provider:        strings.TrimSpace(c.Query("provider")),
 		VendorID:        vendorID,
+		VendorIDs:       parseOptionalInt64s(c.Query("vendor_ids")),
 		PublicOnly:      true,
 		WithPricingOnly: true,
 		DeduplicateByID: true,
@@ -69,4 +70,21 @@ func parseOptionalInt64(raw string) *int64 {
 		return nil
 	}
 	return &id
+}
+
+func parseOptionalInt64s(raw string) []int64 {
+	seen := make(map[int64]struct{})
+	var values []int64
+	for _, value := range strings.Split(raw, ",") {
+		id, err := strconv.ParseInt(strings.TrimSpace(value), 10, 64)
+		if err != nil || id <= 0 {
+			continue
+		}
+		if _, ok := seen[id]; ok {
+			continue
+		}
+		seen[id] = struct{}{}
+		values = append(values, id)
+	}
+	return values
 }

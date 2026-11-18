@@ -596,9 +596,13 @@ async function loadModelsPage(targetPage: number, append: boolean) {
     loading.value = true
   }
   try {
+    const vendorIDs = filters.vendor_ids
+      .map(Number)
+      .filter(vendorID => Number.isInteger(vendorID) && vendorID > 0)
     const res = await listModels(targetPage, MARKETPLACE_PAGE_SIZE, {
       search: filters.search,
       platform: filters.platform,
+      ...(vendorIDs.length > 0 ? { vendor_ids: vendorIDs } : {}),
     }, { signal: ctrl.signal })
     if (ctrl.signal.aborted || seq !== modelsRequestSeq) return
     models.value = dedupeModelsByModelId(append ? [...models.value, ...(res.items || [])] : (res.items || []))
@@ -918,10 +922,13 @@ function toggleVendorFilter(vendorID: number) {
   } else {
     filters.vendor_ids.push(value)
   }
+  void reloadModels()
 }
 
 function clearVendorFilters() {
+  if (filters.vendor_ids.length === 0) return
   filters.vendor_ids = []
+  void reloadModels()
 }
 
 function toggleCapabilityFilter(key: string) {

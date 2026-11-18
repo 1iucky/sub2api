@@ -518,7 +518,14 @@ func buildModelCatalogWhere(filters service.ModelCatalogListFilters) ([]string, 
 		args = append(args, filters.Provider)
 		where = append(where, fmt.Sprintf("LOWER(mc.provider) = $%d", len(args)))
 	}
-	if filters.VendorID != nil {
+	if len(filters.VendorIDs) > 0 {
+		placeholders := make([]string, 0, len(filters.VendorIDs))
+		for _, vendorID := range filters.VendorIDs {
+			args = append(args, vendorID)
+			placeholders = append(placeholders, fmt.Sprintf("$%d", len(args)))
+		}
+		where = append(where, fmt.Sprintf("mc.vendor_id IN (%s)", strings.Join(placeholders, ", ")))
+	} else if filters.VendorID != nil {
 		args = append(args, *filters.VendorID)
 		where = append(where, fmt.Sprintf("mc.vendor_id = $%d", len(args)))
 	}

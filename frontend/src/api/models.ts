@@ -154,6 +154,7 @@ export interface ModelCatalogListFilters {
   platform?: string
   provider?: string
   vendor_id?: number | null
+  vendor_ids?: number[]
   status?: string
   visibility?: string
   sort_by?: string
@@ -174,11 +175,13 @@ export async function listModels(
   filters: ModelCatalogListFilters = {},
   options?: { signal?: AbortSignal }
 ): Promise<PaginatedResponse<ModelCatalog>> {
+  const { vendor_ids, ...queryFilters } = filters
   const { data } = await apiClient.get<PaginatedResponse<ModelCatalog>>('/public/models', {
     params: {
       page,
       page_size: pageSize,
-      ...filters
+      ...queryFilters,
+      ...(vendor_ids?.length ? { vendor_ids: vendor_ids.join(',') } : {})
     },
     signal: options?.signal
   })

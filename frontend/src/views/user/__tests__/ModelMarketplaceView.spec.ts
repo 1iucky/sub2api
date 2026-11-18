@@ -235,4 +235,45 @@ describe('ModelMarketplaceView lazy loading', () => {
       expect.objectContaining({ signal: expect.any(AbortSignal) })
     )
   })
+
+  it('reloads from the server when filtering by vendor', async () => {
+    vi.mocked(listVendors).mockResolvedValue([
+      { id: 42, name: 'Gemini', provider_key: 'gemini', icon_key: '', description: '', sort_order: 0, created_at: '', updated_at: '' },
+    ])
+    vi.mocked(listModels).mockReset()
+    vi.mocked(listModels)
+      .mockResolvedValueOnce({
+        items: Array.from({ length: 20 }, (_, i) => makeModel(i + 1)),
+        total: 40,
+        page: 1,
+        page_size: 20,
+        pages: 2,
+      })
+      .mockResolvedValueOnce({
+        items: [{ ...makeModel(99), model_id: 'gemini-4-hydrogen', display_name: 'Gemini 4 Hydrogen', vendor_id: 42 }],
+        total: 1,
+        page: 1,
+        page_size: 20,
+        pages: 1,
+      })
+
+    const wrapper = mountView()
+    await flushPromises()
+
+    const geminiFilter = wrapper.findAll('button').find(button => button.text().includes('Gemini'))
+    await geminiFilter?.trigger('click')
+    await flushPromises()
+
+    expect(listModels).toHaveBeenLastCalledWith(
+      1,
+      20,
+      {
+        search: '',
+        platform: '',
+        vendor_ids: [42],
+      },
+      expect.objectContaining({ signal: expect.any(AbortSignal) })
+    )
+    expect(wrapper.text()).toContain('Gemini 4 Hydrogen')
+  })
 })

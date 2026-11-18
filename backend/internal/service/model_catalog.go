@@ -122,6 +122,7 @@ type ModelCatalogListFilters struct {
 	Platform        string
 	Provider        string
 	VendorID        *int64
+	VendorIDs       []int64
 	Status          string
 	Visibility      string
 	PublicOnly      bool
