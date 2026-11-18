@@ -17,12 +17,17 @@ describe('AppHeader contact support entry', () => {
     expect(contactIndex).toBeLessThan(announcementIndex)
   })
 
-  it('uses existing public contact info for a popover without requiring backend settings changes', () => {
+  it('opens a configured HTTP(S) contact link directly and keeps the popover for plain text', () => {
     expect(componentSource).toContain('contactSupportPopoverOpen')
     expect(componentSource).toContain('showContactSupportEntry')
     expect(componentSource).toContain('data-testid="header-contact-support-popover"')
     expect(componentSource).toContain('contactInfo')
-    expect(componentSource).not.toContain('customerServiceInviteURL')
+    expect(componentSource).toContain('const contactInfoUrl = computed(() => sanitizeUrl(contactInfo.value))')
+    expect(componentSource).toContain('v-if="contactInfoUrl"')
+    expect(componentSource).toContain(':href="contactInfoUrl"')
+    expect(componentSource).toContain('target="_blank"')
+    expect(componentSource).toContain('rel="noopener noreferrer"')
+    expect(componentSource).toContain('v-if="!contactInfoUrl"')
   })
 
   it('does not expose the original project GitHub link in the user menu', () => {
